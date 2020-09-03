@@ -139,6 +139,16 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
+     * * 判断一个字符串是否为空
+     *
+     * @param data data
+     * @return null："0" 非空：data
+     */
+    public static String isNotNull(String data) {
+        return data==null?"0":data;
+    }
+
+    /**
      * * 判断一个对象是否是数组类型（Java基本型别的数组）
      * 
      * @param object 对象
