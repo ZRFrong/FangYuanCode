@@ -16,5 +16,7 @@
         <module>ruoyi-gen</module>
         <module>ruoyi-dfs</module>
         <module>ruoyi-activiti</module>
+        <module>fangyuan-tcp</module>
+        <module>fangyuan-api</module>
     </modules>
 </project>

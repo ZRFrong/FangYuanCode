@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbAttentionMapper">
+    
+    <resultMap type="DbAttention" id="DbAttentionResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="replyAttentionUserId"    column="reply_attention_user_id"    />
+        <result property="attentionTime"    column="attention_time"    />
+    </resultMap>
+
+    <sql id="selectDbAttentionVo">
+        select id, user_id, reply_attention_user_id, attention_time from db_attention
+    </sql>
+
+    <select id="selectDbAttentionList" parameterType="DbAttention" resultMap="DbAttentionResult">
+        <include refid="selectDbAttentionVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbAttentionById" parameterType="Long" resultMap="DbAttentionResult">
+        <include refid="selectDbAttentionVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbAttention" parameterType="DbAttention">
+        insert into db_attention
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="userId != null ">user_id,</if>
+            <if test="replyAttentionUserId != null ">reply_attention_user_id,</if>
+            <if test="attentionTime != null ">attention_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="userId != null ">#{userId},</if>
+            <if test="replyAttentionUserId != null ">#{replyAttentionUserId},</if>
+            <if test="attentionTime != null ">#{attentionTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbAttention" parameterType="DbAttention">
+        update db_attention
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="replyAttentionUserId != null ">reply_attention_user_id = #{replyAttentionUserId},</if>
+            <if test="attentionTime != null ">attention_time = #{attentionTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbAttentionById" parameterType="Long">
+        delete from db_attention where id = #{id}
+    </delete>
+
+    <delete id="deleteDbAttentionByIds" parameterType="String">
+        delete from db_attention where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

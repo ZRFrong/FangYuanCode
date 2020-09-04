@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.DbUserLoginMapper">
+    
+    <resultMap type="DbUserLogin" id="DbUserLoginResult">
+        <result property="id"    column="id"    />
+        <result property="loginId"    column="login_id"    />
+        <result property="loginFrom"    column="login_from"    />
+        <result property="loginTime"    column="login_time"    />
+        <result property="loginIp"    column="login_ip"    />
+        <result property="locationInfo"    column="location_info"    />
+    </resultMap>
+
+    <sql id="selectDbUserLoginVo">
+        select id, login_id, login_from, login_time, login_ip, location_info from db_user_login
+    </sql>
+
+    <select id="selectDbUserLoginList" parameterType="DbUserLogin" resultMap="DbUserLoginResult">
+        <include refid="selectDbUserLoginVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbUserLoginById" parameterType="Long" resultMap="DbUserLoginResult">
+        <include refid="selectDbUserLoginVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbUserLogin" parameterType="DbUserLogin" useGeneratedKeys="true" keyProperty="id">
+        insert into db_user_login
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="loginId != null ">login_id,</if>
+            <if test="loginFrom != null ">login_from,</if>
+            <if test="loginTime != null ">login_time,</if>
+            <if test="loginIp != null  and loginIp != ''">login_ip,</if>
+            <if test="locationInfo != null  and locationInfo != ''">location_info,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="loginId != null ">#{loginId},</if>
+            <if test="loginFrom != null ">#{loginFrom},</if>
+            <if test="loginTime != null ">#{loginTime},</if>
+            <if test="loginIp != null  and loginIp != ''">#{loginIp},</if>
+            <if test="locationInfo != null  and locationInfo != ''">#{locationInfo},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbUserLogin" parameterType="DbUserLogin">
+        update db_user_login
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="loginId != null ">login_id = #{loginId},</if>
+            <if test="loginFrom != null ">login_from = #{loginFrom},</if>
+            <if test="loginTime != null ">login_time = #{loginTime},</if>
+            <if test="loginIp != null  and loginIp != ''">login_ip = #{loginIp},</if>
+            <if test="locationInfo != null  and locationInfo != ''">location_info = #{locationInfo},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbUserLoginById" parameterType="Long">
+        delete from db_user_login where id = #{id}
+    </delete>
+
+    <delete id="deleteDbUserLoginByIds" parameterType="String">
+        delete from db_user_login where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

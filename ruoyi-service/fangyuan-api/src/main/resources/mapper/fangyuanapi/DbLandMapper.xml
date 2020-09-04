@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbLandMapper">
+    
+    <resultMap type="DbLand" id="DbLandResult">
+        <result property="landId"    column="land_id"    />
+        <result property="region"    column="region"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="productCategory"    column="product_category"    />
+        <result property="productName"    column="product_name"    />
+        <result property="noteText"    column="note_text"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="dbUserId"    column="db_user_id"    />
+        <result property="nickName"    column="nick_name"    />
+    </resultMap>
+
+    <sql id="selectDbLandVo">
+        select land_id, region, longitude, latitude, product_category, product_name, note_text, create_time, db_user_id, nick_name from db_land
+    </sql>
+
+    <select id="selectDbLandList" parameterType="DbLand" resultMap="DbLandResult">
+        <include refid="selectDbLandVo"/>
+        <where>  
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectDbLandById" parameterType="Long" resultMap="DbLandResult">
+        <include refid="selectDbLandVo"/>
+        where land_id = #{landId}
+    </select>
+        
+    <insert id="insertDbLand" parameterType="DbLand" useGeneratedKeys="true" keyProperty="landId">
+        insert into db_land
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="region != null  and region != ''">region,</if>
+            <if test="longitude != null  and longitude != ''">longitude,</if>
+            <if test="latitude != null  and latitude != ''">latitude,</if>
+            <if test="productCategory != null  and productCategory != ''">product_category,</if>
+            <if test="productName != null  and productName != ''">product_name,</if>
+            <if test="noteText != null  and noteText != ''">note_text,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="dbUserId != null ">db_user_id,</if>
+            <if test="nickName != null  and nickName != ''">nick_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="region != null  and region != ''">#{region},</if>
+            <if test="longitude != null  and longitude != ''">#{longitude},</if>
+            <if test="latitude != null  and latitude != ''">#{latitude},</if>
+            <if test="productCategory != null  and productCategory != ''">#{productCategory},</if>
+            <if test="productName != null  and productName != ''">#{productName},</if>
+            <if test="noteText != null  and noteText != ''">#{noteText},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="dbUserId != null ">#{dbUserId},</if>
+            <if test="nickName != null  and nickName != ''">#{nickName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbLand" parameterType="DbLand">
+        update db_land
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="region != null  and region != ''">region = #{region},</if>
+            <if test="longitude != null  and longitude != ''">longitude = #{longitude},</if>
+            <if test="latitude != null  and latitude != ''">latitude = #{latitude},</if>
+            <if test="productCategory != null  and productCategory != ''">product_category = #{productCategory},</if>
+            <if test="productName != null  and productName != ''">product_name = #{productName},</if>
+            <if test="noteText != null  and noteText != ''">note_text = #{noteText},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="dbUserId != null ">db_user_id = #{dbUserId},</if>
+            <if test="nickName != null  and nickName != ''">nick_name = #{nickName},</if>
+        </trim>
+        where land_id = #{landId}
+    </update>
+
+    <delete id="deleteDbLandById" parameterType="Long">
+        delete from db_land where land_id = #{landId}
+    </delete>
+
+    <delete id="deleteDbLandByIds" parameterType="String">
+        delete from db_land where land_id in 
+        <foreach item="landId" collection="array" open="(" separator="," close=")">
+            #{landId}
+        </foreach>
+    </delete>
+    
+</mapper>

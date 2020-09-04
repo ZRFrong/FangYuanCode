@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbUserMapper">
+    
+    <resultMap type="DbUser" id="DbUserResult">
+        <result property="id"    column="id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="password"    column="password"    />
+        <result property="phone"    column="phone"    />
+        <result property="salt"    column="salt"    />
+        <result property="created"    column="created"    />
+        <result property="userType"    column="user_type"    />
+        <result property="gender"    column="gender"    />
+        <result property="avatar"    column="avatar"    />
+        <result property="laterLoginTime"    column="later_login_time"    />
+        <result property="laterLoginIp"    column="later_login_ip"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remarkText"    column="remark_text"    />
+        <result property="userFrom"    column="user_from"    />
+        <result property="token"    column="token"    />
+        <result property="nickname"    column="nickname"    />
+        <result property="isBanned"    column="is_banned"    />
+        <result property="age"    column="age"    />
+        <result property="signature"    column="signature"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="phoneIsVerify"    column="phone_is_verify"    />
+    </resultMap>
+
+    <sql id="selectDbUserVo">
+        select id, user_name, password, phone, salt, created, user_type, gender, avatar, later_login_time, later_login_ip, update_time, remark_text, user_from, token, nickname, is_banned, age, signature, birthday, phone_is_verify from db_user
+    </sql>
+
+    <select id="selectDbUserList" parameterType="DbUser" resultMap="DbUserResult">
+        <include refid="selectDbUserVo"/>
+        <where>  
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="nickname != null  and nickname != ''"> and nickname like concat('%', #{nickname}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectDbUserById" parameterType="Long" resultMap="DbUserResult">
+        <include refid="selectDbUserVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbUser" parameterType="DbUser" useGeneratedKeys="true" keyProperty="id">
+        insert into db_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName != null  and userName != ''">user_name,</if>
+            <if test="password != null  and password != ''">password,</if>
+            <if test="phone != null  and phone != ''">phone,</if>
+            <if test="salt != null  and salt != ''">salt,</if>
+            <if test="created != null ">created,</if>
+            <if test="userType != null ">user_type,</if>
+            <if test="gender != null ">gender,</if>
+            <if test="avatar != null  and avatar != ''">avatar,</if>
+            <if test="laterLoginTime != null ">later_login_time,</if>
+            <if test="laterLoginIp != null  and laterLoginIp != ''">later_login_ip,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="remarkText != null  and remarkText != ''">remark_text,</if>
+            <if test="userFrom != null ">user_from,</if>
+            <if test="token != null  and token != ''">token,</if>
+            <if test="nickname != null  and nickname != ''">nickname,</if>
+            <if test="isBanned != null ">is_banned,</if>
+            <if test="age != null ">age,</if>
+            <if test="signature != null  and signature != ''">signature,</if>
+            <if test="birthday != null ">birthday,</if>
+            <if test="phoneIsVerify != null ">phone_is_verify,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userName != null  and userName != ''">#{userName},</if>
+            <if test="password != null  and password != ''">#{password},</if>
+            <if test="phone != null  and phone != ''">#{phone},</if>
+            <if test="salt != null  and salt != ''">#{salt},</if>
+            <if test="created != null ">#{created},</if>
+            <if test="userType != null ">#{userType},</if>
+            <if test="gender != null ">#{gender},</if>
+            <if test="avatar != null  and avatar != ''">#{avatar},</if>
+            <if test="laterLoginTime != null ">#{laterLoginTime},</if>
+            <if test="laterLoginIp != null  and laterLoginIp != ''">#{laterLoginIp},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remarkText != null  and remarkText != ''">#{remarkText},</if>
+            <if test="userFrom != null ">#{userFrom},</if>
+            <if test="token != null  and token != ''">#{token},</if>
+            <if test="nickname != null  and nickname != ''">#{nickname},</if>
+            <if test="isBanned != null ">#{isBanned},</if>
+            <if test="age != null ">#{age},</if>
+            <if test="signature != null  and signature != ''">#{signature},</if>
+            <if test="birthday != null ">#{birthday},</if>
+            <if test="phoneIsVerify != null ">#{phoneIsVerify},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbUser" parameterType="DbUser">
+        update db_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null  and userName != ''">user_name = #{userName},</if>
+            <if test="password != null  and password != ''">password = #{password},</if>
+            <if test="phone != null  and phone != ''">phone = #{phone},</if>
+            <if test="salt != null  and salt != ''">salt = #{salt},</if>
+            <if test="created != null ">created = #{created},</if>
+            <if test="userType != null ">user_type = #{userType},</if>
+            <if test="gender != null ">gender = #{gender},</if>
+            <if test="avatar != null  and avatar != ''">avatar = #{avatar},</if>
+            <if test="laterLoginTime != null ">later_login_time = #{laterLoginTime},</if>
+            <if test="laterLoginIp != null  and laterLoginIp != ''">later_login_ip = #{laterLoginIp},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remarkText != null  and remarkText != ''">remark_text = #{remarkText},</if>
+            <if test="userFrom != null ">user_from = #{userFrom},</if>
+            <if test="token != null  and token != ''">token = #{token},</if>
+            <if test="nickname != null  and nickname != ''">nickname = #{nickname},</if>
+            <if test="isBanned != null ">is_banned = #{isBanned},</if>
+            <if test="age != null ">age = #{age},</if>
+            <if test="signature != null  and signature != ''">signature = #{signature},</if>
+            <if test="birthday != null ">birthday = #{birthday},</if>
+            <if test="phoneIsVerify != null ">phone_is_verify = #{phoneIsVerify},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbUserById" parameterType="Long">
+        delete from db_user where id = #{id}
+    </delete>
+
+    <delete id="deleteDbUserByIds" parameterType="String">
+        delete from db_user where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

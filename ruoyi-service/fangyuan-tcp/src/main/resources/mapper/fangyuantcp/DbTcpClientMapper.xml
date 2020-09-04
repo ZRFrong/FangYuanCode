@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper">
+    
+    <resultMap type="DbTcpClient" id="DbTcpClientResult">
+        <result property="tcpClientId"    column="tcp_client_id"    />
+        <result property="heartName"    column="heart_name"    />
+        <result property="heartbeatTime"    column="heartbeat_time"    />
+        <result property="ip"    column="ip"    />
+        <result property="port"    column="port"    />
+        <result property="isOnline"    column="is_online"    />
+    </resultMap>
+
+    <sql id="selectDbTcpClientVo">
+        select tcp_client_id, heart_name, heartbeat_time, ip, port, is_online from db_tcp_client
+    </sql>
+
+    <select id="selectDbTcpClientList" parameterType="DbTcpClient" resultMap="DbTcpClientResult">
+        <include refid="selectDbTcpClientVo"/>
+        <where>  
+            <if test="heartName != null  and heartName != ''"> and heart_name like concat('%', #{heartName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectDbTcpClientById" parameterType="Long" resultMap="DbTcpClientResult">
+        <include refid="selectDbTcpClientVo"/>
+        where tcp_client_id = #{tcpClientId}
+    </select>
+        
+    <insert id="insertDbTcpClient" parameterType="DbTcpClient" useGeneratedKeys="true" keyProperty="tcpClientId">
+        insert into db_tcp_client
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="heartName != null  and heartName != ''">heart_name,</if>
+            <if test="heartbeatTime != null ">heartbeat_time,</if>
+            <if test="ip != null  and ip != ''">ip,</if>
+            <if test="port != null  and port != ''">port,</if>
+            <if test="isOnline != null ">is_online,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="heartName != null  and heartName != ''">#{heartName},</if>
+            <if test="heartbeatTime != null ">#{heartbeatTime},</if>
+            <if test="ip != null  and ip != ''">#{ip},</if>
+            <if test="port != null  and port != ''">#{port},</if>
+            <if test="isOnline != null ">#{isOnline},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbTcpClient" parameterType="DbTcpClient">
+        update db_tcp_client
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="heartName != null  and heartName != ''">heart_name = #{heartName},</if>
+            <if test="heartbeatTime != null ">heartbeat_time = #{heartbeatTime},</if>
+            <if test="ip != null  and ip != ''">ip = #{ip},</if>
+            <if test="port != null  and port != ''">port = #{port},</if>
+            <if test="isOnline != null ">is_online = #{isOnline},</if>
+        </trim>
+        where tcp_client_id = #{tcpClientId}
+    </update>
+
+    <delete id="deleteDbTcpClientById" parameterType="Long">
+        delete from db_tcp_client where tcp_client_id = #{tcpClientId}
+    </delete>
+
+    <delete id="deleteDbTcpClientByIds" parameterType="String">
+        delete from db_tcp_client where tcp_client_id in 
+        <foreach item="tcpClientId" collection="array" open="(" separator="," close=")">
+            #{tcpClientId}
+        </foreach>
+    </delete>
+    
+</mapper>

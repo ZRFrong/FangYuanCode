@@ -10,7 +10,7 @@
 - **master** spring原生方式，使用eureka做注册中心和spring config做配置中心
 - **nacos** 集成spring-cloud-alibaba 使用nacos做注册中心和配置中心
 
-
+打撒打撒打撒 
 
 本项目FORK自  [若依/RuoYi](https://gitee.com/y_project/RuoYi)
 

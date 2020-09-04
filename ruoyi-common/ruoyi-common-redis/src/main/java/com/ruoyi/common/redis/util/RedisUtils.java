@@ -53,7 +53,7 @@ public class RedisUtils
         redisTemplate.expire(key, expire, TimeUnit.SECONDS);
     }
 
-    /**
+    /**git pull origin master
      * 返回字符串结果
      * @param key 键
      * @return

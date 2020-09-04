@@ -88,7 +88,46 @@ spring:
               args:
                 name: fallbackcmd
                 fallbackUri: 'forward:/fallback'
+<<<<<<< HEAD
 
+=======
+        #fangyuanTcp 模块
+        - id: fangyuan-tcp
+          uri: lb://fangyuan-tcp
+          predicates:
+            - Path=/fangyuantcp/**
+          filters:
+            - StripPrefix=1
+             # 限流配置
+            - name: RequestRateLimiter
+              args:
+                key-resolver: '#{@remoteAddrKeyResolver}'
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+              # 降级配置
+            - name: Hystrix
+              args:
+                name: fallbackcmd
+                fallbackUri: 'forward:/fallback'
+        #fangyuanTcp 模块
+        - id: fangyuan-api
+          uri: lb://fangyuan-api
+          predicates:
+            - Path=/fangyuanapi/**
+          filters:
+            - StripPrefix=1
+             # 限流配置
+            - name: RequestRateLimiter
+              args:
+                key-resolver: '#{@remoteAddrKeyResolver}'
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+              # 降级配置
+            - name: Hystrix
+              args:
+                name: fallbackcmd
+                fallbackUri: 'forward:/fallback'
+>>>>>>> 29631831d04001e5dc2924d9973ed480711e017c
 hystrix:
   command:
     default:  #default全局有效，service id指定应用有效
