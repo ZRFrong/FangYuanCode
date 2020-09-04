@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuantcp.mapper.DbTcpOrderMapper">
+    
+    <resultMap type="DbTcpOrder" id="DbTcpOrderResult">
+        <result property="tcpOrderId"    column="tcp_order_id"    />
+        <result property="heartName"    column="heart_name"    />
+        <result property="code"    column="code"    />
+        <result property="text"    column="text"    />
+        <result property="results"    column="results"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="whenTime"    column="when_time"    />
+    </resultMap>
+
+    <sql id="selectDbTcpOrderVo">
+        select tcp_order_id, heart_name, code, text, results, create_time, update_time, when_time from db_tcp_order
+    </sql>
+
+    <select id="selectDbTcpOrderList" parameterType="DbTcpOrder" resultMap="DbTcpOrderResult">
+        <include refid="selectDbTcpOrderVo"/>
+        <where>  
+            <if test="heartName != null  and heartName != ''"> and heart_name like concat('%', #{heartName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectDbTcpOrderById" parameterType="Long" resultMap="DbTcpOrderResult">
+        <include refid="selectDbTcpOrderVo"/>
+        where tcp_order_id = #{tcpOrderId}
+    </select>
+        
+    <insert id="insertDbTcpOrder" parameterType="DbTcpOrder" useGeneratedKeys="true" keyProperty="tcpOrderId">
+        insert into db_tcp_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="heartName != null  and heartName != ''">heart_name,</if>
+            <if test="code != null  and code != ''">code,</if>
+            <if test="text != null  and text != ''">text,</if>
+            <if test="results != null ">results,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="whenTime != null ">when_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="heartName != null  and heartName != ''">#{heartName},</if>
+            <if test="code != null  and code != ''">#{code},</if>
+            <if test="text != null  and text != ''">#{text},</if>
+            <if test="results != null ">#{results},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="whenTime != null ">#{whenTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbTcpOrder" parameterType="DbTcpOrder">
+        update db_tcp_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="heartName != null  and heartName != ''">heart_name = #{heartName},</if>
+            <if test="code != null  and code != ''">code = #{code},</if>
+            <if test="text != null  and text != ''">text = #{text},</if>
+            <if test="results != null ">results = #{results},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="whenTime != null ">when_time = #{whenTime},</if>
+        </trim>
+        where tcp_order_id = #{tcpOrderId}
+    </update>
+
+    <delete id="deleteDbTcpOrderById" parameterType="Long">
+        delete from db_tcp_order where tcp_order_id = #{tcpOrderId}
+    </delete>
+
+    <delete id="deleteDbTcpOrderByIds" parameterType="String">
+        delete from db_tcp_order where tcp_order_id in 
+        <foreach item="tcpOrderId" collection="array" open="(" separator="," close=")">
+            #{tcpOrderId}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbCommentMapper">
+    
+    <resultMap type="DbComment" id="DbCommentResult">
+        <result property="id"    column="id"    />
+        <result property="observerId"    column="observer_id"    />
+        <result property="observer"    column="observer"    />
+        <result property="dynamicId"    column="dynamic_id"    />
+        <result property="commentContent"    column="comment_content"    />
+        <result property="isBanned"    column="is_banned"    />
+        <result property="themeType"    column="theme_type"    />
+        <result property="commentTime"    column="comment_time"    />
+        <result property="parentCommentId"    column="parent_comment_id"    />
+        <result property="parentCommentUserId"    column="parent_comment_user_id"    />
+        <result property="praiseNum"    column="praise_num"    />
+        <result property="commentLevel"    column="comment_level"    />
+        <result property="replyCommentId"    column="reply_comment_id"    />
+        <result property="replyCommentUserId"    column="reply_comment_user_id"    />
+    </resultMap>
+
+    <sql id="selectDbCommentVo">
+        select id, observer_id, observer, dynamic_id, comment_content, is_banned, theme_type, comment_time, parent_comment_id, parent_comment_user_id, praise_num, comment_level, reply_comment_id, reply_comment_user_id from db_comment
+    </sql>
+
+    <select id="selectDbCommentList" parameterType="DbComment" resultMap="DbCommentResult">
+        <include refid="selectDbCommentVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbCommentById" parameterType="Long" resultMap="DbCommentResult">
+        <include refid="selectDbCommentVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbComment" parameterType="DbComment" useGeneratedKeys="true" keyProperty="id">
+        insert into db_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="observerId != null ">observer_id,</if>
+            <if test="observer != null  and observer != ''">observer,</if>
+            <if test="dynamicId != null ">dynamic_id,</if>
+            <if test="commentContent != null  and commentContent != ''">comment_content,</if>
+            <if test="isBanned != null ">is_banned,</if>
+            <if test="themeType != null ">theme_type,</if>
+            <if test="commentTime != null ">comment_time,</if>
+            <if test="parentCommentId != null ">parent_comment_id,</if>
+            <if test="parentCommentUserId != null ">parent_comment_user_id,</if>
+            <if test="praiseNum != null ">praise_num,</if>
+            <if test="commentLevel != null ">comment_level,</if>
+            <if test="replyCommentId != null ">reply_comment_id,</if>
+            <if test="replyCommentUserId != null ">reply_comment_user_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="observerId != null ">#{observerId},</if>
+            <if test="observer != null  and observer != ''">#{observer},</if>
+            <if test="dynamicId != null ">#{dynamicId},</if>
+            <if test="commentContent != null  and commentContent != ''">#{commentContent},</if>
+            <if test="isBanned != null ">#{isBanned},</if>
+            <if test="themeType != null ">#{themeType},</if>
+            <if test="commentTime != null ">#{commentTime},</if>
+            <if test="parentCommentId != null ">#{parentCommentId},</if>
+            <if test="parentCommentUserId != null ">#{parentCommentUserId},</if>
+            <if test="praiseNum != null ">#{praiseNum},</if>
+            <if test="commentLevel != null ">#{commentLevel},</if>
+            <if test="replyCommentId != null ">#{replyCommentId},</if>
+            <if test="replyCommentUserId != null ">#{replyCommentUserId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbComment" parameterType="DbComment">
+        update db_comment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="observerId != null ">observer_id = #{observerId},</if>
+            <if test="observer != null  and observer != ''">observer = #{observer},</if>
+            <if test="dynamicId != null ">dynamic_id = #{dynamicId},</if>
+            <if test="commentContent != null  and commentContent != ''">comment_content = #{commentContent},</if>
+            <if test="isBanned != null ">is_banned = #{isBanned},</if>
+            <if test="themeType != null ">theme_type = #{themeType},</if>
+            <if test="commentTime != null ">comment_time = #{commentTime},</if>
+            <if test="parentCommentId != null ">parent_comment_id = #{parentCommentId},</if>
+            <if test="parentCommentUserId != null ">parent_comment_user_id = #{parentCommentUserId},</if>
+            <if test="praiseNum != null ">praise_num = #{praiseNum},</if>
+            <if test="commentLevel != null ">comment_level = #{commentLevel},</if>
+            <if test="replyCommentId != null ">reply_comment_id = #{replyCommentId},</if>
+            <if test="replyCommentUserId != null ">reply_comment_user_id = #{replyCommentUserId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbCommentById" parameterType="Long">
+        delete from db_comment where id = #{id}
+    </delete>
+
+    <delete id="deleteDbCommentByIds" parameterType="String">
+        delete from db_comment where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

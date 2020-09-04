@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbForwardMapper">
+    
+    <resultMap type="DbForward" id="DbForwardResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="replyForwardDynamicId"    column="reply_forward_dynamic_id"    />
+        <result property="forwardComment"    column="forward_comment"    />
+        <result property="forwardTime"    column="forward_time"    />
+    </resultMap>
+
+    <sql id="selectDbForwardVo">
+        select id, user_id, reply_forward_dynamic_id, forward_comment, forward_time from db_forward
+    </sql>
+
+    <select id="selectDbForwardList" parameterType="DbForward" resultMap="DbForwardResult">
+        <include refid="selectDbForwardVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbForwardById" parameterType="Long" resultMap="DbForwardResult">
+        <include refid="selectDbForwardVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbForward" parameterType="DbForward" useGeneratedKeys="true" keyProperty="id">
+        insert into db_forward
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="replyForwardDynamicId != null ">reply_forward_dynamic_id,</if>
+            <if test="forwardComment != null  and forwardComment != ''">forward_comment,</if>
+            <if test="forwardTime != null ">forward_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="replyForwardDynamicId != null ">#{replyForwardDynamicId},</if>
+            <if test="forwardComment != null  and forwardComment != ''">#{forwardComment},</if>
+            <if test="forwardTime != null ">#{forwardTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbForward" parameterType="DbForward">
+        update db_forward
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="replyForwardDynamicId != null ">reply_forward_dynamic_id = #{replyForwardDynamicId},</if>
+            <if test="forwardComment != null  and forwardComment != ''">forward_comment = #{forwardComment},</if>
+            <if test="forwardTime != null ">forward_time = #{forwardTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbForwardById" parameterType="Long">
+        delete from db_forward where id = #{id}
+    </delete>
+
+    <delete id="deleteDbForwardByIds" parameterType="String">
+        delete from db_forward where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

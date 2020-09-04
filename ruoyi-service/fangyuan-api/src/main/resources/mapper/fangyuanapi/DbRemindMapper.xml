@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbRemindMapper">
+    
+    <resultMap type="DbRemind" id="DbRemindResult">
+        <result property="id"    column="id"    />
+        <result property="remind"    column="remind"    />
+        <result property="isSuccess"    column="is_success"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="userId"    column="user_id"    />
+        <result property="dynamicId"    column="dynamic_id"    />
+    </resultMap>
+
+    <sql id="selectDbRemindVo">
+        select id, remind, is_success, created_time, user_id, dynamic_id from db_remind
+    </sql>
+
+    <select id="selectDbRemindList" parameterType="DbRemind" resultMap="DbRemindResult">
+        <include refid="selectDbRemindVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbRemindById" parameterType="Long" resultMap="DbRemindResult">
+        <include refid="selectDbRemindVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbRemind" parameterType="DbRemind" useGeneratedKeys="true" keyProperty="id">
+        insert into db_remind
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remind != null ">remind,</if>
+            <if test="isSuccess != null ">is_success,</if>
+            <if test="createdTime != null ">created_time,</if>
+            <if test="userId != null ">user_id,</if>
+            <if test="dynamicId != null ">dynamic_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remind != null ">#{remind},</if>
+            <if test="isSuccess != null ">#{isSuccess},</if>
+            <if test="createdTime != null ">#{createdTime},</if>
+            <if test="userId != null ">#{userId},</if>
+            <if test="dynamicId != null ">#{dynamicId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbRemind" parameterType="DbRemind">
+        update db_remind
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remind != null ">remind = #{remind},</if>
+            <if test="isSuccess != null ">is_success = #{isSuccess},</if>
+            <if test="createdTime != null ">created_time = #{createdTime},</if>
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="dynamicId != null ">dynamic_id = #{dynamicId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbRemindById" parameterType="Long">
+        delete from db_remind where id = #{id}
+    </delete>
+
+    <delete id="deleteDbRemindByIds" parameterType="String">
+        delete from db_remind where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

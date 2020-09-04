@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbEquipmentMapper">
+    
+    <resultMap type="DbEquipment" id="DbEquipmentResult">
+        <result property="equipmentId"    column="equipment_id"    />
+        <result property="dbUserId"    column="db_user_id"    />
+        <result property="heartbeatText"    column="heartbeat_text"    />
+        <result property="operateBy"    column="operate_by"    />
+        <result property="allottedTime"    column="allotted_time"    />
+        <result property="isPause"    column="is_pause"    />
+        <result property="pauseState"    column="pause_state"    />
+        <result property="isFault"    column="is_fault"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectDbEquipmentVo">
+        select equipment_id, db_user_id, heartbeat_text, operate_by, allotted_time, is_pause, pause_state, is_fault, create_time from db_equipment
+    </sql>
+
+    <select id="selectDbEquipmentList" parameterType="DbEquipment" resultMap="DbEquipmentResult">
+        <include refid="selectDbEquipmentVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbEquipmentById" parameterType="Long" resultMap="DbEquipmentResult">
+        <include refid="selectDbEquipmentVo"/>
+        where equipment_id = #{equipmentId}
+    </select>
+        
+    <insert id="insertDbEquipment" parameterType="DbEquipment" useGeneratedKeys="true" keyProperty="equipmentId">
+        insert into db_equipment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dbUserId != null ">db_user_id,</if>
+            <if test="heartbeatText != null  and heartbeatText != ''">heartbeat_text,</if>
+            <if test="operateBy != null ">operate_by,</if>
+            <if test="allottedTime != null ">allotted_time,</if>
+            <if test="isPause != null ">is_pause,</if>
+            <if test="pauseState != null  and pauseState != ''">pause_state,</if>
+            <if test="isFault != null ">is_fault,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dbUserId != null ">#{dbUserId},</if>
+            <if test="heartbeatText != null  and heartbeatText != ''">#{heartbeatText},</if>
+            <if test="operateBy != null ">#{operateBy},</if>
+            <if test="allottedTime != null ">#{allottedTime},</if>
+            <if test="isPause != null ">#{isPause},</if>
+            <if test="pauseState != null  and pauseState != ''">#{pauseState},</if>
+            <if test="isFault != null ">#{isFault},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbEquipment" parameterType="DbEquipment">
+        update db_equipment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dbUserId != null ">db_user_id = #{dbUserId},</if>
+            <if test="heartbeatText != null  and heartbeatText != ''">heartbeat_text = #{heartbeatText},</if>
+            <if test="operateBy != null ">operate_by = #{operateBy},</if>
+            <if test="allottedTime != null ">allotted_time = #{allottedTime},</if>
+            <if test="isPause != null ">is_pause = #{isPause},</if>
+            <if test="pauseState != null  and pauseState != ''">pause_state = #{pauseState},</if>
+            <if test="isFault != null ">is_fault = #{isFault},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where equipment_id = #{equipmentId}
+    </update>
+
+    <delete id="deleteDbEquipmentById" parameterType="Long">
+        delete from db_equipment where equipment_id = #{equipmentId}
+    </delete>
+
+    <delete id="deleteDbEquipmentByIds" parameterType="String">
+        delete from db_equipment where equipment_id in 
+        <foreach item="equipmentId" collection="array" open="(" separator="," close=")">
+            #{equipmentId}
+        </foreach>
+    </delete>
+    
+</mapper>

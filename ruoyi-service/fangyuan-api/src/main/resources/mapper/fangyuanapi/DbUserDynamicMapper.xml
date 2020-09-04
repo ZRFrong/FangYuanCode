@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbUserDynamicMapper">
+    
+    <resultMap type="DbUserDynamic" id="DbUserDynamicResult">
+        <result property="id"    column="id"    />
+        <result property="isHaveVoide"    column="is_have_voide"    />
+        <result property="resource"    column="resource"    />
+        <result property="content"    column="content"    />
+        <result property="relId"    column="rel_id"    />
+        <result property="orientation"    column="orientation"    />
+        <result property="permission"    column="permission"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="isBanned"    column="is_banned"    />
+        <result property="forwardNum"    column="forward_num"    />
+        <result property="commentNum"    column="comment_num"    />
+        <result property="likeNum"    column="like_num"    />
+    </resultMap>
+
+    <sql id="selectDbUserDynamicVo">
+        select id, is_have_voide, resource, content, rel_id, orientation, permission, created_time, is_banned, forward_num, comment_num, like_num from db_user_dynamic
+    </sql>
+
+    <select id="selectDbUserDynamicList" parameterType="DbUserDynamic" resultMap="DbUserDynamicResult">
+        <include refid="selectDbUserDynamicVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbUserDynamicById" parameterType="Long" resultMap="DbUserDynamicResult">
+        <include refid="selectDbUserDynamicVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbUserDynamic" parameterType="DbUserDynamic" useGeneratedKeys="true" keyProperty="id">
+        insert into db_user_dynamic
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="isHaveVoide != null ">is_have_voide,</if>
+            <if test="resource != null  and resource != ''">resource,</if>
+            <if test="content != null  and content != ''">content,</if>
+            <if test="relId != null ">rel_id,</if>
+            <if test="orientation != null  and orientation != ''">orientation,</if>
+            <if test="permission != null ">permission,</if>
+            <if test="createdTime != null ">created_time,</if>
+            <if test="isBanned != null ">is_banned,</if>
+            <if test="forwardNum != null ">forward_num,</if>
+            <if test="commentNum != null ">comment_num,</if>
+            <if test="likeNum != null ">like_num,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="isHaveVoide != null ">#{isHaveVoide},</if>
+            <if test="resource != null  and resource != ''">#{resource},</if>
+            <if test="content != null  and content != ''">#{content},</if>
+            <if test="relId != null ">#{relId},</if>
+            <if test="orientation != null  and orientation != ''">#{orientation},</if>
+            <if test="permission != null ">#{permission},</if>
+            <if test="createdTime != null ">#{createdTime},</if>
+            <if test="isBanned != null ">#{isBanned},</if>
+            <if test="forwardNum != null ">#{forwardNum},</if>
+            <if test="commentNum != null ">#{commentNum},</if>
+            <if test="likeNum != null ">#{likeNum},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbUserDynamic" parameterType="DbUserDynamic">
+        update db_user_dynamic
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="isHaveVoide != null ">is_have_voide = #{isHaveVoide},</if>
+            <if test="resource != null  and resource != ''">resource = #{resource},</if>
+            <if test="content != null  and content != ''">content = #{content},</if>
+            <if test="relId != null ">rel_id = #{relId},</if>
+            <if test="orientation != null  and orientation != ''">orientation = #{orientation},</if>
+            <if test="permission != null ">permission = #{permission},</if>
+            <if test="createdTime != null ">created_time = #{createdTime},</if>
+            <if test="isBanned != null ">is_banned = #{isBanned},</if>
+            <if test="forwardNum != null ">forward_num = #{forwardNum},</if>
+            <if test="commentNum != null ">comment_num = #{commentNum},</if>
+            <if test="likeNum != null ">like_num = #{likeNum},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbUserDynamicById" parameterType="Long">
+        delete from db_user_dynamic where id = #{id}
+    </delete>
+
+    <delete id="deleteDbUserDynamicByIds" parameterType="String">
+        delete from db_user_dynamic where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

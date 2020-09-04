@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbProductMapper">
+    
+    <resultMap type="DbProduct" id="DbProductResult">
+        <result property="productId"    column="product_id"    />
+        <result property="productName"    column="product_name"    />
+        <result property="buttonList"    column="button_list"    />
+        <result property="isCustom"    column="is_custom"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectDbProductVo">
+        select product_id, product_name, button_list, is_custom, create_time from db_product
+    </sql>
+
+    <select id="selectDbProductList" parameterType="DbProduct" resultMap="DbProductResult">
+        <include refid="selectDbProductVo"/>
+        <where>  
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectDbProductById" parameterType="Long" resultMap="DbProductResult">
+        <include refid="selectDbProductVo"/>
+        where product_id = #{productId}
+    </select>
+        
+    <insert id="insertDbProduct" parameterType="DbProduct" useGeneratedKeys="true" keyProperty="productId">
+        insert into db_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productName != null  and productName != ''">product_name,</if>
+            <if test="buttonList != null  and buttonList != ''">button_list,</if>
+            <if test="isCustom != null ">is_custom,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productName != null  and productName != ''">#{productName},</if>
+            <if test="buttonList != null  and buttonList != ''">#{buttonList},</if>
+            <if test="isCustom != null ">#{isCustom},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbProduct" parameterType="DbProduct">
+        update db_product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productName != null  and productName != ''">product_name = #{productName},</if>
+            <if test="buttonList != null  and buttonList != ''">button_list = #{buttonList},</if>
+            <if test="isCustom != null ">is_custom = #{isCustom},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where product_id = #{productId}
+    </update>
+
+    <delete id="deleteDbProductById" parameterType="Long">
+        delete from db_product where product_id = #{productId}
+    </delete>
+
+    <delete id="deleteDbProductByIds" parameterType="String">
+        delete from db_product where product_id in 
+        <foreach item="productId" collection="array" open="(" separator="," close=")">
+            #{productId}
+        </foreach>
+    </delete>
+    
+</mapper>

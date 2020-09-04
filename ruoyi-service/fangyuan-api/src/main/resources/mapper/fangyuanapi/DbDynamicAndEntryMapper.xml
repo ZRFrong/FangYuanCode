@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbDynamicAndEntryMapper">
+    
+    <resultMap type="DbDynamicAndEntry" id="DbDynamicAndEntryResult">
+        <result property="id"    column="id"    />
+        <result property="entryId"    column="entry_id"    />
+        <result property="dynamicId"    column="dynamic_id"    />
+    </resultMap>
+
+    <sql id="selectDbDynamicAndEntryVo">
+        select id, entry_id, dynamic_id from db_dynamic_and_entry
+    </sql>
+
+    <select id="selectDbDynamicAndEntryList" parameterType="DbDynamicAndEntry" resultMap="DbDynamicAndEntryResult">
+        <include refid="selectDbDynamicAndEntryVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbDynamicAndEntryById" parameterType="Long" resultMap="DbDynamicAndEntryResult">
+        <include refid="selectDbDynamicAndEntryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbDynamicAndEntry" parameterType="DbDynamicAndEntry" useGeneratedKeys="true" keyProperty="id">
+        insert into db_dynamic_and_entry
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entryId != null ">entry_id,</if>
+            <if test="dynamicId != null ">dynamic_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entryId != null ">#{entryId},</if>
+            <if test="dynamicId != null ">#{dynamicId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbDynamicAndEntry" parameterType="DbDynamicAndEntry">
+        update db_dynamic_and_entry
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entryId != null ">entry_id = #{entryId},</if>
+            <if test="dynamicId != null ">dynamic_id = #{dynamicId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbDynamicAndEntryById" parameterType="Long">
+        delete from db_dynamic_and_entry where id = #{id}
+    </delete>
+
+    <delete id="deleteDbDynamicAndEntryByIds" parameterType="String">
+        delete from db_dynamic_and_entry where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

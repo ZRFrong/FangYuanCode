@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbGiveLikeMapper">
+    
+    <resultMap type="DbGiveLike" id="DbGiveLikeResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="commentId"    column="comment_id"    />
+        <result property="dynamicId"    column="dynamic_id"    />
+        <result property="giveLikeTime"    column="give_like_time"    />
+        <result property="isCancel"    column="is_cancel"    />
+    </resultMap>
+
+    <sql id="selectDbGiveLikeVo">
+        select id, user_id, comment_id, dynamic_id, give_like_time, is_cancel from db_give_like
+    </sql>
+
+    <select id="selectDbGiveLikeList" parameterType="DbGiveLike" resultMap="DbGiveLikeResult">
+        <include refid="selectDbGiveLikeVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbGiveLikeById" parameterType="Long" resultMap="DbGiveLikeResult">
+        <include refid="selectDbGiveLikeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbGiveLike" parameterType="DbGiveLike" useGeneratedKeys="true" keyProperty="id">
+        insert into db_give_like
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="commentId != null ">comment_id,</if>
+            <if test="dynamicId != null ">dynamic_id,</if>
+            <if test="giveLikeTime != null ">give_like_time,</if>
+            <if test="isCancel != null ">is_cancel,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="commentId != null ">#{commentId},</if>
+            <if test="dynamicId != null ">#{dynamicId},</if>
+            <if test="giveLikeTime != null ">#{giveLikeTime},</if>
+            <if test="isCancel != null ">#{isCancel},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbGiveLike" parameterType="DbGiveLike">
+        update db_give_like
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="commentId != null ">comment_id = #{commentId},</if>
+            <if test="dynamicId != null ">dynamic_id = #{dynamicId},</if>
+            <if test="giveLikeTime != null ">give_like_time = #{giveLikeTime},</if>
+            <if test="isCancel != null ">is_cancel = #{isCancel},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbGiveLikeById" parameterType="Long">
+        delete from db_give_like where id = #{id}
+    </delete>
+
+    <delete id="deleteDbGiveLikeByIds" parameterType="String">
+        delete from db_give_like where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
