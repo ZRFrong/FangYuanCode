@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
@@ -20,6 +23,7 @@ import ${packageName}.service.I${ClassName}Service;
  * @date ${datetime}
  */
 @RestController
+@Api("${businessName}")
 @RequestMapping("${businessName}")
 public class ${ClassName}Controller extends BaseController
 {
@@ -31,7 +35,8 @@ public class ${ClassName}Controller extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{${pkColumn.javaField}}")
-	public ${ClassName} get(@PathVariable("${pkColumn.javaField}") ${pkColumn.javaType} ${pkColumn.javaField})
+    @ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
+	public ${ClassName} get(@ApiParam(name="id",value="long",required=true)  @PathVariable("${pkColumn.javaField}") ${pkColumn.javaType} ${pkColumn.javaField})
 	{
 		return ${className}Service.select${ClassName}ById(${pkColumn.javaField});
 		
@@ -41,7 +46,8 @@ public class ${ClassName}Controller extends BaseController
 	 * 查询${functionName}列表
 	 */
 	@GetMapping("list")
-	public R list(${ClassName} ${className})
+    @ApiOperation(value = "查询${functionName}列表" , notes = "${functionName}列表")
+	public R list(@ApiParam(name="${ClassName}",value="传入json格式",required=true) ${ClassName} ${className})
 	{
 		startPage();
         return result(${className}Service.select${ClassName}List(${className}));
@@ -52,7 +58,8 @@ public class ${ClassName}Controller extends BaseController
 	 * 新增保存${functionName}
 	 */
 	@PostMapping("save")
-	public R addSave(@RequestBody ${ClassName} ${className})
+    @ApiOperation(value = "新增保存${functionName}" , notes = "新增保存${functionName}")
+	public R addSave(@ApiParam(name="${ClassName}",value="传入json格式",required=true) @RequestBody ${ClassName} ${className})
 	{		
 		return toAjax(${className}Service.insert${ClassName}(${className}));
 	}
@@ -61,7 +68,8 @@ public class ${ClassName}Controller extends BaseController
 	 * 修改保存${functionName}
 	 */
 	@PostMapping("update")
-	public R editSave(@RequestBody ${ClassName} ${className})
+    @ApiOperation(value = "修改保存${functionName}" , notes = "修改保存${functionName}")
+	public R editSave(@ApiParam(name="${ClassName}",value="传入json格式",required=true) @RequestBody ${ClassName} ${className})
 	{		
 		return toAjax(${className}Service.update${ClassName}(${className}));
 	}
@@ -70,7 +78,8 @@ public class ${ClassName}Controller extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-	public R remove(String ids)
+    @ApiOperation(value = "删除${functionName}" , notes = "删除${functionName}")
+	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
 	{		
 		return toAjax(${className}Service.delete${ClassName}ByIds(ids));
 	}

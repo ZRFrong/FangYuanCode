@@ -77,9 +77,6 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception, IOException {
         super.channelInactive(ctx);
-        InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
-        String clientIp = insocket.getAddress().getHostAddress();
-
         ctx.close(); //断开连接时，必须关闭，否则造成资源浪费，并发量很大情况下可能造成宕机
     }
 

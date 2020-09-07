@@ -3,15 +3,18 @@ package com.ruoyi.fangyuanapi.domain;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import com.ruoyi.common.core.domain.BaseEntity;
 import java.util.Date;
 
 /**
  * 转发对象 db_forward
- * 
+ *
  * @author fangyuan
- * @date 2020-09-01
+ * @date 2020-09-07
  */
+@ApiModel
 public class DbForward extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -21,62 +24,66 @@ public class DbForward extends BaseEntity
 
     /** 用户ID */
     @Excel(name = "用户ID")
+    @ApiModelProperty(value = "用户ID")
     private Long userId;
 
     /** 被转发的动态ID */
     @Excel(name = "被转发的动态ID")
+    @ApiModelProperty(value = "被转发的动态ID")
     private Long replyForwardDynamicId;
 
     /** 转发时的评论 */
     @Excel(name = "转发时的评论")
+    @ApiModelProperty(value = "转发时的评论")
     private String forwardComment;
 
     /** 转发时间 */
     @Excel(name = "转发时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty(value = "转发时间")
     private Date forwardTime;
 
-    public void setId(Long id) 
+    public void setId(Long id)
     {
         this.id = id;
     }
 
-    public Long getId() 
+    public Long getId()
     {
         return id;
     }
-    public void setUserId(Long userId) 
+    public void setUserId(Long userId)
     {
         this.userId = userId;
     }
 
-    public Long getUserId() 
+    public Long getUserId()
     {
         return userId;
     }
-    public void setReplyForwardDynamicId(Long replyForwardDynamicId) 
+    public void setReplyForwardDynamicId(Long replyForwardDynamicId)
     {
         this.replyForwardDynamicId = replyForwardDynamicId;
     }
 
-    public Long getReplyForwardDynamicId() 
+    public Long getReplyForwardDynamicId()
     {
         return replyForwardDynamicId;
     }
-    public void setForwardComment(String forwardComment) 
+    public void setForwardComment(String forwardComment)
     {
         this.forwardComment = forwardComment;
     }
 
-    public String getForwardComment() 
+    public String getForwardComment()
     {
         return forwardComment;
     }
-    public void setForwardTime(Date forwardTime) 
+    public void setForwardTime(Date forwardTime)
     {
         this.forwardTime = forwardTime;
     }
 
-    public Date getForwardTime() 
+    public Date getForwardTime()
     {
         return forwardTime;
     }
@@ -84,11 +91,11 @@ public class DbForward extends BaseEntity
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("userId", getUserId())
-            .append("replyForwardDynamicId", getReplyForwardDynamicId())
-            .append("forwardComment", getForwardComment())
-            .append("forwardTime", getForwardTime())
-            .toString();
+                .append("id", getId())
+                .append("userId", getUserId())
+                .append("replyForwardDynamicId", getReplyForwardDynamicId())
+                .append("forwardComment", getForwardComment())
+                .append("forwardTime", getForwardTime())
+                .toString();
     }
 }

@@ -3,6 +3,8 @@ package ${packageName}.domain;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 #if($table.crud)
 import com.ruoyi.common.core.domain.BaseEntity;
 #elseif($table.tree)
@@ -23,6 +25,7 @@ import ${import};
 #elseif($table.tree)
 #set($Entity="TreeEntity")
 #end
+@ApiModel
 public class ${ClassName} extends ${Entity}
 {
     private static final long serialVersionUID = 1L;
@@ -39,10 +42,13 @@ public class ${ClassName} extends ${Entity}
 #end
 #if($parentheseIndex != -1)
     @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @ApiModelProperty(value = "${comment}")
 #elseif($column.javaType == 'Date')
     @Excel(name = "${comment}", width = 30, dateFormat = "yyyy-MM-dd")
+    @ApiModelProperty(value = "${comment}")
 #else
     @Excel(name = "${comment}")
+    @ApiModelProperty(value = "${comment}")
 #end
 #end
     private $column.javaType $column.javaField;
