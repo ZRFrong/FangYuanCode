@@ -88,6 +88,9 @@ spring:
               args:
                 name: fallbackcmd
                 fallbackUri: 'forward:/fallback'
+<<<<<<< HEAD
+
+=======
         #fangyuanTcp 模块
         - id: fangyuan-tcp
           uri: lb://fangyuan-tcp
@@ -124,6 +127,7 @@ spring:
               args:
                 name: fallbackcmd
                 fallbackUri: 'forward:/fallback'
+>>>>>>> 29631831d04001e5dc2924d9973ed480711e017c
 hystrix:
   command:
     default:  #default全局有效，service id指定应用有效
