@@ -6,12 +6,14 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
-
+/*
+*
+* 代码解析类
+* */
 public class MyDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out) throws Exception {
-
 
         //创建字节数组,buffer.readableBytes可读字节长度
             byte[] b = new byte[buffer.readableBytes()];
@@ -23,7 +25,6 @@ public class MyDecoder extends ByteToMessageDecoder {
             out.add(str);
         }else {
         //System.out.println(str);
-
             out.add(bytesToHexString(b));
         }
     }

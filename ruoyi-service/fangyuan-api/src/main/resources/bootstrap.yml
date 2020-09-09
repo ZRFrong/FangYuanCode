@@ -1,12 +1,11 @@
 server:
-  port: 9008
+  port: 9998
 # 日志配置
 logging:
   level:
     com.ruoyi: debug
     org.springframework: warn
     com.alibaba.nacos.client.naming: error
-
 spring:
   application:
     name: fangyuan-api
@@ -17,39 +16,32 @@ spring:
       enabled: true
   main:
     allow-bean-definition-overriding: true
-  # 模板引擎
-  thymeleaf:
-    mode: HTML
-    encoding: utf-8
-    # 禁用缓存
-    cache: false
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
-  datasource:
-    url: jdbc:mysql://127.0.0.1:3306/ruoyi-cloud?useUnicode=true&characterEncoding=utf8&nullCatalogMeansCurrent=true&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-    username: root
-    password: 123456
+  servlet:
+    multipart:
+      maxFileSize: 5MB  #单位必须大写MB或不写(即为B)
+      maxRequestSize: 10MB
   cloud:
     nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yml
       discovery:
         server-addr: 127.0.0.1:8848
-  activiti:
-    check-process-definitions: false
-
 
 feign:
   hystrix:
     enabled: true
 
 
-
 # MyBatis
 mybatis:
-  # 搜索指定包别名
-  typeAliasesPackage: com.ruoyi
-  # 配置mapper的扫描，找到所有的mapper.xml映射文件
-  mapperLocations: classpath*:mapper/**/*Mapper.xml
+    # 搜索指定包别名
+    typeAliasesPackage: com.ruoyi
+    # 配置mapper的扫描，找到所有的mapper.xml映射文件
+    mapperLocations: classpath*:mapper/**/*Mapper.xml
 
 mapper:
   not-empty: true

@@ -23,8 +23,8 @@ import com.ruoyi.fangyuanapi.service.IDbUserDynamicService;
  * @date 2020-09-07
  */
 @RestController
-@Api("dynamic")
-@RequestMapping("dynamic")
+@Api("dynamic1")
+@RequestMapping("dynamic1")
 public class DbUserDynamicController extends BaseController
 {
 

@@ -12,11 +12,11 @@
     <build/>
     <modules>
         <module>ruoyi-system</module>
-<module>ruoyi-auth</module>
-<module>ruoyi-gen</module>
-<module>ruoyi-dfs</module>
-<module>ruoyi-activiti</module>
-<module>fangyuan-tcp</module>
-<module>fangyuan-api</module>
-        </modules>
-        </project>
+        <module>ruoyi-auth</module>
+        <module>ruoyi-gen</module>
+        <module>ruoyi-dfs</module>
+        <module>ruoyi-activiti</module>
+        <module>fangyuan-tcp</module>
+        <module>fangyuan-api</module>
+    </modules>
+</project>

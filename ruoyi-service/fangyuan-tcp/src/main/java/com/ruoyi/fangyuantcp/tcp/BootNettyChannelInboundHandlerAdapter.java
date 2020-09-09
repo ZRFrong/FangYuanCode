@@ -1,9 +1,11 @@
 package com.ruoyi.fangyuantcp.tcp;
 
 
-
+import com.ruoyi.fangyuantcp.domain.DbTcpClient;
+import com.ruoyi.fangyuantcp.utils.ReceiveUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -11,19 +13,42 @@ import java.net.InetSocketAddress;
 /**
  * I/O数据读写处理类
  */
+@Slf4j
 public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandlerAdapter {
-
-
 
 
     /**
      * 从客户端收到新的数据时，这个方法会在收到消息时被调用
+     * *识别到dapeng标识码确认为心跳名称   收到心跳更新心跳时间添加到在线设备表 更改在线状态
+     * *识别到05开头的是操作指令返回的   寻找相同的操作指令更改返回状态（redis中）
+     * *识别到03开头的则为状态查询返回   添加到type表或者更新type表中的数据
+     * *
      *
      * @param ctx
      * @param msg
      */
     @Override
+
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws InterruptedException {
+
+        ReceiveUtil receiveUtil = new ReceiveUtil();
+        /*
+         *心跳查询
+         * */
+//        接收到的消息格式
+        String s = msg.toString();
+
+        if (s.contains("dapeng")) {
+            DbTcpClient dbTcpClient = getIp(ctx);
+            dbTcpClient.setHeartName(msg.toString());
+            receiveUtil.heartbeatChoose(dbTcpClient,ctx);
+        } else {
+            //        前两位标识符
+            String charStic = s.substring(0,2);
+            if (charStic.equals("03")){
+
+            };
+        }
 
 
     }
@@ -36,7 +61,8 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws IOException {
 //        System.out.println("接受成功");
-
+        InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
+        String clientIp = insocket.getAddress().getHostAddress();
 
         ctx.flush();
     }
@@ -95,4 +121,17 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
         ctx.close();//超时时断开连接
         System.out.println("userEventTriggered:" + clientIp);
     }
+
+
+    private DbTcpClient getIp(ChannelHandlerContext ctx) {
+        InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
+        String clientIp = insocket.getAddress().getHostAddress();
+        int port = insocket.getPort();
+        DbTcpClient dbTcpClient = new DbTcpClient();
+        dbTcpClient.setIp(clientIp);
+        dbTcpClient.setPort(port + "");
+        return dbTcpClient;
+    }
+
+
 }

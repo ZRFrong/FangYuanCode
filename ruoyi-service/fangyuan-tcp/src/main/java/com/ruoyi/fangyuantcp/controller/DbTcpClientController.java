@@ -1,5 +1,6 @@
 package com.ruoyi.fangyuantcp.controller;
 
+import com.ruoyi.fangyuantcp.domain.DbOperationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -83,5 +84,18 @@ public class DbTcpClientController extends BaseController
 	{
 		return toAjax(dbTcpClientService.deleteDbTcpClientByIds(ids));
 	}
+
+	/*
+	* 操作设备
+	* */
+	@GetMapping("operation")
+	@ApiOperation(value = "操作设备" , notes = "tcp在线设备列表")
+	public R operation(@ApiParam(name="DbOperationVo",value="传入json格式",required=true) DbOperationVo dbOperationVo)
+	{
+        int operation = dbTcpClientService.operation(dbOperationVo);
+        return toAjax(1);
+	}
+
+
 
 }

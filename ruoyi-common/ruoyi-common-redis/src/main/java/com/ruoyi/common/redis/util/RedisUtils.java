@@ -1,5 +1,6 @@
 package com.ruoyi.common.redis.util;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
@@ -99,6 +100,22 @@ public class RedisUtils
         }
         return JSON.toJSONString(object);
     }
+    /**
+     * 模糊查询key
+     * @param pattern
+     * @return
+     */
+    public Set<String> keys(String pattern){
+        try {
+            Set<String> keys = redisTemplate.keys(pattern);
+            return keys;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 
     /**
      * JSON数据，转成Object

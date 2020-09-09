@@ -23,8 +23,8 @@ import com.ruoyi.fangyuanapi.service.IDbEntryService;
  * @date 2020-09-07
  */
 @RestController
-@Api("entry")
-@RequestMapping("entry")
+@Api("entry1")
+@RequestMapping("entry1")
 public class DbEntryController extends BaseController
 {
 

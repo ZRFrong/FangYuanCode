@@ -1,5 +1,6 @@
 package com.ruoyi.fangyuantcp.service;
 
+import com.ruoyi.fangyuantcp.domain.DbOperationVo;
 import com.ruoyi.fangyuantcp.domain.DbTcpClient;
 import java.util.List;
 
@@ -58,4 +59,8 @@ public interface IDbTcpClientService
      * @return 结果
      */
     public int deleteDbTcpClientById(Long tcpClientId);
+
+    int heartbeatChoose(DbTcpClient dbTcpClient);
+
+    int operation(DbOperationVo dbTcpClient);
 }
