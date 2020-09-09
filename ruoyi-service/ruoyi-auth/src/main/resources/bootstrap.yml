@@ -31,7 +31,6 @@ spring:
 feign: 
   hystrix: 
     enabled: true
-
 aj:
  captcha:
   water-mark: zmrit.com

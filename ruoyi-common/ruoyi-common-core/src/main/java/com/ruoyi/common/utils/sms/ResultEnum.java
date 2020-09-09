@@ -31,6 +31,14 @@ public enum ResultEnum {
      *
      */
     SERVICE_BUSY(4,"服务繁忙！"),
+    /**
+     *
+     */
+    CODE_LOSE(5,"验证码已失效，请重新发送！"),
+    /**
+     *
+     */
+    CODE_ERROR(6,"验证码错误,请重新输入！")
     ;
     /**
      * 返回状态码

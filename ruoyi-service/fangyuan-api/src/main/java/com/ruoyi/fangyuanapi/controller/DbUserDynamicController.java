@@ -24,7 +24,7 @@ import com.ruoyi.fangyuanapi.service.IDbUserDynamicService;
  */
 @RestController
 @Api("dynamic")
-@RequestMapping("dynamic")
+@RequestMapping("dynamic1")
 public class DbUserDynamicController extends BaseController
 {
 

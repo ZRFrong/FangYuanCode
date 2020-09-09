@@ -2,6 +2,7 @@ package com.ruoyi.gateway.fiflt;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -35,13 +36,14 @@ public class AuthFilter implements GlobalFilter, Ordered
 {
     // 排除过滤的 uri 地址
     // swagger排除自行添加
-<<<<<<< HEAD
-    private static final String[]           whiteList = {"/auth/login", "/user/register", "/system/v2/api-docs",
-            "/auth/captcha/check", "/auth/captcha/get","/auth/login/slide"};
-=======
-    private static final String[]           whiteList = {"/auth/login", "/user/register", "/system/v2/api-docs","/fangyuanapi/v2/api-docs","/fangyuantcp/v2/api-docs",
-            "/auth/captcha/check", "/auth/captcha/get","/act/v2/api-docs","/auth/login/slide"};
->>>>>>> 29631831d04001e5dc2924d9973ed480711e017c
+//<<<<<<< HEAD
+    private static final String[] whiteList = {"/auth/login", "/user/register", "/system/v2/api-docs",
+            "/auth/captcha/check", "/auth/captcha/get","/auth/login/slide","/system/sms/sendSms"};
+//    private static final String[]           whiteList = {"/auth/login", "/user/register", "/system/v2/api-docs","/fangyuanapi/v2/api-docs","/fangyuantcp/v2/api-docs",
+//            "/auth/captcha/check", "/auth/captcha/get","/act/v2/api-docs","/auth/login/slide"};
+//>>>>>>> 29631831d04001e5dc2924d9973ed480711e017c
+
+    private static final List<String> zhao = Arrays.asList("/system/sms/");
 
     @Resource(name = "stringRedisTemplate")
     private ValueOperations<String, String> ops;
@@ -51,6 +53,11 @@ public class AuthFilter implements GlobalFilter, Ordered
     {
         String url = exchange.getRequest().getURI().getPath();
         log.info("url:{}", url);
+        for (String s : zhao) {
+            if (url.contains(s)){
+                return chain.filter(exchange);
+            }
+        }
         // 跳过不需要验证的路径
         if (Arrays.asList(whiteList).contains(url))
         {

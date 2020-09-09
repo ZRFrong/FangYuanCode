@@ -24,7 +24,7 @@ import com.ruoyi.fangyuanapi.service.IDbEntryService;
  */
 @RestController
 @Api("entry")
-@RequestMapping("entry")
+@RequestMapping("entry1")
 public class DbEntryController extends BaseController
 {
 

@@ -1,0 +1,49 @@
+[33mcommit c15ac8f9f4f83395627fe77a776588c437f2b9a4[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: ZHAO <769952286@qq.com>
+Date:   Fri Sep 4 18:03:09 2020 +0800
+
+    优化短信模块
+
+[33mcommit 530d46ce41eeb4bc06bdca82a7bc76ef9e139ade[m
+Merge: 9b18b96 2963183
+Author: ZHAO <769952286@qq.com>
+Date:   Fri Sep 4 17:59:35 2020 +0800
+
+    Merge branch 'master' of https://github.com/ZRFrong/FangYuanCode
+    
+    # Conflicts:
+    #       README.md
+    #       doc/activiti-image-generator-5.22.0.jar
+    #       doc/druid-1.1.14.jar
+    #       ruoyi-gateway/src/main/java/com/ruoyi/gateway/config/SwaggerProvider.java
+    #       ruoyi-gateway/src/main/java/com/ruoyi/gateway/fiflt/AuthFilter.java
+    #       ruoyi-gateway/src/main/resources/bootstrap.yml
+    #       ruoyi-service/pom.xml
+    #       ruoyi-service/ruoyi-activiti/src/main/resources/bootstrap.yml
+    #       ruoyi-service/ruoyi-activiti/src/main/resources/static/editor-app/fonts/activiti-admin-webfont.eot
+    #       ruoyi-service/ruoyi-activiti/src/main/resources/static/editor-app/fonts/activiti-admin-webfont.ttf
+    #       ruoyi-service/ruoyi-activiti/src/main/resources/static/editor-app/fonts/activiti-admin-webfont.woff
+    #       ruoyi-service/ruoyi-activiti/src/main/resources/static/editor-app/fonts/glyphicons-halflings-regular.eot
+    #       ruoyi-service/ruoyi-activiti/src/main/resources/static/editor-app/fonts/glyphicons-halflings-regular.ttf
+    #       ruoyi-service/ruoyi-activiti/src/main/resources/static/editor-app/fonts/glyphicons-halflings-regular.woff
+    #       ruoyi-service/ruoyi-activiti/src/main/resources/static/editor-app/libs/bootstrap_3.1.1/fonts/glyphicons-halflings-regular.eot
+    #       ruoyi-service/ruoyi-activiti/src/main/resources/static/editor-app/libs/bootstrap_3.1.1/fonts/glyphicons-halflings-regular.ttf
+    #       ruoyi-service/ruoyi-activiti/src/main/resources/static/editor-app/libs/bootstrap_3.1.1/fonts/glyphicons-halflings-regular.woff
+
+[33mcommit 29631831d04001e5dc2924d9973ed480711e017c[m
+Author: 59zheng <903954913@qq.com>
+Date:   Fri Sep 4 14:40:53 2020 +0800
+
+    两个服务添加swagger
+
+[33mcommit 9b18b96b181307a4503192a825c15fdf853c93d0[m
+Author: ZHAO <769952286@qq.com>
+Date:   Thu Sep 3 16:33:12 2020 +0800
+
+    短信模块初步完成
+
+[33mcommit 803f95f49bf702d040b7edcb80e852641339a80d[m
+Author: 59zheng <903954913@qq.com>
+Date:   Mon Aug 31 15:02:49 2020 +0800
+
+    初始文件
