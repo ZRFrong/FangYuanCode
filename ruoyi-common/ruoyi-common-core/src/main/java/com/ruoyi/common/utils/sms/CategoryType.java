@@ -4,7 +4,7 @@ package com.ruoyi.common.utils.sms;
  * 存放常量的类
  */
 
-public enum    CategoryType {
+public enum  CategoryType {
     /**
      *单日发送短信总条数
      */
@@ -21,5 +21,9 @@ public enum    CategoryType {
      * 一个小时内发送短信的总条数
      */
     USER_HOUR_NUM_,
+    /**
+     * 用戶验证码
+     */
+    USER_IDENTIFYING_CODE_
 
 }

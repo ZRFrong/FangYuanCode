@@ -35,15 +35,17 @@ public class JSONUtils <T,V> {
         return s;
     }
 
+
+
+
     public static void main(String[] args) throws JsonProcessingException {
-        String s ="";
-//        JSONUtils<String, String> jsonUtils = new JSONUtils<>();
-//        HashMap<String, String> map = new HashMap<>();
-//        map.put("code", "1234");
-//        String s = obj.writeValueAsString(map);
-//        System.out.println(s);
-//        System.out.println(obj.writeValueAsString(map));
-//        System.out.println(jsonUtils.mapToString(map));
+        JSONUtils<String, String> jsonUtils = new JSONUtils<>();
+        HashMap<String, String> map = new HashMap<>();
+        map.put("code", "1234");
+        String s = obj.writeValueAsString(map);
+        System.out.println(s);
+        System.out.println(obj.writeValueAsString(map));
+        System.out.println(jsonUtils.mapToString(map));
 //        String s ="{\"Message\":\"OK\",\"RequestId\":\"7402B09A-F12E-4655-96DF-8F053F6D5CAD\",\"BizId\":\"975423199111996661^0\",\"Code\":\"OK\"}";
 //        JSONUtils<String, String> jsonUtils = new JSONUtils<>();
 //        Map<String, String> map = jsonUtils.stringToMap(s);

@@ -8,5 +8,8 @@ public interface SendSmsService {
      * @param signName 短信签名
      * @return string
      */
-    String sendSms(String phone, String signName);
+    String sendSms(String phone, String signName ,String templateCode);
+
+
+    String sendBatchSms(String signName, String templateCode);
 }
