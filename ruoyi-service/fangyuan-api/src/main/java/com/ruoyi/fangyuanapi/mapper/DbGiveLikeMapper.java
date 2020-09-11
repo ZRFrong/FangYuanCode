@@ -58,4 +58,7 @@ public interface DbGiveLikeMapper
      * @return 结果
      */
     public int deleteDbGiveLikeByIds(String[] ids);
+
+    Integer selectGiveLikeSumByDynamicId();
+
 }

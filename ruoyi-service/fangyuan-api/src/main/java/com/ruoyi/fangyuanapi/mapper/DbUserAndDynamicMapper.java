@@ -58,4 +58,8 @@ public interface DbUserAndDynamicMapper
      * @return 结果
      */
     public int deleteDbUserAndDynamicByIds(String[] ids);
+
+    List<Long> selectDbUserAndDynamicByUserId(Long id);
+
+    Integer selectDbUserAndDynamicCountByUserId(Long id);
 }

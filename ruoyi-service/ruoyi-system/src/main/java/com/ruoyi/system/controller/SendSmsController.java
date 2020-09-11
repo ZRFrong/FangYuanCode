@@ -8,10 +8,9 @@ import com.ruoyi.common.redis.config.RedisTimeConf;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.IpUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.sms.CategoryType;
-import com.ruoyi.common.utils.sms.PhoneUtils;
-import com.ruoyi.common.utils.sms.ResultEnum;
-import com.ruoyi.common.utils.sms.SmsData;
+import com.ruoyi.common.utils.md5.ZhaoMD5Utils;
+import com.ruoyi.common.utils.sms.*;
+import com.ruoyi.system.config.SmsConfig;
 import com.ruoyi.system.service.SendSmsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -25,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.xml.ws.Action;
+import java.util.HashMap;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("sms")
@@ -50,12 +51,14 @@ public class SendSmsController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "phone", value = "手机号"),
             @ApiImplicitParam(name = "signName", value = "短信签名 1：方圆社区  "),
-            @ApiImplicitParam(name = "templateCode", value = "短信模板 1：验证码模板 " )
+            @ApiImplicitParam(name = "templateCode", value = "短信模板 1：注册短信 2：登录短信 " )
     })
     public R sendSms(@PathVariable String phone, @PathVariable String signName , @PathVariable String templateCode){
 
         if (PhoneUtils.checkPhone(phone) && StringUtils.isNotEmpty(phone) && StringUtils.isNotEmpty(signName)) {
+            if ("1".equals(templateCode)){//查询该用户手机号是否已经注册
 
+            }
             String smsNum = StringUtils.isNotNull(redisUtils.get(CategoryType.SMS_NUM.name()));//单日短信发送总条数
             String dayNum = StringUtils.isNotNull(redisUtils.get(CategoryType.USER_DAY_NUM_.name() + phone));//当用户每日总条数
             String hourNum = StringUtils.isNotNull(redisUtils.get(CategoryType.USER_HOUR_NUM_.name() + phone));
@@ -105,7 +108,12 @@ public class SendSmsController extends BaseController {
             return R.error(ResultEnum.CODE_LOSE.getCode(),ResultEnum.CODE_LOSE.getMessage());
         }
         if (s.equals(code)){
-            return new R();
+            String uuid=UUID.randomUUID().toString().replace("-", "");//用来标记用户验证通过
+            redisUtils.set(CategoryType.USER_CODE_SUCCESS_+phone,uuid,RedisTimeConf.THIRTY_MINUTE);
+            HashMap<String, String> map = new HashMap<>();
+            String md5 = ZhaoMD5Utils.string2MD5(uuid);
+            map.put("uuid",md5);
+            return R.data(map);
         }
         return R.error(ResultEnum.CODE_ERROR.getCode(),ResultEnum.CODE_ERROR.getMessage());
     }

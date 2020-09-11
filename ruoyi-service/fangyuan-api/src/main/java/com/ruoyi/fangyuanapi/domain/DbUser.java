@@ -1,5 +1,6 @@
 package com.ruoyi.fangyuanapi.domain;
 
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -15,6 +16,7 @@ import java.util.Date;
  * @date 2020-09-07
  */
 @ApiModel
+@Data
 public class DbUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -82,10 +84,15 @@ public class DbUser extends BaseEntity
     @ApiModelProperty(value = "0: 小程序 1：App")
     private Integer userFrom;
 
-    /** token / openId */
-    @Excel(name = "token / openId")
-    @ApiModelProperty(value = "token / openId")
+    /** token*/
+    @Excel(name = "token ")
+    @ApiModelProperty(value = "token")
     private String token;
+
+    /** openId */
+    @Excel(name = "openId")
+    @ApiModelProperty(value = "openId")
+    private String openId;
 
     /** 用户昵称 */
     @Excel(name = "用户昵称")
@@ -117,211 +124,17 @@ public class DbUser extends BaseEntity
     @ApiModelProperty(value = "手机号是否验证：0：是 1：否")
     private Integer phoneIsVerify;
 
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
+    @Excel(name = "动态数量")
+    @ApiModelProperty(value = "用户发布的动态数量")
+    private Integer dynamicNum;
 
-    public Long getId()
-    {
-        return id;
-    }
-    public void setUserName(String userName)
-    {
-        this.userName = userName;
-    }
+    @Excel(name = "关注")
+    @ApiModelProperty(value = "用户关注其他用户的数量")
+    private Integer attentionNum;
 
-    public String getUserName()
-    {
-        return userName;
-    }
-    public void setPassword(String password)
-    {
-        this.password = password;
-    }
+    @Excel(name = "粉丝数量")
+    @ApiModelProperty(value = "该用户被其他用户关注的次数  OR  粉丝数量")
+    private Integer replyAttentionUserNum;
 
-    public String getPassword()
-    {
-        return password;
-    }
-    public void setPhone(String phone)
-    {
-        this.phone = phone;
-    }
 
-    public String getPhone()
-    {
-        return phone;
-    }
-    public void setSalt(String salt)
-    {
-        this.salt = salt;
-    }
-
-    public String getSalt()
-    {
-        return salt;
-    }
-    public void setCreated(Date created)
-    {
-        this.created = created;
-    }
-
-    public Date getCreated()
-    {
-        return created;
-    }
-    public void setUserType(Integer userType)
-    {
-        this.userType = userType;
-    }
-
-    public Integer getUserType()
-    {
-        return userType;
-    }
-    public void setGender(Integer gender)
-    {
-        this.gender = gender;
-    }
-
-    public Integer getGender()
-    {
-        return gender;
-    }
-    public void setAvatar(String avatar)
-    {
-        this.avatar = avatar;
-    }
-
-    public String getAvatar()
-    {
-        return avatar;
-    }
-    public void setLaterLoginTime(Date laterLoginTime)
-    {
-        this.laterLoginTime = laterLoginTime;
-    }
-
-    public Date getLaterLoginTime()
-    {
-        return laterLoginTime;
-    }
-    public void setLaterLoginIp(String laterLoginIp)
-    {
-        this.laterLoginIp = laterLoginIp;
-    }
-
-    public String getLaterLoginIp()
-    {
-        return laterLoginIp;
-    }
-    public void setRemarkText(String remarkText)
-    {
-        this.remarkText = remarkText;
-    }
-
-    public String getRemarkText()
-    {
-        return remarkText;
-    }
-    public void setUserFrom(Integer userFrom)
-    {
-        this.userFrom = userFrom;
-    }
-
-    public Integer getUserFrom()
-    {
-        return userFrom;
-    }
-    public void setToken(String token)
-    {
-        this.token = token;
-    }
-
-    public String getToken()
-    {
-        return token;
-    }
-    public void setNickname(String nickname)
-    {
-        this.nickname = nickname;
-    }
-
-    public String getNickname()
-    {
-        return nickname;
-    }
-    public void setIsBanned(Integer isBanned)
-    {
-        this.isBanned = isBanned;
-    }
-
-    public Integer getIsBanned()
-    {
-        return isBanned;
-    }
-    public void setAge(Integer age)
-    {
-        this.age = age;
-    }
-
-    public Integer getAge()
-    {
-        return age;
-    }
-    public void setSignature(String signature)
-    {
-        this.signature = signature;
-    }
-
-    public String getSignature()
-    {
-        return signature;
-    }
-    public void setBirthday(Date birthday)
-    {
-        this.birthday = birthday;
-    }
-
-    public Date getBirthday()
-    {
-        return birthday;
-    }
-    public void setPhoneIsVerify(Integer phoneIsVerify)
-    {
-        this.phoneIsVerify = phoneIsVerify;
-    }
-
-    public Integer getPhoneIsVerify()
-    {
-        return phoneIsVerify;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-                .append("id", getId())
-                .append("userName", getUserName())
-                .append("password", getPassword())
-                .append("phone", getPhone())
-                .append("salt", getSalt())
-                .append("created", getCreated())
-                .append("userType", getUserType())
-                .append("gender", getGender())
-                .append("avatar", getAvatar())
-                .append("laterLoginTime", getLaterLoginTime())
-                .append("laterLoginIp", getLaterLoginIp())
-                .append("updateTime", getUpdateTime())
-                .append("remarkText", getRemarkText())
-                .append("userFrom", getUserFrom())
-                .append("token", getToken())
-                .append("nickname", getNickname())
-                .append("isBanned", getIsBanned())
-                .append("age", getAge())
-                .append("signature", getSignature())
-                .append("birthday", getBirthday())
-                .append("phoneIsVerify", getPhoneIsVerify())
-                .toString();
-    }
 }

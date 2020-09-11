@@ -68,5 +68,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
-    
+
+    <select id="selectGiveLikeSumByDynamicId" resultType="integer">
+        select count(*) from db_give_like d where d.dynamic_id = #{id}
+    </select>
+
 </mapper>

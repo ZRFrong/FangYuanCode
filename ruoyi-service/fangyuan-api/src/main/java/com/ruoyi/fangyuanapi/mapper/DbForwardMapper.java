@@ -58,4 +58,6 @@ public interface DbForwardMapper
      * @return 结果
      */
     public int deleteDbForwardByIds(String[] ids);
+
+    Integer selectDbForwardSumByUserId(Long id);
 }

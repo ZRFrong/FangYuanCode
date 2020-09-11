@@ -1,10 +1,15 @@
 package com.ruoyi.fangyuanapi.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import com.ruoyi.common.utils.DateUtils;
+import java.util.Map;
+
+import com.ruoyi.fangyuanapi.domain.DbUserDynamic;
+import com.ruoyi.fangyuanapi.dto.DynamicDto;
+import com.ruoyi.fangyuanapi.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.fangyuanapi.mapper.DbUserMapper;
 import com.ruoyi.fangyuanapi.domain.DbUser;
 import com.ruoyi.fangyuanapi.service.IDbUserService;
 import com.ruoyi.common.core.text.Convert;
@@ -20,6 +25,24 @@ public class DbUserServiceImpl implements IDbUserService
 {
     @Autowired
     private DbUserMapper dbUserMapper;
+
+    @Autowired
+    private DbUserDynamicMapper dbUserDynamicMapper;
+
+    @Autowired
+    private DbUserAndDynamicMapper dbUserAndDynamicMapper;
+
+    @Autowired
+    private DbEntryMapper dbEntryMapper;
+
+    @Autowired
+    private DbForwardMapper dbForwardMapper;
+
+    @Autowired
+    private DbCommentMapper dbCommentMapper;
+
+    @Autowired
+    private DbGiveLikeMapper dbGiveLikeMapper;
 
     /**
      * 查询前台用户
@@ -54,6 +77,8 @@ public class DbUserServiceImpl implements IDbUserService
     @Override
     public int insertDbUser(DbUser dbUser)
     {
+        dbUser.setCreated(new Date());
+        dbUser.setPhoneIsVerify(1);
         return dbUserMapper.insertDbUser(dbUser);
     }
 
@@ -90,5 +115,65 @@ public class DbUserServiceImpl implements IDbUserService
     public int deleteDbUserById(Long id)
     {
         return dbUserMapper.deleteDbUserById(id);
+    }
+
+    /**
+     * 通过手机号查用户是否存在
+     * @param dbUser
+     * @return
+     */
+    @Override
+    public boolean selectDbUserByPhone(DbUser dbUser) {
+        DbUser result =  dbUserMapper.selectDbUserByPhone(dbUser.getPhone());
+        return false;
+    }
+
+    @Override
+    public Map<String, Integer> userIsRegister(String openId) {
+        DbUser dbUser = dbUserMapper.selectDbUserByOpenId(openId);
+        Long id = dbUser.getId();
+        if (null == id){
+            return null;
+        }
+        //返回 动态 关注 粉丝 数量
+
+        return null;
+    }
+
+    @Override
+    public DbUser selectDbUserByOpenId(String openId) {
+        DbUser user = dbUserMapper.selectDbUserByOpenId(openId);
+        return user;
+    }
+
+    @Override
+    public List<DynamicDto> getUserDynamic(DbUser user,Integer currPage,Integer pageSize) {
+        DynamicDto dynamicDto = new DynamicDto();
+        dynamicDto.setAvatar(user.getAvatar());
+        dynamicDto.setNickname(user.getNickname());
+        Integer count = dbUserAndDynamicMapper.selectDbUserAndDynamicCountByUserId(user.getId());
+        currPage = pageSize > count ? count : pageSize;
+        List<DbUserDynamic> dbUserDynamics =dbUserDynamicMapper.selectDbUserDynamicByUserId(user.getId(),currPage,pageSize);
+        ArrayList<DynamicDto> dto = new ArrayList<>();
+        for (DbUserDynamic dbUserDynamic : dbUserDynamics) {
+            dynamicDto.setContent(dbUserDynamic.getContent());
+            dynamicDto.setResource(dbUserDynamic.getResource());
+            dynamicDto.setCreatedTime(dbUserDynamic.getCreatedTime());
+            List<String> relSet = dbEntryMapper.selectDbEntrys(dbUserDynamic.getId());
+            dynamicDto.setRelSet(relSet);//词条集合
+            Integer forwardSum = dbForwardMapper.selectDbForwardSumByUserId(user.getId());
+            dynamicDto.setForwardSum(forwardSum);//转发数量 通过user_id 查
+            Integer commentSum = dbCommentMapper.selectDbCommentSumByDynamicId();
+            dynamicDto.setCommentSum(commentSum);//评论数量 通过动态id查
+            Integer giveLikeSum = dbGiveLikeMapper.selectGiveLikeSumByDynamicId();
+            dynamicDto.setLiveGiveSum(giveLikeSum);//动态对应的点赞数量
+            dto.add(dynamicDto);
+        }
+        return dto;
+    }
+
+    public static void main(String[] args){
+        Date date = new Date();
+        System.out.println(date);
     }
 }

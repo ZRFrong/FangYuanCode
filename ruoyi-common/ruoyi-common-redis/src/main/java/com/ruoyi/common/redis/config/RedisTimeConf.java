@@ -27,6 +27,9 @@ public class RedisTimeConf {
     /**
      * 验证码过期时间五分钟
      */
-    public static final Long FIVE_MINUTE = 60*2L;
-
+    public static final Long FIVE_MINUTE = 60*5L;
+    /**
+     *验证成功 30 分钟
+     */
+    public static final Long THIRTY_MINUTE = 60*30L;
 }

@@ -24,6 +24,9 @@ public enum  CategoryType {
     /**
      * 用戶验证码
      */
-    USER_IDENTIFYING_CODE_
-
+    USER_IDENTIFYING_CODE_,
+    /**
+     *
+     */
+    USER_CODE_SUCCESS_
 }

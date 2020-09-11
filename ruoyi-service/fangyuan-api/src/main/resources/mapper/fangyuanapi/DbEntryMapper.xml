@@ -65,5 +65,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
-    
+
+    <select id="selectDbEntrys">
+        SELECT e.entry_name from db_entry e join db_dynamic_and_entry de on e.id = de.entry_id JOIN db_user_dynamic d on de.dynamic_id = #{id}
+    </select>
+
 </mapper>

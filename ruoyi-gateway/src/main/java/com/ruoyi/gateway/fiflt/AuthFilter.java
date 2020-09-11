@@ -2,6 +2,7 @@ package com.ruoyi.gateway.fiflt;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -36,16 +37,24 @@ public class AuthFilter implements GlobalFilter, Ordered
     // 排除过滤的 uri 地址
     // swagger排除自行添加
     private static final String[]           whiteList = {"/auth/login", "/user/register", "/system/v2/api-docs","/fangyuanapi/v2/api-docs","/fangyuantcp/v2/api-docs",
-            "/auth/captcha/check", "/auth/captcha/get","/act/v2/api-docs","/auth/login/slide"};
+            "/auth/captcha/check", "/auth/captcha/get","/act/v2/api-docs","/auth/login/slide","/tcp/system/*"};
 
     @Resource(name = "stringRedisTemplate")
     private ValueOperations<String, String> ops;
+
+    private static final List<String> zhao = Arrays.asList("/system/sms/");
+
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain)
     {
         String url = exchange.getRequest().getURI().getPath();
         log.info("url:{}", url);
+        for (String s : zhao) {
+            if (url.contains(s)){
+                return chain.filter(exchange);
+            }
+        }
         // 跳过不需要验证的路径
         if (Arrays.asList(whiteList).contains(url))
         {

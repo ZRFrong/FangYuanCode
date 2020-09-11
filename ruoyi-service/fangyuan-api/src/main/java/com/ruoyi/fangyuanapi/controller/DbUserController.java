@@ -1,87 +1,102 @@
 package com.ruoyi.fangyuanapi.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
 import com.ruoyi.common.core.domain.R;
-import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.redis.util.RedisUtils;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.md5.ZhaoMD5Utils;
+import com.ruoyi.common.utils.sms.CategoryType;
+import com.ruoyi.common.utils.sms.ResultEnum;
 import com.ruoyi.fangyuanapi.domain.DbUser;
+import com.ruoyi.fangyuanapi.dto.DynamicDto;
 import com.ruoyi.fangyuanapi.service.IDbUserService;
+import com.ruoyi.system.feign.RemoteDeptService;
+import com.ruoyi.system.feign.SendSmsClient;
+import org.apache.commons.collections4.Get;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
-/**
- * 前台用户 提供者
- *
- * @author fangyuan
- * @date 2020-09-07
- */
+import java.util.List;
+import java.util.Map;
+
 @RestController
-@Api("homeUser")
-@RequestMapping("homeUser")
-public class DbUserController extends BaseController
-{
-
-	@Autowired
-	private IDbUserService dbUserService;
-
-	/**
-	 * 查询${tableComment}
-	 */
-	@GetMapping("get/{id}")
-	@ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbUser get(@ApiParam(name="id",value="long",required=true)  @PathVariable("id") Long id)
-	{
-		return dbUserService.selectDbUserById(id);
-
-	}
-
-	/**
-	 * 查询前台用户列表
-	 */
-	@GetMapping("list")
-	@ApiOperation(value = "查询前台用户列表" , notes = "前台用户列表")
-	public R list(@ApiParam(name="DbUser",value="传入json格式",required=true) DbUser dbUser)
-	{
-		startPage();
-		return result(dbUserService.selectDbUserList(dbUser));
-	}
+@RequestMapping("wxUser")
+public class DbUserController {
 
 
-	/**
-	 * 新增保存前台用户
-	 */
-	@PostMapping("save")
-	@ApiOperation(value = "新增保存前台用户" , notes = "新增保存前台用户")
-	public R addSave(@ApiParam(name="DbUser",value="传入json格式",required=true) @RequestBody DbUser dbUser)
-	{
-		return toAjax(dbUserService.insertDbUser(dbUser));
-	}
+    @Autowired
+    private RemoteDeptService remoteDeptService;
 
-	/**
-	 * 修改保存前台用户
-	 */
-	@PostMapping("update")
-	@ApiOperation(value = "修改保存前台用户" , notes = "修改保存前台用户")
-	public R editSave(@ApiParam(name="DbUser",value="传入json格式",required=true) @RequestBody DbUser dbUser)
-	{
-		return toAjax(dbUserService.updateDbUser(dbUser));
-	}
+    @Autowired
+    private RedisUtils redisUtils;
 
-	/**
-	 * 删除${tableComment}
-	 */
-	@PostMapping("remove")
-	@ApiOperation(value = "删除前台用户" , notes = "删除前台用户")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
-	{
-		return toAjax(dbUserService.deleteDbUserByIds(ids));
-	}
+    @Autowired
+    private IDbUserService dbUserService;
+
+    /**
+     * 小程序注册
+     * @param dbUser
+     * @return R { 0 : SUCCESS}
+     */
+    @PostMapping("smallRegister}")
+    public R wxRegister(DbUser dbUser,String uuid){
+
+
+
+        String codeSuccess = redisUtils.get(CategoryType.USER_CODE_SUCCESS_ + dbUser.getPhone());
+        if (StringUtils.isEmpty(codeSuccess) && !ZhaoMD5Utils.convertMD5(uuid).equals(codeSuccess)){//判断通行证是否有效
+            redisUtils.delete(CategoryType.USER_CODE_SUCCESS_ + dbUser.getPhone());
+            return R.error(ResultEnum.CODE_SUCCESS.getCode(),ResultEnum.CODE_SUCCESS.getMessage());
+        }
+        if (dbUser == null){
+            return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
+        }
+        //todo 查询手机号是否有可能在app注册了，如果有同步数据
+        boolean b = dbUserService.selectDbUserByPhone(dbUser);
+        if (b){//修改操作讲 openid 和phone绑定
+
+            return R.ok("您已经注册过了！");
+        }else {//未注册过 添加用户
+            int i = dbUserService.insertDbUser(dbUser);
+            return new R();
+        }
+    }
+
+
+    /**
+     * 在用户点击我的页面时触发，如果用户存在则返回数据，无则去注册
+     * @param openId
+     * @return
+     */
+    @GetMapping("smallLogin/{openId}")
+    public R wxAward(@PathVariable String openId){
+        if (StringUtils.isEmpty(openId)){
+            return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
+        }
+        Map<String,Integer> data = dbUserService.userIsRegister(openId);
+        if (data != null){
+            return R.data(data);//动态关注粉丝
+        }else {//注册
+            return new R();
+        }
+    }
+
+    /**
+     * 我的动态
+     * @return
+     */
+    @PostMapping("dynamic/{openId}/{currPage }/{pageSize}")
+    public R getUserDynamic(@PathVariable String openId,@PathVariable Integer currPage,@PathVariable Integer pageSize){
+        if (StringUtils.isEmpty(openId)){
+            return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
+        }
+        DbUser dbUser = dbUserService.selectDbUserByOpenId(openId);
+        if (dbUser == null){
+            //此处不做返回，来到此处的皆为绕过前面接口直接来的
+            return null;
+        }
+        List<DynamicDto> dynamic = dbUserService.getUserDynamic(dbUser, currPage, pageSize);
+        return R.data(dynamic);
+    }
 
 }

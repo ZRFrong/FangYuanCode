@@ -58,4 +58,6 @@ public interface DbEntryMapper
      * @return 结果
      */
     public int deleteDbEntryByIds(String[] ids);
+
+    List<String> selectDbEntrys(Long id);
 }
