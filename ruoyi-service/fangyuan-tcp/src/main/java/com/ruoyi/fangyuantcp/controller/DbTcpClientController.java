@@ -93,7 +93,7 @@ public class DbTcpClientController extends BaseController
 	public R operation(@ApiParam(name="DbOperationVo",value="传入json格式",required=true) DbOperationVo dbOperationVo)
 	{
         int operation = dbTcpClientService.operation(dbOperationVo);
-        return toAjax(1);
+        return toAjax(operation);
 	}
 
 

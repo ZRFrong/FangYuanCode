@@ -96,6 +96,11 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
         return dbTcpClientMapper.deleteDbTcpClientByIds(Convert.toStrArray(ids));
     }
 
+    @Override
+    public void updateByHeartbeatName(String heartbeatName) {
+         dbTcpClientMapper.updateByHeartbeatName(heartbeatName);
+    }
+
     /*
     * 操作设备
     * */

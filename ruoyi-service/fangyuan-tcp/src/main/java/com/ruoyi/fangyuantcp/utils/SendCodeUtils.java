@@ -16,7 +16,7 @@ import java.util.Map;
  * 硬件端发送指令工具类
  * */
 public class SendCodeUtils {
-
+//    在线设备map
     private Map<String, ChannelHandlerContext> map = NettyServer.map;
 
     /*
@@ -27,7 +27,6 @@ public class SendCodeUtils {
         try {
 //        text处理
             ArrayList<String> strings1 = new ArrayList<>();
-
             String text = tcpOrder.getFacility()+","+tcpOrder.getOperationText();
             String[] split3 = text.split(",");
             for (String s : split3) {
@@ -60,6 +59,11 @@ public class SendCodeUtils {
             return 0;
         }
     }
+
+    /*
+    * 状态查询指令发送
+    * */
+
 
 
 }

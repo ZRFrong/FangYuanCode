@@ -2,6 +2,7 @@ package com.ruoyi.fangyuantcp.tcp;
 
 
 import com.ruoyi.fangyuantcp.domain.DbTcpClient;
+import com.ruoyi.fangyuantcp.utils.DisConnectUtils;
 import com.ruoyi.fangyuantcp.utils.ReceiveUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -16,6 +17,7 @@ import java.net.InetSocketAddress;
 @Slf4j
 public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandlerAdapter {
 
+    private DisConnectUtils  disConnectUtils=new DisConnectUtils();
 
     /**
      * 从客户端收到新的数据时，这个方法会在收到消息时被调用
@@ -44,9 +46,10 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
             receiveUtil.heartbeatChoose(dbTcpClient,ctx);
         } else {
             //        前两位标识符
-            String charStic = s.substring(0,2);
-            if (charStic.equals("03")){
-
+            String charStic = s.substring(0,4);
+            if (charStic.equals("0307")){
+//                状态处理
+                receiveUtil.stateRead(msg.toString());
             };
         }
 
@@ -76,10 +79,7 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
-        InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
-        String clientIp = insocket.getAddress().getHostAddress();
-
-        ctx.close();//抛出异常，断开与客户端的连接
+        disConnectUtils.errorClose(ctx);
     }
 
     /**
@@ -103,7 +103,9 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception, IOException {
         super.channelInactive(ctx);
-        ctx.close(); //断开连接时，必须关闭，否则造成资源浪费，并发量很大情况下可能造成宕机
+        disConnectUtils.normalClose(ctx);
+      //断开连接时，必须关闭，否则造成资源浪费，并发量很大情况下可能造成宕机
+
     }
 
     /**
@@ -116,10 +118,7 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception, IOException {
         super.userEventTriggered(ctx, evt);
-        InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
-        String clientIp = insocket.getAddress().getHostAddress();
-        ctx.close();//超时时断开连接
-        System.out.println("userEventTriggered:" + clientIp);
+        disConnectUtils.timeoutClose(ctx);
     }
 
 
