@@ -64,5 +64,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
-    
+
+    <select id="selectDbForwardSumByUserId">
+        select count(1) forwardSum from db_forward d where d.user_id = #{id}
+    </select>
+
 </mapper>

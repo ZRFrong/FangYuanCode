@@ -58,4 +58,11 @@ public interface DbCommentMapper
      * @return 结果
      */
     public int deleteDbCommentByIds(String[] ids);
+
+    /**
+     * 通过动态id 查询评论对应的数量
+     * @return
+     */
+    Integer selectDbCommentSumByDynamicId();
+
 }

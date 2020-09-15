@@ -38,7 +38,11 @@ public enum ResultEnum {
     /**
      *
      */
-    CODE_ERROR(6,"验证码错误,请重新输入！")
+    CODE_ERROR(6,"验证码错误,请重新输入！"),
+    /**
+     *
+     */
+    CODE_SUCCESS(7,"参数错误，请从新发送验证码！")
     ;
     /**
      * 返回状态码

@@ -100,5 +100,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <select id="selectDbCommentSumByDynamicId" resultType="integer">
+        select count(0) commentSum from db_comment c where c.dynamic_id = #{id}
+    </select>
     
 </mapper>

@@ -1,5 +1,6 @@
 package com.ruoyi.fangyuanapi.mapper;
 
+import com.ruoyi.common.core.dao.BaseMapper;
 import com.ruoyi.fangyuanapi.domain.DbDynamicAndEntry;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * @author fangyuan
  * @date 2020-09-01
  */
-public interface DbDynamicAndEntryMapper 
+public interface DbDynamicAndEntryMapper extends BaseMapper
 {
     /**
      * 查询动态和词条中间

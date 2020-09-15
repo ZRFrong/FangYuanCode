@@ -58,4 +58,13 @@ public interface DbUserMapper
      * @return 结果
      */
     public int deleteDbUserByIds(String[] ids);
+
+    /**
+     * 根据手机号查找用户
+     * @param phone
+     * @return
+     */
+    DbUser selectDbUserByPhone(String phone);
+
+    DbUser selectDbUserByOpenId(String openId);
 }

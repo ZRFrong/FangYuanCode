@@ -92,5 +92,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
-    
+
+    <select id="selectDbUserDynamicByUserId"  >
+        SELECT a.*  FROM db_user_dynamic a LEFT JOIN db_user_and_dynamic b ON a.id = b.dynamic_id WHERE b.user_id = #{id} limit #{currPage},#{pageSize}
+    </select>
+
+
 </mapper>

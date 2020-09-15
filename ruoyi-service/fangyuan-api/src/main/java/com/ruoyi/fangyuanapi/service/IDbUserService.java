@@ -1,7 +1,11 @@
 package com.ruoyi.fangyuanapi.service;
 
 import com.ruoyi.fangyuanapi.domain.DbUser;
+import com.ruoyi.fangyuanapi.dto.DynamicDto;
+import tk.mybatis.mapper.common.BaseMapper;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * 前台用户Service接口
@@ -9,7 +13,7 @@ import java.util.List;
  * @author fangyuan
  * @date 2020-09-01
  */
-public interface IDbUserService 
+public interface IDbUserService
 {
     /**
      * 查询前台用户
@@ -58,4 +62,30 @@ public interface IDbUserService
      * @return 结果
      */
     public int deleteDbUserById(Long id);
+
+    boolean selectDbUserByPhone(DbUser dbUser);
+
+    /**
+     * 根据openId查询用户是否注册
+     * @param openId
+     * @return
+     */
+    Map<String,Integer> userIsRegister(String openId);
+
+    /**
+     * 根据openId查询用户
+     * @param openId
+     * @return
+     */
+    DbUser selectDbUserByOpenId(String openId);
+
+    /**
+     * 获取
+     * @param user
+     * @param currPage
+     * @param pageSize
+     * @return
+     */
+    List<DynamicDto> getUserDynamic(DbUser user,Integer currPage,Integer pageSize);
+
 }
