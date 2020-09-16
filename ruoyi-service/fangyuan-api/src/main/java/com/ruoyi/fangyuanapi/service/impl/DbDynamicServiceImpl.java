@@ -1,5 +1,7 @@
 package com.ruoyi.fangyuanapi.service.impl;
 
+import com.qiniu.http.Client;
+import com.qiniu.util.Auth;
 import com.ruoyi.common.utils.http.HttpUtils;
 import com.ruoyi.fangyuanapi.service.DbDynamicService;
 import com.ruoyi.system.oss.CloudStorageService;
@@ -37,8 +39,13 @@ public class DbDynamicServiceImpl implements DbDynamicService {
                 String s1 = UUID.randomUUID().toString().replaceAll("-", "");
                 String upload = build.upload(bytes, "fangyuan/" + s1 + s);//返回图片地址
                 if (image.contains(s)){//调用图片审核
+                    String body = "{ \"data\": { \"uri\": \""+upload+"\" }, \"params\": { \"scenes\": [ \"pulp\", \"terror\", \"politician\" ] } }";
                     HttpUtils.sendPost(iamgeUrl,null);
+                    Auth auth = Auth.create("", "");
+                    String token = auth.signQiniuAuthorization(image, "post", body.getBytes(), "application/json");
+                    new Client();
                 }
+
                 if (video.contains(s)){//调用视频审核
 
                 }
