@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.tcp.PassDemo;
+import com.ruoyi.gateway.ustils.PassDemo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -42,10 +42,17 @@ public class AuthFilter implements GlobalFilter, Ordered {
     @Resource(name = "stringRedisTemplate")
     private ValueOperations<String, String> ops;
 
+    private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/smallLogin");
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String url = exchange.getRequest().getURI().getPath();
         log.info("url:{}", url);
+        for (String s : zhao) {
+            if (url.contains(s)){
+                return chain.filter(exchange);
+            }
+        }
         // 跳过不需要验证的路径
         if (Arrays.asList(whiteList).contains(url)) {
             return chain.filter(exchange);

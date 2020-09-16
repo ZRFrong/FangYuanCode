@@ -63,14 +63,16 @@ public class SendSmsServiceImpl implements SendSmsService {
             message=map.get("Message");
             if("OK".equals(map.get("Message"))){
                 redisUtils.set(CategoryType.USER_IDENTIFYING_CODE_+phone,s,RedisTimeConf.FIVE_MINUTE);//后台纪录验证码2分钟不过其
-                return map.get("Code");
+                if (!"OK".equals(map.get("Code"))){
+                    return null;
+                }
             }
             log.error("请求出错："+message);
         } catch (ClientException e) {
             e.printStackTrace();
             log.error("请求出错: "+ message );
         }
-        return null;
+        return s;
     }
 
     @Override

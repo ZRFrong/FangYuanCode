@@ -63,7 +63,7 @@ public interface IDbUserService
      */
     public int deleteDbUserById(Long id);
 
-    boolean selectDbUserByPhone(DbUser dbUser);
+    DbUser selectDbUserByPhone(DbUser dbUser);
 
     /**
      * 根据openId查询用户是否注册

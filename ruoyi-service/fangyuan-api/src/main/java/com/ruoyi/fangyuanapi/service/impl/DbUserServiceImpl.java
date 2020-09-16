@@ -123,9 +123,9 @@ public class DbUserServiceImpl implements IDbUserService
      * @return
      */
     @Override
-    public boolean selectDbUserByPhone(DbUser dbUser) {
+    public DbUser selectDbUserByPhone(DbUser dbUser) {
         DbUser result =  dbUserMapper.selectDbUserByPhone(dbUser.getPhone());
-        return false;
+        return result;
     }
 
     @Override
