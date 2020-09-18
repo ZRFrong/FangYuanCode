@@ -27,6 +27,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="signature"    column="signature"    />
         <result property="birthday"    column="birthday"    />
         <result property="phoneIsVerify"    column="phone_is_verify"    />
+        <result property="dynamicNum"    column="dynamic_num"    />
+        <result property="attentionNum"    column="attention_num"    />
+        <result property="replyAttentionUserNum"    column="reply_attention_user_num"    />
     </resultMap>
 
     <sql id="selectDbUserVo">
@@ -70,6 +73,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="signature != null  and signature != ''">signature,</if>
             <if test="birthday != null ">birthday,</if>
             <if test="phoneIsVerify != null ">phone_is_verify,</if>
+            <if test="dynamicNum != null ">dynamic_num,</if>
+            <if test="attentionNum != null ">attention_num,</if>
+            <if test="replyAttentionUserNum != null ">reply_attention_user_num,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userName != null  and userName != ''">#{userName},</if>
@@ -93,6 +99,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="signature != null  and signature != ''">#{signature},</if>
             <if test="birthday != null ">#{birthday},</if>
             <if test="phoneIsVerify != null ">#{phoneIsVerify},</if>
+            <if test="dynamicNum != null ">#{dynamic_num},</if>
+            <if test="attentionNum != null ">#{attention_num},</if>
+            <if test="replyAttentionUserNum != null ">#{reply_attention_user_num},</if>
          </trim>
     </insert>
 
@@ -120,6 +129,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="signature != null  and signature != ''">signature = #{signature},</if>
             <if test="birthday != null ">birthday = #{birthday},</if>
             <if test="phoneIsVerify != null ">phone_is_verify = #{phoneIsVerify},</if>
+            <if test="dynamicNum != null ">#{dynamic_num},</if>
+            <if test="attentionNum != null ">#{attention_num},</if>
+            <if test="replyAttentionUserNum != null ">#{reply_attention_user_num},</if>
         </trim>
         where id = #{id}
     </update>
@@ -135,11 +147,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
-    <select id="selectDbUserByPhone" resultType="dbUser">
+    <select id="selectDbUserByPhone" resultMap="DbUserResult" >
         select  * from db_user where phone = #{phone}
     </select>
 
-    <select id="selectDbUserByOpenId" resultType="dbUser">
+    <select id="selectDbUserByOpenId" resultMap="DbUserResult" >
         select  * from db_user where open_id = #{openId}
     </select>
 

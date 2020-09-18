@@ -3,6 +3,7 @@ package com.ruoyi.fangyuanapi.controller;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.redis.config.RedisTimeConf;
 import com.ruoyi.common.redis.util.RedisUtils;
+import com.ruoyi.common.utils.PassDemo;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.md5.ZhaoMD5Utils;
 import com.ruoyi.common.utils.sms.CategoryType;
@@ -56,9 +57,8 @@ public class DbUserController {
         String s;
         if (user == null || user.getPhone() != dbUser.getPhone()){//注册
             dbUser.setCreated(new Date());
-            dbUser.setSalt(UUID.randomUUID().toString().replace("-", ""));
             int i = dbUserService.insertDbUser(dbUser);
-            s = ZhaoMD5Utils.string2MD5(dbUser.getSalt() + dbUser.getId());
+            s = PassDemo.gen(dbUser.getId());
             return R.data(s);
         }
         s = ZhaoMD5Utils.string2MD5(user.getSalt() + user.getId());

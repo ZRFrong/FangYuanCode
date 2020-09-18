@@ -34,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
         
-    <insert id="insertDbUserDynamic" parameterType="DbUserDynamic" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertDbUserDynamic" parameterType="DbUserDynamic" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         insert into db_user_dynamic
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="isHaveVoide != null ">is_have_voide,</if>
