@@ -42,7 +42,16 @@ public enum ResultEnum {
     /**
      *
      */
-    CODE_SUCCESS(7,"参数错误，请从新发送验证码！")
+    CODE_SUCCESS(7,"参数错误，请从新发送验证码！"),
+    /**
+     *
+     */
+    TEXT_ILLEGAL(8,"内容包含敏感词，请核对后在试！"),
+    /**
+     *
+     */
+    IMAGES_AND_VIDOE_ILLEGAL(9,"图片或者视频不合法，请更换后在试！")
+
     ;
     /**
      * 返回状态码

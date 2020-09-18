@@ -1,6 +1,7 @@
 package com.ruoyi.fangyuanapi.controller;
 
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.redis.config.RedisTimeConf;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.md5.ZhaoMD5Utils;
@@ -16,8 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("wxUser")
@@ -38,28 +41,29 @@ public class DbUserController {
      * @param dbUser
      * @return R { 0 : SUCCESS}
      */
-    @PostMapping("smallRegister}")
+    @PostMapping("smallRegister")
     public R wxRegister(DbUser dbUser,String uuid){
-
-
-
         String codeSuccess = redisUtils.get(CategoryType.USER_CODE_SUCCESS_ + dbUser.getPhone());
         if (StringUtils.isEmpty(codeSuccess) && !ZhaoMD5Utils.convertMD5(uuid).equals(codeSuccess)){//判断通行证是否有效
             redisUtils.delete(CategoryType.USER_CODE_SUCCESS_ + dbUser.getPhone());
             return R.error(ResultEnum.CODE_SUCCESS.getCode(),ResultEnum.CODE_SUCCESS.getMessage());
         }
-        if (dbUser == null){
+        if (dbUser == null && dbUser.getPhone() != null){
             return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
         }
         //todo 查询手机号是否有可能在app注册了，如果有同步数据
-        boolean b = dbUserService.selectDbUserByPhone(dbUser);
-        if (b){//修改操作讲 openid 和phone绑定
-
-            return R.ok("您已经注册过了！");
-        }else {//未注册过 添加用户
+        DbUser user = dbUserService.selectDbUserByPhone(dbUser);
+        String s;
+        if (user == null || user.getPhone() != dbUser.getPhone()){//注册
+            dbUser.setCreated(new Date());
+            dbUser.setSalt(UUID.randomUUID().toString().replace("-", ""));
             int i = dbUserService.insertDbUser(dbUser);
-            return new R();
+            s = ZhaoMD5Utils.string2MD5(dbUser.getSalt() + dbUser.getId());
+            return R.data(s);
         }
+        s = ZhaoMD5Utils.string2MD5(user.getSalt() + user.getId());
+        redisUtils.set(CategoryType.USER_TOKEN_.name()+dbUser.getId(),s,RedisTimeConf.THERE_MONTH);
+        return R.data(s);
     }
 
 
@@ -97,6 +101,16 @@ public class DbUserController {
         }
         List<DynamicDto> dynamic = dbUserService.getUserDynamic(dbUser, currPage, pageSize);
         return R.data(dynamic);
+    }
+
+    /**
+     * 我的赞
+     * @return
+     */
+    @GetMapping("giveLike/{openId}")
+    public R getGiveLikeSum(@PathVariable String openId){
+
+        return null;
     }
 
 }

@@ -28,5 +28,13 @@ public enum  CategoryType {
     /**
      *
      */
-    USER_CODE_SUCCESS_
+    USER_CODE_SUCCESS_,
+    /**
+     *
+     */
+    USER_CODE_CHECK_SUM_,
+    /**
+     *
+     */
+    USER_TOKEN_
 }

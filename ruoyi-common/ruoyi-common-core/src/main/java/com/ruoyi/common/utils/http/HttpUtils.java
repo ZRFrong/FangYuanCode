@@ -5,10 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.security.cert.X509Certificate;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -41,7 +38,7 @@ public class HttpUtils
         BufferedReader in = null;
         try
         {
-            String urlNameString = url + "?" + param;
+            String urlNameString = url  + param;
             log.info("sendGet - {}", urlNameString);
             URL realUrl = new URL(urlNameString);
             URLConnection connection = realUrl.openConnection();
@@ -88,6 +85,26 @@ public class HttpUtils
             }
         }
         return result.toString();
+    }
+
+    /**
+     * java.net
+     * @param url 请求的url
+     * @param param 请求的参数 name = name & age =age
+     * @return
+     * @throws IOException
+     */
+    public static String checkPost(String url ,String param) throws IOException {
+        String urlNameString = url + "?" + param;
+        URL reaUrl = new URL(urlNameString);
+        URLConnection connection = reaUrl.openConnection();//打开连接
+        //设置通用请求属性
+        connection.setRequestProperty("contentType","application/json");
+        connection.setRequestProperty("Authorization","");
+        connection.setDoOutput(true);
+        connection.setDoInput(true);
+        connection.getOutputStream();//返回写入此连接的输出流
+        return null;
     }
 
     /**

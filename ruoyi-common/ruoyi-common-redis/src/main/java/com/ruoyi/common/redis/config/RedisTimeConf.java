@@ -29,7 +29,11 @@ public class RedisTimeConf {
      */
     public static final Long FIVE_MINUTE = 60*5L;
     /**
-     *验证成功 30 分钟
+     *验证成功 30 分钟THERE_MONTH
      */
     public static final Long THIRTY_MINUTE = 60*30L;
+    /**
+     * 三个月
+     */
+    public static final Long THERE_MONTH = 60*60*24*90l;
 }
