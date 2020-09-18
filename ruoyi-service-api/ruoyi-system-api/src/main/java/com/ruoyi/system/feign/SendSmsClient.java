@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @FeignClient(name = "ruoyi-system", fallbackFactory = RemoteUserFallbackFactory.class)
 public interface SendSmsClient {
+
+
     @GetMapping("sms/sendSms/{phone}/{signName}/{templateCode}")
     R sendSms(@PathVariable String phone, @PathVariable String signName , @PathVariable String templateCode);
+
+
 }
