@@ -159,31 +159,4 @@ public class DbDynamicServiceImpl implements DbDynamicService {
     }
 
 
-    public static void main(String[] args){
-//        String str = ".jpg.png.jpeg";
-//        System.out.println(str.contains(".jpg"));
-//        System.out.println("-------------------------------------------------");
-//        String s = HttpUtils.sendGet("http://192.168.3.3:8001/sms/sendSms", "/15135006102/1/1");
-//        System.out.println("结果"+s);
-
-        DbComment comment = new DbComment();
-        comment.setId(100l);
-        System.out.println(comment.getId());
-        Timer timer = new Timer();
-        Integer integer = 0;
-        TimerTask task = new TimerTask() {
-            Integer integer = 0;
-            @Override
-            public void run() {
-                int anInt = 0;
-                anInt++;
-                if (integer<5 ){
-                    integer++;
-                }
-                System.out.println(anInt);
-            }
-        };
-        timer.schedule(task,5000l,30000l);
-
-    }
 }
