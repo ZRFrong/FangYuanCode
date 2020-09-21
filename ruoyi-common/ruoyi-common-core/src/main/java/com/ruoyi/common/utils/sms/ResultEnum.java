@@ -50,8 +50,15 @@ public enum ResultEnum {
     /**
      *
      */
-    IMAGES_AND_VIDOE_ILLEGAL(9,"图片或者视频不合法，请更换后在试！")
-
+    IMAGES_AND_VIDOE_ILLEGAL(9,"！"),
+    /**
+     *
+     */
+    RESULT_REVIEW(10,"该内容正在人工审核中！"),
+    /**
+     *
+     */
+    RESULT_BLOCK(11,"该文件存在违规行为，请更换后再试！");
     ;
     /**
      * 返回状态码

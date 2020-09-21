@@ -2,6 +2,8 @@ package com.ruoyi.common.utils;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
+
 import com.ruoyi.common.core.text.StrFormatter;
 
 /**
@@ -165,6 +167,61 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     public static String trim(String str)
     {
         return (str == null ? "" : str.trim());
+    }
+
+    /**
+     * 获取文件扩展名
+     * @return 文件后缀名
+     */
+    public static String getSuffixes(String fileName){
+        if (StringUtils.isEmpty(fileName)){
+            return null;
+        }
+        String s = fileName.substring(fileName.lastIndexOf("."));//文件后缀名字
+        return s;
+    }
+
+    /**
+     * 检测文件是否是指定的图片格式
+     * @return 是 true 否false
+     */
+    public static boolean checkFileIsImages(String fileName){
+        String image = ".jpg.png.jpeg.bmp.webp.tif.gif";
+
+        if (image.contains(getSuffixes(fileName))){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 检测文件是否是视频格式
+     * @param fileName
+     * @return
+     */
+    public static boolean checkFileIsVideo(String fileName){
+        String video = ".mp4.flv.mov.avi.wmv.ts.mpg";
+        if (video.contains(getSuffixes(fileName))){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 获取uuid
+     * @return
+     */
+    public static String getUUID(){
+        return UUID.randomUUID().toString().replaceAll("-", "");
+    }
+
+    /**
+     * 获取uuid文件名
+     * @return
+     */
+    public static String getUUIDFileName(String filename){
+        String s = getSuffixes(filename);
+        return getUUID()+s;
     }
 
     /**
