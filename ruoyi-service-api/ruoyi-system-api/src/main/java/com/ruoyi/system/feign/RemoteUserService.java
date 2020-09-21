@@ -44,7 +44,6 @@ public interface RemoteUserService
     /**
      * 查询所有当前部门中的用户
      * 
-     * @param deptId
      * @return
      * @author zmr
      */

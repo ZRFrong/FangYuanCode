@@ -30,6 +30,7 @@ public class RemoteUserFallbackFactory implements FallbackFactory<RemoteUserServ
             @Override
             public R updateUserLoginRecord(SysUser user)
             {
+
                 return R.error();
             }
 
