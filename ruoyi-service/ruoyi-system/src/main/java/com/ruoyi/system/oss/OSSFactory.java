@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.oss.CloudConstant.CloudService;
 import com.ruoyi.system.service.ISysConfigService;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * 文件上传Factory
