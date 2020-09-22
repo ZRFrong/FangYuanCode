@@ -90,4 +90,14 @@ public class DbGiveLikeServiceImpl implements IDbGiveLikeService
     {
         return dbGiveLikeMapper.deleteDbGiveLikeById(id);
     }
+
+    /**
+     * 我的赞
+     * @param userId
+     * @return
+     */
+    @Override
+    public Integer selectUserGiveLikeNum(String userId) {
+        return dbGiveLikeMapper.selectUserGiveLikeNum(Long.valueOf(userId));
+    }
 }

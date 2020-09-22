@@ -1,5 +1,7 @@
 package com.ruoyi.fangyuanapi.controller;
 
+import com.alibaba.druid.sql.visitor.functions.If;
+import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.redis.config.RedisTimeConf;
 import com.ruoyi.common.redis.util.RedisUtils;
@@ -10,14 +12,19 @@ import com.ruoyi.common.utils.sms.CategoryType;
 import com.ruoyi.common.utils.sms.ResultEnum;
 import com.ruoyi.fangyuanapi.domain.DbUser;
 import com.ruoyi.fangyuanapi.dto.DynamicDto;
+import com.ruoyi.fangyuanapi.service.IDbGiveLikeService;
+import com.ruoyi.fangyuanapi.service.IDbUserAndDynamicService;
+import com.ruoyi.fangyuanapi.service.IDbUserDynamicService;
 import com.ruoyi.fangyuanapi.service.IDbUserService;
 import com.ruoyi.system.feign.RemoteDeptService;
 import com.ruoyi.system.feign.SendSmsClient;
 import org.apache.commons.collections4.Get;
+import org.apache.poi.ss.formula.functions.Count;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +43,17 @@ public class DbUserController {
 
     @Autowired
     private IDbUserService dbUserService;
+
+    @Autowired
+    private IDbGiveLikeService dbGiveLikeService;
+
+    @Autowired
+    private IDbUserAndDynamicService dbUserAndDynamicService;
+
+    @Autowired
+    private IDbUserDynamicService dbUserDynamicService;
+
+
 
     /**
      * 小程序注册
@@ -107,10 +125,31 @@ public class DbUserController {
      * 我的赞
      * @return
      */
-    @GetMapping("giveLike/{openId}")
-    public R getGiveLikeSum(@PathVariable String openId){
+    @GetMapping("giveLikeNum")
+    public R getGiveLikeSum(HttpServletRequest request){
+        String userId = request.getHeader(Constants.CURRENT_ID);
+        Integer likeNum = dbGiveLikeService.selectUserGiveLikeNum(userId);
+        return likeNum != null?new R():R.error();
+    }
 
-        return null;
+    /**
+     * 我的相册
+     * @param request
+     * @param currPage
+     * @param pageSize
+     * @return list<string>
+     */
+    @GetMapping("photoAlbum")
+    public R getPhotoAlbum(HttpServletRequest request,Integer currPage,Integer pageSize){
+        String userId = request.getHeader(Constants.CURRENT_ID);
+        currPage = pageSize-1 * pageSize;
+        List<Long> dynamicIds = dbUserAndDynamicService.selectDbUserAndDynamicByUserId(Long.valueOf(userId));
+        if (dynamicIds == null || dynamicIds.size() <= 0){
+            return R.ok("您的相册为空！");
+        }
+        List<Map<String,String>> PhotoAlbum = dbUserDynamicService.selectImagesByDynamicId(dynamicIds,currPage,pageSize);
+
+        return R.data(PhotoAlbum);
     }
 
 }

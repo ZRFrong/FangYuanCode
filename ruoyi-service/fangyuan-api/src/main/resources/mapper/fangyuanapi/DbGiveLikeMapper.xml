@@ -73,4 +73,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select count(*) from db_give_like d where d.dynamic_id = #{id}
     </select>
 
+    <select id="selectUserGiveLikeNum" parameterType="long" resultType="integer">
+        select  count(*) count from db_give_like WHERE user_id = #{userId} and is_cancel = 1
+    </select>
+
 </mapper>

@@ -93,8 +93,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
-    <select id="selectDbUserDynamicByUserId"  >
+    <select id="selectDbUserDynamicByUserId" resultType="com.ruoyi.fangyuanapi.domain.DbUserDynamic">
         SELECT a.*  FROM db_user_dynamic a LEFT JOIN db_user_and_dynamic b ON a.id = b.dynamic_id WHERE b.user_id = #{id} limit #{currPage},#{pageSize}
+    </select>
+
+
+    <select id="selectDynamicCreatedAndResourcesByid" resultType="java.util.Map">
+        select  created_time,resource from db_user_dynamic WHERE id =#{userId} AND is_banned = 0 limit #{currPage} , #{pageSize}
     </select>
 
 

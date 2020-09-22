@@ -90,4 +90,15 @@ public class DbUserAndDynamicServiceImpl implements IDbUserAndDynamicService
     {
         return dbUserAndDynamicMapper.deleteDbUserAndDynamicById(id);
     }
+
+    /**
+     * 查询用户所发布动态的id1
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<Long> selectDbUserAndDynamicByUserId(Long userId) {
+        List<Long> list = dbUserAndDynamicMapper.selectDbUserAndDynamicByUserId(userId);
+        return list;
+    }
 }

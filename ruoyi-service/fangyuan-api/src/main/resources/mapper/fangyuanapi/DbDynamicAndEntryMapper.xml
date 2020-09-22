@@ -20,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectDbDynamicAndEntryById" parameterType="Long" resultMap="DbDynamicAndEntryResult">
+    <select id="selectDbDynamicAndEntryById" parameterType="Long" resultMap="DbDynamicAndEntryResult" >
         <include refid="selectDbDynamicAndEntryVo"/>
         where id = #{id}
     </select>

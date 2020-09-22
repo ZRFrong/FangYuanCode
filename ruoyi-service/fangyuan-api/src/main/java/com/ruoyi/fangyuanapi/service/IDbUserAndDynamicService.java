@@ -58,4 +58,11 @@ public interface IDbUserAndDynamicService
      * @return 结果
      */
     public int deleteDbUserAndDynamicById(Long id);
+
+    /**
+     * 查询用户所发布的动态的id
+     * @param userId
+     * @return
+     */
+    List<Long> selectDbUserAndDynamicByUserId(Long userId);
 }

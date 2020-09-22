@@ -10,7 +10,7 @@ import java.util.List;
  * @author fangyuan
  * @date 2020-09-01
  */
-public interface DbDynamicAndEntryMapper extends BaseMapper
+public interface DbDynamicAndEntryMapper
 {
     /**
      * 查询动态和词条中间

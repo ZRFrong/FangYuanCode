@@ -61,4 +61,5 @@ public interface DbGiveLikeMapper
 
     Integer selectGiveLikeSumByDynamicId();
 
+    Integer selectUserGiveLikeNum(Long userId);
 }

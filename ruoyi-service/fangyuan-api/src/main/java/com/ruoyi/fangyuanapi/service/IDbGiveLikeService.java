@@ -58,4 +58,12 @@ public interface IDbGiveLikeService
      * @return 结果
      */
     public int deleteDbGiveLikeById(Long id);
+
+    /**
+     * 我的页面我的赞
+     * @param userId
+     * @return 点赞数量
+     */
+    Integer selectUserGiveLikeNum(String userId);
+
 }
