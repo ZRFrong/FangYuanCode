@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.xml.ws.Action;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 @RestController
@@ -38,7 +40,6 @@ public class SendSmsController extends BaseController {
 
     @Autowired
     private SendSmsService sendSmsService;
-
 
 
     /**
@@ -108,13 +109,8 @@ public class SendSmsController extends BaseController {
             return R.error(ResultEnum.CODE_LOSE.getCode(),ResultEnum.CODE_LOSE.getMessage());
         }
         if (s.equals(code)){
-            String uuid=UUID.randomUUID().toString().replace("-", "");//用来标记用户验证通过
             redisUtils.delete(CategoryType.USER_IDENTIFYING_CODE_ + phone);
-            redisUtils.set(CategoryType.USER_CODE_SUCCESS_+phone,uuid,RedisTimeConf.THIRTY_MINUTE);
-            HashMap<String, String> map = new HashMap<>();
-            String md5 = ZhaoMD5Utils.string2MD5(uuid);
-            map.put("uuid",md5);
-            return R.data(map);
+            return R.ok();
         }else {
             String codeSum  = redisUtils.get(CategoryType.USER_CODE_CHECK_SUM_+phone);
             codeSum = codeSum ==null?"0":codeSum;
