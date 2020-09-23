@@ -15,5 +15,6 @@ public interface SendSmsClient {
     @GetMapping("sms/sendSms/{phone}/{signName}/{templateCode}")
     R sendSms(@PathVariable String phone, @PathVariable String signName , @PathVariable String templateCode);
 
-
+    @GetMapping("sms/checkCode/{phone}/{code}")
+    public R checkCode(@PathVariable String phone,@PathVariable String code);
 }
