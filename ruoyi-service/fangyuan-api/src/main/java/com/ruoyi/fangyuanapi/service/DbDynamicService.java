@@ -5,7 +5,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+
 public interface DbDynamicService {
+
     String checkAndUploadFile(List<MultipartFile> file);
 
     DbUserDynamic insterDynamic(String userId, String text, String url, Integer authority, List<Long> entryIds, String site);

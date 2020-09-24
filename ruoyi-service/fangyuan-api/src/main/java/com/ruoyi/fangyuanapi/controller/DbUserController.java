@@ -12,10 +12,7 @@ import com.ruoyi.fangyuanapi.domain.DbUser;
 import com.ruoyi.fangyuanapi.dto.DynamicDto;
 import com.ruoyi.fangyuanapi.service.IDbUserService;
 import com.ruoyi.system.feign.RemoteDeptService;
-import com.ruoyi.system.feign.SendSmsClient;
-import org.apache.commons.collections4.Get;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
