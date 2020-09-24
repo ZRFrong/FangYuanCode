@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.mapper.DbDynamicAndEntryMapper;
-import com.ruoyi.fangyuanapi.domain.DbDynamicAndEntry;
+import com.ruoyi.system.domain.DbDynamicAndEntry;
 import com.ruoyi.fangyuanapi.service.IDbDynamicAndEntryService;
 import com.ruoyi.common.core.text.Convert;
 

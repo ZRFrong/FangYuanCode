@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.mapper.DbCommentMapper;
-import com.ruoyi.fangyuanapi.domain.DbComment;
+import com.ruoyi.system.domain.DbComment;
 import com.ruoyi.fangyuanapi.service.IDbCommentService;
 import com.ruoyi.common.core.text.Convert;
 

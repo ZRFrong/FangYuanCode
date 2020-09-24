@@ -1,7 +1,6 @@
 package com.ruoyi.fangyuanapi.mapper;
 
-import com.ruoyi.common.core.dao.BaseMapper;
-import com.ruoyi.fangyuanapi.domain.DbDynamicAndEntry;
+import com.ruoyi.system.domain.DbDynamicAndEntry;
 import java.util.List;
 
 /**

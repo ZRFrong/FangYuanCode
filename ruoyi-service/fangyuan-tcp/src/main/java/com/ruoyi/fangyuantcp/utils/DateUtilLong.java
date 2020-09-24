@@ -302,11 +302,7 @@ public class DateUtilLong extends org.apache.commons.lang3.time.DateUtils {
         return months;
     }
 
-    public static void main(String[] args) {
-        Date date = strToDate("2020-04-03 10:22:17");
-        Long minuteDiff = getMinuteDiff(date, new Date());
-        System.out.println(minuteDiff);
-    }
+
 
 
 

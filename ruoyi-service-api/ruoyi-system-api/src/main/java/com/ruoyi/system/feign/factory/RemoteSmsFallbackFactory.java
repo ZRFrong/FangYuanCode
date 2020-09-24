@@ -17,6 +17,11 @@ public class RemoteSmsFallbackFactory  implements FallbackFactory<SendSmsClient>
             public R sendSms(String phone, String signName, String templateCode) {
                 return null;
             }
+
+            @Override
+            public R checkCode(String phone, String code) {
+                return null;
+            }
         };
     }
 }

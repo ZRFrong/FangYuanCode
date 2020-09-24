@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.mapper.DbRemindMapper;
-import com.ruoyi.fangyuanapi.domain.DbRemind;
+import com.ruoyi.system.domain.DbRemind;
 import com.ruoyi.fangyuanapi.service.IDbRemindService;
 import com.ruoyi.common.core.text.Convert;
 

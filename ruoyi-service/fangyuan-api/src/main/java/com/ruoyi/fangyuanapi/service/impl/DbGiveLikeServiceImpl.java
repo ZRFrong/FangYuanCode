@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.mapper.DbGiveLikeMapper;
-import com.ruoyi.fangyuanapi.domain.DbGiveLike;
+import com.ruoyi.system.domain.DbGiveLike;
 import com.ruoyi.fangyuanapi.service.IDbGiveLikeService;
 import com.ruoyi.common.core.text.Convert;
 

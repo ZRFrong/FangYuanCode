@@ -5,12 +5,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.ruoyi.fangyuanapi.domain.DbUserDynamic;
+import com.ruoyi.system.domain.DbUserDynamic;
 import com.ruoyi.fangyuanapi.dto.DynamicDto;
 import com.ruoyi.fangyuanapi.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.fangyuanapi.domain.DbUser;
+import com.ruoyi.system.domain.DbUser;
 import com.ruoyi.fangyuanapi.service.IDbUserService;
 import com.ruoyi.common.core.text.Convert;
 

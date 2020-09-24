@@ -1,6 +1,6 @@
 package com.ruoyi.fangyuanapi.mapper;
 
-import com.ruoyi.fangyuanapi.domain.DbComment;
+import com.ruoyi.system.domain.DbComment;
 import java.util.List;
 
 /**

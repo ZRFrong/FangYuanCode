@@ -1,19 +1,21 @@
 package com.ruoyi.fangyuanapi.service.impl;
 
 import java.util.List;
+import java.util.ArrayList;
+import com.ruoyi.common.core.domain.Ztree;
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.mapper.DbLandMapper;
-import com.ruoyi.fangyuanapi.domain.DbLand;
+import com.ruoyi.system.domain.DbLand;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
 import com.ruoyi.common.core.text.Convert;
 
 /**
  * 土地Service业务层处理
  * 
- * @author fangyuan
- * @date 2020-09-01
+ * @author zheng
+ * @date 2020-09-24
  */
 @Service
 public class DbLandServiceImpl implements IDbLandService 
@@ -92,5 +94,27 @@ public class DbLandServiceImpl implements IDbLandService
     public int deleteDbLandById(Long landId)
     {
         return dbLandMapper.deleteDbLandById(landId);
+    }
+
+    /**
+     * 查询土地树列表
+     * 
+     * @return 所有土地信息
+     */
+    @Override
+    public List<Ztree> selectDbLandTree()
+    {
+        List<DbLand> dbLandList = dbLandMapper.selectDbLandList(new DbLand());
+        List<Ztree> ztrees = new ArrayList<Ztree>();
+        for (DbLand dbLand : dbLandList)
+        {
+            Ztree ztree = new Ztree();
+            ztree.setId(dbLand.getLandId());
+            ztree.setpId(dbLand.getSiteId());
+            ztree.setName(dbLand.getNickName());
+            ztree.setTitle(dbLand.getNickName());
+            ztrees.add(ztree);
+        }
+        return ztrees;
     }
 }

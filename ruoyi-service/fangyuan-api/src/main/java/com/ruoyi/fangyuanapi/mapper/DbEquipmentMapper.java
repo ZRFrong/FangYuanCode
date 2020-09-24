@@ -1,6 +1,6 @@
 package com.ruoyi.fangyuanapi.mapper;
 
-import com.ruoyi.fangyuanapi.domain.DbEquipment;
+import com.ruoyi.system.domain.DbEquipment;
 import java.util.List;
 
 /**

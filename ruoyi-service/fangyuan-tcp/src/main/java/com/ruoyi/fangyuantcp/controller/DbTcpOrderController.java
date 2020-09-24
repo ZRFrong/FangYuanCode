@@ -1,5 +1,6 @@
 package com.ruoyi.fangyuantcp.controller;
 
+import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +14,7 @@ import io.swagger.annotations.ApiParam;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.fangyuantcp.domain.DbTcpOrder;
+import com.ruoyi.system.domain.DbTcpOrder;
 import com.ruoyi.fangyuantcp.service.IDbTcpOrderService;
 
 /**
@@ -83,5 +84,22 @@ public class DbTcpOrderController extends BaseController
 	{
 		return toAjax(dbTcpOrderService.deleteDbTcpOrderByIds(ids));
 	}
+
+
+	/*
+	*	同步操作记录
+	* 定时调用去除redis中的数据固化到数据库中
+	* */
+	@GetMapping("curing")
+	public  void  curingTiming(){
+		dbTcpOrderService.curingTiming();
+	}
+
+	@Autowired
+	private IDbTcpTypeService dbTcpTypeService;
+
+
+
+
 
 }

@@ -1,6 +1,6 @@
 package com.ruoyi.fangyuantcp.service;
 
-import com.ruoyi.fangyuantcp.domain.DbTcpOrder;
+import com.ruoyi.system.domain.DbTcpOrder;
 import java.util.List;
 
 /**
@@ -58,4 +58,6 @@ public interface IDbTcpOrderService
      * @return 结果
      */
     public int deleteDbTcpOrderById(Long tcpOrderId);
+
+    void curingTiming();
 }

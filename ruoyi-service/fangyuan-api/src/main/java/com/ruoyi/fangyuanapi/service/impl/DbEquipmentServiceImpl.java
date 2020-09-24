@@ -5,7 +5,7 @@ import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.mapper.DbEquipmentMapper;
-import com.ruoyi.fangyuanapi.domain.DbEquipment;
+import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.common.core.text.Convert;
 

@@ -5,6 +5,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.List;
 /*
 *
@@ -29,7 +32,7 @@ public class MyDecoder extends ByteToMessageDecoder {
         }
     }
 
-    public String bytesToHexString(byte[] bArray) {
+    public  static String bytesToHexString(byte[] bArray) {
         StringBuffer sb = new StringBuffer(bArray.length);
         String sTemp;
         for (int i = 0; i < bArray.length; i++) {
@@ -57,4 +60,6 @@ public class MyDecoder extends ByteToMessageDecoder {
             return s;
         }
     }
+
+
 }

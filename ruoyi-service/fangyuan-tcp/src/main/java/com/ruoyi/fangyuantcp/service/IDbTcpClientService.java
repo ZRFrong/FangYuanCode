@@ -1,7 +1,7 @@
 package com.ruoyi.fangyuantcp.service;
 
-import com.ruoyi.fangyuantcp.domain.DbOperationVo;
-import com.ruoyi.fangyuantcp.domain.DbTcpClient;
+import com.ruoyi.system.domain.DbOperationVo;
+import com.ruoyi.system.domain.DbTcpClient;
 import java.util.List;
 
 /**
@@ -63,6 +63,9 @@ public interface IDbTcpClientService
     int heartbeatChoose(DbTcpClient dbTcpClient);
 
     int operation(DbOperationVo dbTcpClient);
+
+
+    int query(DbOperationVo dbTcpClient);
 
     void updateByHeartbeatName(String heartbeatName);
 }

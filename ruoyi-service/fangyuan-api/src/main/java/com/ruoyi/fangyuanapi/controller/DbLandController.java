@@ -1,5 +1,6 @@
 package com.ruoyi.fangyuanapi.controller;
 
+import com.ruoyi.common.constant.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,75 +14,79 @@ import io.swagger.annotations.ApiParam;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.fangyuanapi.domain.DbLand;
+import com.ruoyi.system.domain.DbLand;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * 土地 提供者
  *
- * @author fangyuan
- * @date 2020-09-07
+ * @author zheng
+ * @date 2020-09-24
  */
 @RestController
 @Api("land")
 @RequestMapping("land")
-public class DbLandController extends BaseController
-{
+public class DbLandController extends BaseController {
 
-	@Autowired
-	private IDbLandService dbLandService;
+    @Autowired
+    private IDbLandService dbLandService;
 
-	/**
-	 * 查询${tableComment}
-	 */
-	@GetMapping("get/{landId}")
-	@ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbLand get(@ApiParam(name="id",value="long",required=true)  @PathVariable("landId") Long landId)
-	{
-		return dbLandService.selectDbLandById(landId);
+    /**
+     * 查询${tableComment}
+     */
+    @GetMapping("get/{landId}")
+    @ApiOperation(value = "根据id查询", notes = "查询${tableComment}")
+    public DbLand get(@ApiParam(name = "id", value = "long", required = true) @PathVariable("landId") Long landId) {
+        return dbLandService.selectDbLandById(landId);
 
-	}
+    }
 
-	/**
-	 * 查询土地列表
-	 */
-	@GetMapping("list")
-	@ApiOperation(value = "查询土地列表" , notes = "土地列表")
-	public R list(@ApiParam(name="DbLand",value="传入json格式",required=true) DbLand dbLand)
-	{
-		startPage();
-		return result(dbLandService.selectDbLandList(dbLand));
-	}
+    /**
+     * 查询土地列表
+     */
+    @GetMapping("list")
+    @ApiOperation(value = "查询土地列表", notes = "土地列表")
+    public R list(@ApiParam(name = "DbLand", value = "传入json格式", required = true) DbLand dbLand) {
+        startPage();
+        return result(dbLandService.selectDbLandList(dbLand));
+    }
 
 
-	/**
-	 * 新增保存土地
-	 */
-	@PostMapping("save")
-	@ApiOperation(value = "新增保存土地" , notes = "新增保存土地")
-	public R addSave(@ApiParam(name="DbLand",value="传入json格式",required=true) @RequestBody DbLand dbLand)
-	{
-		return toAjax(dbLandService.insertDbLand(dbLand));
-	}
+    /**
+     * 新增保存土地
+     */
+    @PostMapping("save")
+    @ApiOperation(value = "新增保存土地", notes = "新增保存土地")
+    public R addSave(@ApiParam(name = "DbLand", value = "传入json格式", required = true) @RequestBody DbLand dbLand, HttpServletRequest request)
 
-	/**
-	 * 修改保存土地
-	 */
-	@PostMapping("update")
-	@ApiOperation(value = "修改保存土地" , notes = "修改保存土地")
-	public R editSave(@ApiParam(name="DbLand",value="传入json格式",required=true) @RequestBody DbLand dbLand)
-	{
-		return toAjax(dbLandService.updateDbLand(dbLand));
-	}
+    {
+        String userId = request.getHeader(Constants.CURRENT_ID);
+        dbLand.setDbUserId(Long.valueOf(userId));
+        dbLand.setCreateTime(new Date());
+        return toAjax(dbLandService.insertDbLand(dbLand));
+    }
 
-	/**
-	 * 删除${tableComment}
-	 */
-	@PostMapping("remove")
-	@ApiOperation(value = "删除土地" , notes = "删除土地")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
-	{
-		return toAjax(dbLandService.deleteDbLandByIds(ids));
-	}
+    /**
+     * 修改保存土地
+     */
+    @PostMapping("update")
+    @ApiOperation(value = "修改保存土地", notes = "修改保存土地")
+    public R editSave(@ApiParam(name = "DbLand", value = "传入json格式", required = true) @RequestBody DbLand dbLand, HttpServletRequest request) {
+        String userId = request.getHeader(Constants.CURRENT_ID);
+        dbLand.setDbUserId(Long.valueOf(userId));
+        return toAjax(dbLandService.updateDbLand(dbLand));
+    }
+
+    /**
+     * 删除${tableComment}
+     */
+    @PostMapping("remove")
+    @ApiOperation(value = "删除土地", notes = "删除土地")
+    public R remove(@ApiParam(name = "删除的id子串", value = "已逗号分隔的id集", required = true) String ids) {
+        return toAjax(dbLandService.deleteDbLandByIds(ids));
+    }
 
 }

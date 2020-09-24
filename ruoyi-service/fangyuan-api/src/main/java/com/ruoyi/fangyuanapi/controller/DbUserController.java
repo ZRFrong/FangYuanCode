@@ -1,6 +1,5 @@
 package com.ruoyi.fangyuanapi.controller;
 
-import com.alibaba.druid.sql.visitor.functions.If;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.redis.config.RedisTimeConf;
@@ -10,25 +9,20 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.md5.ZhaoMD5Utils;
 import com.ruoyi.common.utils.sms.CategoryType;
 import com.ruoyi.common.utils.sms.ResultEnum;
-import com.ruoyi.fangyuanapi.domain.DbUser;
+import com.ruoyi.system.domain.DbUser;
 import com.ruoyi.fangyuanapi.dto.DynamicDto;
 import com.ruoyi.fangyuanapi.service.IDbGiveLikeService;
 import com.ruoyi.fangyuanapi.service.IDbUserAndDynamicService;
 import com.ruoyi.fangyuanapi.service.IDbUserDynamicService;
 import com.ruoyi.fangyuanapi.service.IDbUserService;
 import com.ruoyi.system.feign.RemoteDeptService;
-import com.ruoyi.system.feign.SendSmsClient;
-import org.apache.commons.collections4.Get;
-import org.apache.poi.ss.formula.functions.Count;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("wxUser")

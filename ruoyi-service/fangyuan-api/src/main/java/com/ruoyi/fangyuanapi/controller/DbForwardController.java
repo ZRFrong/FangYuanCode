@@ -13,7 +13,7 @@ import io.swagger.annotations.ApiParam;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.fangyuanapi.domain.DbForward;
+import com.ruoyi.system.domain.DbForward;
 import com.ruoyi.fangyuanapi.service.IDbForwardService;
 
 /**

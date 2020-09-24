@@ -1,7 +1,7 @@
 package com.ruoyi.fangyuantcp.tcp;
 
 
-import com.ruoyi.fangyuantcp.domain.DbTcpClient;
+import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.fangyuantcp.utils.DisConnectUtils;
 import com.ruoyi.fangyuantcp.utils.ReceiveUtil;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,7 +17,7 @@ import java.net.InetSocketAddress;
 @Slf4j
 public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandlerAdapter {
 
-    private DisConnectUtils  disConnectUtils=new DisConnectUtils();
+    private DisConnectUtils disConnectUtils = new DisConnectUtils();
 
     /**
      * 从客户端收到新的数据时，这个方法会在收到消息时被调用
@@ -41,20 +41,24 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
         String s = msg.toString();
 
         if (s.contains("dapeng")) {
+//            心跳处理
             DbTcpClient dbTcpClient = getIp(ctx);
             dbTcpClient.setHeartName(msg.toString());
-            receiveUtil.heartbeatChoose(dbTcpClient,ctx);
+            receiveUtil.heartbeatChoose(dbTcpClient, ctx);
         } else {
             //        前两位标识符
-            String charStic = s.substring(0,4);
-            if (charStic.equals("0307")){
+            String charStic = s.substring(2, 4);
+            if (charStic.equals("03")) {
 //                状态处理
-                receiveUtil.stateRead(msg.toString());
-            };
+                receiveUtil.stateRead(msg.toString(), ctx);
+            } else if (charStic.equals("05")) {
+//               操作响应
+                receiveUtil.stateRespond(ctx, msg.toString());
+            }
         }
 
-
     }
+
 
     /**
      * 从客户端收到新的数据、读取完成时调用
@@ -104,7 +108,7 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
     public void channelInactive(ChannelHandlerContext ctx) throws Exception, IOException {
         super.channelInactive(ctx);
         disConnectUtils.normalClose(ctx);
-      //断开连接时，必须关闭，否则造成资源浪费，并发量很大情况下可能造成宕机
+        //断开连接时，必须关闭，否则造成资源浪费，并发量很大情况下可能造成宕机
 
     }
 

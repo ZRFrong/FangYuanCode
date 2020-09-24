@@ -1,8 +1,7 @@
 package com.ruoyi.fangyuanapi.service;
 
-import com.ruoyi.fangyuanapi.domain.DbUser;
+import com.ruoyi.system.domain.DbUser;
 import com.ruoyi.fangyuanapi.dto.DynamicDto;
-import tk.mybatis.mapper.common.BaseMapper;
 
 import java.util.List;
 import java.util.Map;
