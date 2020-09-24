@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.mapper.DbUserLoginMapper;
-import com.ruoyi.fangyuanapi.domain.DbUserLogin;
+import com.ruoyi.system.domain.DbUserLogin;
 import com.ruoyi.fangyuanapi.service.IDbUserLoginService;
 import com.ruoyi.common.core.text.Convert;
 

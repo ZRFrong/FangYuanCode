@@ -5,6 +5,7 @@ import java.util.List;
 import com.ruoyi.common.constant.ScheduleConstants;
 import com.ruoyi.common.exception.job.TaskException;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.system.mapper.SysJobLogMapper;
 import com.ruoyi.system.quartz.CronUtils;
 import com.ruoyi.system.quartz.ScheduleUtils;
 import org.quartz.JobDataMap;
@@ -37,8 +38,7 @@ public class SysJobServiceImpl implements ISysJobService {
     private SysJobMapper sysJobMapper;
 
 
-    @Autowired
-    private SysJobMapper jobMapper;
+
 
     /**
      * 项目启动时，初始化定时器
@@ -47,7 +47,7 @@ public class SysJobServiceImpl implements ISysJobService {
     @PostConstruct
     public void init() throws SchedulerException, TaskException {
         SysJob sysJob = new SysJob();
-        List<SysJob> jobList = jobMapper.selectSysJobList(sysJob);
+        List<SysJob> jobList = sysJobMapper.selectSysJobList(sysJob);
         for (SysJob job : jobList) {
             updateSchedulerJob(job, job.getJobGroup());
         }
@@ -187,7 +187,7 @@ public class SysJobServiceImpl implements ISysJobService {
         Long jobId = job.getJobId();
         String jobGroup = job.getJobGroup();
         job.setStatus(ScheduleConstants.Status.PAUSE.getValue());
-        int rows = jobMapper.updateSysJob(job);
+        int rows = sysJobMapper.updateSysJob(job);
         if (rows > 0) {
             scheduler.pauseJob(ScheduleUtils.getJobKey(jobId, jobGroup));
         }
@@ -205,7 +205,7 @@ public class SysJobServiceImpl implements ISysJobService {
         Long jobId = job.getJobId();
         String jobGroup = job.getJobGroup();
         job.setStatus(ScheduleConstants.Status.NORMAL.getValue());
-        int rows = jobMapper.updateSysJob(job);
+        int rows = sysJobMapper.updateSysJob(job);
         if (rows > 0) {
             scheduler.resumeJob(ScheduleUtils.getJobKey(jobId, jobGroup));
         }

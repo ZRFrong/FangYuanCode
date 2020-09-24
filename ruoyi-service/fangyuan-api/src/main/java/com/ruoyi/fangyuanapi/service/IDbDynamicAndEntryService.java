@@ -1,6 +1,6 @@
 package com.ruoyi.fangyuanapi.service;
 
-import com.ruoyi.fangyuanapi.domain.DbDynamicAndEntry;
+import com.ruoyi.system.domain.DbDynamicAndEntry;
 import java.util.List;
 
 /**

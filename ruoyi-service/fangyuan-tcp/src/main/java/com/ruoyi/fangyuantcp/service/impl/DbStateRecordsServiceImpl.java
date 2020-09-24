@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuantcp.mapper.DbStateRecordsMapper;
-import com.ruoyi.fangyuantcp.domain.DbStateRecords;
+import com.ruoyi.system.domain.DbStateRecords;
 import com.ruoyi.fangyuantcp.service.IDbStateRecordsService;
 import com.ruoyi.common.core.text.Convert;
 

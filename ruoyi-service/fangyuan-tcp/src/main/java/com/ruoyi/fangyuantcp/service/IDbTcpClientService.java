@@ -1,7 +1,7 @@
 package com.ruoyi.fangyuantcp.service;
 
-import com.ruoyi.fangyuantcp.domain.DbOperationVo;
-import com.ruoyi.fangyuantcp.domain.DbTcpClient;
+import com.ruoyi.system.domain.DbOperationVo;
+import com.ruoyi.system.domain.DbTcpClient;
 import java.util.List;
 
 /**

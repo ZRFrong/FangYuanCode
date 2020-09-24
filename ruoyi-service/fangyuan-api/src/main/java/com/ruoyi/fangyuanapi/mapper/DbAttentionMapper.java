@@ -1,6 +1,6 @@
 package com.ruoyi.fangyuanapi.mapper;
 
-import com.ruoyi.fangyuanapi.domain.DbAttention;
+import com.ruoyi.system.domain.DbAttention;
 import java.util.List;
 
 /**

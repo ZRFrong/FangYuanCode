@@ -1,3 +1,4 @@
+/*
 package com.ruoyi.fangyuanapi.controller;
 
 import com.qiniu.common.QiniuException;
@@ -22,7 +23,7 @@ import io.swagger.annotations.ApiParam;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.fangyuanapi.domain.DbUserDynamic;
+import com.ruoyi.system.domain.DbUserDynamic;
 import com.ruoyi.fangyuanapi.service.IDbUserDynamicService;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,12 +31,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.soap.Text;
 import java.util.*;
 
+*/
 /**
  * 动态 提供者
  *
  * @author fangyuan
  * @date 2020-09-07
- */
+ *//*
+
 @RestController
 @Api("dynamic1")
 @RequestMapping("dynamic1")
@@ -57,7 +60,8 @@ public class DbUserDynamicController extends BaseController
 	@Autowired
     private RedisUtils redisUtils;
 
-	/**
+	*/
+/**
 	 *
 	 * @param request 用来获取heard头里的userid
 	 * @param text 动态发布的内容
@@ -66,7 +70,8 @@ public class DbUserDynamicController extends BaseController
 	 * @param entryIds 词条数组
 	 * @param site 发表动态时的位置
 	 * @return
-	 */
+	 *//*
+
 	@PostMapping(value = "insterDynamic",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public R insterDynamic(HttpServletRequest request, @RequestParam("text") String text, @RequestPart("file") MultipartFile[] file, @RequestParam(value = "authority",required = false)Integer authority,@RequestParam(value = "entryIds",required = false) Long[] entryIds,@RequestParam(value = "site",required = false) String site){
 		String userId = request.getHeader(Constants.CURRENT_ID);
@@ -158,9 +163,11 @@ public class DbUserDynamicController extends BaseController
 
 
 
-	/**
+	*/
+/**
 	 * 查询${tableComment}
-	 */
+	 *//*
+
 	@GetMapping("get/{id}")
 	@ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
 	public DbUserDynamic get(@ApiParam(name="id",value="long",required=true)  @PathVariable("id") Long id)
@@ -169,9 +176,11 @@ public class DbUserDynamicController extends BaseController
 
 	}
 
-	/**
+	*/
+/**
 	 * 查询动态列表
-	 */
+	 *//*
+
 	@GetMapping("list")
 	@ApiOperation(value = "查询动态列表" , notes = "动态列表")
 	public R list(@ApiParam(name="DbUserDynamic",value="传入json格式",required=true) DbUserDynamic dbUserDynamic)
@@ -181,9 +190,11 @@ public class DbUserDynamicController extends BaseController
 	}
 
 
-	/**
+	*/
+/**
 	 * 新增保存动态
-	 */
+	 *//*
+
 	@PostMapping("save")
 	@ApiOperation(value = "新增保存动态" , notes = "新增保存动态")
 	public R addSave(@ApiParam(name="DbUserDynamic",value="传入json格式",required=true) @RequestBody DbUserDynamic dbUserDynamic)
@@ -191,9 +202,11 @@ public class DbUserDynamicController extends BaseController
 		return toAjax(dbUserDynamicService.insertDbUserDynamic(dbUserDynamic));
 	}
 
-	/**
+	*/
+/**
 	 * 修改保存动态
-	 */
+	 *//*
+
 	@PostMapping("update")
 	@ApiOperation(value = "修改保存动态" , notes = "修改保存动态")
 	public R editSave(@ApiParam(name="DbUserDynamic",value="传入json格式",required=true) @RequestBody DbUserDynamic dbUserDynamic)
@@ -201,9 +214,11 @@ public class DbUserDynamicController extends BaseController
 		return toAjax(dbUserDynamicService.updateDbUserDynamic(dbUserDynamic));
 	}
 
-	/**
+	*/
+/**
 	 * 删除${tableComment}
-	 */
+	 *//*
+
 	@PostMapping("remove")
 	@ApiOperation(value = "删除动态" , notes = "删除动态")
 	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
@@ -211,4 +226,4 @@ public class DbUserDynamicController extends BaseController
 		return toAjax(dbUserDynamicService.deleteDbUserDynamicByIds(ids));
 	}
 
-}
+}*/

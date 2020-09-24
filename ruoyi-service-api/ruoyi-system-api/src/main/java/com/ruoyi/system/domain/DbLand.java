@@ -1,20 +1,20 @@
-package com.ruoyi.fangyuanapi.domain;
+package com.ruoyi.system.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.core.domain.TreeEntity;
 
 /**
  * 土地对象 db_land
  *
- * @author fangyuan
- * @date 2020-09-07
+ * @author zheng
+ * @date 2020-09-24
  */
 @ApiModel
-public class DbLand extends BaseEntity
+public class DbLand extends TreeEntity
 {
     private static final long serialVersionUID = 1L;
 
@@ -60,6 +60,11 @@ public class DbLand extends BaseEntity
     @Excel(name = "别称自定义")
     @ApiModelProperty(value = "别称自定义")
     private String nickName;
+
+    /** 地区id */
+    @Excel(name = "地区id")
+    @ApiModelProperty(value = "地区id")
+    private Long siteId;
 
     public void setLandId(Long landId)
     {
@@ -142,6 +147,15 @@ public class DbLand extends BaseEntity
     {
         return nickName;
     }
+    public void setSiteId(Long siteId)
+    {
+        this.siteId = siteId;
+    }
+
+    public Long getSiteId()
+    {
+        return siteId;
+    }
 
     @Override
     public String toString() {
@@ -156,6 +170,7 @@ public class DbLand extends BaseEntity
                 .append("createTime", getCreateTime())
                 .append("dbUserId", getDbUserId())
                 .append("nickName", getNickName())
+                .append("siteId", getSiteId())
                 .toString();
     }
 }

@@ -1,3 +1,4 @@
+/*
 package com.ruoyi.fangyuanapi.service.impl;
 
 import cn.hutool.db.Db;
@@ -8,7 +9,7 @@ import com.qiniu.util.Auth;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.http.HttpUtils;
 import com.ruoyi.fangyuanapi.conf.QiniuUtils;
-import com.ruoyi.fangyuanapi.domain.*;
+import com.ruoyi.system.domain.*;
 import com.ruoyi.fangyuanapi.mapper.DbDynamicAndEntryMapper;
 import com.ruoyi.fangyuanapi.mapper.DbUserAndDynamicMapper;
 import com.ruoyi.fangyuanapi.mapper.DbUserDynamicMapper;
@@ -47,9 +48,11 @@ public class DbDynamicServiceImpl implements DbDynamicService {
 
     private CloudStorageService build = OSSFactory.build();
 
-    /**
+    */
+/**
 
-     */
+     *//*
+
     @Override
     public String checkAndUploadFile(List<MultipartFile> file) {
         String url =null;
@@ -119,11 +122,13 @@ public class DbDynamicServiceImpl implements DbDynamicService {
         return dynamic;
     }
 
-    /**
+    */
+/**
      * 上传文件
      * @param multipartFile
      * @return url地址
-     */
+     *//*
+
     @Override
     public String uploadFile(MultipartFile multipartFile) {
         String name = StringUtils.getUUIDFileName(multipartFile.getOriginalFilename());
@@ -136,11 +141,13 @@ public class DbDynamicServiceImpl implements DbDynamicService {
         return upload;
     }
 
-    /**
+    */
+/**
      * 检测图片是否合法
      * @param url
      * @return
-     */
+     *//*
+
     @Override
     public Integer checkImagesLegal(String url) {
         String s = QiniuUtils.checkImage(url);
@@ -187,3 +194,4 @@ public class DbDynamicServiceImpl implements DbDynamicService {
 
     }
 }
+*/

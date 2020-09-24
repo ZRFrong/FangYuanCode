@@ -1,13 +1,13 @@
 package com.ruoyi.fangyuanapi.mapper;
 
-import com.ruoyi.fangyuanapi.domain.DbLand;
+import com.ruoyi.system.domain.DbLand;
 import java.util.List;
 
 /**
  * 土地Mapper接口
  * 
- * @author fangyuan
- * @date 2020-09-01
+ * @author zheng
+ * @date 2020-09-24
  */
 public interface DbLandMapper 
 {

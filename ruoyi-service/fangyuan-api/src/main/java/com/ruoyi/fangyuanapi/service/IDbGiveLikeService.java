@@ -1,6 +1,6 @@
 package com.ruoyi.fangyuanapi.service;
 
-import com.ruoyi.fangyuanapi.domain.DbGiveLike;
+import com.ruoyi.system.domain.DbGiveLike;
 import java.util.List;
 
 /**

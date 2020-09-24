@@ -14,7 +14,7 @@ import io.swagger.annotations.ApiParam;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.fangyuantcp.domain.DbTcpOrder;
+import com.ruoyi.system.domain.DbTcpOrder;
 import com.ruoyi.fangyuantcp.service.IDbTcpOrderService;
 
 /**

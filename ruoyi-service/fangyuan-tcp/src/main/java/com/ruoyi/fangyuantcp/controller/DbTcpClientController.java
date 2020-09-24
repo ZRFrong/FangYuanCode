@@ -1,8 +1,7 @@
 package com.ruoyi.fangyuantcp.controller;
 
-import com.ruoyi.fangyuantcp.domain.DbOperationVo;
+import com.ruoyi.system.domain.DbOperationVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,7 +9,7 @@ import io.swagger.annotations.ApiParam;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.fangyuantcp.domain.DbTcpClient;
+import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 
 

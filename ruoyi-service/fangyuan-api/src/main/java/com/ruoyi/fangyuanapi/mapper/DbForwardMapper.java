@@ -1,6 +1,6 @@
 package com.ruoyi.fangyuanapi.mapper;
 
-import com.ruoyi.fangyuanapi.domain.DbForward;
+import com.ruoyi.system.domain.DbForward;
 import java.util.List;
 
 /**

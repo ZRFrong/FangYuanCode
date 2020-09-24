@@ -1,6 +1,6 @@
 package com.ruoyi.fangyuanapi.service;
 
-import com.ruoyi.fangyuanapi.domain.DbUserDynamic;
+import com.ruoyi.system.domain.DbUserDynamic;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

@@ -1,13 +1,14 @@
 package com.ruoyi.fangyuanapi.service;
 
-import com.ruoyi.fangyuanapi.domain.DbLand;
+import com.ruoyi.system.domain.DbLand;
 import java.util.List;
+import com.ruoyi.common.core.domain.Ztree;
 
 /**
  * 土地Service接口
  * 
- * @author fangyuan
- * @date 2020-09-01
+ * @author zheng
+ * @date 2020-09-24
  */
 public interface IDbLandService 
 {
@@ -58,4 +59,11 @@ public interface IDbLandService
      * @return 结果
      */
     public int deleteDbLandById(Long landId);
+
+    /**
+     * 查询土地树列表
+     * 
+     * @return 所有土地信息
+     */
+    public List<Ztree> selectDbLandTree();
 }

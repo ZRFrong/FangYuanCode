@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.mapper.DbAttentionMapper;
-import com.ruoyi.fangyuanapi.domain.DbAttention;
+import com.ruoyi.system.domain.DbAttention;
 import com.ruoyi.fangyuanapi.service.IDbAttentionService;
 import com.ruoyi.common.core.text.Convert;
 

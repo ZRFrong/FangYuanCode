@@ -1,7 +1,7 @@
 package com.ruoyi.fangyuantcp.utils;
 
 
-import com.ruoyi.fangyuantcp.domain.DbOperationVo;
+import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;

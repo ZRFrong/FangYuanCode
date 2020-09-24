@@ -1,6 +1,6 @@
 package com.ruoyi.fangyuanapi.mapper;
 
-import com.ruoyi.fangyuanapi.domain.DbUserDynamic;
+import com.ruoyi.system.domain.DbUserDynamic;
 import java.util.List;
 import java.util.Map;
 

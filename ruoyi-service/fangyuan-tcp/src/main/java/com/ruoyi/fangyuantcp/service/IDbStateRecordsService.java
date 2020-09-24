@@ -1,6 +1,6 @@
 package com.ruoyi.fangyuantcp.service;
 
-import com.ruoyi.fangyuantcp.domain.DbStateRecords;
+import com.ruoyi.system.domain.DbStateRecords;
 import java.util.List;
 
 /**

@@ -1,4 +1,4 @@
-package com.ruoyi.fangyuantcp.domain;
+package com.ruoyi.system.domain;
 
 
 import io.swagger.annotations.ApiModel;

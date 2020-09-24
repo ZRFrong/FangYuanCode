@@ -1,20 +1,17 @@
 package com.ruoyi.fangyuantcp.utils;
 
 import com.alibaba.fastjson.JSONArray;
-import com.ruoyi.common.json.JSON;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.fangyuantcp.domain.DbOperationVo;
-import com.ruoyi.fangyuantcp.domain.DbTcpClient;
-import com.ruoyi.fangyuantcp.domain.DbTcpOrder;
-import com.ruoyi.fangyuantcp.domain.DbTcpType;
+import com.ruoyi.system.domain.DbTcpClient;
+import com.ruoyi.system.domain.DbTcpOrder;
+import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.fangyuantcp.service.IDbTcpOrderService;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.text.DecimalFormat;

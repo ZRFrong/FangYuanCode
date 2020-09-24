@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuantcp.mapper.DbTcpOrderMapper;
-import com.ruoyi.fangyuantcp.domain.DbTcpOrder;
+import com.ruoyi.system.domain.DbTcpOrder;
 import com.ruoyi.fangyuantcp.service.IDbTcpOrderService;
 import com.ruoyi.common.core.text.Convert;
 

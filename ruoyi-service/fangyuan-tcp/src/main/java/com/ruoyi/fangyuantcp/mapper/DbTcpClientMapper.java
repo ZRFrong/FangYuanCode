@@ -1,6 +1,6 @@
 package com.ruoyi.fangyuantcp.mapper;
 
-import com.ruoyi.fangyuantcp.domain.DbTcpClient;
+import com.ruoyi.system.domain.DbTcpClient;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;

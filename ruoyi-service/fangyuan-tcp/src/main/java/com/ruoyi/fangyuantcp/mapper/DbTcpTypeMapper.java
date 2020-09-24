@@ -1,6 +1,6 @@
 package com.ruoyi.fangyuantcp.mapper;
 
-import com.ruoyi.fangyuantcp.domain.DbTcpType;
+import com.ruoyi.system.domain.DbTcpType;
 import java.util.List;
 
 /**

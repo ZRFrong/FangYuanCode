@@ -1,7 +1,7 @@
 package com.ruoyi.fangyuantcp.timing;
 
 import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.fangyuantcp.domain.DbTcpClient;
+import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.fangyuantcp.utils.DateUtilLong;
 

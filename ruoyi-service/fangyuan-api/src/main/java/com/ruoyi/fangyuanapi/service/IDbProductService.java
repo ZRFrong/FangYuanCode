@@ -1,6 +1,6 @@
 package com.ruoyi.fangyuanapi.service;
 
-import com.ruoyi.fangyuanapi.domain.DbProduct;
+import com.ruoyi.system.domain.DbProduct;
 import java.util.List;
 
 /**

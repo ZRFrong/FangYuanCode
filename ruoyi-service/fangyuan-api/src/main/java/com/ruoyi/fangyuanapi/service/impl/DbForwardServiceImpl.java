@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.mapper.DbForwardMapper;
-import com.ruoyi.fangyuanapi.domain.DbForward;
+import com.ruoyi.system.domain.DbForward;
 import com.ruoyi.fangyuanapi.service.IDbForwardService;
 import com.ruoyi.common.core.text.Convert;
 

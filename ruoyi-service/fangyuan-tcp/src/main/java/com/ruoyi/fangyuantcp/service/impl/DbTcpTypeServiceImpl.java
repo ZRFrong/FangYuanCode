@@ -3,14 +3,12 @@ package com.ruoyi.fangyuantcp.service.impl;
 import java.util.Date;
 import java.util.List;
 
-import com.ruoyi.common.json.JSON;
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.fangyuantcp.domain.DbStateRecords;
+import com.ruoyi.system.domain.DbStateRecords;
 import com.ruoyi.fangyuantcp.mapper.DbStateRecordsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuantcp.mapper.DbTcpTypeMapper;
-import com.ruoyi.fangyuantcp.domain.DbTcpType;
+import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.common.core.text.Convert;
 

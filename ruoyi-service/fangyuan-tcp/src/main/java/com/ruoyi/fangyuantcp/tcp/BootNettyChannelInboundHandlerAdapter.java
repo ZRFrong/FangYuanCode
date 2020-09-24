@@ -1,7 +1,7 @@
 package com.ruoyi.fangyuantcp.tcp;
 
 
-import com.ruoyi.fangyuantcp.domain.DbTcpClient;
+import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.fangyuantcp.utils.DisConnectUtils;
 import com.ruoyi.fangyuantcp.utils.ReceiveUtil;
 import io.netty.channel.ChannelHandlerContext;

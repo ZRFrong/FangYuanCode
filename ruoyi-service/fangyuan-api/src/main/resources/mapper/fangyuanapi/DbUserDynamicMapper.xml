@@ -93,7 +93,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
-    <select id="selectDbUserDynamicByUserId" resultType="com.ruoyi.fangyuanapi.domain.DbUserDynamic">
+    <select id="selectDbUserDynamicByUserId" resultType="com.ruoyi.system.domain.DbUserDynamic">
         SELECT a.*  FROM db_user_dynamic a LEFT JOIN db_user_and_dynamic b ON a.id = b.dynamic_id WHERE b.user_id = #{id} limit #{currPage},#{pageSize}
     </select>
 
