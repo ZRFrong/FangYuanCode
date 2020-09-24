@@ -2,6 +2,7 @@ package com.ruoyi.fangyuanapi.mapper;
 
 import com.ruoyi.fangyuanapi.domain.DbUserDynamic;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 动态Mapper接口
@@ -60,4 +61,13 @@ public interface DbUserDynamicMapper
     public int deleteDbUserDynamicByIds(String[] ids);
 
     List<DbUserDynamic> selectDbUserDynamicByUserId(Long id,Integer currPage,Integer pageSize);
+
+    Map<String,String> selectDynamicCreatedAndResourcesByid(Long id, Integer currPage, Integer pageSize);
+
+
+
+
+
+
+
 }

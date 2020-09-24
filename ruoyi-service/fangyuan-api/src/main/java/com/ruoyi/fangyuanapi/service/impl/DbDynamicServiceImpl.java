@@ -1,8 +1,12 @@
 package com.ruoyi.fangyuanapi.service.impl;
 
+import cn.hutool.db.Db;
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
+import com.qiniu.http.Client;
+import com.qiniu.util.Auth;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.http.HttpUtils;
 import com.ruoyi.fangyuanapi.conf.QiniuUtils;
 import com.ruoyi.fangyuanapi.domain.*;
 import com.ruoyi.fangyuanapi.mapper.DbDynamicAndEntryMapper;
@@ -12,9 +16,9 @@ import com.ruoyi.fangyuanapi.mapper.DbUserMapper;
 import com.ruoyi.fangyuanapi.service.DbDynamicService;
 import com.ruoyi.system.oss.CloudStorageService;
 import com.ruoyi.system.oss.OSSFactory;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +27,6 @@ import java.util.*;
 
 
 @Slf4j
-@Service
 public class DbDynamicServiceImpl implements DbDynamicService {
 
     private String image = ".jpg.png.jpeg.bmp.webp.tif.gif";
@@ -44,9 +47,9 @@ public class DbDynamicServiceImpl implements DbDynamicService {
 
     private CloudStorageService build = OSSFactory.build();
 
+    /**
 
-
-
+     */
     @Override
     public String checkAndUploadFile(List<MultipartFile> file) {
         String url =null;
@@ -116,12 +119,11 @@ public class DbDynamicServiceImpl implements DbDynamicService {
         return dynamic;
     }
 
-/**
+    /**
      * 上传文件
      * @param multipartFile
-     * @return url地址*/
-
-
+     * @return url地址
+     */
     @Override
     public String uploadFile(MultipartFile multipartFile) {
         String name = StringUtils.getUUIDFileName(multipartFile.getOriginalFilename());
@@ -133,13 +135,12 @@ public class DbDynamicServiceImpl implements DbDynamicService {
         }
         return upload;
     }
-/*
-*
+
+    /**
      * 检测图片是否合法
      * @param url
-     * @return*/
-
-
+     * @return
+     */
     @Override
     public Integer checkImagesLegal(String url) {
         String s = QiniuUtils.checkImage(url);
@@ -158,4 +159,31 @@ public class DbDynamicServiceImpl implements DbDynamicService {
     }
 
 
+    public static void main(String[] args){
+//        String str = ".jpg.png.jpeg";
+//        System.out.println(str.contains(".jpg"));
+//        System.out.println("-------------------------------------------------");
+//        String s = HttpUtils.sendGet("http://192.168.3.3:8001/sms/sendSms", "/15135006102/1/1");
+//        System.out.println("结果"+s);
+
+        DbComment comment = new DbComment();
+        comment.setId(100l);
+        System.out.println(comment.getId());
+        Timer timer = new Timer();
+        Integer integer = 0;
+        TimerTask task = new TimerTask() {
+            Integer integer = 0;
+            @Override
+            public void run() {
+                int anInt = 0;
+                anInt++;
+                if (integer<5 ){
+                    integer++;
+                }
+                System.out.println(anInt);
+            }
+        };
+        timer.schedule(task,5000l,30000l);
+
+    }
 }

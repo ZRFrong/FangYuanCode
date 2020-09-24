@@ -42,12 +42,18 @@ public class AuthFilter implements GlobalFilter, Ordered {
     @Resource(name = "stringRedisTemplate")
     private ValueOperations<String, String> ops;
 
-    private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/smallLogin");
+    /**
+     * 方便测试，
+     */
+    private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/smallLogin","fangyuanapi/wxUser","fangyuanapi/dynamic1");
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String url = exchange.getRequest().getURI().getPath();
         log.info("url:{}", url);
+        /**
+         * 方便测试，
+         */
         for (String s : zhao) {
             if (url.contains(s)){
                 return chain.filter(exchange);

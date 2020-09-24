@@ -1,7 +1,10 @@
 package com.ruoyi.fangyuanapi.service;
 
 import com.ruoyi.fangyuanapi.domain.DbUserDynamic;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * 动态Service接口
@@ -58,4 +61,30 @@ public interface IDbUserDynamicService
      * @return 结果
      */
     public int deleteDbUserDynamicById(Long id);
+
+    String checkAndUploadFile(List<MultipartFile> file);
+
+    /**
+     * 添加动态
+     * @param userId
+     * @param dynamic
+     * @param entryIds
+     * @return
+     */
+    DbUserDynamic insterDynamic(String userId,DbUserDynamic dynamic, Long[] entryIds);
+
+    /**
+     * 上传文件
+     * @param multipartFile
+     * @return
+     */
+    String uploadFile(MultipartFile multipartFile);
+
+
+    /**
+     * 查询用户所发布动态的所有图片
+     * @param dynamicIds
+     * @return
+     */
+    List<Map<String,String>> selectImagesByDynamicId(List<Long> dynamicIds,Integer currPage,Integer pageSize);
 }
