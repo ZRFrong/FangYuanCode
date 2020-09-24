@@ -155,4 +155,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select  * from db_user where open_id = #{openId}
     </select>
 
+
+    <select id="selectDbUserNicknameAndAvatarById" resultType="java.util.Map">
+        select id, nickname,avatar from db_user where id = {userId}
+    </select>
+
 </mapper>

@@ -1,12 +1,10 @@
 package com.ruoyi.fangyuanapi.controller;
-
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.redis.config.RedisTimeConf;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.PassDemo;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.md5.ZhaoMD5Utils;
 import com.ruoyi.common.utils.sms.CategoryType;
 import com.ruoyi.common.utils.sms.ResultEnum;
 import com.ruoyi.system.domain.DbUser;
@@ -16,9 +14,9 @@ import com.ruoyi.fangyuanapi.service.IDbUserAndDynamicService;
 import com.ruoyi.fangyuanapi.service.IDbUserDynamicService;
 import com.ruoyi.fangyuanapi.service.IDbUserService;
 import com.ruoyi.system.feign.RemoteDeptService;
+import com.ruoyi.system.feign.SendSmsClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +45,9 @@ public class DbUserController {
     @Autowired
     private IDbUserDynamicService dbUserDynamicService;
 
+    @Autowired
+    private SendSmsClient sendSmsClient;
+
 
 
     /**
@@ -55,15 +56,15 @@ public class DbUserController {
      * @return R { 0 : SUCCESS}
      */
     @PostMapping("smallRegister")
-    public R wxRegister(DbUser dbUser,String uuid){
-        String codeSuccess = redisUtils.get(CategoryType.USER_CODE_SUCCESS_ + dbUser.getPhone());
-        if (StringUtils.isEmpty(codeSuccess) && !ZhaoMD5Utils.convertMD5(uuid).equals(codeSuccess)){//判断通行证是否有效
-            redisUtils.delete(CategoryType.USER_CODE_SUCCESS_ + dbUser.getPhone());
-            return R.error(ResultEnum.CODE_SUCCESS.getCode(),ResultEnum.CODE_SUCCESS.getMessage());
-        }
-        if (dbUser == null && dbUser.getPhone() != null){
+    public R wxRegister(DbUser dbUser,String code){
+        if (dbUser == null || dbUser.getPhone() != null || code == null){
             return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
         }
+        R r = sendSmsClient.checkCode(dbUser.getPhone(), code);
+        if (!"200".equals(r.get("code"))){
+            return r;
+        }
+
         //todo 查询手机号是否有可能在app注册了，如果有同步数据
         DbUser user = dbUserService.selectDbUserByPhone(dbUser);
         String s;
@@ -73,10 +74,39 @@ public class DbUserController {
             s = PassDemo.gen(dbUser.getId());
             return R.data(s);
         }
-        s = ZhaoMD5Utils.string2MD5(user.getSalt() + user.getId());
+        s = PassDemo.gen(user.getId());
         redisUtils.set(CategoryType.USER_TOKEN_.name()+dbUser.getId(),s,RedisTimeConf.THERE_MONTH);
         return R.data(s);
     }
+
+//    /**
+//     * 小程序注册
+//     * @param dbUser
+//     * @return R { 0 : SUCCESS}
+//     */
+//    @PostMapping("smallRegister")
+//    public R wxRegister(DbUser dbUser,String uuid){
+//        String codeSuccess = redisUtils.get(CategoryType.USER_CODE_SUCCESS_ + dbUser.getPhone());
+//        if (StringUtils.isEmpty(codeSuccess) && !ZhaoMD5Utils.convertMD5(uuid).equals(codeSuccess)){//判断通行证是否有效
+//            redisUtils.delete(CategoryType.USER_CODE_SUCCESS_ + dbUser.getPhone());
+//            return R.error(ResultEnum.CODE_SUCCESS.getCode(),ResultEnum.CODE_SUCCESS.getMessage());
+//        }
+//        if (dbUser == null && dbUser.getPhone() != null){
+//            return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
+//        }
+//        //todo 查询手机号是否有可能在app注册了，如果有同步数据
+//        DbUser user = dbUserService.selectDbUserByPhone(dbUser);
+//        String s;
+//        if (user == null || user.getPhone() != dbUser.getPhone()){//注册
+//            dbUser.setCreated(new Date());
+//            int i = dbUserService.insertDbUser(dbUser);
+//            s = PassDemo.gen(dbUser.getId());
+//            return R.data(s);
+//        }
+//        s = ZhaoMD5Utils.string2MD5(user.getSalt() + user.getId());
+//        redisUtils.set(CategoryType.USER_TOKEN_.name()+dbUser.getId(),s,RedisTimeConf.THERE_MONTH);
+//        return R.data(s);
+//    }
 
 
     /**
