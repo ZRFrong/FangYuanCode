@@ -58,4 +58,6 @@ public interface IDbTcpOrderService
      * @return 结果
      */
     public int deleteDbTcpOrderById(Long tcpOrderId);
+
+    void curingTiming();
 }

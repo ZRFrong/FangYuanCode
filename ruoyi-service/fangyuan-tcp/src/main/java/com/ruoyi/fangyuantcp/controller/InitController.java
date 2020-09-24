@@ -1,6 +1,7 @@
 package com.ruoyi.fangyuantcp.controller;
 
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
+import com.ruoyi.fangyuantcp.timing.TaskHeartbeat;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,12 +13,19 @@ public class InitController {
     @Value("${person.listen-port}")
     private int port;
 
+    /*
+    *加载bean的时候初始化一些服务
+    * */
+
 
     @PostConstruct
     public void listen() throws Exception {
 
-        new Thread(){
-            public void run(){
+        /*
+         * 开启端口监听
+         * */
+        new Thread() {
+            public void run() {
                 System.out.println("启动监听");//这里是线程需要做的事情
                 try {
                     NettyServer.bind(port);
@@ -26,5 +34,16 @@ public class InitController {
                 }
             }
         }.start();
+
+
+        /*
+         *开启心跳定时查询
+         * */
+        TaskHeartbeat taskHeartbeat = new TaskHeartbeat();
+        taskHeartbeat.HeartbeatRun();
+
+        /*
+        *开启状态更新
+        * */
     }
 }

@@ -42,6 +42,7 @@ public class TaskHeartbeat {
         dbTcpClients.forEach(item -> screen(item));
     }
 
+
     private void screen(DbTcpClient item) {
         if (item.getHeartbeatTime() != null) {
             Long minuteDiff = DateUtilLong.getMinuteDiff(item.getHeartbeatTime(), new Date());

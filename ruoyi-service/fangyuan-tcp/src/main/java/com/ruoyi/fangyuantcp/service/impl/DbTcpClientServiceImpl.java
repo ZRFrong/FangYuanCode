@@ -29,10 +29,10 @@ import com.ruoyi.common.core.text.Convert;
 public class DbTcpClientServiceImpl implements IDbTcpClientService {
 
     @Autowired
-    private  RedisUtils redisUtils;
+    private RedisUtils redisUtils;
 
 
-    private SendCodeUtils sendCodeUtils=new SendCodeUtils();
+    private SendCodeUtils sendCodeUtils = new SendCodeUtils();
 
     @Autowired
     private DbTcpClientMapper dbTcpClientMapper;
@@ -43,7 +43,6 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
 
     /**
      * 查询tcp在线设备
-     *
      * @param tcpClientId tcp在线设备ID
      * @return tcp在线设备
      */
@@ -98,32 +97,44 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
 
     @Override
     public void updateByHeartbeatName(String heartbeatName) {
-         dbTcpClientMapper.updateByHeartbeatName(heartbeatName);
+        dbTcpClientMapper.updateByHeartbeatName(heartbeatName);
     }
 
     /*
-    * 操作设备
-    * */
+     *
+     * 查询状态
+     * */
+    @Override
+    public int query(DbOperationVo dbTcpClient) {
+       //查询状态
+        int querystate = sendCodeUtils.querystate(dbTcpClient);
+        return querystate;
+    }
+
+    /*
+     * 操作设备
+     * */
     @Override
     public int operation(DbOperationVo dbTcpClient) {
 //        发送指令
+        dbTcpClient.setCreateTime(new Date());
         int query = sendCodeUtils.query(dbTcpClient);
 //        存储操作信息到redis
         String operationText = dbTcpClient.getOperationText();
         String facility = dbTcpClient.getFacility();
         String heartName = dbTcpClient.getHeartName();
-        String s=record+":"+heartName+facility+operationText;
+        String s = record + ":" + heartName + facility + operationText;
         DbTcpOrder order = getOrder(dbTcpClient);
         String s2 = JSONArray.toJSONString(order);
-        redisUtils.set(s,s2);
+        redisUtils.set(s, s2);
         return query;
     }
 
-    private DbTcpOrder getOrder(DbOperationVo dbOperationVo){
+    private DbTcpOrder getOrder(DbOperationVo dbOperationVo) {
         DbTcpOrder dbTcpOrder = new DbTcpOrder();
         dbTcpOrder.setHeartName(dbOperationVo.getHeartName());
         dbTcpOrder.setResults(0);
-        dbTcpOrder.setText(dbOperationVo.getFacility()+dbOperationVo.getOperationText());
+        dbTcpOrder.setText(dbOperationVo.getFacility() + dbOperationVo.getOperationText());
         dbTcpOrder.setCreateTime(new Date());
         return dbTcpOrder;
     }
@@ -156,9 +167,6 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     public int deleteDbTcpClientById(Long tcpClientId) {
         return dbTcpClientMapper.deleteDbTcpClientById(tcpClientId);
     }
-
-
-
 
 
 }
