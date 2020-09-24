@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbManualReviewMapper">
+    
+    <resultMap type="DbManualReview" id="DbManualReviewResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="dynamicId"    column="dynamic_id"    />
+        <result property="dynamicContent"    column="dynamic_content"    />
+        <result property="dynamicResource"    column="dynamic_resource"    />
+        <result property="isSussess"    column="is_sussess"    />
+        <result property="created"    column="created"    />
+        <result property="reviewUser"    column="review_user"    />
+        <result property="reviewTime"    column="review_time"    />
+        <result property="isViolation" column="is_violation" />
+    </resultMap>
+
+    <sql id="selectDbManualReviewVo">
+        select id, user_id, dynamic_id, dynamic_content, dynamic_resource, is_sussess, created, review_user, review_time,is_violation from db_manual_review
+    </sql>
+
+    <select id="selectDbManualReviewList" parameterType="DbManualReview" resultMap="DbManualReviewResult">
+        <include refid="selectDbManualReviewVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbManualReviewById" parameterType="Long" resultMap="DbManualReviewResult">
+        <include refid="selectDbManualReviewVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbManualReview" parameterType="DbManualReview" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into db_manual_review
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="dynamicId != null ">dynamic_id,</if>
+            <if test="dynamicContent != null  and dynamicContent != ''">dynamic_content,</if>
+            <if test="dynamicResource != null  and dynamicResource != ''">dynamic_resource,</if>
+            <if test="isSussess != null ">is_sussess,</if>
+            <if test="created != null ">created,</if>
+            <if test="reviewUser != null  and reviewUser != ''">review_user,</if>
+            <if test="reviewTime != null ">review_time,</if>
+            <if test="isViolation != null ">is_violation</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="dynamicId != null ">#{dynamicId},</if>
+            <if test="dynamicContent != null  and dynamicContent != ''">#{dynamicContent},</if>
+            <if test="dynamicResource != null  and dynamicResource != ''">#{dynamicResource},</if>
+            <if test="isSussess != null ">#{isSussess},</if>
+            <if test="created != null ">#{created},</if>
+            <if test="reviewUser != null  and reviewUser != ''">#{reviewUser},</if>
+            <if test="reviewTime != null ">#{reviewTime},</if>
+            <if test="isViolation != null ">#{is_violation},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbManualReview" parameterType="DbManualReview">
+        update db_manual_review
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="dynamicId != null ">dynamic_id = #{dynamicId},</if>
+            <if test="dynamicContent != null  and dynamicContent != ''">dynamic_content = #{dynamicContent},</if>
+            <if test="dynamicResource != null  and dynamicResource != ''">dynamic_resource = #{dynamicResource},</if>
+            <if test="isSussess != null ">is_sussess = #{isSussess},</if>
+            <if test="created != null ">created = #{created},</if>
+            <if test="reviewUser != null  and reviewUser != ''">review_user = #{reviewUser},</if>
+            <if test="reviewTime != null ">review_time = #{reviewTime},</if>
+            <if test="isViolation != null ">is_violation = #{is_violation},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbManualReviewById" parameterType="Long">
+        delete from db_manual_review where id = #{id}
+    </delete>
+
+    <delete id="deleteDbManualReviewByIds" parameterType="String">
+        delete from db_manual_review where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
