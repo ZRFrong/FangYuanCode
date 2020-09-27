@@ -2,6 +2,7 @@ package com.ruoyi.fangyuanapi.mapper;
 
 import com.ruoyi.system.domain.DbUser;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 前台用户Mapper接口
@@ -67,4 +68,11 @@ public interface DbUserMapper
     DbUser selectDbUserByPhone(String phone);
 
     DbUser selectDbUserByOpenId(String openId);
+
+    /**
+     * 根据userid查询用户头像和
+     * @param userId
+     * @return
+     */
+    Map<String,String> selectDbUserNicknameAndAvatarById(Long userId);
 }

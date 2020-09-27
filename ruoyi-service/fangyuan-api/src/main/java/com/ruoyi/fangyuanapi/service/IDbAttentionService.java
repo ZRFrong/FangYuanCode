@@ -2,6 +2,7 @@ package com.ruoyi.fangyuanapi.service;
 
 import com.ruoyi.system.domain.DbAttention;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 关注和被关注Service接口
@@ -58,4 +59,34 @@ public interface IDbAttentionService
      * @return 结果
      */
     public int deleteDbAttentionById(Long id);
+
+    /**
+     * 查询关注的人
+     * @param userId
+     * @return
+     */
+    List<Map<String,String>> selectDbAttentionByUserId(String userId,Integer currPage);
+
+    /**
+     * 取消关注
+     * @param loginUserId
+     * @param userId
+     * @return
+     */
+    boolean deleteAttention(String loginUserId, Long userId);
+
+    /**
+     * 查询粉丝列表
+     * @param userId
+     * @param currPage
+     * @return
+     */
+    List<Map<String,String>> getFans(String userId, Integer currPage);
+
+    /**
+     * 查询关注的人id
+     * @param userId 当前用户id
+     * @return ids
+     */
+    List<Long> selectReplyAttentionUserIds(String userId);
 }

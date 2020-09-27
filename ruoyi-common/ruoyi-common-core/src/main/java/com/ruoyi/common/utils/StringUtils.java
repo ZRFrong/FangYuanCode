@@ -185,8 +185,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
      * 检测文件是否是指定的图片格式
      * @return 是 true 否false
      */
-    public static boolean checkFileIsImages(String fileName){
-        String image = ".jpg.png.jpeg.bmp.webp.tif.gif";
+    public static boolean checkFileIsImages(String fileName,String imageFilter){
+        String image = imageFilter;
 
         if (image.contains(getSuffixes(fileName))){
             return true;
@@ -199,8 +199,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
      * @param fileName
      * @return
      */
-    public static boolean checkFileIsVideo(String fileName){
-        String video = ".mp4.flv.mov.avi.wmv.ts.mpg";
+    public static boolean checkFileIsVideo(String fileName,String videoFilter){
+        String video = videoFilter;
         if (video.contains(getSuffixes(fileName))){
             return true;
         }

@@ -58,4 +58,35 @@ public interface DbAttentionMapper
      * @return 结果
      */
     public int deleteDbAttentionByIds(String[] ids);
+
+    /**
+     * 通过userId查询关注的人
+     * @param userId
+     * @return
+     */
+    List<Long> selectDbAttentionByUserId(Long userId,Integer currPage,Integer pageSize);
+
+    /**
+     *
+     * @param loginUserId
+     * @param userId
+     * @return
+     */
+    DbAttention selectDbAttentionByUserIdAndReplyAttentionUserId(Long loginUserId, Long userId);
+
+    /**
+     * 查询粉丝
+     * @param userId
+     * @param currPage
+     * @param pageSize
+     * @return
+     */
+    List<Long> selectDbAttentionByReplyAttentionUserId(String userId, Integer currPage, Integer pageSize);
+
+    /**
+     * 查询关注的人id
+     * @param userId
+     * @return
+     */
+    List<Long> selectReplyAttentionUserIdsByUserId(String userId);
 }

@@ -1,12 +1,12 @@
 package com.ruoyi.fangyuanapi.controller;
 
+import com.github.pagehelper.ISelect;
+import com.github.pagehelper.PageHelper;
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.core.page.PageConf;
+import com.ruoyi.common.utils.sms.ResultEnum;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -15,6 +15,10 @@ import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.system.domain.DbAttention;
 import com.ruoyi.fangyuanapi.service.IDbAttentionService;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 关注和被关注 提供者
@@ -31,6 +35,51 @@ public class DbAttentionController extends BaseController
 	@Autowired
 	private IDbAttentionService dbAttentionService;
 
+
+    /**
+     * 获取粉丝列表
+     * @return
+     */
+	@GetMapping("getFans/currPage")
+	public R getFans(HttpServletRequest request,@PathVariable(value = "currPage",required = false) Integer currPage){
+        String userId = request.getHeader(Constants.CURRENT_ID);
+		currPage = currPage == null || currPage <=0 ? 0:(currPage - 1) * PageConf.pageSize;
+        List<Map<String,String>> list = dbAttentionService.getFans(userId,currPage);
+        if (list == null ||list.size() <= 0){
+            return R.error(ResultEnum.NULL_FANS.getCode(),ResultEnum.NULL_FANS.getMessage());
+        }
+        return R.data(list);
+    }
+
+    /**
+     * 取消关注
+     * @param request
+     * @param userId
+     * @return
+     */
+	@DeleteMapping("deleteAttention/{userId}")
+	public R deleteAttention(HttpServletRequest request,@PathVariable Long userId){
+        String loginUserId = request.getHeader(Constants.CURRENT_ID);
+        boolean b = dbAttentionService.deleteAttention(loginUserId,userId);
+        return null;
+    }
+
+    /**
+     * 查询关注的人
+     * @param request
+     * @return
+     */
+	@GetMapping("getAttention/{currPage}")
+	public R getAttention(HttpServletRequest request,@PathVariable(value = "currPage",required = false) Integer currPage){
+        String userId = request.getHeader(Constants.CURRENT_ID);
+		currPage = currPage == null || currPage <=0 ? 0:(currPage - 1) * PageConf.pageSize;
+        List<Map<String,String>> result = dbAttentionService.selectDbAttentionByUserId(userId,currPage);
+        if (result.size() <= 0 || request == null){
+            return R.error(ResultEnum.NULL_ATTENTION.getCode(),ResultEnum.NULL_ATTENTION.getMessage());
+        }
+        return R.data(result);
+	}
+
 	/**
 	 * 查询${tableComment}
 	 */
@@ -39,7 +88,6 @@ public class DbAttentionController extends BaseController
 	public DbAttention get(@ApiParam(name="id",value="long",required=true)  @PathVariable("id") Long id)
 	{
 		return dbAttentionService.selectDbAttentionById(id);
-
 	}
 
 	/**
@@ -52,7 +100,6 @@ public class DbAttentionController extends BaseController
 		startPage();
 		return result(dbAttentionService.selectDbAttentionList(dbAttention));
 	}
-
 
 	/**
 	 * 新增保存关注和被关注

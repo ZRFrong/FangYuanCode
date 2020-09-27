@@ -58,7 +58,23 @@ public enum ResultEnum {
     /**
      *
      */
-    RESULT_BLOCK(11,"该文件存在违规行为，请更换后再试！");
+    RESULT_BLOCK(11,"该文件存在违规行为，请更换后再试！"),
+    /**
+     *
+     */
+    VIOLATION_FAILURE(12,"人工审核不通过！"),
+    /**
+     *
+     */
+    UNDER_REVIEW(13,"正在审核中！"),
+    /**
+     *
+     */
+    NULL_ATTENTION(14,"您当前还没有关注的人！"),
+    /**
+     *
+     */
+    NULL_FANS(15,"您暂时没有粉丝！")
     ;
     /**
      * 返回状态码

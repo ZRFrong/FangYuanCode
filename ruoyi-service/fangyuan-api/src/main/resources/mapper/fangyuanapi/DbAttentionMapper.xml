@@ -20,12 +20,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
         </where>
     </select>
-    
+
+
     <select id="selectDbAttentionById" parameterType="Long" resultMap="DbAttentionResult">
         <include refid="selectDbAttentionVo"/>
         where id = #{id}
     </select>
-        
+
+
+    <select id="selectDbAttentionByUserId" resultType="java.lang.Long">
+       select reply_attention_user_id from db_attention where user_id = #{userId} limit #{currPage},#{pageSize}
+    </select>
+
+    <select id="selectDbAttentionByUserIdAndReplyAttentionUserId" resultMap="DbAttentionResult">
+        select * from db_attention where user_id = #{loginUserId} AND   reply_attention_user_id =#{userId}
+    </select>
+
+    <select id="selectDbAttentionByReplyAttentionUserId" resultType="java.lang.Long">
+        select userId from db_attention where reply_attention_user_id = #{userId} limit #{currPage},#{pageSize}
+    </select>
+
+    <select id="selectReplyAttentionUserIdsByUserId" resultType="java.lang.Long">
+        select reply_attention_user_id from db_attention where user_id = #{userId}
+    </select>
+
+
     <insert id="insertDbAttention" parameterType="DbAttention">
         insert into db_attention
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -62,5 +81,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
-    
+
 </mapper>
