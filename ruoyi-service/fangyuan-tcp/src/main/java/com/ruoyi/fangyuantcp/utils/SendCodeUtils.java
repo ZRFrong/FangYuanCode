@@ -1,6 +1,7 @@
 package com.ruoyi.fangyuantcp.utils;
 
 
+import cn.hutool.core.thread.ThreadUtil;
 import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
 import io.netty.buffer.Unpooled;
@@ -8,15 +9,14 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
 
 /*
  * 硬件端发送指令工具类
  * */
 public class SendCodeUtils {
-//    在线设备map
+    //    在线设备map
     private Map<String, ChannelHandlerContext> map = NettyServer.map;
 
     /*
@@ -27,7 +27,7 @@ public class SendCodeUtils {
         try {
 //        text处理
             ArrayList<String> strings1 = new ArrayList<>();
-            String text = tcpOrder.getFacility()+","+"05,"+tcpOrder.getOperationText();
+            String text = tcpOrder.getFacility() + "," + "05," + tcpOrder.getOperationText();
             String[] split3 = text.split(",");
             for (String s : split3) {
                 strings1.add(s);
@@ -61,14 +61,14 @@ public class SendCodeUtils {
     }
 
     /*
-    * 状态查询指令发送
-    * */
+     * 状态查询指令发送
+     * */
     public int querystate(DbOperationVo tcpOrder) {
         String address = tcpOrder.getHeartName();
         try {
 //        text处理
             ArrayList<String> strings1 = new ArrayList<>();
-            String text = tcpOrder.getFacility()+","+"03,"+tcpOrder.getOperationText();
+            String text = tcpOrder.getFacility() + "," + "03," + tcpOrder.getOperationText();
             String[] split3 = text.split(",");
             for (String s : split3) {
                 strings1.add(s);
@@ -102,6 +102,64 @@ public class SendCodeUtils {
     }
 
 
+    private static ExecutorService executorService = null;
 
+    /*
+     * 多线程依次执行
+     * */
+    public static int queryIoList(Map<String, List<DbOperationVo>> mps) {
+        Set<String> strings = mps.keySet();
+//    新建几条线程
+        executorService = ThreadUtil.newExecutor(strings.size());
+        try {
+            strings.forEach(ite -> send(mps.get(ite)));
+            executorService.shutdown();
+            while (!executorService.isTerminated()){
+//            等待执行完成再返回
+            }
+            return 1;
+        } catch (Exception e) {
+            executorService.shutdown();
+            e.printStackTrace();
+            return 0;
+        }
+
+    }
+
+
+    private static void send(List<DbOperationVo> dbOperationVos) {
+
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+//                    循环list
+//                    int query = query(dbOperationVo);
+                for (int i = 0; i < dbOperationVos.size(); i++) {
+                    System.out.println(dbOperationVos.get(i) + "执行了");
+//                    线程礼让让其他的先执行
+                    if (i < dbOperationVos.size()) {
+                        Thread.yield();
+                    }
+                }
+            }
+        });
+
+
+    }
+
+    public static void main(String[] args) {
+        Map<String, List<DbOperationVo>> mps = new HashMap<>();
+        List<DbOperationVo> vos = new ArrayList<>();
+        vos.add(new DbOperationVo("小明", "1", "115,25,16", "0", new Date()));
+        vos.add(new DbOperationVo("小明", "2", "115,25,777", "0", new Date()));
+        mps.put("小明", vos);
+        List<DbOperationVo> vos2 = new ArrayList<>();
+        vos2.add(new DbOperationVo("小红", "1", "115,25,16", "0", new Date()));
+        vos2.add(new DbOperationVo("小红", "2", "115,25,777", "0", new Date()));
+        mps.put("小红", vos2);
+        int i = queryIoList(mps);
+        System.out.println(i);
+
+    }
 
 }

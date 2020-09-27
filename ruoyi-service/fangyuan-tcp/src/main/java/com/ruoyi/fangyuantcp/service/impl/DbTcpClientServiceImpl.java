@@ -2,6 +2,8 @@ package com.ruoyi.fangyuantcp.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSONArray;
 import com.ruoyi.common.redis.util.RedisUtils;
@@ -95,6 +97,20 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     @Override
     public void updateByHeartbeatName(String heartbeatName) {
         dbTcpClientMapper.updateByHeartbeatName(heartbeatName);
+    }
+
+    /*
+    * 循环执行请求
+    * */
+    @Override
+    public int operationList(List<DbOperationVo> dbOperationVo) {
+//       根据心跳分组
+         Map<String,List<DbOperationVo>> mps= dbOperationVo.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
+//         多个map依次执行（多线程）
+        int query= sendCodeUtils.queryIoList(mps);
+
+
+        return 0;
     }
 
     /*

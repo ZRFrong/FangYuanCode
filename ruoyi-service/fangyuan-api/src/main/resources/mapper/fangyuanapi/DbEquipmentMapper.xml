@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.fangyuanapi.mapper.DbEquipmentMapper">
-    
+
     <resultMap type="DbEquipment" id="DbEquipmentResult">
         <result property="equipmentId"    column="equipment_id"    />
         <result property="heartbeatText"    column="heartbeat_text"    />
@@ -14,23 +14,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="equipmentTemplateId"    column="equipment_template_id"    />
         <result property="equipmentNo"    column="equipment_no"    />
+        <result property="handlerText"    column="handler_text"    />
+        <result property="isOnline"    column="is_online"    />
     </resultMap>
 
     <sql id="selectDbEquipmentVo">
-        select equipment_id, heartbeat_text, allotted_time, is_pause, pause_state, is_fault, create_time, equipment_template_id, equipment_no from db_equipment
+        select equipment_id, heartbeat_text, allotted_time, is_pause, pause_state, is_fault, create_time, equipment_template_id, equipment_no, handler_text, is_online from db_equipment
     </sql>
 
     <select id="selectDbEquipmentList" parameterType="DbEquipment" resultMap="DbEquipmentResult">
         <include refid="selectDbEquipmentVo"/>
-        <where>  
+        <where>
         </where>
     </select>
-    
+
     <select id="selectDbEquipmentById" parameterType="Long" resultMap="DbEquipmentResult">
         <include refid="selectDbEquipmentVo"/>
         where equipment_id = #{equipmentId}
     </select>
-        
+
     <insert id="insertDbEquipment" parameterType="DbEquipment" useGeneratedKeys="true" keyProperty="equipmentId">
         insert into db_equipment
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -42,7 +44,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null ">create_time,</if>
             <if test="equipmentTemplateId != null ">equipment_template_id,</if>
             <if test="equipmentNo != null ">equipment_no,</if>
-         </trim>
+            <if test="handlerText != null  and handlerText != ''">handler_text,</if>
+            <if test="isOnline != null ">is_online,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="heartbeatText != null  and heartbeatText != ''">#{heartbeatText},</if>
             <if test="allottedTime != null ">#{allottedTime},</if>
@@ -52,7 +56,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null ">#{createTime},</if>
             <if test="equipmentTemplateId != null ">#{equipmentTemplateId},</if>
             <if test="equipmentNo != null ">#{equipmentNo},</if>
-         </trim>
+            <if test="handlerText != null  and handlerText != ''">#{handlerText},</if>
+            <if test="isOnline != null ">#{isOnline},</if>
+        </trim>
     </insert>
 
     <update id="updateDbEquipment" parameterType="DbEquipment">
@@ -66,6 +72,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="equipmentTemplateId != null ">equipment_template_id = #{equipmentTemplateId},</if>
             <if test="equipmentNo != null ">equipment_no = #{equipmentNo},</if>
+            <if test="handlerText != null  and handlerText != ''">handler_text = #{handlerText},</if>
+            <if test="isOnline != null ">is_online = #{isOnline},</if>
         </trim>
         where equipment_id = #{equipmentId}
     </update>
@@ -75,10 +83,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteDbEquipmentByIds" parameterType="String">
-        delete from db_equipment where equipment_id in 
+        delete from db_equipment where equipment_id in
         <foreach item="equipmentId" collection="array" open="(" separator="," close=")">
             #{equipmentId}
         </foreach>
     </delete>
-    
+
 </mapper>

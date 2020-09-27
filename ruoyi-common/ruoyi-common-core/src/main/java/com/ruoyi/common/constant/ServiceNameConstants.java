@@ -10,6 +10,11 @@ public interface ServiceNameConstants
      */
     String SYSTEM_SERVICE = "ruoyi-system";
 
+    /*
+    * tcp 模块
+    * */
+
+    String SYSTEM_FANGYUANTCP = "ruoyi-fangyuantcp";
 
 
 }

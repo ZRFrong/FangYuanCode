@@ -12,6 +12,8 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 
+import java.util.List;
+
 
 /**
  * tcp在线设备 提供者
@@ -86,6 +88,18 @@ public class DbTcpClientController extends BaseController {
     public R operation(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) DbOperationVo dbOperationVo) {
         int operation = dbTcpClientService.operation(dbOperationVo);
         return toAjax(operation);
+    }
+
+    /*
+    * 批量操作设备
+    * */
+    @GetMapping("operationList")
+    @ApiOperation(value = "操作设备", notes = "tcp在线设备列表")
+    public R operationList(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) List<DbOperationVo> dbOperationVo) {
+
+        int operation = dbTcpClientService.operationList(dbOperationVo);
+
+        return toAjax(0);
     }
 
 

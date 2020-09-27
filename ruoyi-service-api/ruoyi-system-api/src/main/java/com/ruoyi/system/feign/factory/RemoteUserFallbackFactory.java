@@ -24,6 +24,7 @@ public class RemoteUserFallbackFactory implements FallbackFactory<RemoteUserServ
             @Override
             public SysUser selectSysUserByUsername(String username)
             {
+
                 return null;
             }
 
