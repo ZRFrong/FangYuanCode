@@ -43,6 +43,7 @@ public class PhoneUtils {
             Pattern p = Pattern.compile(regex);
             Matcher m = p.matcher(phone);
             boolean isMatch = m.matches();
+            System.out.println(isMatch);
             if (isMatch) {
                 System.out.println("您的手机号" + phone + "是正确格式@——@");
             } else {
