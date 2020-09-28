@@ -2,6 +2,8 @@ package com.ruoyi.common.json;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +16,8 @@ import java.util.*;
 @Slf4j
 public class JSONUtils <T,V> {
     private static final ObjectMapper obj = new ObjectMapper();
+
+    private  JSONObject jsonObject =new JSONObject();
 
     public  Map<T,V> stringToMap(String json)  {
         Map<T, V> map = null;
@@ -46,6 +50,17 @@ public class JSONUtils <T,V> {
 
         return array.toJSONString();
     }
+
+    /**
+     * java对象转string null的字段也会进行序列化
+     * @return
+     */
+    public String objectToString(T o){
+        String s = jsonObject.toJSONString(o,SerializerFeature.WriteMapNullValue);
+        return s;
+    }
+
+
 
 
 

@@ -74,7 +74,27 @@ public enum ResultEnum {
     /**
      *
      */
-    NULL_FANS(15,"您暂时没有粉丝！")
+    NULL_FANS(15,"您暂时没有粉丝！"),
+    /**
+     *
+     */
+    PHONE_ERROR(16,"手机号错误！"),
+    /**
+     *
+     */
+    PHONE_NOT_REGISTER(17,"手机号尚未注册，请先去注册！"),
+    /**
+     *
+     */
+    LOGIN_HOUR_ERROR(18,"登录太过频繁请稍后再试！"),
+    /**
+     *
+     */
+    PASSWORD_ERROE(19,"用户名或者密码输入错误！"),
+    /**
+     *
+     */
+    PASSWORD_NOT_RULE(20,"您的密码不符合规则，请重新再试！")
     ;
     /**
      * 返回状态码

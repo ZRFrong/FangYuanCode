@@ -13,10 +13,10 @@ public class CheckResultUtils {
     public static R getResult(Integer result) {
         switch (result){
             case 0:
-                R.error(ResultEnum.RESULT_REVIEW.getCode(),ResultEnum.RESULT_REVIEW.getMessage());
+                return R.error(ResultEnum.RESULT_REVIEW.getCode(),ResultEnum.RESULT_REVIEW.getMessage());
             case 1:
-                R.error(ResultEnum.RESULT_BLOCK.getCode(),ResultEnum.RESULT_BLOCK.getMessage());
+                return R.error(ResultEnum.RESULT_BLOCK.getCode(),ResultEnum.RESULT_BLOCK.getMessage());
         }
-        return null;
+        return new R();
     }
 }

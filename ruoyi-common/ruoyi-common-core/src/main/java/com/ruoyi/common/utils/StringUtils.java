@@ -3,8 +3,11 @@ package com.ruoyi.common.utils;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.ruoyi.common.core.text.StrFormatter;
+import com.ruoyi.common.utils.sms.PhoneUtils;
 
 /**
  * 字符串工具类
@@ -50,6 +53,22 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     public static boolean isNotEmpty(Collection<?> coll)
     {
         return !isEmpty(coll);
+    }
+
+    /**
+     * 校验密码规则
+     * @param password
+     * @return
+     */
+    public static boolean checkPassword(String password){
+        /**
+         * 至少包含数字和字母可以有字符
+         */
+        String reg = "(?=.*([a-zA-Z].*))(?=.*[0-9].*)[a-zA-Z0-9-*/+.~!@#$%^&*()]{8,20}$";
+        password = password.trim();//去首尾空格
+        Pattern compile = Pattern.compile(reg);
+        Matcher matcher = compile.matcher(password);
+        return matcher.matches();
     }
 
     /**
@@ -460,5 +479,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
             }
         }
         return sb.toString();
+    }
+    public static void main(String[] args){
+        System.out.println(checkPassword("123456"));
     }
 }

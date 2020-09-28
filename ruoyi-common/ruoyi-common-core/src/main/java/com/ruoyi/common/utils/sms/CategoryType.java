@@ -30,11 +30,15 @@ public enum  CategoryType {
      */
     USER_CODE_SUCCESS_,
     /**
-     *
+     *  验证码验证次数
      */
     USER_CODE_CHECK_SUM_,
     /**
-     *
+     * redis存放的token
      */
-    USER_TOKEN_
+    USER_TOKEN_,
+    /**
+     *手机号登录次数
+     */
+    PHONE_LOGIN_NUM_
 }
