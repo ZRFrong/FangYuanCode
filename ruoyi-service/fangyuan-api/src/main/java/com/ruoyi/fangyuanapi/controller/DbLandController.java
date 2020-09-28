@@ -89,4 +89,11 @@ public class DbLandController extends BaseController {
         return toAjax(dbLandService.deleteDbLandByIds(ids));
     }
 
+    /*
+    * 土地操作页面 （一键卷膜，通风，浇水）
+    * */
+
+
+
+
 }

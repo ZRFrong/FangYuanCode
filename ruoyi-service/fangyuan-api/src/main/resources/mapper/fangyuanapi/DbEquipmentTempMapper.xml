@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbEquipmentTempMapper">
+
+    <resultMap type="DbEquipmentTemp" id="DbEquipmentTempResult">
+        <result property="equipmentTemId"    column="equipment_tem_id"    />
+        <result property="tempName"    column="temp_name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="handleText"    column="handle_text"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="plcVersion"    column="plc_version"    />
+        <result property="tempPaper"    column="temp_paper"    />
+        <result property="describeText"    column="describe_text"    />
+    </resultMap>
+
+    <sql id="selectDbEquipmentTempVo">
+        select equipment_tem_id, temp_name, create_time, handle_text, create_by, plc_version, temp_paper, describe_text from db_equipment_temp
+    </sql>
+
+    <select id="selectDbEquipmentTempList" parameterType="DbEquipmentTemp" resultMap="DbEquipmentTempResult">
+        <include refid="selectDbEquipmentTempVo"/>
+        <where>
+            <if test="tempName != null  and tempName != ''"> and temp_name like concat('%', #{tempName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectDbEquipmentTempById" parameterType="Long" resultMap="DbEquipmentTempResult">
+        <include refid="selectDbEquipmentTempVo"/>
+        where equipment_tem_id = #{equipmentTemId}
+    </select>
+
+    <insert id="insertDbEquipmentTemp" parameterType="DbEquipmentTemp">
+        insert into db_equipment_temp
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="equipmentTemId != null ">equipment_tem_id,</if>
+            <if test="tempName != null  and tempName != ''">temp_name,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="handleText != null  and handleText != ''">handle_text,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="plcVersion != null  and plcVersion != ''">plc_version,</if>
+            <if test="tempPaper != null  and tempPaper != ''">temp_paper,</if>
+            <if test="describeText != null  and describeText != ''">describe_text,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="equipmentTemId != null ">#{equipmentTemId},</if>
+            <if test="tempName != null  and tempName != ''">#{tempName},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="handleText != null  and handleText != ''">#{handleText},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="plcVersion != null  and plcVersion != ''">#{plcVersion},</if>
+            <if test="tempPaper != null  and tempPaper != ''">#{tempPaper},</if>
+            <if test="describeText != null  and describeText != ''">#{describeText},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDbEquipmentTemp" parameterType="DbEquipmentTemp">
+        update db_equipment_temp
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tempName != null  and tempName != ''">temp_name = #{tempName},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="handleText != null  and handleText != ''">handle_text = #{handleText},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="plcVersion != null  and plcVersion != ''">plc_version = #{plcVersion},</if>
+            <if test="tempPaper != null  and tempPaper != ''">temp_paper = #{tempPaper},</if>
+            <if test="describeText != null  and describeText != ''">describe_text = #{describeText},</if>
+        </trim>
+        where equipment_tem_id = #{equipmentTemId}
+    </update>
+
+    <delete id="deleteDbEquipmentTempById" parameterType="Long">
+        delete from db_equipment_temp where equipment_tem_id = #{equipmentTemId}
+    </delete>
+
+    <delete id="deleteDbEquipmentTempByIds" parameterType="String">
+        delete from db_equipment_temp where equipment_tem_id in
+        <foreach item="equipmentTemId" collection="array" open="(" separator="," close=")">
+            #{equipmentTemId}
+        </foreach>
+    </delete>
+
+</mapper>

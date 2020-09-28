@@ -11,7 +11,7 @@ import com.ruoyi.common.core.domain.TreeEntity;
  * 土地对象 db_land
  *
  * @author zheng
- * @date 2020-09-24
+ * @date 2020-09-25
  */
 @ApiModel
 public class DbLand extends TreeEntity
@@ -65,6 +65,11 @@ public class DbLand extends TreeEntity
     @Excel(name = "地区id")
     @ApiModelProperty(value = "地区id")
     private Long siteId;
+
+    /** 设备集 */
+    @Excel(name = "设备集")
+    @ApiModelProperty(value = "设备集")
+    private String equipmentIds;
 
     public void setLandId(Long landId)
     {
@@ -156,6 +161,15 @@ public class DbLand extends TreeEntity
     {
         return siteId;
     }
+    public void setEquipmentIds(String equipmentIds)
+    {
+        this.equipmentIds = equipmentIds;
+    }
+
+    public String getEquipmentIds()
+    {
+        return equipmentIds;
+    }
 
     @Override
     public String toString() {
@@ -171,6 +185,7 @@ public class DbLand extends TreeEntity
                 .append("dbUserId", getDbUserId())
                 .append("nickName", getNickName())
                 .append("siteId", getSiteId())
+                .append("equipmentIds", getEquipmentIds())
                 .toString();
     }
 }

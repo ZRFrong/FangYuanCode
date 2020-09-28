@@ -7,7 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.qiniu.http.Client;
 import com.qiniu.util.Auth;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.http.HttpUtils;
+import com.ruoyi.common.utils.http.HttpUtil;
 import com.ruoyi.fangyuanapi.conf.QiniuUtils;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.fangyuanapi.mapper.DbDynamicAndEntryMapper;
@@ -170,7 +170,7 @@ public class DbDynamicServiceImpl implements DbDynamicService {
 //        String str = ".jpg.png.jpeg";
 //        System.out.println(str.contains(".jpg"));
 //        System.out.println("-------------------------------------------------");
-//        String s = HttpUtils.sendGet("http://192.168.3.3:8001/sms/sendSms", "/15135006102/1/1");
+//        String s = HttpUtil.sendGet("http://192.168.3.3:8001/sms/sendSms", "/15135006102/1/1");
 //        System.out.println("结果"+s);
 
         DbComment comment = new DbComment();

@@ -68,4 +68,6 @@ public interface IDbTcpClientService
     int query(DbOperationVo dbTcpClient);
 
     void updateByHeartbeatName(String heartbeatName);
+
+    int operationList(List<DbOperationVo> dbOperationVo);
 }
