@@ -13,6 +13,10 @@ public class RedisTimeConf {
      */
     public static final Long ONE_DAY = 60*60*24L;
     /**
+     * 过期时间三天
+     */
+    public static final Long THREE_DAY = 60*60*24L*3;
+    /**
      *过期时间一周
      */
     public static final Long ONE_WEEK = 60*60*24*7L;
