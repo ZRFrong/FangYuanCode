@@ -31,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="selectDbUserDynamicById" parameterType="Long" resultMap="DbUserDynamicResult">
         <include refid="selectDbUserDynamicVo"/>
-        where id = #{id}
+        where id = #{id} and (permission = 0 or permission = 1)
     </select>
         
     <insert id="insertDbUserDynamic" parameterType="DbUserDynamic" useGeneratedKeys="true" keyProperty="id" keyColumn="id">

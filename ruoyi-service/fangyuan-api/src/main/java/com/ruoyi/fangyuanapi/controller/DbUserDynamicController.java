@@ -71,9 +71,17 @@ public class DbUserDynamicController extends BaseController {
 	@Autowired
 	private IDbAttentionService dbAttentionService;
 
+
+
+
+	@GetMapping("like")
+	public R like(HttpServletRequest request){
+
+		return null;
+	}
+
 	/**
 	 * 获取关注的朋友的动态
-	 *
 	 * @param request
 	 * @param currPage
 	 * @return

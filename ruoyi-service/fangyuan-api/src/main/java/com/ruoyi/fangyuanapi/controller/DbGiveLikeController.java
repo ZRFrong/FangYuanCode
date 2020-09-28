@@ -31,6 +31,8 @@ public class DbGiveLikeController extends BaseController
 	@Autowired
 	private IDbGiveLikeService dbGiveLikeService;
 
+
+
 	/**
 	 * 查询${tableComment}
 	 */

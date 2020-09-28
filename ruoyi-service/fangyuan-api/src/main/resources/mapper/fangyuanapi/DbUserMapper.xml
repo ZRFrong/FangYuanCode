@@ -33,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectDbUserVo">
-        select id, user_name, password, phone, salt, created, user_type, gender, avatar, later_login_time, later_login_ip, update_time, remark_text, user_from, token, nickname, is_banned, age, signature, birthday, phone_is_verify from db_user
+        select id, user_name, password, phone, salt, created, user_type, gender, avatar, later_login_time, later_login_ip, update_time, remark_text, user_from, token, nickname, is_banned, age, signature, birthday, phone_is_verify,dynamic_num,attention_num,reply_attention_user_num from db_user
     </sql>
 
     <select id="selectDbUserList" parameterType="DbUser" resultMap="DbUserResult">
@@ -105,7 +105,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateDbUser" parameterType="DbUser">
+    <update id="updateDbUser" parameterType="DbUser" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         update db_user
         <trim prefix="SET" suffixOverrides=",">
             <if test="userName != null  and userName != ''">user_name = #{userName},</if>

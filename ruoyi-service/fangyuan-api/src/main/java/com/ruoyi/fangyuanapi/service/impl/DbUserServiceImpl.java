@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.system.domain.DbUser;
 import com.ruoyi.fangyuanapi.service.IDbUserService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 前台用户Service业务层处理
@@ -75,6 +76,7 @@ public class DbUserServiceImpl implements IDbUserService
      * @return 结果
      */
     @Override
+    @Transactional
     public int insertDbUser(DbUser dbUser)
     {
         dbUser.setCreated(new Date());
@@ -89,6 +91,7 @@ public class DbUserServiceImpl implements IDbUserService
      * @return 结果
      */
     @Override
+    @Transactional
     public int updateDbUser(DbUser dbUser)
     {
         return dbUserMapper.updateDbUser(dbUser);
