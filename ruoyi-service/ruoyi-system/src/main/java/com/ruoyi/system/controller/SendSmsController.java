@@ -52,7 +52,7 @@ public class SendSmsController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "phone", value = "手机号"),
             @ApiImplicitParam(name = "signName", value = "短信签名 1：方圆社区  "),
-            @ApiImplicitParam(name = "templateCode", value = "短信模板 1：注册短信 2：登录短信 " )
+            @ApiImplicitParam(name = "templateCode", value = "短信模板 1：注册短信 2：设备验证 " )
     })
     public R sendSms(@PathVariable String phone, @PathVariable String signName , @PathVariable String templateCode){
 

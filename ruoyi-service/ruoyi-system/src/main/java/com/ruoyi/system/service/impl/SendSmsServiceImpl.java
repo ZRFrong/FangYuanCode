@@ -12,7 +12,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.sms.CategoryType;
 import com.ruoyi.common.utils.sms.NumberUtils;
 import com.ruoyi.system.config.SmsConfig;
-import com.ruoyi.system.mapper.DbUserMapper1;
+import com.ruoyi.system.mapper.DbUsersMapper;
 import com.ruoyi.system.service.SendSmsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class SendSmsServiceImpl implements SendSmsService {
 
 
     @Autowired
-    private DbUserMapper1 dbUserMapper;
+    private DbUsersMapper dbUserMapper;
 
     @Override
     public String sendSms(String phone, String signName,String templateCode) {
@@ -67,7 +67,6 @@ public class SendSmsServiceImpl implements SendSmsService {
                     return null;
                 }
             }
-            log.error("请求出错："+message);
         } catch (ClientException e) {
             e.printStackTrace();
             log.error("请求出错: "+ message );
