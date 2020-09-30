@@ -67,7 +67,7 @@ public class SendSmsController extends BaseController {
                 if (Integer.valueOf(dayNum) < SmsData.USER_DAY_NUM) {
                     if (Integer.valueOf(hourNum) < SmsData.USER_HOUR_NUM) {
                         String result = sendSmsService.sendSms(phone, signName,templateCode);
-                        if ("OK".equals(result)) {
+                        if (result != null) {
                             redisUtils.set(CategoryType.SMS_NUM.name(), Integer.valueOf(smsNum == null?"0":smsNum) + 1, RedisTimeConf.ONE_DAY);
                             redisUtils.set(CategoryType.USER_DAY_NUM_ + phone, Integer.valueOf(dayNum == null?"0":dayNum) + 1, RedisTimeConf.ONE_DAY);
                             redisUtils.set(CategoryType.USER_HOUR_NUM_ + phone, Integer.valueOf(hourNum == null?"0":hourNum) + 1, RedisTimeConf.ONE_HOUR);
