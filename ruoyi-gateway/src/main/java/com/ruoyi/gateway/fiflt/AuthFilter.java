@@ -45,7 +45,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     /**
      * 方便测试，
      */
-    private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/smallLogin","fangyuanapi/wxUser","fangyuanapi/dynamic1");
+    private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/smallLogin","fangyuanapi/wxUser","fangyuanapi/dynamic1","fangyuanapi/category","fangyuanapi/wx/v3");
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
