@@ -86,6 +86,7 @@ public class DbUserAndDynamicServiceImpl implements IDbUserAndDynamicService
      * @param id 前台用户和动态中间ID
      * @return 结果
      */
+    @Override
     public int deleteDbUserAndDynamicById(Long id)
     {
         return dbUserAndDynamicMapper.deleteDbUserAndDynamicById(id);
@@ -100,5 +101,15 @@ public class DbUserAndDynamicServiceImpl implements IDbUserAndDynamicService
     public List<Long> selectDbUserAndDynamicByUserId(Long userId) {
         List<Long> list = dbUserAndDynamicMapper.selectDbUserAndDynamicByUserId(userId);
         return list;
+    }
+
+    /**
+     * 通过动态id查询userId
+     * @param id
+     * @return
+     */
+    @Override
+    public Long selectDbUserAndDynamicByDynamicId(Long id) {
+        return dbUserAndDynamicMapper.selectDbUserAndDynamicByDynamicId(id);
     }
 }

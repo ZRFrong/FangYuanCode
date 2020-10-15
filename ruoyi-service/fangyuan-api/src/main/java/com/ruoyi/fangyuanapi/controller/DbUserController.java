@@ -117,19 +117,19 @@ public class DbUserController {
     }
 
     /**
-     * app猪注册
+     * app注册
      * @param phone 手机号
      * @param password 密码
-     * @param password2 确认密码
+     * @param passwordagain 确认密码
      * @param code 验证码
      * @return token
      */
     @PostMapping("appRegister")
-    public R appRegister(String phone, String password, String password2, String code) {
-        if (StringUtils.isEmpty(phone) || StringUtils.isEmpty(password) || StringUtils.isEmpty(password2) || StringUtils.isEmpty(code)) {
+    public R appRegister(String phone, String password, String passwordagain, String code) {
+        if (StringUtils.isEmpty(phone) || StringUtils.isEmpty(password) || StringUtils.isEmpty(passwordagain) || StringUtils.isEmpty(code)) {
             return R.error(ResultEnum.PARAMETERS_ERROR.getCode(), ResultEnum.PARAMETERS_ERROR.getMessage());
         }
-        if (!password.equals(password2)) {//不做提示
+        if (!password.equals(passwordagain)) {//不做提示
             return R.error();
         }
         if(!StringUtils.checkPassword(password)){
@@ -304,6 +304,36 @@ public class DbUserController {
         List<Map<String, String>> PhotoAlbum = dbUserDynamicService.selectImagesByDynamicId(dynamicIds, currPage, pageSize);
 
         return R.data(PhotoAlbum);
+    }
+
+    /**
+     * 获取个人资料接口
+     * @param request
+     * @return
+     */
+    @GetMapping("getUserDate")
+    public R getUserDate(HttpServletRequest request){
+        String userId = request.getHeader(Constants.CURRENT_ID);
+        Map<String,String> map = dbUserService.getUserData(Long.valueOf(userId));
+
+        return map == null? R.error():R.data(map);
+    }
+
+    /**
+     * 修改个人资料
+     * @param request
+     * @param dbUser
+     * @return
+     */
+    @PutMapping("UpdateUserData")
+    public R UpdateUserData(HttpServletRequest request,DbUser dbUser){
+        String userId = request.getHeader(Constants.CURRENT_ID);
+        if (dbUser != null){
+            dbUser.setId(Long.valueOf(userId));
+            int i = dbUserService.updateDbUser(dbUser);
+            return i>0 ? new R():R.error(ResultEnum.SERVICE_BUSY.getCode(),ResultEnum.SERVICE_BUSY.getMessage());
+        }
+        return R.error();
     }
 
 }

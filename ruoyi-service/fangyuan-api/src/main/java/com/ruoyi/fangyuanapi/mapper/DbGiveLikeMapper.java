@@ -62,4 +62,12 @@ public interface DbGiveLikeMapper
     Integer selectGiveLikeSumByDynamicId();
 
     Integer selectUserGiveLikeNum(Long userId);
+
+    /**
+     * 根据用户id和动态id查询
+     * @param userId
+     * @param dynamicId
+     * @return
+     */
+    DbGiveLike selectDbGiveLikeByUserIdAndDynamicId(Long userId, Long dynamicId);
 }
