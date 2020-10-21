@@ -53,3 +53,11 @@ pagehelper:
   reasonable: true
   supportMethodsArguments: true
   params: count=countSql
+com:
+  fangyuan:
+    wechat:
+      appid: wxd7493ca6878be5de
+      mchid: 1586675541
+      serial_no: 2B1CE303980D6BBEF9E95107DD376CEC1C0C26BC
+      notify_url: https://is0zt7ts.xiaomy.net/fangyuanapi/wx/v3/notify
+      apiV3: e854c3cfa89c48219ac9886071d461b1

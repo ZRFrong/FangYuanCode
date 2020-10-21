@@ -115,7 +115,7 @@ public class BCConvert {
 	 * @param src
 	 * @return
 	 */
-	public static int qj2bj(char src) {
+	public static int Wqj2bj(char src) {
 		int r = src;
 		if (src >= SBC_CHAR_START && src <= SBC_CHAR_END) { // 如果位于全角！到全角～区间内
 			r = src - CONVERT_STEP;
