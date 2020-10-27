@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.system.domain.DbUser;
 import com.ruoyi.fangyuanapi.service.IDbUserService;
 import com.ruoyi.common.core.text.Convert;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 前台用户Service业务层处理
@@ -22,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2020-09-01
  */
 @Service
-public class DbUserServiceImpl implements IDbUserService
+public class DbUserServiceImpl implements IDbUserService 
 {
     @Autowired
     private DbUserMapper dbUserMapper;
@@ -76,7 +75,6 @@ public class DbUserServiceImpl implements IDbUserService
      * @return 结果
      */
     @Override
-    @Transactional
     public int insertDbUser(DbUser dbUser)
     {
         dbUser.setCreated(new Date());
@@ -91,7 +89,6 @@ public class DbUserServiceImpl implements IDbUserService
      * @return 结果
      */
     @Override
-    @Transactional
     public int updateDbUser(DbUser dbUser)
     {
         return dbUserMapper.updateDbUser(dbUser);
@@ -173,13 +170,6 @@ public class DbUserServiceImpl implements IDbUserService
             dto.add(dynamicDto);
         }
         return dto;
-    }
-
-    @Override
-    public Map<String, String> getUserData(Long userId) {
-        Map<String,String> map = dbUserMapper.selectUserData(userId);
-
-        return null;
     }
 
     public static void main(String[] args){

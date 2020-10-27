@@ -58,11 +58,4 @@ public interface IDbForwardService
      * @return 结果
      */
     public int deleteDbForwardById(Long id);
-
-    /**
-     * 根据动态id查询 转发对象
-     * @return
-     */
-    DbForward selectDbForwardByDynamicId(Long dynamicId);
-
 }

@@ -27,6 +27,7 @@ public class DbTcpClient extends BaseEntity
     @ApiModelProperty(value = "心跳名称")
     private String heartName;
 
+
     /** 心跳时间 */
     @Excel(name = "心跳时间", width = 30, dateFormat = "yyyy-MM-dd")
     @ApiModelProperty(value = "心跳时间")

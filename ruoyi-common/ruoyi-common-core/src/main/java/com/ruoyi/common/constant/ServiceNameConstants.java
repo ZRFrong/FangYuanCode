@@ -13,8 +13,8 @@ public interface ServiceNameConstants
     /*
     * tcp 模块
     * */
+    String SYSTEM_FANGYUANTCP = "fangyuan-tcp";
 
-    String SYSTEM_FANGYUANTCP = "ruoyi-fangyuantcp";
 
-
+    String SYSTEM_FANGYUANAPI ="fangyuan-api" ;
 }

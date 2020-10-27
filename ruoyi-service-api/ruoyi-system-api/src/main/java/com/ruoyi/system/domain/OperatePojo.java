@@ -19,6 +19,9 @@ public class OperatePojo {
         this.spList = spList;
     }
 
+    public OperatePojo() {
+    }
+
     @ApiModelProperty(value = "分类标识（卷帘：1；通风：2；浇水：3；补光：4；）")
     private String checkCode;
 
@@ -40,7 +43,10 @@ public class OperatePojo {
             this.handleCode = handleCode;
         }
 
-        @ApiModelProperty(value = "操作名称;{固定为卷起，卷起暂停，放下，放下暂停，开始，结束}")
+        public OperateSp() {
+        }
+
+        @ApiModelProperty(value = "操作名称;{固定为开始(start)，开始暂停（start_stop），结束（down），结束暂停（down_stop）}")
         private String handleName;
 
 

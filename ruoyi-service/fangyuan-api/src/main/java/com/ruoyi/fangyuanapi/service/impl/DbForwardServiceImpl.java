@@ -86,15 +86,8 @@ public class DbForwardServiceImpl implements IDbForwardService
      * @param id 转发ID
      * @return 结果
      */
-    @Override
     public int deleteDbForwardById(Long id)
     {
         return dbForwardMapper.deleteDbForwardById(id);
-    }
-
-    @Override
-    public DbForward selectDbForwardByDynamicId(Long dynamicId) {
-
-        return dbForwardMapper.selectDbForwardByDynamicId(dynamicId);
     }
 }

@@ -62,7 +62,18 @@ public class Constants
      */
     public static final String IS_ASC           = "sortOrder";
 
+    /*
+    * 登录用户id
+    * */
     public static final String CURRENT_ID       = "current_id";
+
+
+    /*
+    * 登录来源
+    * */
+    public  static  final  String  LOGIN_SOURCE ="login_source";
+
+
 
     public static final String CURRENT_USERNAME = "current_username";
 

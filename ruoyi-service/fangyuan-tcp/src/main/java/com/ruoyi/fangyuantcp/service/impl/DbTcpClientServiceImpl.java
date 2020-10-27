@@ -3,10 +3,14 @@ package com.ruoyi.fangyuantcp.service.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.util.RedisUtils;
+import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.system.domain.DbTcpOrder;
 import com.ruoyi.fangyuantcp.utils.SendCodeUtils;
@@ -37,11 +41,10 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     private DbTcpClientMapper dbTcpClientMapper;
 
 
-    @Value("${person.redis-key}")
-    private String record;
 
     /**
      * 查询tcp在线设备
+     *
      * @param tcpClientId tcp在线设备ID
      * @return tcp在线设备
      */
@@ -100,17 +103,39 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     }
 
     /*
-    * 循环执行请求
-    * */
+     * 循环执行请求
+     * */
     @Override
     public int operationList(List<DbOperationVo> dbOperationVo) {
 //       根据心跳分组
-         Map<String,List<DbOperationVo>> mps= dbOperationVo.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
+        Map<String, List<DbOperationVo>> mps = dbOperationVo.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
 //         多个map依次执行（多线程）
-        int query= sendCodeUtils.queryIoList(mps);
+        int query = sendCodeUtils.queryIoList(mps);
 
 
         return 0;
+    }
+
+
+    /*
+     *在线设备手动  自动查询
+     *
+     * */
+    @Override
+    public int sinceOrHand() {
+
+        DbTcpClient dbTcpClient = new DbTcpClient();
+        dbTcpClient.setIsOnline(0);
+        List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
+        for (DbTcpClient tcpClient : dbTcpClients) {
+
+        Set<String> keys = redisUtils.keys(RedisKeyConf.EQUIPMENT_LIST.toString()+":"+tcpClient.getHeartName());
+            keys.forEach(ite->sendCodeUtils.sinceOrHand(JSON.parseObject(redisUtils.get(ite),DbEquipment.class)));
+        }
+
+        return 0;
+
+
     }
 
     /*
@@ -119,7 +144,7 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
      * */
     @Override
     public int query(DbOperationVo dbTcpClient) {
-       //查询状态
+        //查询状态
         int querystate = sendCodeUtils.querystate(dbTcpClient);
         return querystate;
     }
@@ -136,7 +161,8 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
         String operationText = dbTcpClient.getOperationText();
         String facility = dbTcpClient.getFacility();
         String heartName = dbTcpClient.getHeartName();
-        String s = record + ":" + heartName + facility + operationText;
+
+        String s = RedisKeyConf.HANDLE + ":" + heartName +"_"+ facility +"_"+ operationText;
         DbTcpOrder order = getOrder(dbTcpClient);
         String s2 = JSONArray.toJSONString(order);
         redisUtils.set(s, s2);
@@ -165,7 +191,7 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
         } else {
 //            不存在新建
             dbTcpClient.setHeartbeatTime(new Date());
-            dbTcpClient.setIsOnline(1);
+            dbTcpClient.setIsOnline(0);
             i = insertDbTcpClient(dbTcpClient);
         }
         return i;

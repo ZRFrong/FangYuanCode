@@ -84,4 +84,5 @@ public class DbEntryController extends BaseController
 		return toAjax(dbEntryService.deleteDbEntryByIds(ids));
 	}
 
+
 }

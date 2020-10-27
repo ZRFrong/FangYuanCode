@@ -50,6 +50,8 @@ public class DbLandController extends BaseController {
     @GetMapping("list")
     @ApiOperation(value = "查询土地列表", notes = "土地列表")
     public R list(@ApiParam(name = "DbLand", value = "传入json格式", required = true) DbLand dbLand) {
+        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+        dbLand.setDbUserId(Long.valueOf(userId));
         startPage();
         return result(dbLandService.selectDbLandList(dbLand));
     }
@@ -90,8 +92,18 @@ public class DbLandController extends BaseController {
     }
 
     /*
-    * 土地操作页面 （一键卷膜，通风，浇水）
+    * 用户关联地块返回
     * */
+    @GetMapping("listPlot")
+    @ApiOperation(value = "查询地块列表", notes = "地块列表")
+    public R listPlot(@ApiParam(name = "DbLand", value = "传入json格式", required = true) DbLand dbLand) {
+//        获取当前用户id
+        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+        dbLand.setDbUserId(Long.valueOf(userId));
+        dbLand.setSiteId(0l);
+        startPage();
+        return result(dbLandService.selectDbLandList(dbLand));
+    }
 
 
 

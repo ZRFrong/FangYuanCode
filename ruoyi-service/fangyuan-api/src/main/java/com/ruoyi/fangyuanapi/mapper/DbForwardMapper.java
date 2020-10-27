@@ -60,11 +60,4 @@ public interface DbForwardMapper
     public int deleteDbForwardByIds(String[] ids);
 
     Integer selectDbForwardSumByUserId(Long id);
-
-    /**
-     * 根据动态id查询转发对象
-     * @param dynamicId
-     * @return
-     */
-    DbForward selectDbForwardByDynamicId(Long dynamicId);
 }

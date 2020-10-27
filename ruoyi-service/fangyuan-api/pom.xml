@@ -68,17 +68,9 @@
             <version>${ruoyi.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.wechatpay-apiv3</groupId>
-            <artifactId>wechatpay-apache-httpclient</artifactId>
-            <version>0.2.1</version>
-        </dependency>
 
-        <dependency>
-            <groupId>com.github.wxpay</groupId>
-            <artifactId>wxpay-sdk</artifactId>
-            <version>3.0.9</version>
-        </dependency>
+
+
 
         <!-- 日志模块 -->
         <dependency>
@@ -99,11 +91,7 @@
             <version>${ruoyi.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.ruoyi.cloud</groupId>
-            <artifactId>ruoyi-common-core</artifactId>
-            <version>${ruoyi.version}</version>
-        </dependency>
+
         <!-- 获取系统信息 -->
         <dependency>
             <groupId>com.github.oshi</groupId>
@@ -155,6 +143,7 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
+
 
     </dependencies>
     <build>

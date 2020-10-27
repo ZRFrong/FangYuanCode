@@ -6,7 +6,9 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
@@ -23,26 +25,7 @@ public class RedisUtils
 
     @Resource(name = "stringRedisTemplate")
     private ValueOperations<String, String> valueOperations;
-    /**
-     * set
-     */
-    @Autowired
-    private SetOperations<String,Object> setOperations;
-    /**
-     * zset
-     */
-    @Autowired
-    private ZSetOperations<String,Object> zSetOperations;
-    /**
-     * list
-     */
-    @Autowired
-    private ListOperations<String, Object> listOperations;
-    /**
-     * hash
-     */
-    @Autowired
-    private HashOperations<String,String,Object> hashOperations;
+    private ZSetOperations<String,String> zSetOperations;
 
     /**  默认过期时长，单位：秒 */
     public final static long                DEFAULT_EXPIRE = 60 * 60 * 24;
@@ -62,17 +45,6 @@ public class RedisUtils
     }
 
     /**
-     * 控制list列表的长度
-     * 修剪list的长度
-     * @param key listKey
-     * @param let 开始下标
-     * @param end 结束下标
-     */
-    public void listTrim( String key , long let , long end){
-        listOperations.trim(key,let,end);
-    }
-
-    /**
      * 插入缓存
      * @param key 键
      * @param value 值
@@ -83,11 +55,6 @@ public class RedisUtils
     {
         valueOperations.set(key, toJson(value));
         redisTemplate.expire(key, expire, TimeUnit.SECONDS);
-    }
-
-
-    public void setAdd(String key,Object v){
-        setOperations.add(key,v);
     }
 
     /**

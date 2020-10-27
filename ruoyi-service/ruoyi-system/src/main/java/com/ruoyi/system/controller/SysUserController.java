@@ -35,6 +35,7 @@ import cn.hutool.core.convert.Convert;
 @RestController
 @RequestMapping("user")
 public class SysUserController extends BaseController {
+
     @Autowired
     private ISysUserService sysUserService;
 

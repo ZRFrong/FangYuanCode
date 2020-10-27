@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbQrCodeMapper">
+    
+    <resultMap type="DbQrCode" id="DbQrCodeResult">
+        <result property="qrCodeId"    column="qr_code_id"    />
+        <result property="heartbeatText"    column="heartbeat_text"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="firstTimeBinding"    column="first_time_binding"    />
+        <result property="adminUserId"    column="admin_user_id"    />
+        <result property="equipmentId"    column="equipment_id"    />
+        <result property="qrCodeUrl"    column="qr_code_url"    />
+        <result property="qrCodePic"    column="qr_code_pic"    />
+    </resultMap>
+
+    <sql id="selectDbQrCodeVo">
+        select qr_code_id, heartbeat_text, create_time, first_time_binding, admin_user_id, equipment_id, qr_code_url, qr_code_pic from db_qr_code
+    </sql>
+
+    <select id="selectDbQrCodeList" parameterType="DbQrCode" resultMap="DbQrCodeResult">
+        <include refid="selectDbQrCodeVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbQrCodeById" parameterType="Long" resultMap="DbQrCodeResult">
+        <include refid="selectDbQrCodeVo"/>
+        where qr_code_id = #{qrCodeId}
+    </select>
+        
+    <insert id="insertDbQrCode" parameterType="DbQrCode" useGeneratedKeys="true" keyProperty="qrCodeId" keyColumn="id">
+        insert into db_qr_code
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="heartbeatText != null  and heartbeatText != ''">heartbeat_text,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="firstTimeBinding != null ">first_time_binding,</if>
+            <if test="adminUserId != null ">admin_user_id,</if>
+            <if test="equipmentId != null ">equipment_id,</if>
+            <if test="qrCodeUrl != null  and qrCodeUrl != ''">qr_code_url,</if>
+            <if test="qrCodePic != null  and qrCodePic != ''">qr_code_pic,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="heartbeatText != null  and heartbeatText != ''">#{heartbeatText},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="firstTimeBinding != null ">#{firstTimeBinding},</if>
+            <if test="adminUserId != null ">#{adminUserId},</if>
+            <if test="equipmentId != null ">#{equipmentId},</if>
+            <if test="qrCodeUrl != null  and qrCodeUrl != ''">#{qrCodeUrl},</if>
+            <if test="qrCodePic != null  and qrCodePic != ''">#{qrCodePic},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbQrCode" parameterType="DbQrCode">
+        update db_qr_code
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="heartbeatText != null  and heartbeatText != ''">heartbeat_text = #{heartbeatText},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="firstTimeBinding != null ">first_time_binding = #{firstTimeBinding},</if>
+            <if test="adminUserId != null ">admin_user_id = #{adminUserId},</if>
+            <if test="equipmentId != null ">equipment_id = #{equipmentId},</if>
+            <if test="qrCodeUrl != null  and qrCodeUrl != ''">qr_code_url = #{qrCodeUrl},</if>
+            <if test="qrCodePic != null  and qrCodePic != ''">qr_code_pic = #{qrCodePic},</if>
+        </trim>
+        where qr_code_id = #{qrCodeId}
+    </update>
+
+    <delete id="deleteDbQrCodeById" parameterType="Long">
+        delete from db_qr_code where qr_code_id = #{qrCodeId}
+    </delete>
+
+    <delete id="deleteDbQrCodeByIds" parameterType="String">
+        delete from db_qr_code where qr_code_id in 
+        <foreach item="qrCodeId" collection="array" open="(" separator="," close=")">
+            #{qrCodeId}
+        </foreach>
+    </delete>
+    
+</mapper>

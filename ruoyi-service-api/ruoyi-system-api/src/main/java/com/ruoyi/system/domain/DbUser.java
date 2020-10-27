@@ -47,10 +47,7 @@ public class DbUser extends BaseEntity
     @ApiModelProperty(value = "创建时间")
     private Date created;
 
-    /** 0:小程序 1：App */
-    @Excel(name = "0:小程序 1：App")
-    @ApiModelProperty(value = "0:小程序 1：App")
-    private Integer userType;
+
 
     /** 0：男 1：女 2：保密 */
     @Excel(name = "0：男 1：女 2：保密")

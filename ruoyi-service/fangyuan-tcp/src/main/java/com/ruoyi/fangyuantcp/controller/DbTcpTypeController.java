@@ -17,7 +17,7 @@ import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 
 /**
- * 设备状态 提供者
+ * 设备状态 提供者     4g模块在线否
  *
  * @author fangyuan
  * @date 2020-09-07
@@ -82,8 +82,19 @@ public class DbTcpTypeController extends BaseController {
      * 状态留根
      * */
     @GetMapping("curingType")
-    public  void  curingTypeTiming(){
+    public R curingTypeTiming() {
         dbTcpTypeService.curingTypeTiming();
+        return R.ok();
+    }
+
+    /*
+     * 状态询问
+     * */
+    @GetMapping("timingType")
+    public R timingType() {
+        dbTcpTypeService.timingType();
+        return R.ok();
+
     }
 
 

@@ -1,9 +1,12 @@
 package com.ruoyi.fangyuantcp.utils;
+import java.util.Date;
 
 
 import cn.hutool.core.thread.ThreadUtil;
+import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
+import com.ruoyi.system.domain.DbTcpClient;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,7 +20,7 @@ import java.util.concurrent.ExecutorService;
  * */
 public class SendCodeUtils {
     //    在线设备map
-    private Map<String, ChannelHandlerContext> map = NettyServer.map;
+    private static Map<String, ChannelHandlerContext> map = NettyServer.map;
 
     /*
      * 普通操作指令发送
@@ -61,9 +64,17 @@ public class SendCodeUtils {
     }
 
     /*
+     * 批量状态查询
+     * */
+    public static int timingState(List<DbOperationVo> list) {
+        list.forEach(ite -> querystate(ite));
+        return 1;
+    }
+
+    /*
      * 状态查询指令发送
      * */
-    public int querystate(DbOperationVo tcpOrder) {
+    public static int querystate(DbOperationVo tcpOrder) {
         String address = tcpOrder.getHeartName();
         try {
 //        text处理
@@ -114,7 +125,7 @@ public class SendCodeUtils {
         try {
             strings.forEach(ite -> send(mps.get(ite)));
             executorService.shutdown();
-            while (!executorService.isTerminated()){
+            while (!executorService.isTerminated()) {
 //            等待执行完成再返回
             }
             return 1;
@@ -138,7 +149,12 @@ public class SendCodeUtils {
                     System.out.println(dbOperationVos.get(i) + "执行了");
 //                    线程礼让让其他的先执行
                     if (i < dbOperationVos.size()) {
-                        Thread.yield();
+                        try {
+                            Thread.sleep(500);
+                            Thread.yield();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -147,19 +163,22 @@ public class SendCodeUtils {
 
     }
 
-    public static void main(String[] args) {
-        Map<String, List<DbOperationVo>> mps = new HashMap<>();
-        List<DbOperationVo> vos = new ArrayList<>();
-        vos.add(new DbOperationVo("小明", "1", "115,25,16", "0", new Date()));
-        vos.add(new DbOperationVo("小明", "2", "115,25,777", "0", new Date()));
-        mps.put("小明", vos);
-        List<DbOperationVo> vos2 = new ArrayList<>();
-        vos2.add(new DbOperationVo("小红", "1", "115,25,16", "0", new Date()));
-        vos2.add(new DbOperationVo("小红", "2", "115,25,777", "0", new Date()));
-        mps.put("小红", vos2);
-        int i = queryIoList(mps);
-        System.out.println(i);
 
+
+
+    /*
+     * 手动自动状态查询
+     * */
+    public void sinceOrHand(DbEquipment equipment) {
+        DbOperationVo dbOperationVo = new DbOperationVo();
+        dbOperationVo.setHeartName(equipment.getHeartbeatText());
+        dbOperationVo.setFacility(equipment.getEquipmentNo().toString());
+        dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhand);
+        dbOperationVo.setIsTrue("1");
+        dbOperationVo.setCreateTime(new Date());
+        int querystate = querystate(dbOperationVo);
     }
+
+
 
 }

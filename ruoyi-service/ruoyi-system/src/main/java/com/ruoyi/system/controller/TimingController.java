@@ -2,6 +2,8 @@ package com.ruoyi.system.controller;
 
 
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.system.feign.RemoteApiService;
 import com.ruoyi.system.feign.RemoteTcpService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("timing")
 public class TimingController {
 
-    @Autowired
-    private RemoteTcpService remoteTcpService;
+    private RemoteApiService remoteApiService = SpringUtils.getBean(RemoteApiService.class);
+    private RemoteTcpService remoteTcpService = SpringUtils.getBean(RemoteTcpService.class);
 
 
     /*
@@ -26,6 +28,7 @@ public class TimingController {
      * */
     @GetMapping("startTiming")
     public R startTiming() {
+
         return remoteTcpService.strtTiming();
     }
 
@@ -34,8 +37,21 @@ public class TimingController {
      * */
     @GetMapping("startSaveTiming")
     public R startSaveTiming() {
+
         return remoteTcpService.startSaveTiming();
     }
+
+    /*
+    * 更新redis中的设备列表
+    * */
+    @GetMapping("syncEquipmentList")
+    public R syncEquipmentList() {
+        return remoteApiService.syncEquipmentList();
+    }
+
+
+
+
 
 
 }

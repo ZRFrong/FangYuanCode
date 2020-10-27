@@ -17,9 +17,11 @@ import com.ruoyi.system.service.SendSmsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.applet.Main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -52,7 +54,6 @@ public class SendSmsServiceImpl implements SendSmsService {
         HashMap<String, String> hashMap = new HashMap<>();
         String s = NumberUtils.generateCode(smsConfig.getCodeLength());
         hashMap.put("code", s);
-        log.warn(phone+"：发送的验证码是 "+s);
         request.putQueryParameter("TemplateParam", jsonUtils.mapToString(hashMap));
         String message = null;
         try {
@@ -117,6 +118,10 @@ public class SendSmsServiceImpl implements SendSmsService {
         return is_susses;
     }
 
+    //LTAI4GKgwtvuAiRAuVKXhYSY
+    //5KKPLPvGrhevKExHi8HSkDbgl7zq0f
+    //飞天遁地旅游网
+//    //SMS_173252813
 
 
     public CommonRequest getCommonRequest(){

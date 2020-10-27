@@ -1,18 +1,12 @@
 package com.ruoyi.fangyuanapi.service.impl;
 
-import java.util.Date;
 import java.util.List;
-
-import com.ruoyi.fangyuanapi.mapper.DbUserDynamicMapper;
-import com.ruoyi.fangyuanapi.mapper.DbUserMapper;
-import com.ruoyi.system.domain.DbUserDynamic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.mapper.DbGiveLikeMapper;
 import com.ruoyi.system.domain.DbGiveLike;
 import com.ruoyi.fangyuanapi.service.IDbGiveLikeService;
 import com.ruoyi.common.core.text.Convert;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 点赞Service业务层处理
@@ -25,12 +19,6 @@ public class DbGiveLikeServiceImpl implements IDbGiveLikeService
 {
     @Autowired
     private DbGiveLikeMapper dbGiveLikeMapper;
-
-    @Autowired
-    private DbUserDynamicMapper dbUserDynamicMapper;
-
-    @Autowired
-    private DbUserMapper dbUserMapper;
 
     /**
      * 查询点赞
@@ -63,7 +51,6 @@ public class DbGiveLikeServiceImpl implements IDbGiveLikeService
      * @return 结果
      */
     @Override
-    @Transactional
     public int insertDbGiveLike(DbGiveLike dbGiveLike)
     {
         return dbGiveLikeMapper.insertDbGiveLike(dbGiveLike);
@@ -76,7 +63,6 @@ public class DbGiveLikeServiceImpl implements IDbGiveLikeService
      * @return 结果
      */
     @Override
-    @Transactional
     public int updateDbGiveLike(DbGiveLike dbGiveLike)
     {
         return dbGiveLikeMapper.updateDbGiveLike(dbGiveLike);
@@ -100,8 +86,6 @@ public class DbGiveLikeServiceImpl implements IDbGiveLikeService
      * @param id 点赞ID
      * @return 结果
      */
-    @Override
-    @Transactional
     public int deleteDbGiveLikeById(Long id)
     {
         return dbGiveLikeMapper.deleteDbGiveLikeById(id);
@@ -116,36 +100,4 @@ public class DbGiveLikeServiceImpl implements IDbGiveLikeService
     public Integer selectUserGiveLikeNum(String userId) {
         return dbGiveLikeMapper.selectUserGiveLikeNum(Long.valueOf(userId));
     }
-
-    /**
-     * 用户给动态点赞接口
-     * @param userId
-     * @param dynamicId
-     * @return
-     */
-    @Override
-    @Transactional
-    public boolean insertDbGiveLikeAndLikeNum(Long userId, Long dynamicId) {
-        DbGiveLike giveLike = new DbGiveLike();
-        giveLike.setDynamicId(dynamicId);
-        giveLike.setGiveLikeTime(new Date());
-        giveLike.setUserId(userId);
-        int i = dbGiveLikeMapper.insertDbGiveLike(giveLike);
-        DbUserDynamic dynamic = dbUserDynamicMapper.selectDbUserDynamicById(dynamicId);
-        dynamic.setLikeNum(dynamic.getLikeNum()+1);
-        dbUserDynamicMapper.updateDbUserDynamic(dynamic);//todo
-        return true;
-    }
-
-    /**
-     * 根据用户id和动态id查询
-     * @param header
-     * @param id
-     * @return
-     */
-    @Override
-    public DbGiveLike selectDbGiveLikeByUserIdAndDynamicId(String header, Long id) {
-        return dbGiveLikeMapper.selectDbGiveLikeByUserIdAndDynamicId(Long.valueOf(header),id);
-    }
-
 }

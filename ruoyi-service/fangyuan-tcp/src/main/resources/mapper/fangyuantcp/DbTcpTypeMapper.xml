@@ -1,72 +1,84 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.fangyuantcp.mapper.DbTcpTypeMapper">
-    
+
     <resultMap type="DbTcpType" id="DbTcpTypeResult">
         <result property="tcpTypeId"    column="tcp_type_id"    />
-        <result property="temperature"    column="temperature"    />
-        <result property="humidity"    column="humidity"    />
+        <result property="temperatureSoil"    column="temperature_soil"    />
+        <result property="humiditySoil"    column="humidity_soil"    />
         <result property="light"    column="light"    />
         <result property="heartName"    column="heart_name"    />
         <result property="co2"    column="co2"    />
         <result property="idAuto"    column="id_auto"    />
         <result property="autocontrolType"    column="autocontrol_type"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="temperatureAir"    column="temperature_air"    />
+        <result property="humidityAir"    column="humidity_air"    />
+        <result property="isShow"    column="is_show"    />
     </resultMap>
 
     <sql id="selectDbTcpTypeVo">
-        select tcp_type_id, temperature, humidity, light, heart_name, co2, id_auto, autocontrol_type, update_time from db_tcp_type
+        select tcp_type_id, temperature_soil, humidity_soil, light, heart_name, co2, id_auto, autocontrol_type, update_time, temperature_air, humidity_air, is_show from db_tcp_type
     </sql>
 
     <select id="selectDbTcpTypeList" parameterType="DbTcpType" resultMap="DbTcpTypeResult">
         <include refid="selectDbTcpTypeVo"/>
-        <where>  
+        <where>
             <if test="heartName != null  and heartName != ''"> and heart_name like concat('%', #{heartName}, '%')</if>
         </where>
     </select>
-    
+
     <select id="selectDbTcpTypeById" parameterType="Long" resultMap="DbTcpTypeResult">
         <include refid="selectDbTcpTypeVo"/>
         where tcp_type_id = #{tcpTypeId}
     </select>
-        
+
     <insert id="insertDbTcpType" parameterType="DbTcpType" useGeneratedKeys="true" keyProperty="tcpTypeId">
         insert into db_tcp_type
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="temperature != null  and temperature != ''">temperature,</if>
-            <if test="humidity != null  and humidity != ''">humidity,</if>
+            <if test="temperatureSoil != null  and temperatureSoil != ''">temperature_soil,</if>
+            <if test="humiditySoil != null  and humiditySoil != ''">humidity_soil,</if>
             <if test="light != null  and light != ''">light,</if>
             <if test="heartName != null  and heartName != ''">heart_name,</if>
             <if test="co2 != null  and co2 != ''">co2,</if>
             <if test="idAuto != null ">id_auto,</if>
             <if test="autocontrolType != null  and autocontrolType != ''">autocontrol_type,</if>
             <if test="updateTime != null ">update_time,</if>
-         </trim>
+            <if test="temperatureAir != null  and temperatureAir != ''">temperature_air,</if>
+            <if test="humidityAir != null  and humidityAir != ''">humidity_air,</if>
+            <if test="isShow != null ">is_show,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="temperature != null  and temperature != ''">#{temperature},</if>
-            <if test="humidity != null  and humidity != ''">#{humidity},</if>
+            <if test="temperatureSoil != null  and temperatureSoil != ''">#{temperatureSoil},</if>
+            <if test="humiditySoil != null  and humiditySoil != ''">#{humiditySoil},</if>
             <if test="light != null  and light != ''">#{light},</if>
             <if test="heartName != null  and heartName != ''">#{heartName},</if>
             <if test="co2 != null  and co2 != ''">#{co2},</if>
             <if test="idAuto != null ">#{idAuto},</if>
             <if test="autocontrolType != null  and autocontrolType != ''">#{autocontrolType},</if>
             <if test="updateTime != null ">#{updateTime},</if>
-         </trim>
+            <if test="temperatureAir != null  and temperatureAir != ''">#{temperatureAir},</if>
+            <if test="humidityAir != null  and humidityAir != ''">#{humidityAir},</if>
+            <if test="isShow != null ">#{isShow},</if>
+        </trim>
     </insert>
 
     <update id="updateDbTcpType" parameterType="DbTcpType">
         update db_tcp_type
         <trim prefix="SET" suffixOverrides=",">
-            <if test="temperature != null  and temperature != ''">temperature = #{temperature},</if>
-            <if test="humidity != null  and humidity != ''">humidity = #{humidity},</if>
+            <if test="temperatureSoil != null  and temperatureSoil != ''">temperature_soil = #{temperatureSoil},</if>
+            <if test="humiditySoil != null  and humiditySoil != ''">humidity_soil = #{humiditySoil},</if>
             <if test="light != null  and light != ''">light = #{light},</if>
             <if test="heartName != null  and heartName != ''">heart_name = #{heartName},</if>
             <if test="co2 != null  and co2 != ''">co2 = #{co2},</if>
             <if test="idAuto != null ">id_auto = #{idAuto},</if>
             <if test="autocontrolType != null  and autocontrolType != ''">autocontrol_type = #{autocontrolType},</if>
             <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="temperatureAir != null  and temperatureAir != ''">temperature_air = #{temperatureAir},</if>
+            <if test="humidityAir != null  and humidityAir != ''">humidity_air = #{humidityAir},</if>
+            <if test="isShow != null ">is_show = #{isShow},</if>
         </trim>
         where tcp_type_id = #{tcpTypeId}
     </update>
@@ -76,10 +88,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteDbTcpTypeByIds" parameterType="String">
-        delete from db_tcp_type where tcp_type_id in 
+        delete from db_tcp_type where tcp_type_id in
         <foreach item="tcpTypeId" collection="array" open="(" separator="," close=")">
             #{tcpTypeId}
         </foreach>
     </delete>
-    
+
 </mapper>

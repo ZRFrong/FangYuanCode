@@ -10,8 +10,8 @@ import com.ruoyi.common.core.domain.BaseEntity;
 /**
  * 设备状态对象 db_tcp_type
  *
- * @author fangyuan
- * @date 2020-09-07
+ * @author zheng
+ * @date 2020-09-28
  */
 @ApiModel
 public class DbTcpType extends BaseEntity
@@ -21,24 +21,24 @@ public class DbTcpType extends BaseEntity
     /** 主键 */
     private Long tcpTypeId;
 
-    /** 温度 */
-    @Excel(name = "温度")
-    @ApiModelProperty(value = "温度")
-    private String temperature;
+    /** 土壤温度 */
+    @Excel(name = "土壤温度")
+    @ApiModelProperty(value = "土壤温度")
+    private String temperatureSoil;
 
-    /** 湿度 */
-    @Excel(name = "湿度")
-    @ApiModelProperty(value = "湿度")
-    private String humidity;
+    /** 土壤湿度 */
+    @Excel(name = "土壤湿度")
+    @ApiModelProperty(value = "土壤湿度")
+    private String humiditySoil;
 
     /** 光照 */
     @Excel(name = "光照")
     @ApiModelProperty(value = "光照")
     private String light;
 
-    /** 心跳名称 */
-    @Excel(name = "心跳名称")
-    @ApiModelProperty(value = "心跳名称")
+    /** 心跳名称加设备号 */
+    @Excel(name = "心跳名称加设备号")
+    @ApiModelProperty(value = "心跳名称加设备号")
     private String heartName;
 
     /** 二氧化碳 */
@@ -56,6 +56,21 @@ public class DbTcpType extends BaseEntity
     @ApiModelProperty(value = "自动控制温度区间")
     private String autocontrolType;
 
+    /** 空气温度 */
+    @Excel(name = "空气温度")
+    @ApiModelProperty(value = "空气温度")
+    private String temperatureAir;
+
+    /** 空气湿度 */
+    @Excel(name = "空气湿度")
+    @ApiModelProperty(value = "空气湿度")
+    private String humidityAir;
+
+    /** 是否显示（掉线的话不显示） */
+    @Excel(name = "是否显示", readConverterExp = "掉=线的话不显示")
+    @ApiModelProperty(value = "是否显示")
+    private Integer isShow;
+
     public void setTcpTypeId(Long tcpTypeId)
     {
         this.tcpTypeId = tcpTypeId;
@@ -65,23 +80,23 @@ public class DbTcpType extends BaseEntity
     {
         return tcpTypeId;
     }
-    public void setTemperature(String temperature)
+    public void setTemperatureSoil(String temperatureSoil)
     {
-        this.temperature = temperature;
+        this.temperatureSoil = temperatureSoil;
     }
 
-    public String getTemperature()
+    public String getTemperatureSoil()
     {
-        return temperature;
+        return temperatureSoil;
     }
-    public void setHumidity(String humidity)
+    public void setHumiditySoil(String humiditySoil)
     {
-        this.humidity = humidity;
+        this.humiditySoil = humiditySoil;
     }
 
-    public String getHumidity()
+    public String getHumiditySoil()
     {
-        return humidity;
+        return humiditySoil;
     }
     public void setLight(String light)
     {
@@ -128,19 +143,49 @@ public class DbTcpType extends BaseEntity
     {
         return autocontrolType;
     }
+    public void setTemperatureAir(String temperatureAir)
+    {
+        this.temperatureAir = temperatureAir;
+    }
+
+    public String getTemperatureAir()
+    {
+        return temperatureAir;
+    }
+    public void setHumidityAir(String humidityAir)
+    {
+        this.humidityAir = humidityAir;
+    }
+
+    public String getHumidityAir()
+    {
+        return humidityAir;
+    }
+    public void setIsShow(Integer isShow)
+    {
+        this.isShow = isShow;
+    }
+
+    public Integer getIsShow()
+    {
+        return isShow;
+    }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
                 .append("tcpTypeId", getTcpTypeId())
-                .append("temperature", getTemperature())
-                .append("humidity", getHumidity())
+                .append("temperatureSoil", getTemperatureSoil())
+                .append("humiditySoil", getHumiditySoil())
                 .append("light", getLight())
                 .append("heartName", getHeartName())
                 .append("co2", getCo2())
                 .append("idAuto", getIdAuto())
                 .append("autocontrolType", getAutocontrolType())
                 .append("updateTime", getUpdateTime())
+                .append("temperatureAir", getTemperatureAir())
+                .append("humidityAir", getHumidityAir())
+                .append("isShow", getIsShow())
                 .toString();
     }
 }

@@ -3,6 +3,7 @@ package com.ruoyi.fangyuantcp.service.impl;
 import java.util.List;
 import java.util.Set;
 
+import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,7 @@ public class DbTcpOrderServiceImpl implements IDbTcpOrderService {
     @Autowired
     private RedisUtils redisUtils;
 
-    @Value("${person.redis-key}")
-    private String record;
+
 
     /**
      * 查询操作记录
@@ -104,7 +104,7 @@ public class DbTcpOrderServiceImpl implements IDbTcpOrderService {
      * */
     @Override
     public void curingTiming() {
-        Set<String> keys = redisUtils.keys(record);
+        Set<String> keys = redisUtils.keys(RedisKeyConf.HANDLE.toString());
         keys.forEach(item->insertDbTcpOrder(redisUtils.get(item, DbTcpOrder.class)));
     }
 

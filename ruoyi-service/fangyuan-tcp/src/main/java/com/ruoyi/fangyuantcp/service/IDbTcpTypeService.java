@@ -64,4 +64,8 @@ public interface IDbTcpTypeService {
      *定时状态存储
      * */
     void curingTypeTiming();
+
+    int updateOrInstart(DbTcpType dbTcpType);
+
+    void timingType();
 }
