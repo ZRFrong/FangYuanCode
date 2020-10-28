@@ -169,7 +169,7 @@ public class RedisUtils
     }
 
     /**
-     * 根据score的值，来获取满足条件的集合  zrangebyscore
+     * 根据score的值倒序，来获取指定区间的集合  zrangebyscore
      *
      * @param key
      * @param min
@@ -177,7 +177,46 @@ public class RedisUtils
      * @return
      */
     public Set<String> sortRange(String key, int min, int max) {
-        return redisTemplate.opsForZSet().rangeByScore(key, min, max);
+        return redisTemplate.opsForZSet().reverseRange(key,min,max);
+    }
+
+    /**
+     * 删除指定区间元素
+     * @param key
+     * @param start
+     * @param end
+     */
+    public void removeByRank(String key,Long start, Long end){
+        //ZREMRANGEBYRANK
+        zSetOperations.removeRange(key,start,end);
+    }
+
+    /**
+     * 判断一个key是否在redis中存在
+     * @param key
+     * @return
+     */
+    public Boolean getKeyIsExist(String key){
+        return redisTemplate.hasKey(key);
+    }
+
+    /**
+     * 获取正序的第一个元素
+     * @param key
+     * @return
+     */
+    public Long getZSetValue(String key){
+        Set<Object> set = zSetOperations.range(key, 0, 0);
+        return Long.valueOf(set.toArray()[0]+"");
+    }
+
+    /**
+     * 获取zst集合长度
+     * @param key
+     * @return
+     */
+    public Long getZSetCard(String key){
+        return zSetOperations.zCard(key);
     }
 
     /**git pull origin master
