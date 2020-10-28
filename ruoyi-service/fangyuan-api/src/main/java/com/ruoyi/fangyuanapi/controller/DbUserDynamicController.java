@@ -83,18 +83,18 @@ public class DbUserDynamicController extends BaseController {
 	private IDbUserService dbUserService;
 
 	@Autowired
-    private ListOperations listOperations;
+	private ListOperations listOperations;
 	@Autowired
-    private HashOperations hashOperations;
+	private HashOperations hashOperations;
 
 	@Autowired
-    private IDbDynamicAndEntryService dbDynamicAndEntryService;
+	private IDbDynamicAndEntryService dbDynamicAndEntryService;
 
 	@Autowired
-    private IDbEntryService dbEntryService;
+	private IDbEntryService dbEntryService;
 
 	@Autowired
-    private IDbForwardService dbForwardService;
+	private IDbForwardService dbForwardService;
 
 	@PostMapping("comment")
 	public R userComment(Long dynamicId,String observer,String commentContent,Long parentCommentId, HttpServletRequest request){
@@ -104,95 +104,95 @@ public class DbUserDynamicController extends BaseController {
 
 
 
-    /**
-     * 推介接口
-     * @return
-     */
+	/**
+	 * 推介接口
+	 * @return
+	 */
 	@GetMapping("getDynamic/{currPage}")
 	public R getDynamic(@PathVariable(value = "currPage") Integer currPage){
-	    currPage = currPage <= 0 ? 0 :(currPage -1) * PageConf.pageSize;
-        Set<String> set = redisUtils.revRange(RedisKeyConf.DYNAMIC_ORDER.name(), currPage, PageConf.pageSize);
-        String falg = redisUtils.get(RedisKeyConf.INSERT_FLAG.name());
-        //先查缓存
-        ArrayList<DynamicDto> list = new ArrayList<>();
-        if(set != null && set.size()>0 && currPage < 2000 && StringUtils.isEmpty(falg) ){
+		currPage = currPage <= 0 ? 0 :(currPage -1) * PageConf.pageSize;
+		Set<String> set = redisUtils.revRange(RedisKeyConf.DYNAMIC_ORDER.name(), currPage, PageConf.pageSize);
+		String falg = redisUtils.get(RedisKeyConf.INSERT_FLAG.name());
+		//先查缓存
+		ArrayList<DynamicDto> list = new ArrayList<>();
+		if(set != null && set.size()>0 && currPage < 2000 && StringUtils.isEmpty(falg) ){
 
-                set.forEach( e -> {
-                    Object o = hashOperations.get(RedisKeyConf.DYNAMIC_ARRAY_.name(), e);
-                    DynamicDto dto = JSON.parseObject(o.toString(), DynamicDto.class);
-                    list.add(dto);
-                });
-                return R.data(list);
-        }else {
-            //没有缓存
-            List<DynamicDto> result = getDynamicListFromDb(currPage,PageConf.pageSize);
-            return result.size()>0 ? R.data(result):R.ok("已经到底部了！") ;
-        }
+			set.forEach( e -> {
+				Object o = hashOperations.get(RedisKeyConf.DYNAMIC_ARRAY_.name(), e);
+				DynamicDto dto = JSON.parseObject(o.toString(), DynamicDto.class);
+				list.add(dto);
+			});
+			return R.data(list);
+		}else {
+			//没有缓存
+			List<DynamicDto> result = getDynamicListFromDb(currPage,PageConf.pageSize);
+			return result.size()>0 ? R.data(result):R.ok("已经到底部了！") ;
+		}
 	}
 
 	private List<DynamicDto> getDynamicListFromDb(Integer currPage,Integer pageSize){
-        ArrayList<DbUserDynamic> dynamics = dbUserDynamicService.selectDbUserDynamicOrderByCreateTime(currPage,pageSize);
-        ArrayList<DynamicDto> list = new ArrayList<>();
-        dynamics.forEach(e -> {
-            DynamicDto dto = getDynamicDto(e);
-            list.add(dto);
-        });
-	    return list;
-    }
+		ArrayList<DbUserDynamic> dynamics = dbUserDynamicService.selectDbUserDynamicOrderByCreateTime(currPage,pageSize);
+		ArrayList<DynamicDto> list = new ArrayList<>();
+		dynamics.forEach(e -> {
+			DynamicDto dto = getDynamicDto(e);
+			list.add(dto);
+		});
+		return list;
+	}
 
 	private DynamicDto getDynamicDto(DbUserDynamic dynamic){
-        String header= getRequest().getHeader(Constants.CURRENT_ID);
-        DynamicDto dto = new DynamicDto();
-        DbUser dbUser = null;
-        Date crate = null;
-        if (dynamic.getIsForward() == 1){
-            //转发的动态
-            DbForward forward =  dbForwardService.selectDbForwardByDynamicId(dynamic.getId());
-            dto.setForwardComment(forward.getForwardComment());
-            dto.setForwardUserId(forward.getUserId());
-            dbUser = dbUserService.selectDbUserById(forward.getUserId());
-            /* 转发的时间 */
-            crate = forward.getForwardTime();
-            dto.setForwardNickName(dbUser.getNickname());
-        }
-        dto.setIsForward(dynamic.getIsForward());
-        dto.setDynamicId(dynamic.getId());
-        dto.setResource(dynamic.getResource());
-        dto.setOrientation(dynamic.getOrientation());
-        dto.setContent(dynamic.getContent());
-        dto.setLiveGiveSum(Integer.valueOf(dynamic.getLikeNum()+""));
-        /* 动态点赞数量不为0 并且用户处于登陆状态 查询这个动态该用户是否点赞 */
-        Integer flag = 0;
-        if (dynamic.getLikeNum() > 0 && StringUtils.isNotEmpty(header)){
-            DbGiveLike giveLike = dbGiveLikeService.selectDbGiveLikeByUserIdAndDynamicId(header,dynamic.getId());
-            flag = giveLike.getId() != null ? 1 : flag;
-        }
-        dto.setLikeFlag(flag);
-        dto.setCommentSum(Integer.valueOf(dynamic.getCommentNum()+""));
-        dto.setForwardSum(Integer.valueOf(dynamic.getForwardNum()+""));
-        Long userId = dbUserAndDynamicService.selectDbUserAndDynamicByDynamicId(dynamic.getId());
-        dto.setUserId(userId);
-        dbUser = dbUserService.selectDbUserById(userId);
-        if (dynamic.getIsForward() == 0){
-            dto.setAvatar(dbUser.getAvatar());
-            crate = dynamic.getCreatedTime();
-        }
-        dto.setCreatedTime(crate);
-        dto.setNickname(dbUser.getNickname());
-        DbDynamicAndEntry dynamicAndEntry = new DbDynamicAndEntry();
-        dynamicAndEntry.setDynamicId(dynamic.getId());
-        List<DbDynamicAndEntry> entries = dbDynamicAndEntryService.selectDbDynamicAndEntryList(dynamicAndEntry);
-        /* todo 后续在修改*/
-        if (entries != null && entries.size()>0){
-            ArrayList<String> list = new ArrayList<>();
-            entries.forEach(e ->{
-                DbEntry dbEntry = dbEntryService.selectDbEntryById(e.getId());
-                list.add(dbEntry.getEntryName());
-            });
-            dto.setRelSet(list);
-        }
-        return dto;
-    }
+		String header= getRequest().getHeader(Constants.CURRENT_ID);
+		DynamicDto dto = new DynamicDto();
+		DbUser dbUser = null;
+		Date crate = null;
+		if (dynamic.getIsForward() == 1){
+			//转发的动态
+			DbForward forward =  dbForwardService.selectDbForwardByDynamicId(dynamic.getId());
+			dto.setForwardComment(forward.getForwardComment());
+			dto.setForwardUserId(forward.getUserId());
+			dbUser = dbUserService.selectDbUserById(forward.getUserId());
+			/* 转发的时间 */
+			crate = forward.getForwardTime();
+			dto.setForwardNickName(dbUser.getNickname());
+		}
+		dto.setIsForward(dynamic.getIsForward());
+		dto.setDynamicId(dynamic.getId());
+		dto.setResource(dynamic.getResource());
+		dto.setOrientation(dynamic.getOrientation());
+		dto.setContent(dynamic.getContent());
+		dto.setLiveGiveSum(Integer.valueOf(dynamic.getLikeNum()+""));
+		/* 动态点赞数量不为0 并且用户处于登陆状态 查询这个动态该用户是否点赞 */
+		Integer flag = 0;
+		if (dynamic.getLikeNum() > 0 && StringUtils.isNotEmpty(header)){
+			DbGiveLike giveLike = dbGiveLikeService.selectDbGiveLikeByUserIdAndDynamicId(header,dynamic.getId());
+			flag = giveLike.getId() != null ? 1 : flag;
+		}
+		dto.setLikeFlag(flag);
+		dto.setCommentSum(Integer.valueOf(dynamic.getCommentNum()+""));
+		dto.setForwardSum(Integer.valueOf(dynamic.getForwardNum()+""));
+		Long userId = dbUserAndDynamicService.selectDbUserAndDynamicByDynamicId(dynamic.getId());
+		dto.setUserId(userId);
+		dbUser = dbUserService.selectDbUserById(userId);
+		if (dynamic.getIsForward() == 0){
+			dto.setAvatar(dbUser.getAvatar());
+			crate = dynamic.getCreatedTime();
+		}
+		dto.setCreatedTime(crate);
+		dto.setNickname(dbUser.getNickname());
+		DbDynamicAndEntry dynamicAndEntry = new DbDynamicAndEntry();
+		dynamicAndEntry.setDynamicId(dynamic.getId());
+		List<DbDynamicAndEntry> entries = dbDynamicAndEntryService.selectDbDynamicAndEntryList(dynamicAndEntry);
+		/* todo 后续在修改*/
+		if (entries != null && entries.size()>0){
+			ArrayList<String> list = new ArrayList<>();
+			entries.forEach(e ->{
+				DbEntry dbEntry = dbEntryService.selectDbEntryById(e.getId());
+				list.add(dbEntry.getEntryName());
+			});
+			dto.setRelSet(list);
+		}
+		return dto;
+	}
 
 	/**
 	 * 用户给动态点赞接口
@@ -289,10 +289,10 @@ public class DbUserDynamicController extends BaseController {
 					String s = qiniuUtils.checkImage(url);
 					switch (s) {
 						case "block":
-						    //不合法直接返回
+							//不合法直接返回
 							return R.error(ResultEnum.RESULT_BLOCK.getCode(), ResultEnum.RESULT_BLOCK.getMessage());
 						case "review":
-						    //人工审核
+							//人工审核
 							dynamic.setIsBanned(1);
 							isReview = true;
 							break;
@@ -326,13 +326,13 @@ public class DbUserDynamicController extends BaseController {
 				redisUtils.set(manualReview.getId() + "", dynamicDataToString(userId, dynamic, entryIds), RedisTimeConf.THREE_DAY);//存放审核完成后要插入的数据
 				return R.data(ZhaoMD5Utils.string2MD5(manualReview.getId() + ""));//人工审核id
 			}
-            DbUserDynamic dynamic1 = dbUserDynamicService.insterDynamic(userId, dynamic, entryIds);
+			DbUserDynamic dynamic1 = dbUserDynamicService.insterDynamic(userId, dynamic, entryIds);
 			//PASS直接插入数据
-            /* 开启缓存之后 每次新增数据插入缓存 */
-            if (redisUtils.getKeyIsExist(RedisKeyConf.DYNAMIC_ORDER.name())) {
-                setDynamicArray(getDynamicDto(dynamic1));
-                return R.ok();
-            }
+			/* 开启缓存之后 每次新增数据插入缓存 */
+			if (redisUtils.getKeyIsExist(RedisKeyConf.DYNAMIC_ORDER.name())) {
+				setDynamicArray(getDynamicDto(dynamic1));
+				return R.ok();
+			}
 		}
 		return R.error(ResultEnum.PARAMETERS_ERROR.getCode(), ResultEnum.PARAMETERS_ERROR.getMessage());
 	}
@@ -358,7 +358,7 @@ public class DbUserDynamicController extends BaseController {
 			Long[] entryIds = JSON.parseObject(map.get("entryIds"), Long[].class);
 			switch (result) {
 				case "block":
-				    //违规
+					//违规
 					dbUserDynamicService.deleteDbUserDynamicById(Long.valueOf(dynamic));
 					return R.error("该视频违规！");
 				case "review":
@@ -370,18 +370,18 @@ public class DbUserDynamicController extends BaseController {
 					manualReview.setCreated(new Date());
 					int i = dbManualReviewService.insertDbManualReview(manualReview);
 					redisUtils.set(manualReview.getId() + "", dynamic, RedisTimeConf.THREE_DAY);//存放审核完成后要插入的数据
-                    //删除视频上传之后放的数据
+					//删除视频上传之后放的数据
 					redisUtils.delete(jodId);
 					return R.data(ZhaoMD5Utils.string2MD5(manualReview.getId() + ""));//人工审核id
 				case "pass":
-				    //插入对象
+					//插入对象
 					DbUserDynamic userDynamic = dbUserDynamicService.insterDynamic(userId, dynamic1, entryIds);
 					//zset key   dynamicId  createdTime             list key  dynamic dynamicJson 1000 tiao
-                    /* 开启缓存之后 每次新增数据插入缓存 */
-                    if (redisUtils.getKeyIsExist(RedisKeyConf.DYNAMIC_ORDER.name())){
-                        setDynamicArray(getDynamicDto(userDynamic));
-                    }
-                    return userDynamic == null ? R.error(ResultEnum.SERVICE_BUSY.getCode(), ResultEnum.SERVICE_BUSY.getMessage()) : R.ok("审核已通过！");
+					/* 开启缓存之后 每次新增数据插入缓存 */
+					if (redisUtils.getKeyIsExist(RedisKeyConf.DYNAMIC_ORDER.name())){
+						setDynamicArray(getDynamicDto(userDynamic));
+					}
+					return userDynamic == null ? R.error(ResultEnum.SERVICE_BUSY.getCode(), ResultEnum.SERVICE_BUSY.getMessage()) : R.ok("审核已通过！");
 				default:
 					return R.error();
 			}
@@ -411,8 +411,10 @@ public class DbUserDynamicController extends BaseController {
 			DbUserDynamic dynamic1 = JSON.parseObject(map.get("dynamic"), DbUserDynamic.class);
 			Long[] entryIds = JSON.parseObject(map.get("entryIds"), Long[].class);
 			DbUserDynamic dynamic = dbUserDynamicService.insterDynamic(userId, dynamic1, entryIds);
-			Optional<DbUserDynamic> optional = Optional.ofNullable(dynamic);
-			optional.get();
+			/* 开启缓存之后 每次新增数据插入缓存 */
+			if (redisUtils.getKeyIsExist(RedisKeyConf.DYNAMIC_ORDER.name())){
+				setDynamicArray(getDynamicDto(dynamic));
+			}
 			return dynamic == null ? R.error(ResultEnum.SERVICE_BUSY.getCode(), ResultEnum.SERVICE_BUSY.getMessage()) : R.ok("审核已通过！");
 		}
 		if (1 == dbManualReview.getIsSussess() || 1 == dbManualReview.getIsViolation()) {
@@ -420,6 +422,24 @@ public class DbUserDynamicController extends BaseController {
 			return R.error(ResultEnum.VIOLATION_FAILURE.getCode(), ResultEnum.VIOLATION_FAILURE.getMessage());
 		}
 		return R.error(ResultEnum.UNDER_REVIEW.getCode(), ResultEnum.UNDER_REVIEW.getMessage());
+	}
+
+	@GetMapping("startCache")
+	public R insertCache(){
+		ArrayList<DbUserDynamic> list = new ArrayList<>(2000);
+		list = dbUserDynamicService.selectDynamicList(0,2000);
+		if (list != null && list.size()>300 ){
+			try {
+				redisUtils.set(RedisKeyConf.INSERT_FLAG.name(),"1");
+				list.stream().forEach(e -> setDynamicArray(getDynamicDto(e)));
+				return R.ok("预热完成！");
+			}catch (Exception e){
+
+			}finally {
+				redisUtils.delete(RedisKeyConf.INSERT_FLAG.name());
+			}
+		}
+		return R.error();
 	}
 
 	/**
@@ -440,18 +460,24 @@ public class DbUserDynamicController extends BaseController {
 		return utils.mapToString(map);
 	}
 
-    /**
-     * 维护redislist列表
-     * @param userDynamic
-     */
-	private void setDynamicArray(DbUserDynamic userDynamic){
-        String dynamicJson = JSON.toJSONString(userDynamic);
-
-        redisUtils.zSetAdd(RedisKeyConf.DYNAMIC_ORDER.name(),userDynamic.getId()+"",Double.valueOf(userDynamic.getCreatedTime().getTime()+""));
-        hashOperations.put(KeyUtils.getDynamicKey(userDynamic.getId()),userDynamic.getId()+"",dynamicJson);
-        //修剪list容量
-        //listOperations.trim(RedisKeyConf.DYNAMIC_ARRAY.name(),0L,10000L);
-    }
+	/**
+	 * 维护redis列表
+	 * @param userDynamic
+	 */
+	private void setDynamicArray(DynamicDto userDynamic){
+		String dynamicJson = JSON.toJSONString(userDynamic);
+		Long card = redisUtils.getZSetCard(RedisKeyConf.DYNAMIC_ORDER.name());
+		if (card >2000){
+			redisUtils.removeByRank(RedisKeyConf.DYNAMIC_ORDER.name(),0L,0L);
+			Long value = redisUtils.getZSetValue(RedisKeyConf.DYNAMIC_ORDER.name());
+			hashOperations.delete(RedisKeyConf.DYNAMIC_ARRAY_,value);
+		}
+		Boolean aBoolean = hashOperations.getOperations().hasKey("");
+		redisUtils.zSetAdd(RedisKeyConf.DYNAMIC_ORDER.name(),userDynamic.getDynamicId()+"",Double.valueOf(userDynamic.getCreatedTime().getTime()+""));
+		hashOperations.put(RedisKeyConf.DYNAMIC_ARRAY_.name(),userDynamic.getDynamicId()+"",dynamicJson);
+		//修剪list容量
+		//listOperations.trim(RedisKeyConf.DYNAMIC_ARRAY.name(),0L,10000L);
+	}
 
 
 
@@ -504,6 +530,6 @@ public class DbUserDynamicController extends BaseController {
 
 	public static void main(String[] args){
 //
-    }
+	}
 
 }

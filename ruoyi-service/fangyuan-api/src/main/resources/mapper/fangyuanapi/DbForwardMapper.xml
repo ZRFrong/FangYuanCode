@@ -68,5 +68,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDbForwardSumByUserId">
         select count(1) forwardSum from db_forward d where d.user_id = #{id}
     </select>
+    <select id="selectDbForwardByDynamicId" resultMap="DbForwardResult">
+        select * from db_forward where reply_forward_dynamic_id =#{dynamicId}
+    </select>
 
 </mapper>

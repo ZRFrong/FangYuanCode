@@ -1,5 +1,8 @@
 package com.ruoyi.system.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -15,6 +18,9 @@ import java.util.Date;
  * @date 2020-09-07
  */
 @ApiModel
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class DbComment extends BaseEntity
 {
     private static final long serialVersionUID = 1L;

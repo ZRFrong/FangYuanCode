@@ -1,5 +1,7 @@
 package com.ruoyi.system.domain;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -20,7 +22,16 @@ public class DbUserDynamic extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 动态表ID */
+    @Getter
+    @Setter
     private Long id;
+
+    /**
+     * 是否转发的动态 0：否 1：是
+     */
+    @Getter
+    @Setter
+    private Integer isForward;
 
     /** 是否有视频：0：有 1：没有 */
     @Excel(name = "是否有视频：0：有 1：没有")

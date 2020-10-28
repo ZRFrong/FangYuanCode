@@ -206,7 +206,7 @@ public class RedisUtils
      * @return
      */
     public Long getZSetValue(String key){
-        Set<Object> set = zSetOperations.range(key, 0, 0);
+        Set<String> set = zSetOperations.range(key, 0, 0);
         return Long.valueOf(set.toArray()[0]+"");
     }
 

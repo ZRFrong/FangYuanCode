@@ -2,13 +2,11 @@ package com.ruoyi.fangyuanapi.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.github.wxpay.sdk.WXPay;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.utils.IpUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.sms.ResultEnum;
-import com.ruoyi.fangyuanapi.conf.MyConfig;
 import com.ruoyi.fangyuanapi.service.IDbOrderService;
 import com.ruoyi.fangyuanapi.wechat.WeChatPay;
 import com.ruoyi.system.domain.DbOrder;

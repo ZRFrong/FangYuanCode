@@ -57,23 +57,27 @@ public class SendSmsServiceImpl implements SendSmsService {
         request.putQueryParameter("TemplateParam", jsonUtils.mapToString(hashMap));
         String message = null;
         try {
-            CommonResponse response = client.getCommonResponse(request);
+            //CommonResponse response = client.getCommonResponse(request);
             //String data = response.getData();  上线时把这两打开
             //Map<String,String> map = jsonUtils.stringToMap(data);
             HashMap<String, String> map = new HashMap<>();
-            map.put("Message","OK");
-            map.put("Code","OK");
-            message=map.get("Message");
-            if("OK".equals(map.get("Message"))){
-                redisUtils.set(CategoryType.USER_IDENTIFYING_CODE_+phone,s,RedisTimeConf.FIVE_MINUTE);//后台纪录验证码2分钟不过其
-                if (!"OK".equals(map.get("Code"))){
+            map.put("Message", "OK");
+            map.put("Code", "OK");
+            message = map.get("Message");
+            if ("OK".equals(map.get("Message"))) {
+                redisUtils.set(CategoryType.USER_IDENTIFYING_CODE_ + phone, s, RedisTimeConf.FIVE_MINUTE);//后台纪录验证码2分钟不过其
+                if (!"OK".equals(map.get("Code"))) {
                     return null;
                 }
             }
-        } catch (ClientException e) {
+        }catch (Exception e) {
             e.printStackTrace();
             log.error("请求出错: "+ message );
         }
+//        } catch (ClientException e) {
+//            e.printStackTrace();
+//            log.error("请求出错: "+ message );
+//        }
         return s;
     }
 

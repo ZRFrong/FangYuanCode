@@ -47,6 +47,21 @@ public class DbUserLogin extends BaseEntity
     @ApiModelProperty(value = "登录地址")
     private String locationInfo;
 
+
+
+    /** 登录状态 */
+    @Excel(name = "登录状态")
+    @ApiModelProperty(value = "登录状态")
+    private Integer status;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public void setId(Long id)
     {
         this.id = id;
@@ -111,6 +126,7 @@ public class DbUserLogin extends BaseEntity
                 .append("loginTime", getLoginTime())
                 .append("loginIp", getLoginIp())
                 .append("locationInfo", getLocationInfo())
+                .append("status",getStatus())
                 .toString();
     }
 }

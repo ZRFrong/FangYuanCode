@@ -157,4 +157,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, nickname,avatar from db_user where id = {userId}
     </select>
 
+    <select id="selectUserData" resultType="map">
+        select id,avatar,user_name,nickname,gender,age,signature from db_user where id = {userId}
+    </select>
+
 </mapper>

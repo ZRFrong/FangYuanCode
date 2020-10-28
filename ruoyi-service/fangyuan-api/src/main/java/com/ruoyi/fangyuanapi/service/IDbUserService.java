@@ -87,4 +87,11 @@ public interface IDbUserService
      */
     List<DynamicDto> getUserDynamic(DbUser user,Integer currPage,Integer pageSize);
 
+
+    /**
+     * 获取个人资料接口
+     * @param userId
+     * @return
+     */
+    Map<String,String> getUserData(Long userId);
 }

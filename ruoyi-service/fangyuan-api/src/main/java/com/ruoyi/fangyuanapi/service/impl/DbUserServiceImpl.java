@@ -172,6 +172,12 @@ public class DbUserServiceImpl implements IDbUserService
         return dto;
     }
 
+    @Override
+    public Map<String, String> getUserData(Long userId) {
+        Map<String,String> map = dbUserMapper.selectUserData(userId);
+
+        return map;
+    }
     public static void main(String[] args){
         Date date = new Date();
         System.out.println(date);

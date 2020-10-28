@@ -5,6 +5,9 @@ import com.ruoyi.common.annotation.Excel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.ruoyi.common.core.domain.BaseEntity;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 
 /**
@@ -20,6 +23,8 @@ public class DbUser extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** id */
+    @Getter
+    @Setter
     private Long id;
 
     /** 用户姓名 */
@@ -47,7 +52,10 @@ public class DbUser extends BaseEntity
     @ApiModelProperty(value = "创建时间")
     private Date created;
 
-
+//    /** 0:小程序 1：App */
+//    @Excel(name = "0:小程序 1：App")
+//    @ApiModelProperty(value = "0:小程序 1：App")
+//    private Integer userType;
 
     /** 0：男 1：女 2：保密 */
     @Excel(name = "0：男 1：女 2：保密")
