@@ -39,5 +39,5 @@ public class RedisTimeConf {
     /**
      * 三个月
      */
-    public static final Long THERE_MONTH = 60*60*24*90l;
+    public static final Long THERE_MONTH = 60*60*24*90L;
 }
