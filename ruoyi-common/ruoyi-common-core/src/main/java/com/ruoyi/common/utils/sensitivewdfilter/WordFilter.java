@@ -1,10 +1,13 @@
 package com.ruoyi.common.utils.sensitivewdfilter;
 
 import com.ruoyi.common.utils.sensitivewdfilter.util.BCConvert;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.*;
 
 
@@ -49,7 +52,10 @@ public class WordFilter {
 		List<String> words;
 		BufferedReader br = null;
 		try {
-			br = new BufferedReader(new InputStreamReader(WordFilter.class.getClassLoader().getResourceAsStream(path)));
+            InputStream stream = WordFilter.class.getClassLoader().getResourceAsStream(path);
+            ClassPathResource classPathResource = new ClassPathResource(path);
+            stream = classPathResource.getInputStream();
+            br = new BufferedReader(new InputStreamReader(stream));
 			words = new ArrayList<String>(1200);
 			for (String buf = ""; (buf = br.readLine()) != null;) {
 				if (buf == null || buf.trim().equals(""))
@@ -251,5 +257,9 @@ public class WordFilter {
 			return true;
 		}
 		return false;
+	}
+
+	public static void main(String[] args){
+		System.out.println(WordFilter.isContains("王雪冰！"));
 	}
 }

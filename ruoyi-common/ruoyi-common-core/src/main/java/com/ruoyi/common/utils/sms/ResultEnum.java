@@ -94,7 +94,23 @@ public enum ResultEnum {
     /**
      *
      */
-    PASSWORD_NOT_RULE(20,"您的密码不符合规则，请重新再试！")
+    PASSWORD_NOT_RULE(20,"您的密码不符合规则，请重新再试！"),
+    /**
+     *
+     */
+    WE_CHAT_PAY_ERROR(21,"下单失败！"),
+    /**
+     *
+     */
+    GIVE_LIKE_ERROR(22,"对不起您反悔的太快了，请稍后再试！"),
+    /**
+     *
+     */
+    LOGIN_ERROR(23,"您已经在其他设备登陆了，该设备禁止登陆！"),
+    /**
+     *
+     */
+    REFRESH_TOKEN_LOSE(401,"")
     ;
     /**
      * 返回状态码
