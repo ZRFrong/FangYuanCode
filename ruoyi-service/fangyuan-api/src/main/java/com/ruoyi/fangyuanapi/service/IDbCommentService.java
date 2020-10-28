@@ -2,6 +2,7 @@ package com.ruoyi.fangyuanapi.service;
 
 import com.ruoyi.system.domain.DbComment;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 评论Service接口
@@ -58,4 +59,35 @@ public interface IDbCommentService
      * @return 结果
      */
     public int deleteDbCommentById(Long id);
+
+    /**
+     * 一级评论查询接口
+     * @param dynamicId
+     * @param userId
+     * @param currPage
+     * @return
+     */
+    List<Map<String,Object>> getCommentList(Long dynamicId, String userId,Integer currPage);
+
+    /**
+     * 二级评论查询接口
+     * @param commentId
+     * @param userId
+     * @param currPage
+     * @param pageSize
+     * @return
+     */
+    List<Map<String,Object>> getTwoCommentList(Long commentId,String userId,Integer currPage,Integer pageSize);
+
+    /**
+     * 新增评论接口
+     * @param dynamicId 动态id
+     * @param commentId 评论 id
+     * @param replyUserId 回复的用户id
+     * @param replyCommentId 回复的评论id
+     * @param userId 当前用户id
+     * @param text 评论的内容
+     * @return
+     */
+    DbComment addComment(Long dynamicId, Long commentId, Long replyUserId,Long replyCommentId, Long userId,String text);
 }

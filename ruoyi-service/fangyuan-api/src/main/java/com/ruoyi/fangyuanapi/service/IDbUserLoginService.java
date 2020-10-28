@@ -58,4 +58,12 @@ public interface IDbUserLoginService
      * @return 结果
      */
     public int deleteDbUserLoginById(Long id);
+
+    /**
+     * 根据userId查询登陆状态
+     * @param id
+     * @return
+     */
+    DbUserLogin selectDbUserLoginByUserId(Long id);
+
 }

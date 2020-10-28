@@ -1,6 +1,8 @@
 package com.ruoyi.fangyuanapi.mapper;
 
 import com.ruoyi.system.domain.DbGiveLike;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**
@@ -62,4 +64,27 @@ public interface DbGiveLikeMapper
     Integer selectGiveLikeSumByDynamicId();
 
     Integer selectUserGiveLikeNum(Long userId);
+
+    /**
+     * 根据用户id和动态id查询
+     * @param userId
+     * @param dynamicId
+     * @return
+     */
+    DbGiveLike selectDbGiveLikeByUserIdAndDynamicId(@Param("userId") Long userId,@Param("dynamicId") Long dynamicId);
+
+    /**
+     * 根据用户id和评论id查询该用户是否点赞
+     * @param userId
+     * @param commentId
+     * @return
+     */
+    DbGiveLike selectDbGiveLikeByUserIdAndCommentId(@Param("userId") Long userId,@Param("commentId") Long commentId);
+
+    /**
+     * 查询评论的点赞数
+     * @param id
+     * @return
+     */
+    Integer selectCountByCommentId(Long id);
 }

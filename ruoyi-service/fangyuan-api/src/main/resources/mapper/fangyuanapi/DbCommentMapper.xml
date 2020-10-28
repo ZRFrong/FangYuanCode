@@ -104,5 +104,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDbCommentSumByDynamicId" resultType="integer">
         select count(0) commentSum from db_comment c where c.dynamic_id = #{id}
     </select>
-    
+
+    <select id="getCommentList" resultMap="DbCommentResult">
+        select * from db_comment where dynamic_id = #{dynamicId} and is_banned = 0 and comment_level = 0  order by comment_time desc limit #{currPage}, #{pageSize}
+    </select>
+
+    <select id="selectDbCommentByParentCommentId" resultMap="DbCommentResult">
+        select * from db_comment where parent_comment_id = #{id} and is_banned = 0 and comment_level = 1  order by comment_time desc limit #{currPage}, #{pageSize}
+    </select>
+
 </mapper>

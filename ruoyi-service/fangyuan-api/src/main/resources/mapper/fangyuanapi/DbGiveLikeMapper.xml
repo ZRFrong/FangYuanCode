@@ -74,7 +74,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectUserGiveLikeNum" parameterType="long" resultType="integer">
-        select  count(*) count from db_give_like WHERE user_id = #{userId} and is_cancel = 1
+        select  count(*) count from db_give_like where user_id = #{userId} and is_cancel = 1
+    </select>
+
+    <select id="selectDbGiveLikeByUserIdAndDynamicId" resultMap="DbGiveLikeResult">
+        <include refid="selectDbGiveLikeVo"/>
+        where user_id = #{userId} and dynamic_id = #{dynamicId}
+    </select>
+
+    <select id="selectDbGiveLikeByUserIdAndCommentId" resultMap="DbGiveLikeResult">
+        <include refid="selectDbGiveLikeVo"/>
+        where user_id = #{userId} and comment_id = #{commentId}
+    </select>
+    <select id="selectCountByCommentId" resultType="integer">
+        select count(*) from db_give_like where comment_id = #{commentId}
     </select>
 
 </mapper>

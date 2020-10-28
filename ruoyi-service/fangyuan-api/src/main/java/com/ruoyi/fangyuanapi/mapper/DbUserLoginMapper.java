@@ -58,4 +58,11 @@ public interface DbUserLoginMapper
      * @return 结果
      */
     public int deleteDbUserLoginByIds(String[] ids);
+
+    /**
+     * 根据userId查询登陆状态
+     * @param id
+     * @return
+     */
+    DbUserLogin selectDbUserLoginByUserId(Long id);
 }

@@ -3,6 +3,7 @@ package com.ruoyi.fangyuanapi.service;
 import com.ruoyi.system.domain.DbUserDynamic;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -87,4 +88,27 @@ public interface IDbUserDynamicService
      * @return
      */
     List<Map<String,String>> selectImagesByDynamicId(List<Long> dynamicIds,Integer currPage,Integer pageSize);
+
+    /**
+     * 根据id，和权限查询动态
+     * @param dynamicId
+     * @return
+     */
+    DbUserDynamic selectDbUserDynamicByIdAndPermission(Long dynamicId);
+
+    /**
+     * 查询推介动态
+     * @param currPage
+     * @param pageSize
+     * @return
+     */
+    ArrayList<DbUserDynamic> selectDbUserDynamicOrderByCreateTime(Integer currPage, Integer pageSize);
+
+    /**
+     * 缓存预热
+     * @param start
+     * @param end
+     * @return
+     */
+    ArrayList<DbUserDynamic> selectDynamicList(int start, int end);
 }

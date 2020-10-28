@@ -66,4 +66,27 @@ public interface IDbGiveLikeService
      */
     Integer selectUserGiveLikeNum(String userId);
 
+    /**
+     * 用户给动态点赞接口
+     * @param aLong
+     * @param dynamicId
+     * @return
+     */
+    boolean insertDbGiveLikeAndLikeNum(Long aLong, Long dynamicId);
+
+    /**
+     * 根据用户id 和动态id查询
+     * @param header
+     * @param id
+     * @return
+     */
+    DbGiveLike selectDbGiveLikeByUserIdAndDynamicId(String header, Long id);
+
+    /**
+     * 根据用户id和评论id查询
+     * @param userId
+     * @param commentId
+     * @return
+     */
+    DbGiveLike selectDbGiveLikeByUserIdAndCommentId(String userId, Long commentId);
 }

@@ -1,6 +1,8 @@
 package com.ruoyi.fangyuanapi.mapper;
 
 import com.ruoyi.system.domain.DbComment;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**
@@ -64,5 +66,16 @@ public interface DbCommentMapper
      * @return
      */
     Integer selectDbCommentSumByDynamicId();
+
+    List<DbComment> getCommentList(@Param("dynamicId") Long dynamicId,@Param("currPage") Integer currPage,@Param("pageSize") Integer pageSize);
+
+    /**
+     * 查询一级评论对应的二级评论
+     * @param id 一级评论id
+     * @param currPage
+     * @param pageSize
+     * @return
+     */
+    List<DbComment> selectDbCommentByParentCommentId(@Param("id") Long id,@Param("currPage") Integer currPage,@Param("pageSize") Integer pageSize);
 
 }

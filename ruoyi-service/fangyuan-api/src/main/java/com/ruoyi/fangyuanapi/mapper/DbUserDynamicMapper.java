@@ -1,6 +1,9 @@
 package com.ruoyi.fangyuanapi.mapper;
 
 import com.ruoyi.system.domain.DbUserDynamic;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -64,10 +67,21 @@ public interface DbUserDynamicMapper
 
     Map<String,String> selectDynamicCreatedAndResourcesByid(Long id, Integer currPage, Integer pageSize);
 
+    DbUserDynamic selectDbUserDynamicByIdAndPermission(Long dynamicId);
 
+    /**
+     * 查询推介动态
+     * @param currPage
+     * @param pageSize
+     * @return
+     */
+    ArrayList<DbUserDynamic> selectDbUserDynamicOrderByCreateTime(@Param("currPage") Integer currPage,@Param("pageSize") Integer pageSize);
 
-
-
-
-
+    /**
+     * 查询两千条到缓存
+     * @param start
+     * @param end
+     * @return
+     */
+    ArrayList<DbUserDynamic> selectDynamicList(int start, int end);
 }

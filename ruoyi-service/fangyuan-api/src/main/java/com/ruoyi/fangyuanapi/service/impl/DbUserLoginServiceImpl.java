@@ -7,6 +7,7 @@ import com.ruoyi.fangyuanapi.mapper.DbUserLoginMapper;
 import com.ruoyi.system.domain.DbUserLogin;
 import com.ruoyi.fangyuanapi.service.IDbUserLoginService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 登录日志Service业务层处理
@@ -51,6 +52,7 @@ public class DbUserLoginServiceImpl implements IDbUserLoginService
      * @return 结果
      */
     @Override
+    @Transactional
     public int insertDbUserLogin(DbUserLogin dbUserLogin)
     {
         return dbUserLoginMapper.insertDbUserLogin(dbUserLogin);
@@ -63,6 +65,7 @@ public class DbUserLoginServiceImpl implements IDbUserLoginService
      * @return 结果
      */
     @Override
+    @Transactional
     public int updateDbUserLogin(DbUserLogin dbUserLogin)
     {
         return dbUserLoginMapper.updateDbUserLogin(dbUserLogin);
@@ -75,6 +78,7 @@ public class DbUserLoginServiceImpl implements IDbUserLoginService
      * @return 结果
      */
     @Override
+    @Transactional
     public int deleteDbUserLoginByIds(String ids)
     {
         return dbUserLoginMapper.deleteDbUserLoginByIds(Convert.toStrArray(ids));
@@ -86,8 +90,20 @@ public class DbUserLoginServiceImpl implements IDbUserLoginService
      * @param id 登录日志ID
      * @return 结果
      */
+    @Override
+    @Transactional
     public int deleteDbUserLoginById(Long id)
     {
         return dbUserLoginMapper.deleteDbUserLoginById(id);
+    }
+
+    /**
+     * 根据userId查询登陆状态
+     * @param id
+     * @return
+     */
+    @Override
+    public DbUserLogin selectDbUserLoginByUserId(Long id) {
+        return dbUserLoginMapper.selectDbUserLoginByUserId(id);
     }
 }
