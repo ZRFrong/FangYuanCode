@@ -3,15 +3,19 @@ package com.ruoyi.gateway.fiflt;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.ruoyi.common.utils.PassDemo;
+import com.ruoyi.common.utils.aes.TokenUtils;
+import com.ruoyi.gateway.config.TokenConf;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -42,10 +46,17 @@ public class AuthFilter implements GlobalFilter, Ordered {
     @Resource(name = "stringRedisTemplate")
     private ValueOperations<String, String> ops;
 
+
     /**
      * 方便测试，
      */
-    private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/smallLogin","fangyuanapi/wxUser","fangyuanapi/dynamic1");
+    private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/smallLogin",
+            "fangyuanapi/wxUser","fangyuanapi/dynamic1","fangyuanapi/category","fangyuanapi/wx/v3",
+            "/fangyuanapi/order/insertOrder","fangyuanapi/giveLike");
+
+    @Autowired
+    private TokenConf tokenConf;
+
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -63,28 +74,26 @@ public class AuthFilter implements GlobalFilter, Ordered {
         if (Arrays.asList(whiteList).contains(url)) {
             return chain.filter(exchange);
         }
-
         String token = exchange.getRequest().getHeaders().getFirst(Constants.TOKEN);
         // token为空
         if (StringUtils.isBlank(token)) {
             return setUnauthorizedResponse(exchange, "token can't null or empty string");
         }
-        //        请求来自客户端api 转化token为DbUserId客户端用户id
+        //        请求来自客户端api 转化token为userHomeId
         if (url.contains("fangyuanapi")) {
-//
-            String[] str = url.split("/");
-//            替换token
-            PassDemo passDemo = new PassDemo();
-            Long decode = passDemo.decode(token);
-            String userId = decode + "";
-            ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, userId).build();
-            ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();
-            return chain.filter(mutableExchange);
-
+            /* id == null token被篡改 解密失败 */
+            Map<String, Object> map = TokenUtils.verifyToken(token, tokenConf.getAccessTokenKey());
+            if (map != null ){
+                String id = map.get("id")+"";
+                ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, id).build();
+                ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();
+                return chain.filter(mutableExchange);
+            } else {
+                return setUnauthorizedResponse(exchange, "token can't null or empty string");
+            }
         }
 
         String userStr = ops.get(Constants.ACCESS_TOKEN + token);
-//
         if (StringUtils.isBlank(userStr)) {
             return setUnauthorizedResponse(exchange, "token verify error");
         }
@@ -94,11 +103,13 @@ public class AuthFilter implements GlobalFilter, Ordered {
         if (StringUtils.isBlank(userId)) {
             return setUnauthorizedResponse(exchange, "token verify error");
         }
-        // 设置userId到request里，后续根据userId，获取用户信息
 
+        // 设置userId到request里，后续根据userId，获取用户信息
         ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, userId)
                 .header(Constants.CURRENT_USERNAME, jo.getString("loginName")).build();
         ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();
+
+        // ip id time
         return chain.filter(mutableExchange);
     }
 
