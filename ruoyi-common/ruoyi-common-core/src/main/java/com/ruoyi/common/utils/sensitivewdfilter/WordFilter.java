@@ -236,8 +236,7 @@ public class WordFilter {
 	 * @return
 	 */
 	private static int charConvert(char src) {
-		String s = BCConvert.qj2bj(String.valueOf(src));
-		int r = Integer.valueOf(s);
+		int r = BCConvert.qj2bj(src);
 		return (r >= 'A' && r <= 'Z') ? r + 32 : r;
 	}
 

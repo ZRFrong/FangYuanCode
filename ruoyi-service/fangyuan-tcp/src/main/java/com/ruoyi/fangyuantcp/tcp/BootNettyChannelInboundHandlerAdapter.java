@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.Date;
 
 /**
  * I/O数据读写处理类
@@ -30,7 +31,6 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
      * @param msg
      */
     @Override
-
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws InterruptedException {
 
         ReceiveUtil receiveUtil = new ReceiveUtil();
@@ -45,13 +45,32 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
             DbTcpClient dbTcpClient = getIp(ctx);
             dbTcpClient.setHeartName(msg.toString());
             receiveUtil.heartbeatChoose(dbTcpClient, ctx);
+//            log.info("时间："+new Date()+"心跳处理："+msg);
         } else {
-            //        前两位标识符
+            //       前两位是设备号   然后是标识符 03状态返回  05操作响应
             String charStic = s.substring(2, 4);
             if (charStic.equals("03")) {
-//                状态处理
+                log.info("时间：" + new Date() + "状态返回：" + msg);
+//                状态处理  返回几位处理
+                String charStic2 = s.substring(4, 6);
+
+                switch(charStic2){
+                    case "02":
+                        //手动自动返回    01 03 02  05 06
+                        receiveUtil.sinceOrHandRead(s,ctx);
+                    case "0A":
+//                        状态查询返回
+                        receiveUtil.stateRead(s,ctx);
+
+                }
+
+                if (charStic2.equals("02")) {
+
+
+                }
                 receiveUtil.stateRead(msg.toString(), ctx);
             } else if (charStic.equals("05")) {
+                log.info("时间：" + new Date() + "操作响应返回：" + msg);
 //               操作响应
                 receiveUtil.stateRespond(ctx, msg.toString());
             }
@@ -67,10 +86,6 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
      */
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws IOException {
-//        System.out.println("接受成功");
-        InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
-        String clientIp = insocket.getAddress().getHostAddress();
-
         ctx.flush();
     }
 

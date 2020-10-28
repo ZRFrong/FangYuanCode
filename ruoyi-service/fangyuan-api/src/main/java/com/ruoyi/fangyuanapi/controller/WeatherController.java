@@ -3,13 +3,16 @@ package com.ruoyi.fangyuanapi.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.utils.HttpUtil;
 import com.ruoyi.system.domain.WeatherVo;
 import com.ruoyi.system.domain.weather;
+import com.ruoyi.system.feign.RemoteTcpService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,12 +79,39 @@ public class WeatherController {
             Object now = showapi_res_body.get("now");
             String s1 = com.alibaba.fastjson.JSON.toJSONString(now);
             WeatherVo parse1 = com.alibaba.fastjson.JSON.parseObject(s1, WeatherVo.class);
-            return parse1;
+            /*
+             * 替换指定图片
+             * */
+            WeatherVo parse2 = replacePic(parse1);
+
+            return parse2;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
+
+    private WeatherVo replacePic(WeatherVo parse1) {
+        String weather = parse1.getWeather();
+        if (weather.contains("雨")) {
+            parse1.setWeather_pic("http://cdn.fangyuancun.cn/%E9%9B%A8.png");
+        } else if (weather.contains("冰雹")) {
+            parse1.setWeather_pic("http://cdn.fangyuancun.cn/%E5%86%B0%E9%9B%B9.png");
+        } else if (weather.contains("晴")) {
+            parse1.setWeather_pic("http://cdn.fangyuancun.cn/%E6%99%B4%E5%A4%A9.png");
+        } else if (weather.contains("多云")) {
+            parse1.setWeather_pic("http://cdn.fangyuancun.cn/%E5%A4%9A%E4%BA%91.png?e=1601279187&token=-rrLxBpbfyQjssy5kU0GGZdYUFLR7p_T225rvz5I:XyurSeO6QuWT5IbwZYTwqqg-Peo=");
+        } else if (weather.contains("雪")) {
+            parse1.setWeather_pic("http://cdn.fangyuancun.cn/%E9%9B%AA.png");
+        } else if (weather.contains("雷")) {
+            parse1.setWeather_pic("http://cdn.fangyuancun.cn/%E9%9B%B7%E9%98%B5%E9%9B%A8.png");
+        } else if (weather.contains("风")) {
+            parse1.setWeather_pic("http://cdn.fangyuancun.cn/%E9%A3%8E.png");
+        }
+        return parse1;
+    }
+
+
 
 
 

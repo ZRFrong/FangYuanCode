@@ -84,7 +84,7 @@ public class SysJobController extends BaseController
 	/**
 	 * 任务调度立即执行一次
 	 */
-	@PostMapping("/run")
+	@PostMapping("run")
 	@ResponseBody
 	@ApiOperation(value = "任务调度立即执行一次" , notes = "任务调度立即执行一次")
 	public R run(@ApiParam(name="SysJob",value="传入json格式",required=true) SysJob job) throws SchedulerException

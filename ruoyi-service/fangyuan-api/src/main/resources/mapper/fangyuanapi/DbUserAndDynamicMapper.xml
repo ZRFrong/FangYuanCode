@@ -61,12 +61,4 @@
         select count(*) count from db_user_and_dynamic where user_id = 1
     </select>
 
-    <select id="selectDbUserAndDynamicByDynamicId" resultType="java.lang.Long">
-        select user_id from db_user_and_dynamic where dynamic_id = #{id}
-    </select>
-
-    <select id="selectDbUserAndDynamicByUserId" resultType="java.lang.Long">
-        select dynamic_id from db_user_and_dynamic where user_id = #{id}
-    </select>
-
 </mapper>

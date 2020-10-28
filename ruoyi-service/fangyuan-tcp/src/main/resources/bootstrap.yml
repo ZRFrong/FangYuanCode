@@ -31,25 +31,15 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
 
-hystrix:
-  command:
-    default:  #default全局有效，service id指定应用有效
-      execution:
-        timeout:
-          enabled: true
-        isolation:
-          thread:
-            timeoutInMilliseconds: 10000 #断路器超时时间，默认1000ms
+feign:
+  hystrix:
+    enabled: false
 
-
-person:
-    redisKey: record
-    listenPort: 12307
 
 # MyBatis
 mybatis:
     # 搜索指定包别名
-    typeAliasesPackage: com.ruoyi.fangyuantcp
+    typeAliasesPackage: com.ruoyi
     # 配置mapper的扫描，找到所有的mapper.xml映射文件
     mapperLocations: classpath*:mapper/**/*Mapper.xml
 

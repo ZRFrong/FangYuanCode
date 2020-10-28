@@ -62,11 +62,4 @@ public interface DbUserAndDynamicMapper
     List<Long> selectDbUserAndDynamicByUserId(Long id);
 
     Integer selectDbUserAndDynamicCountByUserId(Long id);
-
-    /**
-     * 通过动态id 查询userId
-     * @param id
-     * @return
-     */
-    Long selectDbUserAndDynamicByDynamicId(Long id);
 }

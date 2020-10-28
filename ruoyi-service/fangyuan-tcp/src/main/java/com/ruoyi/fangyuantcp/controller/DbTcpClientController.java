@@ -78,8 +78,6 @@ public class DbTcpClientController extends BaseController {
     }
 
 
-
-
     /*
      * 操作设备
      * */
@@ -101,6 +99,20 @@ public class DbTcpClientController extends BaseController {
 
         return toAjax(0);
     }
+
+    /*
+     * 手动 自动查询      手动自动状态更新
+     *    01 03 00 00 00 01 84 0A
+     * */
+    @GetMapping("sinceOrHand")
+    @ApiOperation(value = "时间毫秒", notes = "手动自动查询")
+    public R sinceOrHand() {
+        int operation = dbTcpClientService.sinceOrHand();
+
+        return toAjax(0);
+    }
+
+
 
 
 }

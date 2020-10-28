@@ -52,7 +52,7 @@ public class SendSmsController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "phone", value = "手机号"),
             @ApiImplicitParam(name = "signName", value = "短信签名 1：方圆社区  "),
-            @ApiImplicitParam(name = "templateCode", value = "短信模板 1：注册短信 2：登录短信 " )
+            @ApiImplicitParam(name = "templateCode", value = "短信模板 1：注册短信 2：设备验证 " )
     })
     public R sendSms(@PathVariable String phone, @PathVariable String signName , @PathVariable String templateCode){
 
@@ -68,9 +68,9 @@ public class SendSmsController extends BaseController {
                     if (Integer.valueOf(hourNum) < SmsData.USER_HOUR_NUM) {
                         String result = sendSmsService.sendSms(phone, signName,templateCode);
                         if (result != null) {
-                            redisUtils.set(CategoryType.SMS_NUM.name(), Integer.valueOf(smsNum == null?"0":smsNum) + 1, RedisTimeConf.ONE_DAY);
-                            redisUtils.set(CategoryType.USER_DAY_NUM_ + phone, Integer.valueOf(dayNum == null?"0":dayNum) + 1, RedisTimeConf.ONE_DAY);
-                            redisUtils.set(CategoryType.USER_HOUR_NUM_ + phone, Integer.valueOf(hourNum == null?"0":hourNum) + 1, RedisTimeConf.ONE_HOUR);
+                            redisUtils.set(CategoryType.SMS_NUM.name(), Integer.valueOf(smsNum) + 1, RedisTimeConf.ONE_DAY);
+                            redisUtils.set(CategoryType.USER_DAY_NUM_ + phone, Integer.valueOf(dayNum) + 1, RedisTimeConf.ONE_DAY);
+                            redisUtils.set(CategoryType.USER_HOUR_NUM_ + phone, Integer.valueOf(hourNum) + 1, RedisTimeConf.ONE_HOUR);
                             return R.data(result);
                         } else {
                             return R.error(ResultEnum.SERVICE_BUSY.getCode(), ResultEnum.SERVICE_BUSY.getMessage());

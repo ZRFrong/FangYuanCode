@@ -17,11 +17,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="forwardNum"    column="forward_num"    />
         <result property="commentNum"    column="comment_num"    />
         <result property="likeNum"    column="like_num"    />
-        <result property="isForward"    column="is_forward"    />
     </resultMap>
 
     <sql id="selectDbUserDynamicVo">
-        select id, is_have_voide, resource, content, rel_id, orientation, permission, created_time, is_banned, forward_num, comment_num, like_num,is_forward from db_user_dynamic
+        select id, is_have_voide, resource, content, rel_id, orientation, permission, created_time, is_banned, forward_num, comment_num, like_num from db_user_dynamic
     </sql>
 
     <select id="selectDbUserDynamicList" parameterType="DbUserDynamic" resultMap="DbUserDynamicResult">
@@ -49,7 +48,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="forwardNum != null ">forward_num,</if>
             <if test="commentNum != null ">comment_num,</if>
             <if test="likeNum != null ">like_num,</if>
-            <if test="isForward != null ">is_forward,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="isHaveVoide != null ">#{isHaveVoide},</if>
@@ -63,8 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="forwardNum != null ">#{forwardNum},</if>
             <if test="commentNum != null ">#{commentNum},</if>
             <if test="likeNum != null ">#{likeNum},</if>
-            <if test="isForward != null ">#{isForward},</if>
-        </trim>
+         </trim>
     </insert>
 
     <update id="updateDbUserDynamic" parameterType="DbUserDynamic">
@@ -81,7 +78,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="forwardNum != null ">forward_num = #{forwardNum},</if>
             <if test="commentNum != null ">comment_num = #{commentNum},</if>
             <if test="likeNum != null ">like_num = #{likeNum},</if>
-            <if test="isForward != null ">is_forward = #{isForward},</if>
         </trim>
         where id = #{id}
     </update>
@@ -97,21 +93,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
-    <select id="selectDbUserDynamicByUserId" resultMap="DbUserDynamicResult">
+    <select id="selectDbUserDynamicByUserId" resultType="com.ruoyi.system.domain.DbUserDynamic">
         SELECT a.*  FROM db_user_dynamic a LEFT JOIN db_user_and_dynamic b ON a.id = b.dynamic_id WHERE b.user_id = #{id} limit #{currPage},#{pageSize}
     </select>
 
 
     <select id="selectDynamicCreatedAndResourcesByid" resultType="java.util.Map">
         select  created_time,resource from db_user_dynamic WHERE id =#{userId} AND is_banned = 0 limit #{currPage} , #{pageSize}
-    </select>
-    <select id="selectDbUserDynamicByIdAndPermission" parameterType="long" resultMap="DbUserDynamicResult">
-        <include refid="selectDbUserDynamicVo"/>
-        where id = #{dynamicId} and (permission = 0 or permission = 1)
-    </select>
-
-    <select id="selectDbUserDynamicOrderByCreateTime" resultMap="DbUserDynamicResult">
-        select * from db_user_dynamic where is_banned = 0 and permission = 0 order by created_time limit  #{currPage}, #{pageSize}
     </select>
 
 

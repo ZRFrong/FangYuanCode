@@ -12,17 +12,42 @@ import java.util.Date;
  * 设备对象 db_equipment
  *
  * @author zheng
- * @date 2020-09-25
+ * @date 2020-09-30
  */
 @ApiModel
 public class DbEquipment extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    public DbEquipment(Integer isPause,Integer isFault) {
+        this.isPause = isPause;
+        this.isFault = isFault;
+    }
+
     /** 主键 */
+
     private Long equipmentId;
 
+    public DbEquipment() {
+    }
+
+    public DbEquipment(Long equipmentId, String heartbeatText, Date allottedTime, Integer isPause, String pauseState, Integer isFault, Long equipmentTemplateId, Integer equipmentNo, String handlerText, Integer isOnline, String qrCodePic) {
+
+        this.equipmentId = equipmentId;
+        this.heartbeatText = heartbeatText;
+        this.allottedTime = allottedTime;
+        this.isPause = isPause;
+        this.pauseState = pauseState;
+        this.isFault = isFault;
+        this.equipmentTemplateId = equipmentTemplateId;
+        this.equipmentNo = equipmentNo;
+        this.handlerText = handlerText;
+        this.isOnline = isOnline;
+        this.qrCodePic = qrCodePic;
+    }
+
     /** 心跳名称 */
+
     @Excel(name = "心跳名称")
     @ApiModelProperty(value = "心跳名称")
     private String heartbeatText;
@@ -66,6 +91,13 @@ public class DbEquipment extends BaseEntity
     @Excel(name = "是否在线", readConverterExp = "0=在线，1不在线")
     @ApiModelProperty(value = "是否在线")
     private Integer isOnline;
+
+    /** 二维码图片 */
+    @Excel(name = "二维码图片")
+    @ApiModelProperty(value = "二维码图片")
+    private String qrCodePic;
+
+
 
     public void setEquipmentId(Long equipmentId)
     {
@@ -157,6 +189,15 @@ public class DbEquipment extends BaseEntity
     {
         return isOnline;
     }
+    public void setQrCodePic(String qrCodePic)
+    {
+        this.qrCodePic = qrCodePic;
+    }
+
+    public String getQrCodePic()
+    {
+        return qrCodePic;
+    }
 
     @Override
     public String toString() {
@@ -172,6 +213,7 @@ public class DbEquipment extends BaseEntity
                 .append("equipmentNo", getEquipmentNo())
                 .append("handlerText", getHandlerText())
                 .append("isOnline", getIsOnline())
+                .append("qrCodePic", getQrCodePic())
                 .toString();
     }
 }

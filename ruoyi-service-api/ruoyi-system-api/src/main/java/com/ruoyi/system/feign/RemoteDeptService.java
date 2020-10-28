@@ -17,6 +17,7 @@ import com.ruoyi.system.feign.factory.RemoteDeptFallbackFactory;
 @FeignClient(name = ServiceNameConstants.SYSTEM_SERVICE, fallbackFactory = RemoteDeptFallbackFactory.class)
 public interface RemoteDeptService
 {
+
     @GetMapping("dept/get/{deptId}")
     public SysDept selectSysDeptByDeptId(@PathVariable("deptId") long deptId);
 }

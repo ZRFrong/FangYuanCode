@@ -65,11 +65,4 @@ public interface IDbUserAndDynamicService
      * @return
      */
     List<Long> selectDbUserAndDynamicByUserId(Long userId);
-
-    /**
-     * 通过动态id 查询userid
-     * @param id
-     * @return
-     */
-    Long selectDbUserAndDynamicByDynamicId(Long id);
 }

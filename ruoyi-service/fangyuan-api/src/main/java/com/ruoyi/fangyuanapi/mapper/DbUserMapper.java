@@ -75,11 +75,4 @@ public interface DbUserMapper
      * @return
      */
     Map<String,String> selectDbUserNicknameAndAvatarById(Long userId);
-
-    /**
-     * 查询个人资料
-     * @param userId
-     * @return
-     */
-    Map<String,String> selectUserData(Long userId);
 }

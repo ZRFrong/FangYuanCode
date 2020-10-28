@@ -18,7 +18,7 @@ import cn.hutool.core.util.IdUtil;
 public class AccessTokenService
 {
     @Autowired
-    private RedisUtils          redis;
+    private RedisUtils     redis;
 
     /**
      * 12小时后过期

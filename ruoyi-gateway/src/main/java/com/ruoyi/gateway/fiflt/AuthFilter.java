@@ -45,7 +45,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     /**
      * 方便测试，
      */
-    private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/smallLogin","fangyuanapi/wxUser","fangyuanapi/dynamic1","fangyuanapi/category","fangyuanapi/wx/v3");
+    private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/smallLogin","fangyuanapi/wxUser","fangyuanapi/dynamic1");
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -69,15 +69,13 @@ public class AuthFilter implements GlobalFilter, Ordered {
         if (StringUtils.isBlank(token)) {
             return setUnauthorizedResponse(exchange, "token can't null or empty string");
         }
-        //        请求来自客户端api 转化token为userHomeId
+        //        请求来自客户端api 转化token为DbUserId客户端用户id
         if (url.contains("fangyuanapi")) {
 //
             String[] str = url.split("/");
-            List<String> strings = Arrays.asList(str);
 //            替换token
-            String substring = token.substring(8, 14);
             PassDemo passDemo = new PassDemo();
-            Long decode = passDemo.decode(substring);
+            Long decode = passDemo.decode(token);
             String userId = decode + "";
             ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, userId).build();
             ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();

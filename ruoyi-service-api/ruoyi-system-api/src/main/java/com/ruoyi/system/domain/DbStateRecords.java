@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain;
 
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -10,7 +11,7 @@ import java.util.Date;
 
 /**
  * 状态记录对象 db_state_records
- * 
+ *
  * @author 正
  * @date 2020-09-23
  */
@@ -37,39 +38,39 @@ public class DbStateRecords extends BaseEntity
     @ApiModelProperty(value = "状态表typejson字串")
     private String stateJson;
 
-    public void setStateRecordsId(Long stateRecordsId) 
+    public void setStateRecordsId(Long stateRecordsId)
     {
         this.stateRecordsId = stateRecordsId;
     }
 
-    public Long getStateRecordsId() 
+    public Long getStateRecordsId()
     {
         return stateRecordsId;
     }
-    public void setCodeOnly(String codeOnly) 
+    public void setCodeOnly(String codeOnly)
     {
         this.codeOnly = codeOnly;
     }
 
-    public String getCodeOnly() 
+    public String getCodeOnly()
     {
         return codeOnly;
     }
-    public void setDemandTime(Date demandTime) 
+    public void setDemandTime(Date demandTime)
     {
         this.demandTime = demandTime;
     }
 
-    public Date getDemandTime() 
+    public Date getDemandTime()
     {
         return demandTime;
     }
-    public void setStateJson(String stateJson) 
+    public void setStateJson(String stateJson)
     {
         this.stateJson = stateJson;
     }
 
-    public String getStateJson() 
+    public String getStateJson()
     {
         return stateJson;
     }
@@ -77,10 +78,11 @@ public class DbStateRecords extends BaseEntity
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("stateRecordsId", getStateRecordsId())
-            .append("codeOnly", getCodeOnly())
-            .append("demandTime", getDemandTime())
-            .append("stateJson", getStateJson())
-            .toString();
+                .append("stateRecordsId", getStateRecordsId())
+                .append("codeOnly", getCodeOnly())
+                .append("demandTime", getDemandTime())
+                .append("stateJson", getStateJson())
+                .toString();
     }
 }
+

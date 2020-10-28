@@ -1,5 +1,6 @@
 package com.ruoyi.fangyuantcp.controller;
 
+import com.ruoyi.system.domain.DbStateRecords;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +14,6 @@ import io.swagger.annotations.ApiParam;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.system.domain.DbStateRecords;
 import com.ruoyi.fangyuantcp.service.IDbStateRecordsService;
 
 /**
@@ -35,13 +35,13 @@ public class DbStateRecordsController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{stateRecordsId}")
-    @ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbStateRecords get(@ApiParam(name="id",value="long",required=true)  @PathVariable("stateRecordsId") Long stateRecordsId)
+	@ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
+	public DbStateRecords get(@ApiParam(name="id",value="long",required=true)  @PathVariable("s tateRecordsId") Long stateRecordsId)
 	{
 		return dbStateRecordsService.selectDbStateRecordsById(stateRecordsId);
-		
+
 	}
-	
+
 	/**
 	 * 查询状态记录列表
 	 */

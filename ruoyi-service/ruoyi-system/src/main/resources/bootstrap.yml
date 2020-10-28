@@ -33,7 +33,7 @@ spring:
   
 feign: 
   hystrix: 
-    enabled: true
+    enabled: false
 
 # 暴露监控端点
 management:

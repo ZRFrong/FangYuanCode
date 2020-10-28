@@ -70,4 +70,6 @@ public interface IDbTcpClientService
     void updateByHeartbeatName(String heartbeatName);
 
     int operationList(List<DbOperationVo> dbOperationVo);
+
+    int sinceOrHand();
 }

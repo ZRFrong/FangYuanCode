@@ -132,20 +132,21 @@ public class PassDemo {
 
 
     public static void main(String[] args) {
-        String gen = gen(14521l);
-        System.out.println(decode(gen));
+//        String gen = gen(14521l);
+//        System.out.println(decode(gen));
       /*  List<String> strings = Arrays.asList("1", "5", "6");
         strings.forEach(PassDemo::sout);
         StringBuilder buffer = new StringBuilder();
         System.out.println(strings);*/
 //        Long decode = decode("5HHHA4");
 //        System.out.println(decode);
-        String s = gen(14521l);
+        String s = gen(1l);
         System.out.println(s);
     }
     public  static  void sout(String s){
         System.out.println(s);
     }
+
     public  static  String out(String s){
         if (s=="5"){
             return s;

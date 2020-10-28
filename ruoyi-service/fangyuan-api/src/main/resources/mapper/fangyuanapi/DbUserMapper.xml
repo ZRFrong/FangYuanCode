@@ -11,7 +11,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="phone"    column="phone"    />
         <result property="salt"    column="salt"    />
         <result property="created"    column="created"    />
-        <!--<result property="userType"    column="user_type"    />-->
         <result property="gender"    column="gender"    />
         <result property="avatar"    column="avatar"    />
         <result property="laterLoginTime"    column="later_login_time"    />
@@ -33,7 +32,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectDbUserVo">
-        select id, user_name, password, phone, salt, created, gender, avatar, later_login_time, later_login_ip, update_time, remark_text, user_from, token, nickname, is_banned, age, signature, birthday, phone_is_verify,dynamic_num,attention_num,reply_attention_user_num from db_user
+        select id, user_name, password, phone, salt, created,
+         gender, avatar, later_login_time, later_login_ip, update_time, remark_text, user_from, token, nickname, is_banned, age, signature, birthday, phone_is_verify from db_user
     </sql>
 
     <select id="selectDbUserList" parameterType="DbUser" resultMap="DbUserResult">
@@ -57,7 +57,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="phone != null  and phone != ''">phone,</if>
             <if test="salt != null  and salt != ''">salt,</if>
             <if test="created != null ">created,</if>
-            <!--<if test="userType != null ">user_type,</if>-->
             <if test="gender != null ">gender,</if>
             <if test="avatar != null  and avatar != ''">avatar,</if>
             <if test="laterLoginTime != null ">later_login_time,</if>
@@ -83,7 +82,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="phone != null  and phone != ''">#{phone},</if>
             <if test="salt != null  and salt != ''">#{salt},</if>
             <if test="created != null ">#{created},</if>
-            <!--<if test="userType != null ">#{userType},</if>-->
             <if test="gender != null ">#{gender},</if>
             <if test="avatar != null  and avatar != ''">#{avatar},</if>
             <if test="laterLoginTime != null ">#{laterLoginTime},</if>
@@ -105,7 +103,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateDbUser" parameterType="DbUser" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    <update id="updateDbUser" parameterType="DbUser">
         update db_user
         <trim prefix="SET" suffixOverrides=",">
             <if test="userName != null  and userName != ''">user_name = #{userName},</if>
@@ -113,7 +111,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="phone != null  and phone != ''">phone = #{phone},</if>
             <if test="salt != null  and salt != ''">salt = #{salt},</if>
             <if test="created != null ">created = #{created},</if>
-            <!--<if test="userType != null ">user_type = #{userType},</if>-->
             <if test="gender != null ">gender = #{gender},</if>
             <if test="avatar != null  and avatar != ''">avatar = #{avatar},</if>
             <if test="laterLoginTime != null ">later_login_time = #{laterLoginTime},</if>
@@ -135,7 +132,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where id = #{id}
     </update>
-
 
     <delete id="deleteDbUserById" parameterType="Long">
         delete from db_user where id = #{id}
@@ -159,10 +155,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectDbUserNicknameAndAvatarById" resultType="java.util.Map">
         select id, nickname,avatar from db_user where id = {userId}
-    </select>
-
-    <select id="selectUserData" resultType="map">
-        select id,avatar,user_name,nickname,gender,age,signature from db_user where id = {userId}
     </select>
 
 </mapper>

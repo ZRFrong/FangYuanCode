@@ -123,7 +123,6 @@ public class DbUserDynamicServiceImpl implements IDbUserDynamicService
      * @param id 动态ID
      * @return 结果
      */
-    @Override
     public int deleteDbUserDynamicById(Long id)
     {
         return dbUserDynamicMapper.deleteDbUserDynamicById(id);
@@ -219,21 +218,5 @@ public class DbUserDynamicServiceImpl implements IDbUserDynamicService
            result.add(map);
         }
         return result;
-    }
-
-    /**
-     * 根据id 和权限 查询用户动态
-     * @param dynamicId
-     * @return
-     */
-    @Override
-    public DbUserDynamic selectDbUserDynamicByIdAndPermission(Long dynamicId){
-        return dbUserDynamicMapper.selectDbUserDynamicByIdAndPermission(dynamicId);
-    }
-
-    @Override
-    public ArrayList<DbUserDynamic> selectDbUserDynamicOrderByCreateTime(Integer currPage, Integer pageSize) {
-        ArrayList<DbUserDynamic> list =  dbUserDynamicMapper.selectDbUserDynamicOrderByCreateTime(currPage,pageSize);
-        return list ;
     }
 }
