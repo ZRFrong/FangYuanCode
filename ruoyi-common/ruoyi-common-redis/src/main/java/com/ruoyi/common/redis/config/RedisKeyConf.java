@@ -10,6 +10,18 @@ public enum RedisKeyConf {
      * 动态list数组
      */
     DYNAMIC_ARRAY_,
+
+
+    /*
+     *  EquipmentList  设备列表key
+     * */
+    EQUIPMENT_LIST,
+
+    /*
+     * 指令发送      handle
+     * */
+    HANDLE,
+
     /**
      *
      */
