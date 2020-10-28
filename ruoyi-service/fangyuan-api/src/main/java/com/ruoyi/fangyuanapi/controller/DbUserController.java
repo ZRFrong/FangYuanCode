@@ -71,13 +71,14 @@ public class DbUserController extends BaseController {
     @GetMapping("exitLogin")
     public R exitLogin(){
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
-        DbUserLogin login = dbUserLoginService.selectDbUserLoginByUserId(Long.valueOf(userId));
-        if (login == null){
-            return null;
-        }
-        /* 修改离线状态 */
-        login.setStatus(1);
-        int i = dbUserLoginService.updateDbUserLogin(login);
+//        DbUserLogin login = dbUserLoginService.selectDbUserLoginByUserId(Long.valueOf(userId));
+//        if (login == null){
+//            return null;
+//        }
+//        /* 修改离线状态 */
+//        login.setStatus(1);
+//        int i = dbUserLoginService.updateDbUserLogin(login);
+        int i = 1;
         redisUtils.delete(RedisKeyConf.REFRESH_TOKEN_.name()+userId);
         return i>0 ? R.data("您已退出登陆！") : R.error(ResultEnum.SERVICE_BUSY.getCode(), ResultEnum.SERVICE_BUSY.getMessage()) ;
     }
