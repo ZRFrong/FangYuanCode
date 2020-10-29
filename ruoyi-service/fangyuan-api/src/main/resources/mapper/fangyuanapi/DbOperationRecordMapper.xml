@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="operationTime"    column="operation_time"    />
         <result property="operationText"    column="operation_text"    />
         <result property="operationObject"    column="operation_object"    />
+        <result property="operationObjectId"    column="operation_object_id"    />
         <result property="operationObjectType"    column="operation_object_type"    />
         <result property="operationSource"    column="operation_source"    />
     </resultMap>
@@ -82,9 +83,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="listGroupDay" parameterType="DbLand" resultMap="DbOperationRecordResult">
         <include refid="selectDbOperationRecordVo"/>
         <where>
-            <if test="operationTime != null  and operationTime != ''"> and DATE_FORMAT( operation_time, '%Y%m%d' ) = DATE_FORMAT( #{operationTime} , '%Y%m%d' )</if>
+            <if test="operationObjectId != null  and operationObjectId != ''"> and  DATE_FORMAT( operation_time, '%Y%m%d' ) = DATE_FORMAT( #{operationObjectId} , '%Y%m%d' )</if>
             <if test="operationText != null  and operationText != ''"> and operation_text = #{operationText}, </if>
+            <if test="operationObject != null  and operationObject != ''"> and operation_object like concat('%', #{operationObject}, '%')</if>
         </where>
+        order by operation_time
     </select>
 
 </mapper>

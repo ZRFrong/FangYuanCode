@@ -81,36 +81,39 @@ public class AuthFilter implements GlobalFilter, Ordered {
         }
         //        请求来自客户端api 转化token为userHomeId
         if (url.contains("fangyuanapi")) {
-            /* id == null token被篡改 解密失败 */
-            Map<String, Object> map = TokenUtils.verifyToken(token, tokenConf.getAccessTokenKey());
-            if (map != null ){
-                String id = map.get("id")+"";
-                ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, id).build();
-                ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();
-                return chain.filter(mutableExchange);
-            } else {
-                return setUnauthorizedResponse(exchange, "token can't null or empty string");
+//确认是app的token长度
+            if (token.length()==128) {
+                /* id == null token被篡改 解密失败 */
+                Map<String, Object> map = TokenUtils.verifyToken(token, tokenConf.getAccessTokenKey());
+                if (map != null ){
+                    String id = map.get("id")+"";
+                    ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, id).build();
+                    ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();
+                    return chain.filter(mutableExchange);
+                } else {
+                    return setUnauthorizedResponse(exchange, "token can't null or empty string");
+                }
             }
-        }
 
-        String userStr = ops.get(Constants.ACCESS_TOKEN + token);
-        if (StringUtils.isBlank(userStr)) {
-            return setUnauthorizedResponse(exchange, "token verify error");
         }
-        JSONObject jo = JSONObject.parseObject(userStr);
-        String userId = jo.getString("userId");
-        // 查询token信息
-        if (StringUtils.isBlank(userId)) {
-            return setUnauthorizedResponse(exchange, "token verify error");
-        }
+            String userStr = ops.get(Constants.ACCESS_TOKEN + token);
+            if (StringUtils.isBlank(userStr)) {
+                return setUnauthorizedResponse(exchange, "token verify error");
+            }
+            JSONObject jo = JSONObject.parseObject(userStr);
+            String userId = jo.getString("userId");
+            // 查询token信息
+            if (StringUtils.isBlank(userId)) {
+                return setUnauthorizedResponse(exchange, "token verify error");
+            }
 
-        // 设置userId到request里，后续根据userId，获取用户信息
-        ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, userId)
-                .header(Constants.CURRENT_USERNAME, jo.getString("loginName")).build();
-        ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();
+            // 设置userId到request里，后续根据userId，获取用户信息
+            ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, userId)
+                    .header(Constants.CURRENT_USERNAME, jo.getString("loginName")).build();
+            ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();
 
-        // ip id time
-        return chain.filter(mutableExchange);
+            // ip id time
+            return chain.filter(mutableExchange);
     }
 
 
@@ -132,4 +135,6 @@ public class AuthFilter implements GlobalFilter, Ordered {
     public int getOrder() {
         return -200;
     }
+
+
 }

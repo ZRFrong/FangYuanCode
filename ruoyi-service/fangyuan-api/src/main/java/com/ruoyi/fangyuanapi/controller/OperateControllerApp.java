@@ -181,8 +181,8 @@ public class OperateControllerApp extends BaseController {
     @GetMapping("oprateEqment")
     @ApiOperation(value = "设备页面操作", notes = "设备页面操作")
     public AjaxResult oprateEqment(@ApiParam(name = "id", value = "设备id", required = true) Long id, @ApiParam(name = "type"
-            , value = "操作单位名称", required = true) String type,
-                                   @ApiParam(name = "handleName", value = "具体操作名称", required = true) String handleName) throws Exception {
+            , value = "操作单位名称:例如卷帘1", required = true) String type,
+                                   @ApiParam(name = "handleName", value = "具体操作名称开始 ：start，开始暂停：start_stop，结束暂停down_stop，结束down", required = true) String handleName) throws Exception {
 
         DbOperationRecord dbOperationRecord = new DbOperationRecord();
 //        用户id和操作来源
