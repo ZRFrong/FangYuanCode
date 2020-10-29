@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.DbAppVersionMapper">
+    
+    <resultMap type="DbAppVersion" id="DbAppVersionResult">
+        <result property="id"    column="id"    />
+        <result property="appVersion"    column="app_version"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateState"    column="update_state"    />
+        <result property="isConstraint"    column="is_constraint"    />
+        <result property="downloadUrl"    column="download_url"    />
+    </resultMap>
+
+    <sql id="selectDbAppVersionVo">
+        select id, app_version, update_time, update_by, update_state, is_constraint, download_url from db_app_version
+    </sql>
+
+    <select id="selectDbAppVersionList" parameterType="DbAppVersion" resultMap="DbAppVersionResult">
+        <include refid="selectDbAppVersionVo"/>
+        <where>  
+        </where>
+        order by update_time
+    </select>
+    
+    <select id="selectDbAppVersionById" parameterType="Long" resultMap="DbAppVersionResult">
+        <include refid="selectDbAppVersionVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbAppVersion" parameterType="DbAppVersion" useGeneratedKeys="true" keyProperty="id">
+        insert into db_app_version
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appVersion != null  and appVersion != ''">app_version,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateState != null  and updateState != ''">update_state,</if>
+            <if test="isConstraint != null ">is_constraint,</if>
+            <if test="downloadUrl != null  and downloadUrl != ''">download_url,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="appVersion != null  and appVersion != ''">#{appVersion},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateState != null  and updateState != ''">#{updateState},</if>
+            <if test="isConstraint != null ">#{isConstraint},</if>
+            <if test="downloadUrl != null  and downloadUrl != ''">#{downloadUrl},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbAppVersion" parameterType="DbAppVersion">
+        update db_app_version
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appVersion != null  and appVersion != ''">app_version = #{appVersion},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateState != null  and updateState != ''">update_state = #{updateState},</if>
+            <if test="isConstraint != null ">is_constraint = #{isConstraint},</if>
+            <if test="downloadUrl != null  and downloadUrl != ''">download_url = #{downloadUrl},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbAppVersionById" parameterType="Long">
+        delete from db_app_version where id = #{id}
+    </delete>
+
+    <delete id="deleteDbAppVersionByIds" parameterType="String">
+        delete from db_app_version where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
