@@ -160,17 +160,17 @@ public class TokenUtils {
         }
         return s;
     }
-    public static void main(String[] args){
-//        String data = "{\"id\":1,\"time\":12345864112,}";
-//        String s = encrypt(data, "196B0F14EBA66E10FBA74DBF9E99C22F");
-//        System.out.println(s);
-//        String s1 = decrypt("E8E565807B92595B0084046BA373D690FCBB97F500CB3CE1E76EB38F08E9C677", "196b0f14eba66e10fba74dbf9e99c22f");
-//        byte[] b = ParseSystemUtil.parseHexStr2Byte("E8E565807B92595B0084046BA373D690FCBB97F500CB3CE1E76EB38F08E9C677");
-//        String s2 = ParseSystemUtil.parseByte2HexStr(b);
-//        System.out.println(s2);
-//        System.out.println(s1);
-//        String string = hexStringToString("E8E565807B92595B0084046BA373D690FCBB97F500CB3CE1E76EB38F08E9C677");
-//        System.out.println(string);
-//        System.out.println(strTo16(string));
-    }
+//    public static void main(String[] args){
+////        String data = "{\"id\":1,\"time\":12345864112,}";
+////        String s = encrypt(data, "196B0F14EBA66E10FBA74DBF9E99C22F");
+////        System.out.println(s);
+////        String s1 = decrypt("E8E565807B92595B0084046BA373D690FCBB97F500CB3CE1E76EB38F08E9C677", "196b0f14eba66e10fba74dbf9e99c22f");
+////        byte[] b = ParseSystemUtil.parseHexStr2Byte("E8E565807B92595B0084046BA373D690FCBB97F500CB3CE1E76EB38F08E9C677");
+////        String s2 = ParseSystemUtil.parseByte2HexStr(b);
+////        System.out.println(s2);
+////        System.out.println(s1);
+////        String string = hexStringToString("E8E565807B92595B0084046BA373D690FCBB97F500CB3CE1E76EB38F08E9C677");
+////        System.out.println(string);
+////        System.out.println(strTo16(string));
+//    }
 }

@@ -1,5 +1,6 @@
 package com.ruoyi.fangyuanapi.controller;
 
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.DbOperationRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,8 @@ import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.fangyuanapi.service.IDbOperationRecordService;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,13 +57,33 @@ public class DbOperationRecordController extends BaseController
 		startPage();
         return result(dbOperationRecordService.selectDbOperationRecordList(dbOperationRecord));
 	}
+
+
+
+
+
 	/*
-	* 当天的用户操作记录  按照天统计
+	* 当天的用户操作记录  默认显示当天的
 	* */
 
-	public  R listGroupDay (){
+	@GetMapping("listGroupDay")
+	@ApiOperation(value = "查询操作记录列表" , notes = "APP端根据日期，操作对象，操作名称")
+	public  R listGroupDay (@ApiParam(name="operationTime",value="date",required=false)   String operationTime,
+							@ApiParam(name="operationText",value="string",required=false) String operationText,
+							@ApiParam(name="LandId",value="long",required=false)  Long LandId){
+        DbOperationRecord dbOperationRecord = new DbOperationRecord();
+
+        if (operationTime.isEmpty()&&operationText.isEmpty()&&LandId==null){
+            dbOperationRecord.setOperationObjectId(DateUtils.getDate());
+		}else if (LandId!=null){
+            dbOperationRecord.setOperationObject(LandId.toString());
+        }else{
+            dbOperationRecord.setOperationText(operationText);
+            dbOperationRecord.setOperationObjectId(operationTime);
+        }
+
 //	    日期分组的操作记录
-        List<DbOperationRecord> objects = dbOperationRecordService.listGroupDay();
+        List<DbOperationRecord> objects = dbOperationRecordService.listGroupDay(dbOperationRecord);
 
         return result(objects);
 	}

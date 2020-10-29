@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @ApiModel
-public class AqiDetail {
+public class AqiDetail  {
 
 
     //城市代码

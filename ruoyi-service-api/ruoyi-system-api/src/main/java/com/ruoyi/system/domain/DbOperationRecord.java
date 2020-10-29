@@ -47,7 +47,10 @@ public class DbOperationRecord extends BaseEntity
     @ApiModelProperty(value = "操作对象")
     private String operationObject;
 
-
+    /** 操作对象id集合 */
+    @Excel(name = "操作对象id集合")
+    @ApiModelProperty(value = "操作对象id集合")
+    private String operationObjectId;
 
     /** 操作对象id属性（地块，地区，设备） */
     @Excel(name = "操作对象id属性", readConverterExp = "地=块，地区，设备")
@@ -113,7 +116,16 @@ public class DbOperationRecord extends BaseEntity
     {
         return operationObject;
     }
-    public void setOperationObjectType(Integer operationObjectType) 
+    public void setOperationObjectId(String operationObjectId)
+    {
+        this.operationObjectId = operationObjectId;
+    }
+
+    public String getOperationObjectId()
+    {
+        return operationObjectId;
+    }
+    public void setOperationObjectType(Integer operationObjectType)
     {
         this.operationObjectType = operationObjectType;
     }
@@ -141,6 +153,7 @@ public class DbOperationRecord extends BaseEntity
             .append("operationTime", getOperationTime())
             .append("operationText", getOperationText())
             .append("operationObject", getOperationObject())
+            .append("operationObjectId", getOperationObjectId())
             .append("operationObjectType", getOperationObjectType())
             .append("operationSource", getOperationSource())
             .toString();

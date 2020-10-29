@@ -22,7 +22,6 @@ import com.ruoyi.fangyuanapi.dto.DynamicDto;
 import com.ruoyi.system.domain.DbUserLogin;
 import com.ruoyi.system.feign.RemoteDeptService;
 import com.ruoyi.system.feign.SendSmsClient;
-import com.sun.xml.internal.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,9 +35,9 @@ import java.util.Map;
 @RequestMapping("wxUser")
 public class DbUserController extends BaseController {
 
-
-    @Autowired
-    private RemoteDeptService remoteDeptService;
+//
+//    @Autowired
+//    private RemoteDeptService remoteDeptService;
 
     @Autowired
     private RedisUtils redisUtils;

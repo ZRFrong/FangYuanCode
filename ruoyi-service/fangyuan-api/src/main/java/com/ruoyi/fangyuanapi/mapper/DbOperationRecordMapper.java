@@ -61,5 +61,6 @@ public interface DbOperationRecordMapper
      */
     public int deleteDbOperationRecordByIds(String[] ids);
 
-    List<DbOperationRecord> listGroupDay();
+
+    List<DbOperationRecord> listGroupDay(DbOperationRecord dbOperationRecord);
 }
