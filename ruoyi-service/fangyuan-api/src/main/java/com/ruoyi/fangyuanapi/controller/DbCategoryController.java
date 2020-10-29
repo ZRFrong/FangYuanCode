@@ -4,7 +4,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.R;
-import com.ruoyi.common.utils.QRCodeUtils;
+import com.ruoyi.common.utils.ZhaoQRCodeUtils;
 import com.ruoyi.fangyuanapi.service.IDbCategoryService;
 import com.ruoyi.fangyuanapi.service.IDbSpecParamService;
 import com.ruoyi.system.domain.DbCategory;
@@ -57,7 +57,7 @@ public class DbCategoryController extends BaseController
 
 	@GetMapping("getCode/{orderId}")
 	@CrossOrigin
-	public void getCode( @PathVariable Long orderId, HttpServletResponse  response){
+	public void getCode( @PathVariable Long orderId, HttpServletResponse response){
 
 		// 设置响应流信息
 		response.setContentType("image/jpg");
@@ -71,7 +71,7 @@ public class DbCategoryController extends BaseController
 			stream = response.getOutputStream();
 			//type是1，生成活动详情、报名的二维码，type是2，生成活动签到的二维码
 			//获取一个二维码图片
-			BitMatrix bitMatrix = QRCodeUtils.createCode("99.36");
+			BitMatrix bitMatrix = ZhaoQRCodeUtils.createCode("99.36");
 			//以流的形式输出到前端
 			MatrixToImageWriter.writeToStream(bitMatrix , "jpg" , stream);
 		} catch (IOException e) {

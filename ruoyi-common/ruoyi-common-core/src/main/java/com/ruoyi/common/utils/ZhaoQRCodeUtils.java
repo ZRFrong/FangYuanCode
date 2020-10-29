@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class QRCodeUtils {
+public class ZhaoQRCodeUtils {
     /**
      *  生成二维码
      * @param content 二维码的内容
