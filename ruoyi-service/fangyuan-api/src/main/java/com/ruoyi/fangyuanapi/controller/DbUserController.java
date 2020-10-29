@@ -137,7 +137,7 @@ public class DbUserController extends BaseController {
                 //登录成功
                 Map<String, String> map = resultTokens(dbUser.getId(), "XIAOSI", tokenConf.getAccessTokenKey(),tokenConf.getRefreshTokenKey());
                 /* 返回token 并且记录 */
-                redisUtils.set(RedisKeyConf.REFRESH_TOKEN_.name()+dbUser.getId(),map.get("refreshToken"),RedisTimeConf.ONE_MONTH);
+                redisUtils.set(RedisKeyConf.REFRESH_TOKEN_.name()+dbUser.getId(),map.get("refreshToken"),60*60*24*30*2L);
                 //TODO
                 return R.data(map);
             }else {
@@ -150,7 +150,7 @@ public class DbUserController extends BaseController {
             R r = sendSmsClient.checkCode(phone, code);
             if ("200".equals(r.get("code")+"")){
                 Map<String, String> map = resultTokens(dbUser.getId(), "XIAOSI", tokenConf.getAccessTokenKey(),tokenConf.getRefreshTokenKey());
-                redisUtils.set(RedisKeyConf.REFRESH_TOKEN_.name()+dbUser.getId(),map.get("refreshToken"),RedisTimeConf.ONE_MONTH);
+                redisUtils.set(RedisKeyConf.REFRESH_TOKEN_.name()+dbUser.getId(),map.get("refreshToken"),60*60*24*30*2L);
                 return R.data(map);
             }else {
                 redisUtils.set(CategoryType.PHONE_LOGIN_NUM_.name() + phone,num+1,RedisTimeConf.ONE_HOUR);
@@ -161,6 +161,10 @@ public class DbUserController extends BaseController {
         return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
     }
 
+    /**
+     *
+     * @return
+     */
     @PostMapping("refreshToken")
     public R refreshToken(){
         String accessToken = getRequest().getHeader(Constants.TOKEN);
@@ -173,6 +177,7 @@ public class DbUserController extends BaseController {
         }
         String id = map.get("id") + "";
         Map<String, String> tokens = resultTokens(Long.valueOf(id), "XIAOSI", tokenConf.getAccessTokenKey(),tokenConf.getRefreshTokenKey());
+        redisUtils.set(RedisKeyConf.REFRESH_TOKEN_.name()+id,map.get("refreshToken"),60*60*24*30*2L);
         return R.data(tokens);
     }
 
