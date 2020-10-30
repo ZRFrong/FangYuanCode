@@ -1,6 +1,4 @@
 package com.ruoyi.fangyuanapi.controller;
-
-import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.R;
@@ -20,11 +18,9 @@ import com.ruoyi.fangyuanapi.service.*;
 import com.ruoyi.system.domain.DbUser;
 import com.ruoyi.fangyuanapi.dto.DynamicDto;
 import com.ruoyi.system.domain.DbUserLogin;
-import com.ruoyi.system.feign.RemoteDeptService;
 import com.ruoyi.system.feign.SendSmsClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
@@ -400,6 +396,6 @@ public class DbUserController extends BaseController {
     }
 
     public static void main(String[] args){
-        System.out.println();
+        System.out.println("3446DEFDFE916E14E7ACB44CC7D25E70B8A1E005AD64D2703AB1D78C9B8D0B7B2A9D829E9EA2E567740EB56CE1175A96B8C3C46804CE41607C954857B597F0C31ADFBDA85FE5530F7D97601A436586EF".length());
     }
 }
