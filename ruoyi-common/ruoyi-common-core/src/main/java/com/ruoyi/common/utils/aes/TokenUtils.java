@@ -35,7 +35,6 @@ public class TokenUtils {
                 return null;
             }
         }catch (Exception e){
-          e.printStackTrace();
           return null;
         }
     }
@@ -97,10 +96,9 @@ public class TokenUtils {
      * @param key 生成秘钥的随机串 加密和解密的必须是同一个
      * @return
      */
-    public static String decrypt(String token,String key){
+    public static String decrypt(String token,String key) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         KeyGenerator aes = null;
         String s =null;
-        try {
             aes = KeyGenerator.getInstance("AES");
             aes.init(128,new SecureRandom(key.getBytes()));
             SecretKey secretKey = aes.generateKey();
@@ -111,17 +109,6 @@ public class TokenUtils {
             cipher.init(Cipher.DECRYPT_MODE,secretKey);
             byte[] bytes = cipher.doFinal(ParseSystemUtil.parseHexStr2Byte(token));
             s = new String(bytes);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        }
         return s;
     }
 
@@ -160,17 +147,7 @@ public class TokenUtils {
         }
         return s;
     }
-//    public static void main(String[] args){
-////        String data = "{\"id\":1,\"time\":12345864112,}";
-////        String s = encrypt(data, "196B0F14EBA66E10FBA74DBF9E99C22F");
-////        System.out.println(s);
-////        String s1 = decrypt("E8E565807B92595B0084046BA373D690FCBB97F500CB3CE1E76EB38F08E9C677", "196b0f14eba66e10fba74dbf9e99c22f");
-////        byte[] b = ParseSystemUtil.parseHexStr2Byte("E8E565807B92595B0084046BA373D690FCBB97F500CB3CE1E76EB38F08E9C677");
-////        String s2 = ParseSystemUtil.parseByte2HexStr(b);
-////        System.out.println(s2);
-////        System.out.println(s1);
-////        String string = hexStringToString("E8E565807B92595B0084046BA373D690FCBB97F500CB3CE1E76EB38F08E9C677");
-////        System.out.println(string);
-////        System.out.println(strTo16(string));
-//    }
+    public static void main(String[] args){
+        System.out.println(encrypt("54254", "4545215431321543213").length());
+    }
 }

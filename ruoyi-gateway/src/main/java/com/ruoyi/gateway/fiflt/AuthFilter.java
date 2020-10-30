@@ -50,8 +50,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     /**
      * 方便测试，
      */
-    private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/smallLogin",
-            "fangyuanapi/wxUser","fangyuanapi/dynamic1","fangyuanapi/category","fangyuanapi/wx/v3",
+    private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/appLogin","fangyuanapi/wxUser/appRegister","fangyuanapi/dynamic1","fangyuanapi/category","fangyuanapi/wx/v3",
             "/fangyuanapi/order/insertOrder","fangyuanapi/giveLike");
 
     @Autowired
@@ -81,18 +80,13 @@ public class AuthFilter implements GlobalFilter, Ordered {
         }
         //        请求来自客户端api 转化token为userHomeId
         if (url.contains("fangyuanapi")) {
-            if (token.length()==128){
+            Map<String, Object> map = TokenUtils.verifyToken(token, tokenConf.getAccessTokenKey());
+            if (map != null){
                 /* id == null token被篡改 解密失败 */
-                Map<String, Object> map = TokenUtils.verifyToken(token, tokenConf.getAccessTokenKey());
-
-                if (map != null ){
                     String id = map.get("id")+"";
                     ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, id).build();
                     ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();
                     return chain.filter(mutableExchange);
-                } else {
-                    return setUnauthorizedResponse(exchange, "token can't null or empty string");
-                }
             }
         }
 
