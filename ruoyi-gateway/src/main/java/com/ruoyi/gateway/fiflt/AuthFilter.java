@@ -1,12 +1,9 @@
 package com.ruoyi.gateway.fiflt;
-
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
-
 import com.ruoyi.common.utils.aes.TokenUtils;
 import com.ruoyi.gateway.config.TokenConf;
 import org.apache.commons.lang3.StringUtils;
@@ -15,19 +12,16 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.R;
-
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -51,7 +45,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
      * 方便测试，
      */
     private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/appLogin","fangyuanapi/wxUser/appRegister","fangyuanapi/dynamic1","fangyuanapi/category","fangyuanapi/wx/v3",
-            "/fangyuanapi/order/insertOrder","fangyuanapi/giveLike");
+            "/fangyuanapi/order/insertOrder","fangyuanapi/giveLike","fangyuanapi/wxUser/getOpenId","fangyuanapi/wxUser/smallRegister");
 
     @Autowired
     private TokenConf tokenConf;
@@ -60,6 +54,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String url = exchange.getRequest().getURI().getPath();
+        String token = exchange.getRequest().getHeaders().getFirst(Constants.TOKEN);
         log.info("url:{}", url);
         /**
          * 方便测试，
@@ -73,7 +68,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         if (Arrays.asList(whiteList).contains(url)) {
             return chain.filter(exchange);
         }
-        String token = exchange.getRequest().getHeaders().getFirst(Constants.TOKEN);
+
         // token为空
         if (StringUtils.isBlank(token)) {
             return setUnauthorizedResponse(exchange, "token can't null or empty string");
