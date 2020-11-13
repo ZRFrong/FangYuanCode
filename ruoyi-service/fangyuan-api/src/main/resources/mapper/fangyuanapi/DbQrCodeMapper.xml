@@ -30,7 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where qr_code_id = #{qrCodeId}
     </select>
         
-    <insert id="insertDbQrCode" parameterType="DbQrCode" useGeneratedKeys="true" keyProperty="qrCodeId" keyColumn="id">
+    <insert id="insertDbQrCode" parameterType="DbQrCode" useGeneratedKeys="true" keyProperty="qrCodeId" keyColumn="qrCodeId">
         insert into db_qr_code
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="heartbeatText != null  and heartbeatText != ''">heartbeat_text,</if>

@@ -1,12 +1,9 @@
 package com.ruoyi.fangyuantcp.controller;
 
+import com.ruoyi.system.domain.DbEquipment;
+import com.ruoyi.system.domain.DbLand;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -15,6 +12,8 @@ import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
+
+import java.util.List;
 
 /**
  * 设备状态 提供者     4g模块在线否
@@ -45,10 +44,20 @@ public class DbTcpTypeController extends BaseController {
      */
     @GetMapping("list")
     @ApiOperation(value = "查询设备状态列表", notes = "设备状态列表")
-    public R list(@ApiParam(name = "DbTcpType", value = "传入json格式", required = true) DbTcpType dbTcpType) {
+    public R list(@ApiParam(name = "DbTcpType", value = "传入json格式", required = true)@RequestBody DbTcpType dbTcpType) {
         startPage();
         return result(dbTcpTypeService.selectDbTcpTypeList(dbTcpType));
     }
+
+    /**
+     * 查询设备状态列表
+     */
+    @RequestMapping("listonly")
+    public List<DbTcpType> listonly( DbTcpType dbTcpType) {
+        List<DbTcpType> list = dbTcpTypeService.selectDbTcpTypeList(dbTcpType);
+        return list;
+    }
+
 
 
     /**
@@ -88,7 +97,7 @@ public class DbTcpTypeController extends BaseController {
     }
 
     /*
-     * 状态询问
+     * 状态查询 温度湿度等
      * */
     @GetMapping("timingType")
     public R timingType() {
@@ -96,6 +105,49 @@ public class DbTcpTypeController extends BaseController {
         return R.ok();
 
     }
+    /*
+     *通风 自动手动监测
+     * */
+    @GetMapping("timingTongFengHand")
+    public R timingTongFengHand() {
+        int operation =   dbTcpTypeService.timingTongFengHand();
 
+        return toAjax(operation);
+
+    }
+
+
+    /*
+     * 通风当前的开风口，关风口温度查询
+     * */
+    @GetMapping("timingTongFengType")
+    public R timingTongFengType() {
+        int operation =   dbTcpTypeService.timingTongFengType();
+
+        return toAjax(operation);
+
+    }
+
+    /*
+    * 通风 自动手动状态更改
+    * */
+    @GetMapping("operateTongFengHand")
+    public R operateTongFengHand(@ApiParam(name = "DbEquipment", value = "DbEquipment")DbEquipment dbEquipment, @ApiParam(name = "i", value = "是否开启0,1")int i) {
+        int operation =   dbTcpTypeService.operateTongFengHand(dbEquipment,i);
+
+        return toAjax(operation);
+
+    }
+
+    /*
+    * 自动通风  开启关闭温度修改
+    * */
+    @GetMapping("operateTongFengType")
+    public R operateTongFengType(@ApiParam(name = "DbEquipment", value = "DbEquipment")DbEquipment dbEquipment, @ApiParam(name = "i", value = "是否开启0,1")int i, @ApiParam(name = "temp", value = "温度")String temp) {
+        int operation =   dbTcpTypeService.operateTongFengType(dbEquipment,i,temp);
+
+        return toAjax(operation);
+
+    }
 
 }

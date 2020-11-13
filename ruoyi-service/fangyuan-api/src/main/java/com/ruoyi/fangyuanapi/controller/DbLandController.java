@@ -68,7 +68,8 @@ public class DbLandController extends BaseController {
         String userId = request.getHeader(Constants.CURRENT_ID);
         dbLand.setDbUserId(Long.valueOf(userId));
         dbLand.setCreateTime(new Date());
-        return toAjax(dbLandService.insertDbLand(dbLand));
+        int i = dbLandService.insertDbLand(dbLand);
+        return R.data(dbLand.getLandId());
     }
 
     /**

@@ -109,7 +109,7 @@ public class DbTcpClientController extends BaseController {
     public R sinceOrHand() {
         int operation = dbTcpClientService.sinceOrHand();
 
-        return toAjax(0);
+        return toAjax(operation);
     }
 
 

@@ -64,21 +64,21 @@ public class ReceiveUtil {
 //      几位返回
         int i1 = Integer.parseInt(Long.toString(Long.parseLong(arr.get(2), 16)));
         for (int i = 0; i < (i1 / 2); i++) {
-            switch (i){
+            switch (i) {
                 case 0:
 //                      空气  温度
                     dbTcpType.setTemperatureAir(getTemp(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
-                case  1:
+                case 1:
 //                    空气     湿度
                     dbTcpType.setHumidityAir(getHum(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
 
-                case  2:
+                case 2:
 //                土壤   温度
                     dbTcpType.setTemperatureSoil(getHum(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
                 case 3:
                     //                土壤   湿度
                     dbTcpType.setHumiditySoil(getTemp(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
-                case  4:
+                case 4:
                     //                光照
                     dbTcpType.setLight(getLight(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
             }
@@ -111,6 +111,10 @@ public class ReceiveUtil {
 //        完事  END
 
     }
+
+    /*
+     *通风系列返回处理
+     * */
 
 
     /*
@@ -233,6 +237,20 @@ public class ReceiveUtil {
     }
 
 
+    /*
+    * 通风自动手动状态返回
+    * */
+    public void returnHand(ChannelHandlerContext ctx, String string) {
+        DbTcpType dbTcpType = new DbTcpType();
+        List<String> arr = getCharToArr(string);
+        String getname = getname(ctx);
+        dbTcpType.setHeartName(getname+"_"+arr.get(0));
+        List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType);
+        DbTcpType dbTcpType1 = list.get(0);
+        dbTcpType1.setIdAuto(arr.get(3).equals("00")?0:1);
+        int i = tcpTypeService.updateDbTcpType(dbTcpType1);
+
+    }
 }
 
 

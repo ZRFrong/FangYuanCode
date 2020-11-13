@@ -145,7 +145,7 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     @Override
     public int query(DbOperationVo dbTcpClient) {
         //查询状态
-        int querystate = sendCodeUtils.querystate(dbTcpClient);
+        int querystate = sendCodeUtils.querystate03(dbTcpClient);
         return querystate;
     }
 
