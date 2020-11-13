@@ -42,8 +42,7 @@ public class InitController {
         TaskHeartbeat taskHeartbeat = new TaskHeartbeat();
         taskHeartbeat.HeartbeatRun();
 
-        /*
-        *开启状态更新
-        * */
+
+
     }
 }

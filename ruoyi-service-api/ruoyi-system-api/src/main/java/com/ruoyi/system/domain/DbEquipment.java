@@ -8,12 +8,15 @@ import io.swagger.annotations.ApiModelProperty;
 import com.ruoyi.common.core.domain.BaseEntity;
 import java.util.Date;
 
+
 /**
  * 设备对象 db_equipment
  *
  * @author zheng
  * @date 2020-09-30
  */
+
+
 @ApiModel
 public class DbEquipment extends BaseEntity
 {
@@ -66,6 +69,40 @@ public class DbEquipment extends BaseEntity
     @Excel(name = "取消说明")
     @ApiModelProperty(value = "取消说明")
     private String pauseState;
+
+    public DbEquipment(Long equipmentId, String heartbeatText, Date allottedTime, Integer isPause, String pauseState, String equipmentName, Integer isFault, Long equipmentTemplateId, Integer equipmentNo, String handlerText, Integer isOnline, String qrCodePic) {
+
+        this.equipmentId = equipmentId;
+        this.heartbeatText = heartbeatText;
+        this.allottedTime = allottedTime;
+        this.isPause = isPause;
+        this.pauseState = pauseState;
+        this.equipmentName = equipmentName;
+        this.isFault = isFault;
+        this.equipmentTemplateId = equipmentTemplateId;
+        this.equipmentNo = equipmentNo;
+        this.handlerText = handlerText;
+        this.isOnline = isOnline;
+        this.qrCodePic = qrCodePic;
+    }
+
+    public static long getSerialVersionUID() {
+
+        return serialVersionUID;
+    }
+
+    public String getEquipmentName() {
+        return equipmentName;
+    }
+
+    public void setEquipmentName(String equipmentName) {
+        this.equipmentName = equipmentName;
+    }
+
+    /** 设备昵称自定义 */
+    @Excel(name = "设备昵称自定义")
+    @ApiModelProperty(value = "设备昵称自定义")
+    private String equipmentName;
 
     /** 是否发生故障 */
     @Excel(name = "是否发生故障")
@@ -164,12 +201,16 @@ public class DbEquipment extends BaseEntity
     }
     public void setEquipmentNo(Integer equipmentNo)
     {
+
         this.equipmentNo = equipmentNo;
     }
 
-    public Integer getEquipmentNo()
+    public String getEquipmentNo()
     {
-        return equipmentNo;
+        if (equipmentNo<10){
+            return "0"+equipmentNo;
+        }
+        return equipmentNo+"";
     }
     public void setHandlerText(String handlerText)
     {

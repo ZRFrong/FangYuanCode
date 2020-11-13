@@ -73,6 +73,12 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
                 log.info("时间：" + new Date() + "操作响应返回：" + msg);
 //               操作响应
                 receiveUtil.stateRespond(ctx, msg.toString());
+            }else  if (charStic.equals("01")){
+                log.info("时间：" + new Date() + "通风口自动控制设置：" + msg);
+//                更改设备自动手动状态
+                receiveUtil.returnHand(ctx, msg.toString());
+            }else  if (charStic.equals("06")){
+                log.info("时间：" + new Date() + "写入自动控制通风" + msg);
             }
         }
 

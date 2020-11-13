@@ -1,5 +1,6 @@
 package com.ruoyi.fangyuantcp.service;
 
+import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbTcpType;
 
 import java.util.List;
@@ -68,4 +69,12 @@ public interface IDbTcpTypeService {
     int updateOrInstart(DbTcpType dbTcpType);
 
     void timingType();
+
+    int timingTongFengHand();
+
+    int timingTongFengType();
+
+    int operateTongFengHand(DbEquipment equipmentIds,int i);
+
+    int operateTongFengType(DbEquipment dbEquipment, int i,String type);
 }

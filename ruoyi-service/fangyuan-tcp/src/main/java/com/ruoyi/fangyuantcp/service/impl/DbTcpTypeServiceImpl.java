@@ -3,15 +3,18 @@ package com.ruoyi.fangyuantcp.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
-import com.ruoyi.system.domain.DbStateRecords;
+import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.redis.config.RedisKeyConf;
+import com.ruoyi.common.redis.util.RedisUtils;
+import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
+import com.ruoyi.system.domain.*;
 import com.ruoyi.fangyuantcp.utils.SendCodeUtils;
-import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.fangyuantcp.mapper.DbStateRecordsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuantcp.mapper.DbTcpTypeMapper;
-import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.common.core.text.Convert;
 
@@ -28,6 +31,15 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
 
     @Autowired
     private DbStateRecordsMapper dbStateRecordsMapper;
+
+    @Autowired
+    private RedisUtils redisUtils;
+
+
+    private SendCodeUtils sendCodeUtils = new SendCodeUtils();
+
+    @Autowired
+    private DbTcpClientMapper dbTcpClientMapper;
 
     /**
      * 查询设备状态
@@ -94,6 +106,54 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
         List<DbTcpType> dbTcpTypes = selectDbTcpTypeList(dbTcpType);
         dbTcpTypes.forEach(item -> insert(item));
 
+    }
+
+    /*
+    * 通风手动自动监测
+    * */
+    @Override
+    public int timingTongFengHand() {
+
+        DbTcpClient dbTcpClient = new DbTcpClient();
+        dbTcpClient.setIsOnline(0);
+        List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
+        for (DbTcpClient tcpClient : dbTcpClients) {
+
+            Set<String> keys = redisUtils.keys(RedisKeyConf.EQUIPMENT_LIST.toString()+":"+tcpClient.getHeartName());
+            keys.forEach(ite->sendCodeUtils.sinceOrHandTongFeng(JSON.parseObject(redisUtils.get(ite),DbEquipment.class)));
+        }
+
+        return 0;
+    }
+
+    @Override
+    public int timingTongFengType() {
+        DbTcpClient dbTcpClient = new DbTcpClient();
+        dbTcpClient.setIsOnline(0);
+        List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
+        for (DbTcpClient tcpClient : dbTcpClients) {
+
+            Set<String> keys = redisUtils.keys(RedisKeyConf.EQUIPMENT_LIST.toString()+":"+tcpClient.getHeartName());
+            keys.forEach(ite->sendCodeUtils.timingTongFengType(JSON.parseObject(redisUtils.get(ite),DbEquipment.class)));
+        }
+
+        return 0;
+    }
+
+    @Override
+    public int operateTongFengHand(DbEquipment equipmentIds,int i) {
+
+            Set<String> keys = redisUtils.keys(RedisKeyConf.EQUIPMENT_LIST.toString()+":"+equipmentIds.getHeartbeatText());
+        keys.forEach(ite->sendCodeUtils.operateTongFengHand(JSON.parseObject(redisUtils.get(ite),DbEquipment.class),i));
+
+        return 0;
+    }
+
+    @Override
+    public int operateTongFengType(DbEquipment dbEquipment, int i,String type) {
+        Set<String> keys = redisUtils.keys(RedisKeyConf.EQUIPMENT_LIST.toString()+":"+dbEquipment.getHeartbeatText());
+        keys.forEach(ite->sendCodeUtils.operateTongFengType(JSON.parseObject(redisUtils.get(ite),DbEquipment.class),i,type));
+        return 0;
     }
 
     @Override

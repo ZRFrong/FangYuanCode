@@ -40,7 +40,7 @@
         where t.land_id = #{landId}
     </select>
 
-    <insert id="insertDbLand" parameterType="DbLand" useGeneratedKeys="true" keyProperty="landId">
+    <insert id="insertDbLand" parameterType="DbLand" useGeneratedKeys="true" keyProperty="landId" keyColumn="landId">
         insert into db_land
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="region != null  and region != ''">region,</if>

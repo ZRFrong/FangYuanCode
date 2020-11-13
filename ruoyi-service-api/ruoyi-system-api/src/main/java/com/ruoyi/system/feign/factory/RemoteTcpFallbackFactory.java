@@ -1,6 +1,7 @@
 package com.ruoyi.system.feign.factory;
 
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.system.feign.RemoteTcpService;
@@ -23,7 +24,7 @@ public class RemoteTcpFallbackFactory implements FallbackFactory<RemoteTcpServic
             }
 
             @Override
-            public R list(DbTcpType dbTcpType) {
+            public List<DbTcpType> list(DbTcpType dbTcpType) {
                 return null;
             }
 
@@ -34,6 +35,16 @@ public class RemoteTcpFallbackFactory implements FallbackFactory<RemoteTcpServic
 
             @Override
             public R startSaveTiming() {
+                return null;
+            }
+
+            @Override
+            public R operateTongFengType(DbEquipment dbEquipment, int i, String temp) {
+                return null;
+            }
+
+            @Override
+            public R operateTongFengHand(DbEquipment dbEquipment, int i) {
                 return null;
             }
 

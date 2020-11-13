@@ -53,15 +53,15 @@ public class OperateControllerApp extends BaseController {
             value = "卷帘:1，通风:2，浇水:3，补光:4", required = true) String type, @ApiParam(name = "handleName",
             value = "开始 ：start，开始暂停：start_stop，结束暂停down_stop，结束down", required = true) String handleName) {
 
-        DbOperationRecord dbOperationRecord = new DbOperationRecord();
-        String header = getRequest().getHeader(Constants.LOGIN_SOURCE);
-        String userId = getRequest().getHeader(Constants.CURRENT_ID);
-        dbOperationRecord.setOperationSource(Integer.parseInt(header));
-        dbOperationRecord.setDbUserId(Long.valueOf(userId));
-        dbOperationRecord.setOperationObject(ids);
-        dbOperationRecord.setOperationObjectType(0);
-        dbOperationRecord.setOperationTime(new Date());
-        dbOperationRecord.setOperationText(toOperationText(type, handleName));
+//        DbOperationRecord dbOperationRecord = new DbOperationRecord();
+//        String header = getRequest().getHeader(Constants.LOGIN_SOURCE);
+//        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+//        dbOperationRecord.setOperationSource(Integer.parseInt(header));
+//        dbOperationRecord.setDbUserId(Long.valueOf(userId));
+//        dbOperationRecord.setOperationObject(ids);
+//        dbOperationRecord.setOperationObjectType(0);
+//        dbOperationRecord.setOperationTime(new Date());
+//        dbOperationRecord.setOperationText(toOperationText(type, handleName));
 
 
         List<String> strings = Arrays.asList(ids.split(","));
@@ -72,12 +72,12 @@ public class OperateControllerApp extends BaseController {
 //临时
         int i = OperateSendUtils.operationList(lists);
         lists.clear();
-        if (i == 1) {
-            dbOperationRecord.setIsComplete(0);
-        } else {
-            dbOperationRecord.setIsComplete(1);
-        }
-        operationRecordService.insertDbOperationRecord(dbOperationRecord);
+//        if (i == 1) {
+//            dbOperationRecord.setIsComplete(0);
+//        } else {
+//            dbOperationRecord.setIsComplete(1);
+//        }
+//        operationRecordService.insertDbOperationRecord(dbOperationRecord);
         return AjaxResult.success(i);
     }
 
@@ -224,8 +224,8 @@ public class OperateControllerApp extends BaseController {
                         dbOperationVo.setOperationText(operateSp.getHandleCode());
                     }
                 }
+                }
             }
-        }
 
 
 //        发送接口

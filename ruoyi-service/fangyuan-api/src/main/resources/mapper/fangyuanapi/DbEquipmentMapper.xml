@@ -16,10 +16,11 @@
         <result property="equipmentNo"    column="equipment_no"    />
         <result property="handlerText"    column="handler_text"    />
         <result property="isOnline"    column="is_online"    />
+        <result property="equipmentName"    column="equipment_name"    />
     </resultMap>
 
     <sql id="selectDbEquipmentVo">
-        select equipment_id, heartbeat_text, allotted_time, is_pause, pause_state, is_fault, create_time, equipment_template_id, equipment_no, handler_text, is_online from db_equipment
+        select equipment_id, heartbeat_text, allotted_time, is_pause, pause_state, is_fault, create_time, equipment_template_id, equipment_no, handler_text, is_online ,equipment_name from db_equipment
     </sql>
 
     <select id="selectDbEquipmentList" parameterType="DbEquipment" resultMap="DbEquipmentResult">
@@ -46,6 +47,7 @@
             <if test="equipmentNo != null ">equipment_no,</if>
             <if test="handlerText != null  and handlerText != ''">handler_text,</if>
             <if test="isOnline != null ">is_online,</if>
+            <if test="equipmentName != null ">equipment_name,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="heartbeatText != null  and heartbeatText != ''">#{heartbeatText},</if>
@@ -58,6 +60,7 @@
             <if test="equipmentNo != null ">#{equipmentNo},</if>
             <if test="handlerText != null  and handlerText != ''">#{handlerText},</if>
             <if test="isOnline != null ">#{isOnline},</if>
+            <if test="equipmentName != null ">#{equipmentName},</if>
         </trim>
     </insert>
 
@@ -74,6 +77,7 @@
             <if test="equipmentNo != null ">equipment_no = #{equipmentNo},</if>
             <if test="handlerText != null  and handlerText != ''">handler_text = #{handlerText},</if>
             <if test="isOnline != null ">is_online = #{isOnline},</if>
+            <if test="equipmentName != null ">equipment_name = #{equipmentName},</if>
         </trim>
         where equipment_id = #{equipmentId}
     </update>
