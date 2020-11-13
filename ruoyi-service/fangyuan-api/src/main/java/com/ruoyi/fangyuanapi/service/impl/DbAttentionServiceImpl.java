@@ -119,6 +119,16 @@ public class DbAttentionServiceImpl implements IDbAttentionService
     }
 
     /**
+     * 查询我关注全部人
+     * @param userId
+     * @return 关注的人id集合
+     */
+    @Override
+    public List<Long> selectDbAttentionByUserId(String userId) {
+        return dbAttentionMapper.selectReplyAttentionUserIds(Long.valueOf(userId));
+    }
+
+    /**
      * 取消关注
      * @param loginUserId
      * @param userId
@@ -178,6 +188,19 @@ public class DbAttentionServiceImpl implements IDbAttentionService
     public List<Long> selectReplyAttentionUserIds(String userId) {
         List<Long> ids = dbAttentionMapper.selectReplyAttentionUserIdsByUserId(userId);
         return ids;
+    }
+
+    @Override
+    @Transactional
+    public DbAttention insertDbAttention(Long userId, Long attentionUserId) {
+        DbAttention attention = dbAttentionMapper.selectDbAttentionByUserIdAndReplyAttentionUserId(userId, attentionUserId);
+        if (attention == null){
+            attention.setUserId(userId);
+            attention.setReplyAttentionUserId(attentionUserId);
+            int i = dbAttentionMapper.insertDbAttention(attention);
+            return attention;
+        }
+        return null;
     }
 
 

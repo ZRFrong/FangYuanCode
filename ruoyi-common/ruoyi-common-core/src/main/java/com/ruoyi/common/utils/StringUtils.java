@@ -481,6 +481,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
         return sb.toString();
     }
     public static void main(String[] args){
+        System.out.println(checkPassword("4512254ds"));
         System.out.println(checkPassword("123456"));
     }
 }

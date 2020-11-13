@@ -33,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <sql id="selectDbUserVo">
         select id, user_name, password, phone, salt, created,
-         gender, avatar, later_login_time, later_login_ip, update_time, remark_text, user_from, token, nickname, is_banned, age, signature, birthday, phone_is_verify from db_user
+         gender, avatar, later_login_time, later_login_ip, update_time, remark_text, user_from, token, nickname, is_banned, age, signature, birthday, phone_is_verify,dynamic_num,attention_num,reply_attention_user_num from db_user
     </sql>
 
     <select id="selectDbUserList" parameterType="DbUser" resultMap="DbUserResult">
@@ -89,7 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null ">#{updateTime},</if>
             <if test="remarkText != null  and remarkText != ''">#{remarkText},</if>
             <if test="userFrom != null ">#{userFrom},</if>
-            <if test="openId != null  and openId != ''">#{open_id},</if>
+            <if test="openId != null  and openId != ''">#{openId},</if>
             <if test="token != null  and token != ''">#{token},</if>
             <if test="nickname != null  and nickname != ''">#{nickname},</if>
             <if test="isBanned != null ">#{isBanned},</if>
@@ -97,9 +97,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="signature != null  and signature != ''">#{signature},</if>
             <if test="birthday != null ">#{birthday},</if>
             <if test="phoneIsVerify != null ">#{phoneIsVerify},</if>
-            <if test="dynamicNum != null ">#{dynamic_num},</if>
-            <if test="attentionNum != null ">#{attention_num},</if>
-            <if test="replyAttentionUserNum != null ">#{reply_attention_user_num},</if>
+            <if test="dynamicNum != null ">#{dynamicNum},</if>
+            <if test="attentionNum != null ">#{attentionNum},</if>
+            <if test="replyAttentionUserNum != null ">#{replyAttentionUserNum},</if>
          </trim>
     </insert>
 
@@ -118,7 +118,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="remarkText != null  and remarkText != ''">remark_text = #{remarkText},</if>
             <if test="userFrom != null ">user_from = #{userFrom},</if>
-            <if test="openId != null  and openId != ''">open_id,</if>
+            <if test="openId != null  and openId != ''">open_id=#{openId},</if>
             <if test="token != null  and token != ''">token = #{token},</if>
             <if test="nickname != null  and nickname != ''">nickname = #{nickname},</if>
             <if test="isBanned != null ">is_banned = #{isBanned},</if>
@@ -126,11 +126,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="signature != null  and signature != ''">signature = #{signature},</if>
             <if test="birthday != null ">birthday = #{birthday},</if>
             <if test="phoneIsVerify != null ">phone_is_verify = #{phoneIsVerify},</if>
-            <if test="dynamicNum != null ">#{dynamic_num},</if>
-            <if test="attentionNum != null ">#{attention_num},</if>
-            <if test="replyAttentionUserNum != null ">#{reply_attention_user_num},</if>
+            <if test="dynamicNum != null "> dynamic_num = #{dynamicNum},</if>
+            <if test="attentionNum != null ">attention_num = #{attentionNum},</if>
+            <if test="replyAttentionUserNum != null ">reply_attention_user_num = #{replyAttentionUserNum}</if>
         </trim>
         where id = #{id}
+    </update>
+
+    <update id="updateUserPassword">
+           UPDATE db_user set password =#{password},salt =#{uuid} where d.phone = #{phone}
     </update>
 
     <delete id="deleteDbUserById" parameterType="Long">
@@ -159,6 +163,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectUserData" resultType="map">
         select id,avatar,user_name,nickname,gender,age,signature from db_user where id = {userId}
+    </select>
+
+    <select id="selectDbUserByPhoneAndOpenId" resultMap="DbUserResult">
+        select * from db_user where phone = #{phone} and open_id = #{openId}
     </select>
 
 </mapper>

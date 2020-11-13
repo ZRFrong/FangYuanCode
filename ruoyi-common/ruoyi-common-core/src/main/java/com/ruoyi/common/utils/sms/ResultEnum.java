@@ -110,6 +110,10 @@ public enum ResultEnum {
     /**
      *
      */
+    DYNAMIC_IS_NULL(24,"已经到底部了！"),
+    /**
+     *
+     */
     REFRESH_TOKEN_LOSE(401,"")
     ;
     /**

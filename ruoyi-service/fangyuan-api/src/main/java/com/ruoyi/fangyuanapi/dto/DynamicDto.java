@@ -13,6 +13,11 @@ import java.util.Map;
 public class DynamicDto {
 
     /**
+     * 当前用户是否关注
+     */
+//    private Integer isAttention ;
+    private Integer isHaveVideo;
+    /**
      * dangqi
      */
     private Integer likeFlag;
@@ -39,7 +44,7 @@ public class DynamicDto {
     /**
      * 用户id
      */
-    private Long userId;
+//    private Long userId;
     /**
      * 动态id
      */
@@ -55,7 +60,7 @@ public class DynamicDto {
     /**
      * 动态用户昵称
      */
-    private String nickname;
+//    private String nickname;
     /**
      * 动态的发布时间
      */
@@ -63,11 +68,12 @@ public class DynamicDto {
     /**
      * 动态资源 图片OR视频
      */
-    private String resource;
+    private List<String> resource;
     /**
      * 动态内容 比如：朋友圈的文字
      */
     private String content;
+    private UserDto user;
     /**
      * 动态的词条集合
      */

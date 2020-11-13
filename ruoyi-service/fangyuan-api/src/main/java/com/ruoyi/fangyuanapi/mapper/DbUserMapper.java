@@ -1,6 +1,8 @@
 package com.ruoyi.fangyuanapi.mapper;
 
 import com.ruoyi.system.domain.DbUser;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 import java.util.Map;
 
@@ -83,4 +85,15 @@ public interface DbUserMapper
      * @return
      */
     Map<String,String> selectUserData(Long userId);
+
+    /**
+     * 根据手机号修改用户密码
+     * @param phone
+     * @param password
+     * @param uuid
+     * @return
+     */
+    int updateUserPassword(String phone, String password, String uuid);
+
+    DbUser selectDbUserByPhoneAndOpenId(@Param("phone") String phone,@Param("openId") String openId);
 }

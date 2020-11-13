@@ -100,7 +100,7 @@ public class DbLandController extends BaseController {
 //        获取当前用户id
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
         dbLand.setDbUserId(Long.valueOf(userId));
-        dbLand.setSiteId(0l);
+        dbLand.setSiteId(0L);
         startPage();
         return result(dbLandService.selectDbLandList(dbLand));
     }

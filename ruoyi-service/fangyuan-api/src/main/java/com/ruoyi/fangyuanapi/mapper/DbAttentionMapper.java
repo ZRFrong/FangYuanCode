@@ -89,4 +89,6 @@ public interface DbAttentionMapper
      * @return
      */
     List<Long> selectReplyAttentionUserIdsByUserId(String userId);
+
+    List<Long> selectReplyAttentionUserIds(Long userId);
 }

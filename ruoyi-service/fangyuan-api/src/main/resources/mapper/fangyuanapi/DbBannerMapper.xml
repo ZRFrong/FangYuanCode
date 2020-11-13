@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbBannerMapper">
+    
+    <resultMap type="DbBanner" id="DbBannerResult">
+        <result property="id"    column="id"    />
+        <result property="bannerImage"    column="banner_image"    />
+        <result property="bannerUrl"    column="banner_url"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="isBanned"    column="is_banned"    />
+        <result property="bannerTpye"    column="banner_tpye"    />
+    </resultMap>
+
+    <sql id="selectDbBannerVo">
+        select id, banner_image, banner_url, create_time, is_banned, banner_tpye from db_banner
+    </sql>
+
+    <select id="selectDbBannerList" parameterType="DbBanner" resultMap="DbBannerResult">
+        <include refid="selectDbBannerVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbBannerById" parameterType="Long" resultMap="DbBannerResult">
+        <include refid="selectDbBannerVo"/>
+        where id = #{id}
+    </select>
+    <select id="getBannerList" resultMap="DbBannerResult">
+        select  * from db_banner where is_banned = 0 and banner_tpye = #{bannerType}
+    </select>
+
+    <insert id="insertDbBanner" parameterType="DbBanner" useGeneratedKeys="true" keyProperty="id">
+        insert into db_banner
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bannerImage != null  and bannerImage != ''">banner_image,</if>
+            <if test="bannerUrl != null  and bannerUrl != ''">banner_url,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="isBanned != null ">is_banned,</if>
+            <if test="bannerTpye != null ">banner_tpye,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bannerImage != null  and bannerImage != ''">#{bannerImage},</if>
+            <if test="bannerUrl != null  and bannerUrl != ''">#{bannerUrl},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="isBanned != null ">#{isBanned},</if>
+            <if test="bannerTpye != null ">#{bannerTpye},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbBanner" parameterType="DbBanner">
+        update db_banner
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bannerImage != null  and bannerImage != ''">banner_image = #{bannerImage},</if>
+            <if test="bannerUrl != null  and bannerUrl != ''">banner_url = #{bannerUrl},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="isBanned != null ">is_banned = #{isBanned},</if>
+            <if test="bannerTpye != null ">banner_tpye = #{bannerTpye},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbBannerById" parameterType="Long">
+        delete from db_banner where id = #{id}
+    </delete>
+
+    <delete id="deleteDbBannerByIds" parameterType="String">
+        delete from db_banner where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
