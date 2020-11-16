@@ -40,7 +40,17 @@ public class WeatherController {
     @ApiOperation(value = "根据经纬度查询天气情况", notes = "根据经纬度查询天气情况")
     public AjaxResult getWeather(@ApiParam(name = "lng", value = "经度", required = true) String lng, @ApiParam(name = "lat", value = "纬度", required = true) String lat, @ApiParam(name = "type", value = "\t输入的坐标类型： 1：GPS设备获取的角度坐标; 2：GPS获取的米制坐标、sogou地图所用坐标; 3：google地图、soso地图、aliyun地图、mapabc地图和amap地图所用坐标 4：3中列表地图坐标对应的米制坐标 5：百度地图采用的经纬度坐标 6：百度地图采用的米制坐标 7：mapbar地图坐标; 8：51地图坐标", required = true) String type) {
 
-        WeatherVo toget = toget(lng, lat, type);
+        WeatherVo toget = toget(lng, lat, type,1);
+        if (toget==null){
+            return AjaxResult.error("坐标转换失败");
+        }
+        return AjaxResult.success(toget);
+    }
+    @GetMapping("getWeatherWeChat")
+    @ApiOperation(value = "根据经纬度查询天气情况", notes = "根据经纬度查询天气情况")
+    public AjaxResult getWeatherWeChat(@ApiParam(name = "lng", value = "经度", required = true) String lng, @ApiParam(name = "lat", value = "纬度", required = true) String lat, @ApiParam(name = "type", value = "\t输入的坐标类型： 1：GPS设备获取的角度坐标; 2：GPS获取的米制坐标、sogou地图所用坐标; 3：google地图、soso地图、aliyun地图、mapabc地图和amap地图所用坐标 4：3中列表地图坐标对应的米制坐标 5：百度地图采用的经纬度坐标 6：百度地图采用的米制坐标 7：mapbar地图坐标; 8：51地图坐标", required = true) String type) {
+
+        WeatherVo toget = toget(lng, lat, type,2);
         if (toget==null){
             return AjaxResult.error("坐标转换失败");
         }
@@ -56,7 +66,7 @@ public class WeatherController {
     @Value("${com.fangyuan.weather.appcode}")
     private String appcode;
 
-    public WeatherVo toget(String lng, String lat, String type) {
+    public WeatherVo toget(String lng, String lat, String type,int code) {
         String method = "GET";
         Map<String, String> headers = new HashMap<String, String>();
         //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
@@ -85,9 +95,17 @@ public class WeatherController {
             /*
              * 替换指定图片
              * */
+            if (code==1){
+
             WeatherVo parse2 = replacePic(parse1);
 
-            return parse2;
+                return parse2;
+            }else {
+                WeatherVo parse2 = replacePic2(parse1);
+
+                return parse2;
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -114,7 +132,25 @@ public class WeatherController {
         return parse1;
     }
 
-
+    private WeatherVo replacePic2(WeatherVo parse1) {
+        String weather = parse1.getWeather();
+        if (weather.contains("雨")) {
+            parse1.setWeather_pic("http://cdn.fangyuancun.cn/fangyuan/20201116/98b238bad46b4dd1801299d708cd7729.png");
+        } else if (weather.contains("冰雹")) {
+            parse1.setWeather_pic("http://cdn.fangyuancun.cn/fangyuan/20201116/035f9fc4670b44b992e7e172504df53f.png");
+        } else if (weather.contains("晴")) {
+            parse1.setWeather_pic("http://cdn.fangyuancun.cn/fangyuan/20201116/f5f2d96440bb4e1ea00fcaa057ecd9d0.png");
+        } else if (weather.contains("多云")) {
+            parse1.setWeather_pic("http://cdn.fangyuancun.cn/fangyuan/20201116/6c01e705a9804e84b91ba4440d18bb0e.png");
+        } else if (weather.contains("雪")) {
+            parse1.setWeather_pic("http://cdn.fangyuancun.cn/fangyuan/20201116/d859091bb942481d887330cdc5f8db58.png");
+        } else if (weather.contains("雷")) {
+            parse1.setWeather_pic("http://cdn.fangyuancun.cn/fangyuan/20201116/8ba7aa45e1444485ab993d4554f3de04.png");
+        } else if (weather.contains("风")) {
+            parse1.setWeather_pic("http://cdn.fangyuancun.cn/fangyuan/20201116/d1cdd56d6d15452d9785fe0ec77d8a71.png");
+        }
+        return parse1;
+    }
 
 
 
