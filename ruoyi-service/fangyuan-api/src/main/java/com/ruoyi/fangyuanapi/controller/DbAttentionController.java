@@ -5,11 +5,9 @@ import com.github.pagehelper.PageHelper;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.page.PageConf;
 import com.ruoyi.common.utils.sms.ResultEnum;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
@@ -35,12 +33,31 @@ public class DbAttentionController extends BaseController
 	@Autowired
 	private IDbAttentionService dbAttentionService;
 
+	/**
+	 * 关注接口
+	 * @param attentionUserId 要关注的用户id
+	 * @return
+	 */
+	@PostMapping
+    @ApiOperation(value = "用户关注接口",notes = "关注接口",httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "attentionUserId",value = "要关注的用户id",required = true)
+    })
+	public R insertAttention(Long  attentionUserId){
+		if (attentionUserId == null || attentionUserId <= 0){
+			return null;
+		}
+        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+		DbAttention attention = dbAttentionService.insertDbAttention(Long.valueOf(userId),attentionUserId);
+        return attention == null? R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage()): R.ok();
+	}
 
     /**
      * 获取粉丝列表
      * @return
      */
 	@GetMapping("getFans/currPage")
+
 	public R getFans(HttpServletRequest request,@PathVariable(value = "currPage",required = false) Integer currPage){
         String userId = request.getHeader(Constants.CURRENT_ID);
 		currPage = currPage == null || currPage <=0 ? 0:(currPage - 1) * PageConf.pageSize;

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.DbUserDynamic;
 import com.ruoyi.fangyuanapi.dto.DynamicDto;
 import com.ruoyi.fangyuanapi.mapper.*;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.system.domain.DbUser;
 import com.ruoyi.fangyuanapi.service.IDbUserService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 前台用户Service业务层处理
@@ -75,10 +77,11 @@ public class DbUserServiceImpl implements IDbUserService
      * @return 结果
      */
     @Override
+    @Transactional
     public int insertDbUser(DbUser dbUser)
     {
         dbUser.setCreated(new Date());
-        dbUser.setPhoneIsVerify(1);
+        //dbUser.setPhoneIsVerify(1);
         return dbUserMapper.insertDbUser(dbUser);
     }
 
@@ -150,14 +153,14 @@ public class DbUserServiceImpl implements IDbUserService
     public List<DynamicDto> getUserDynamic(DbUser user,Integer currPage,Integer pageSize) {
         DynamicDto dynamicDto = new DynamicDto();
         dynamicDto.setAvatar(user.getAvatar());
-        dynamicDto.setNickname(user.getNickname());
+        //dynamicDto.setNickname(user.getNickname());
         Integer count = dbUserAndDynamicMapper.selectDbUserAndDynamicCountByUserId(user.getId());
         currPage = pageSize > count ? count : pageSize;
         List<DbUserDynamic> dbUserDynamics =dbUserDynamicMapper.selectDbUserDynamicByUserId(user.getId(),currPage,pageSize);
         ArrayList<DynamicDto> dto = new ArrayList<>();
         for (DbUserDynamic dbUserDynamic : dbUserDynamics) {
             dynamicDto.setContent(dbUserDynamic.getContent());
-            dynamicDto.setResource(dbUserDynamic.getResource());
+            //dynamicDto.setResource(dbUserDynamic.getResource());
             dynamicDto.setCreatedTime(dbUserDynamic.getCreatedTime());
             List<String> relSet = dbEntryMapper.selectDbEntrys(dbUserDynamic.getId());
             dynamicDto.setRelSet(relSet);//词条集合
@@ -178,6 +181,42 @@ public class DbUserServiceImpl implements IDbUserService
 
         return map;
     }
+
+    @Override
+    @Transactional
+    public DbUser wxRegister(String phone,String openId,String nickname,String avatar) {
+        DbUser user = dbUserMapper.selectDbUserByPhone(phone);
+        if (user != null ){
+            if (openId.equals(user.getOpenId()+"")){
+                return user;
+            }
+            user.setOpenId(openId);
+            dbUserMapper.updateDbUser(user);
+        }
+        user = new DbUser();
+        user.setOpenId(openId);
+        user.setNickname(nickname);
+        user.setAvatar(avatar);
+        user.setPhone(phone);
+        user.setPhoneIsVerify(1);
+        user.setCreateTime(new Date());
+        user.setUserFrom(0);
+        dbUserMapper.insertDbUser(user);
+        return user;
+    }
+
+    @Override
+    @Transactional
+    public int updateUserPassword(String phone, String s, String uuid) {
+        int i = dbUserMapper.updateUserPassword(phone,s,uuid);
+        return 0;
+    }
+
+    @Override
+    public DbUser selectDbUserByPhoneAndOpenId(String phone, String openId) {
+        return dbUserMapper.selectDbUserByPhoneAndOpenId(phone,openId);
+    }
+
     public static void main(String[] args){
         Date date = new Date();
         System.out.println(date);

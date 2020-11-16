@@ -68,6 +68,12 @@ public interface IDbAttentionService
     List<Map<String,String>> selectDbAttentionByUserId(String userId,Integer currPage);
 
     /**
+     * 查询我关注全部人
+     * @param userId
+     * @return 关注的人id集合
+     */
+    List<Long> selectDbAttentionByUserId(String userId);
+    /**
      * 取消关注
      * @param loginUserId
      * @param userId
@@ -89,4 +95,6 @@ public interface IDbAttentionService
      * @return ids
      */
     List<Long> selectReplyAttentionUserIds(String userId);
+
+    DbAttention insertDbAttention(Long userId, Long attentionUserId);
 }

@@ -63,17 +63,21 @@ public class WxPayController extends BaseController {
     @RequestMapping("notify")
     public String notifyUrl() {
         HttpServletRequest request = getRequest();
-        String Wechatpay_Timestamp = request.getHeader("Wechatpay-Timestamp");//时间戳
-        String Wechatpay_Nonce = request.getHeader("Wechatpay-Nonce");//随机串
-        String Wechatpay_Signature = request.getHeader("Wechatpay-Signature");//签名
-        String Wechatpay_Serial = request.getHeader("Wechatpay-Serial");//证书序列号
-        String str = null;//body
+        String Wechatpay_Timestamp = request.getHeader("Wechatpay-Timestamp");
+        //时间戳
+        String Wechatpay_Nonce = request.getHeader("Wechatpay-Nonce");
+        //随机串
+        String Wechatpay_Signature = request.getHeader("Wechatpay-Signature");
+        //签名
+        String Wechatpay_Serial = request.getHeader("Wechatpay-Serial");
+        //证书序列号
+        String str = null;
+        //body
         HashMap<String, String> map = new HashMap<>();
         String code = "ERROR_NAME";
         String message = null;
         BufferedReader breader = null;
         try { breader = new BufferedReader(new InputStreamReader(request.getInputStream(),Charset.forName("UTF-8")));
-
         StringBuffer strb = new StringBuffer();
         while(null != (str = breader.readLine())) {
             strb.append(str);

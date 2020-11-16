@@ -2,6 +2,7 @@ package com.ruoyi.fangyuanapi.service;
 
 import com.ruoyi.system.domain.DbUser;
 import com.ruoyi.fangyuanapi.dto.DynamicDto;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -94,4 +95,23 @@ public interface IDbUserService
      * @return
      */
     Map<String,String> getUserData(Long userId);
+
+    DbUser wxRegister(String phone,String openId,String nickname,String avatar);
+
+    /**
+     * 根据手机号修改用户密码
+     * @param phone
+     * @param s
+     * @param uuid
+     * @return
+     */
+    int updateUserPassword(String phone, String s, String uuid);
+
+    /**
+     * 根据手机号和openid查询User
+     * @param phone
+     * @param openId
+     * @return
+     */
+    DbUser selectDbUserByPhoneAndOpenId(@Param(value = "phone") String phone,@Param(value = "openId") String openId);
 }

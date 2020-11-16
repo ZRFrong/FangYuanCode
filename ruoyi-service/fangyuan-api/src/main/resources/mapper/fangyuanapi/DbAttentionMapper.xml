@@ -43,6 +43,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectReplyAttentionUserIdsByUserId" resultType="java.lang.Long">
         select reply_attention_user_id from db_attention where user_id = #{userId}
     </select>
+    <select id="selectReplyAttentionUserIds" resultType="long">
+        select reply_attention_user_id from db_attention where user_id = #{userId}
+    </select>
 
 
     <insert id="insertDbAttention" parameterType="DbAttention">

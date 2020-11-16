@@ -2,6 +2,7 @@ package com.ruoyi.common.utils.aes;
 import com.alibaba.fastjson.JSON;
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -67,7 +68,9 @@ public class TokenUtils {
         String s = null;
         try {
             KeyGenerator aes = KeyGenerator.getInstance("AES");
-            aes.init(128,new SecureRandom(key.getBytes()));
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+            random.setSeed(key.getBytes("UTF-8"));
+            aes.init(128,random);
             SecretKey secretKey = aes.generateKey();
             byte[] keyEncoded = secretKey.getEncoded();
             /*  转换为AES秘钥 */
@@ -86,6 +89,8 @@ public class TokenUtils {
             e.printStackTrace();
         } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
         return s;
     }
@@ -96,11 +101,13 @@ public class TokenUtils {
      * @param key 生成秘钥的随机串 加密和解密的必须是同一个
      * @return
      */
-    public static String decrypt(String token,String key) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    public static String decrypt(String token,String key) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
         KeyGenerator aes = null;
         String s =null;
             aes = KeyGenerator.getInstance("AES");
-            aes.init(128,new SecureRandom(key.getBytes()));
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+            random.setSeed(key.getBytes("UTF-8"));
+            aes.init(128,random);
             SecretKey secretKey = aes.generateKey();
             byte[] keyEncoded = secretKey.getEncoded();
             /*  转换为AES秘钥 */
@@ -111,6 +118,10 @@ public class TokenUtils {
             s = new String(bytes);
         return s;
     }
+
+//    public static String test(String key) throws NoSuchAlgorithmException {
+//        KeyGenerator aes = KeyGenerator.getInstance("AES");
+//    }
 
     /**
      * 字符串转化成为16进制字符串
@@ -147,7 +158,13 @@ public class TokenUtils {
         }
         return s;
     }
-    public static void main(String[] args){
+
+    public static void main(String[] args) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException {
+        String data = "18D0E00C491ABD397CDC1E7E93652B7D784B4AA241CC9C510EB3AF20A9ABC7CB819D10CE3F2BB18FDE9990BB7D27BCDCFAE6450E749504690A5E34F6F68A08F051A62BA57E0D5F1357B84593FE0CCC6A";
+        String key = "196B0F14EBA66E10FBA74DBF9E99C22F";
+        String encrypt = encrypt("dadadasa", key);
+        String s = decrypt(encrypt, key);
+        System.out.println(s);
         System.out.println(encrypt("54254", "4545215431321543213").length());
     }
 }

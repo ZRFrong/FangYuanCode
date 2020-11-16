@@ -45,7 +45,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
      * 方便测试，
      */
     private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/appLogin","fangyuanapi/wxUser/appRegister","fangyuanapi/dynamic1","fangyuanapi/category","fangyuanapi/wx/v3",
-            "/fangyuanapi/order/insertOrder","fangyuanapi/giveLike","fangyuanapi/wxUser/getOpenId","fangyuanapi/wxUser/smallRegister");
+            "/fangyuanapi/order/insertOrder","fangyuanapi/giveLike","fangyuanapi/wxUser/getOpenId","fangyuanapi/wxUser/smallRegister","/fangyuanapi/banner/getBannerList");
 
     @Autowired
     private TokenConf tokenConf;

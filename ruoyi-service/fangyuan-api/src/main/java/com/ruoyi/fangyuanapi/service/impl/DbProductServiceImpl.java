@@ -89,6 +89,7 @@ public class DbProductServiceImpl implements IDbProductService
      * @param productId 产品ID
      * @return 结果
      */
+    @Override
     public int deleteDbProductById(Long productId)
     {
         return dbProductMapper.deleteDbProductById(productId);
