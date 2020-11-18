@@ -35,7 +35,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     // 排除过滤的 uri 地址
     // swagger排除自行添加
     private static final String[] whiteList = {"/auth/login", "/user/register", "/system/v2/api-docs", "/fangyuanapi/v2/api-docs", "/fangyuantcp/v2/api-docs",
-            "/auth/captcha/check", "/auth/captcha/get", "/act/v2/api-docs", "/auth/login/slide"};
+            "/auth/captcha/check", "/auth/captcha/get", "/act/v2/api-docs", "/auth/login/slide", "/system/appVersion/downapp","/fangyuanapi/operateApp/oprateLand"};
 
     @Resource(name = "stringRedisTemplate")
     private ValueOperations<String, String> ops;
@@ -78,10 +78,10 @@ public class AuthFilter implements GlobalFilter, Ordered {
             Map<String, Object> map = TokenUtils.verifyToken(token, tokenConf.getAccessTokenKey());
             if (map != null){
                 /* id == null token被篡改 解密失败 */
-                    String id = map.get("id")+"";
-                    ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, id).build();
-                    ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();
-                    return chain.filter(mutableExchange);
+                String id = map.get("id")+"";
+                ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, id).build();
+                ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();
+                return chain.filter(mutableExchange);
             }
         }
 

@@ -7,8 +7,12 @@ import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.*;
+import com.ruoyi.fangyuanapi.aspect.OperationLog;
+import com.ruoyi.fangyuanapi.aspect.OperationLogType;
 import com.ruoyi.fangyuanapi.service.*;
+import com.ruoyi.fangyuanapi.utils.OperateSendUtils;
 import com.ruoyi.system.domain.*;
+import com.ruoyi.system.feign.RemoteTcpService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +39,8 @@ public class OperateControllerApp extends BaseController {
     private IDbOperationRecordService operationRecordService;
 
 
-//        @Autowired
-//        private RemoteTcpService remoteTcpService;
+        @Autowired
+        private RemoteTcpService remoteTcpService;
 
 
     private List<DbOperationVo> lists = new ArrayList<>();
@@ -48,91 +52,29 @@ public class OperateControllerApp extends BaseController {
      *                      {1,2,3,4}
      * */
     @GetMapping("oprateLand")
+    @OperationLog(OperationLogType=true,OperationLogNmae=OperationLogType.LAND,OperationLogSource = OperationLogType.APP)
     @ApiOperation(value = "土地页面操作", notes = "土地页面操作")
-    public AjaxResult oprateLand(@ApiParam(name = "ids", value = "土地的子串，分隔", required = true) String ids, @ApiParam(name = "type",
+    public R oprateLand(@ApiParam(name = "ids", value = "土地的子串，分隔", required = true) String ids, @ApiParam(name = "type",
             value = "卷帘:1，通风:2，浇水:3，补光:4", required = true) String type, @ApiParam(name = "handleName",
             value = "开始 ：start，开始暂停：start_stop，结束暂停down_stop，结束down", required = true) String handleName) {
-
-//        DbOperationRecord dbOperationRecord = new DbOperationRecord();
-//        String header = getRequest().getHeader(Constants.LOGIN_SOURCE);
-//        String userId = getRequest().getHeader(Constants.CURRENT_ID);
-//        dbOperationRecord.setOperationSource(Integer.parseInt(header));
-//        dbOperationRecord.setDbUserId(Long.valueOf(userId));
-//        dbOperationRecord.setOperationObject(ids);
-//        dbOperationRecord.setOperationObjectType(0);
-//        dbOperationRecord.setOperationTime(new Date());
-//        dbOperationRecord.setOperationText(toOperationText(type, handleName));
 
 
         List<String> strings = Arrays.asList(ids.split(","));
         strings.forEach(ite -> send(landService.selectDbLandById(Long.valueOf(ite)), type, handleName));
 //        添加操作记录
-//
-//        return AjaxResult.success(remoteTcpService.operationList(lists));
-//临时
-        int i = OperateSendUtils.operationList(lists);
+
+//        int i = OperateSendUtils.operationList(lists);
+        R r = remoteTcpService.operationList(lists);
         lists.clear();
-//        if (i == 1) {
-//            dbOperationRecord.setIsComplete(0);
-//        } else {
-//            dbOperationRecord.setIsComplete(1);
-//        }
-//        operationRecordService.insertDbOperationRecord(dbOperationRecord);
-        return AjaxResult.success(i);
+
+
+        return r;
     }
 
 
 
 
-    private  String[]  typs=new String[]{"1","2","3","4"};
-    private String[] handleNamecode = new String[]{"start", "start_stop", "down_stop", "down"};
 
-    private static String[][] arrs = new String[][]{{"卷帘", "通风", "浇水", "补光"}, {"卷起", "卷起暂停", "放下", "放下暂停", "开始", "结束"}};
-
-    private String toOperationText(String type, String handleName) {
-        StringBuilder stringBuilder = new StringBuilder();
-        if (type.equals("1")||type.equals("2")){
-            stringBuilder.append(gettxt1("1", handleName));
-        }else {
-            stringBuilder.append(gettxt2("2", handleName));
-
-        }
-        return stringBuilder.toString();
-    }
-
-    private String gettxt2(String s, String handleName) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < typs.length; i++) {
-            if (typs[i].equals(s)) {
-                for (int i1 = 0; i1 < handleNamecode.length; i1++) {
-                    if (handleNamecode[i1].equals(handleName)) {
-                        if (i1 == 0) {
-                            stringBuilder.append(arrs[i][5]);
-                        } else if (i1 == 4) {
-                            stringBuilder.append(arrs[i][6]);
-                        }
-                    }
-                }
-            }
-        }
-        return stringBuilder.toString();
-    }
-
-    private String gettxt1(String s, String handleName) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < typs.length; i++) {
-            if (typs[i].equals(s)) {
-                for (int i1 = 0; i1 < handleNamecode.length; i1++) {
-                    if (handleNamecode[i1].equals(handleName)) {
-                        stringBuilder.append(arrs[0][i]);
-                        stringBuilder.append("_"+arrs[1][i1]);
-                        return stringBuilder.toString();
-                    }
-                }
-            }
-        }
-        return stringBuilder.toString();
-    }
 
     private void send(DbLand dbLand, String type, String handleName) {
         Arrays.asList(dbLand.getEquipmentIds().split(",")).forEach(
@@ -180,31 +122,14 @@ public class OperateControllerApp extends BaseController {
      * */
     @GetMapping("oprateEqment")
     @ApiOperation(value = "设备页面操作", notes = "设备页面操作")
-    public AjaxResult oprateEqment(@ApiParam(name = "id", value = "设备id", required = true) Long id, @ApiParam(name = "type"
+    @OperationLog(OperationLogType=true,OperationLogNmae=OperationLogType.EQUIPMENT,OperationLogSource = OperationLogType.APP)
+    public R oprateEqment(@ApiParam(name = "id", value = "设备id", required = true) Long id, @ApiParam(name = "type"
             , value = "操作单位名称:例如卷帘1", required = true) String type,
-                                   @ApiParam(name = "handleName", value = "具体操作名称开始 ：start，开始暂停：start_stop，结束暂停down_stop，结束down", required = true) String handleName) throws Exception {
-
-        DbOperationRecord dbOperationRecord = new DbOperationRecord();
-//        用户id和操作来源
-        String header = getRequest().getHeader(Constants.LOGIN_SOURCE);
-        String userId = getRequest().getHeader(Constants.CURRENT_ID);
-
-
-        dbOperationRecord.setOperationSource(Integer.parseInt(header));
-        dbOperationRecord.setDbUserId(Long.valueOf(userId));
-        dbOperationRecord.setOperationObject(id.toString());
-        dbOperationRecord.setOperationObjectType(1);
-        dbOperationRecord.setOperationTime(new Date());
-        dbOperationRecord.setOperationText(type+handleName);
-        dbOperationRecord.setIsComplete(0);
-        operationRecordService.insertDbOperationRecord(dbOperationRecord);
-
-
-
+    @ApiParam(name = "handleName", value = "具体操作名称开始 ：start，开始暂停：start_stop，结束暂停down_stop，结束down", required = true) String handleName)
+            throws Exception {
         DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(id);
         DbLandEquipment dbLandEquipment = new DbLandEquipment();
         dbLandEquipment.setDbEquipmentId(dbEquipment.getEquipmentId());
-
 
         List<OperatePojo> pojos = JSON.parseArray(dbEquipment.getHandlerText(), OperatePojo.class);
         DbOperationVo dbOperationVo = new DbOperationVo();
@@ -231,11 +156,17 @@ public class OperateControllerApp extends BaseController {
 //        发送接口
 
 //        调用发送模块
-//        return AjaxResult.success(remoteTcpService.operation(dbOperationVo));
+        R operation = remoteTcpService.operation(dbOperationVo);
+        if (operation.get("code").equals(200)) {
+            return R.ok();
+        }else {
+            return R.error();
+        }
 
-//临时使用
-        return AjaxResult.success(OperateSendUtils.doget(dbOperationVo));
+
     }
+
+
 
 
     private List<DbTcpType> lists2 = new ArrayList<>();
@@ -256,17 +187,12 @@ public class OperateControllerApp extends BaseController {
     private void sendState(DbEquipment equipment) {
         DbTcpType dbTcpType = new DbTcpType();
         dbTcpType.setHeartName(equipment.getHeartbeatText() + "," + equipment.getEquipmentNo());
-//        R list = remoteTcpService.list(dbTcpType);
-//        lists2.addAll((List<DbTcpType>) list.get("rows"));
-//临时
-        DbTcpType list = null;
-        try {
-            list = OperateSendUtils.StateList(equipment.getHeartbeatText());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        lists2.add(list);
+        List<DbTcpType> list = remoteTcpService.list(dbTcpType);
+        lists2.addAll(list);
+
     }
+
+
 
     /*
      * 状态查询接口  设备

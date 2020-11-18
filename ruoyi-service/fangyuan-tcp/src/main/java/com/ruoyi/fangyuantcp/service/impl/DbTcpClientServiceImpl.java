@@ -113,7 +113,7 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
         int query = sendCodeUtils.queryIoList(mps);
 
 
-        return 0;
+        return query;
     }
 
 

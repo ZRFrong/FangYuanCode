@@ -8,6 +8,9 @@ package com.ruoyi.fangyuanapi.controller;
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.R;
+import com.ruoyi.fangyuanapi.aspect.OperationLog;
+import com.ruoyi.fangyuanapi.aspect.OperationLogType;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
 import com.ruoyi.system.domain.*;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -59,27 +63,65 @@ public class OperateControllerWeChat extends BaseController {
     * */
     @GetMapping("operate")
     @ApiOperation(value = "查询当前用户下的操作列表", notes = "查询当前用户下的操作列表")
-    public AjaxResult operate(@ApiParam(name = "id", value = "设备id", required = true)Long equipmentId, @ApiParam(name = "text", value = "操作指令", required = true)String text) {
+    @OperationLog(OperationLogNmae=OperationLogType.EQUIPMENT,OperationLogSource = OperationLogType.WEchat)
+    public R operate(@ApiParam(name = "id", value = "设备id", required = true)Long id, @ApiParam(name = "text", value = "操作指令", required = true)String text,
+                     @ApiParam(name = "name", value = "操作对象", required = true)String name,
+                     @ApiParam(name = "handleName",
+                             value = "开始 ：start，开始暂停：start_stop，结束暂停down_stop，结束down", required = true) String handleName) {
         DbOperationVo dbOperationVo = new DbOperationVo();
-        DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(equipmentId);
+        DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(id);
         dbOperationVo.setHeartName(dbEquipment.getHeartbeatText());
         dbOperationVo.setFacility(dbEquipment.getEquipmentNo());
         dbOperationVo.setOperationText(text);
-          return AjaxResult.success(remoteTcpService.operation(dbOperationVo));
+        R operation = remoteTcpService.operation(dbOperationVo);
+        return operation;
     }
+
+
     /*
-     *页面操作（单项）
+     * 设备页面的操作   具体操作项   ok
      * */
-    @GetMapping("operateVentilate")
-    @ApiOperation(value = "查询当前用户下的操作列表", notes = "查询当前用户下的操作列表")
-    public AjaxResult operateVentilate(@ApiParam(name = "id", value = "设备id", required = true)Long equipmentId) {
+    @GetMapping("oprateEqment")
+    @ApiOperation(value = "设备页面操作", notes = "设备页面操作")
+    @OperationLog(OperationLogType=true,OperationLogNmae=OperationLogType.EQUIPMENT,OperationLogSource = OperationLogType.WEchat)
+    public R oprateEqment(@ApiParam(name = "id", value = "设备id", required = true) Long id, @ApiParam(name = "type"
+            , value = "操作单位名称:例如卷帘1", required = true) String type,
+                          @ApiParam(name = "handleName", value = "具体操作名称开始 ：start，开始暂停：start_stop，结束暂停down_stop，结束down", required = true) String handleName)
+            throws Exception {
+        DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(id);
+        DbLandEquipment dbLandEquipment = new DbLandEquipment();
+        dbLandEquipment.setDbEquipmentId(dbEquipment.getEquipmentId());
+
+        List<OperatePojo> pojos = JSON.parseArray(dbEquipment.getHandlerText(), OperatePojo.class);
         DbOperationVo dbOperationVo = new DbOperationVo();
-        DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(equipmentId);
-        String handlerText = dbEquipment.getHandlerText();
+//        心跳名称
+        dbOperationVo.setHeartName(dbEquipment.getHeartbeatText());
+//        设备号
+        dbOperationVo.setFacility(dbEquipment.getEquipmentNo() + "");
+//        是否完成
+        dbOperationVo.setIsTrue("1");
+//        创建时间
+        dbOperationVo.setCreateTime(new Date());
 
-        return AjaxResult.success(remoteTcpService.operation(dbOperationVo));
+        for (OperatePojo pojo : pojos) {
+            if (type.equals(pojo.getCheckCode())) {
+                for (OperatePojo.OperateSp operateSp : pojo.getSpList()) {
+                    if (operateSp.getHandleName().equals(handleName)) {
+                        dbOperationVo.setOperationText(operateSp.getHandleCode());
+                    }
+                }
+            }
+        }
+
+
+//        发送接口
+
+//        调用发送模块
+        R operation = remoteTcpService.operation(dbOperationVo);
+        return operation;
+
+
     }
-
 
 
 
@@ -98,7 +140,7 @@ public class OperateControllerWeChat extends BaseController {
             DbEquipmentVo dbEquipmentVo = new DbEquipmentVo();
                 DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(Long.valueOf(s));
                 dbEquipmentVo.setEquipment(dbEquipment);
-                List<OperatePojo> pojos = JSON.parseArray(dbEquipment.getHandlerText(), OperatePojo.class);
+                List<OperatePojo> pojos = JSON.parseArray(dbEquipment.getHeartbeatText(), OperatePojo.class);
                 dbEquipment.setPojos(pojos);
                 DbTcpType dbTcpType = new DbTcpType();
                 dbTcpType.setHeartName(dbEquipment.getHeartbeatText() + "_" + dbEquipment.getEquipmentNo());
