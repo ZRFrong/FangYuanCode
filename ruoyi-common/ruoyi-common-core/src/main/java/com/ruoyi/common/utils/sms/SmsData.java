@@ -7,7 +7,6 @@ public class SmsData {
     /**
      * 阿里云短信服务accessKeyId
      */
-    public static final String  ACCESS_KEY_ID = "LTAI4FqBPzpcNbCX4CbrkKRG";
     /**
      * 限制每日短信的消耗量
      */
