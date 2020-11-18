@@ -81,9 +81,9 @@ public class DbTcpClientController extends BaseController {
     /*
      * 操作设备
      * */
-    @GetMapping("operation")
+    @PostMapping("operation")
     @ApiOperation(value = "操作设备", notes = "tcp在线设备列表")
-    public R operation(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) DbOperationVo dbOperationVo) {
+    public R operation(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true)@RequestBody  DbOperationVo dbOperationVo) {
         int operation = dbTcpClientService.operation(dbOperationVo);
         return toAjax(operation);
     }
@@ -91,13 +91,13 @@ public class DbTcpClientController extends BaseController {
     /*
     * 批量操作设备
     * */
-    @GetMapping("operationList")
+    @PostMapping("operationList")
     @ApiOperation(value = "操作设备", notes = "tcp在线设备列表")
-    public R operationList(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) List<DbOperationVo> dbOperationVo) {
+    public R operationList(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true)@RequestBody  List<DbOperationVo> dbOperationVo) {
 
         int operation = dbTcpClientService.operationList(dbOperationVo);
 
-        return toAjax(0);
+        return toAjax(operation);
     }
 
     /*

@@ -6,6 +6,8 @@ package com.ruoyi.fangyuanapi.controller;
 
 
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.fangyuanapi.aspect.OperationLog;
+import com.ruoyi.fangyuanapi.aspect.OperationLogType;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.feign.RemoteTcpService;
@@ -34,7 +36,9 @@ public class OperateVentilate {
      * */
     @GetMapping("operateTongFengType")
     @ApiOperation(value = "操作自动通风自动开启关闭的温度", notes = "操作自动通风自动开启关闭的温度")
-    public R operateTongFengType( @ApiParam(name = "dbEquipmentId", value = "dbEquipmentID")Long dbEquipmentId, @ApiParam(name = "i", value = "是否开启0,1")int i, @ApiParam(name = "i", value = "温度")String temp) {
+    public R operateTongFengType( @ApiParam(name = "dbEquipmentId", value = "dbEquipmentID")Long dbEquipmentId,
+                                  @ApiParam(name = "i", value = "是否开启0,1")int i,
+                                  @ApiParam(name = "temp", value = "温度")String temp) {
 
      return    remoteTcpService.operateTongFengType(equipmentService.selectDbEquipmentById(dbEquipmentId),i,temp);
 

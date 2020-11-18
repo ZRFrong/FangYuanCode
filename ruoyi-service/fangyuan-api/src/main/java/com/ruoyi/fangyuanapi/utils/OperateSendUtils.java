@@ -1,4 +1,4 @@
-package com.ruoyi.fangyuanapi.controller;
+package com.ruoyi.fangyuanapi.utils;
 
 import java.util.Date;
 
@@ -61,11 +61,14 @@ public class OperateSendUtils {
         return s;
     }
 
+
+
     public static String doget(DbOperationVo dbOperationVo) throws Exception {
         String heartName = dbOperationVo.getHeartName();
         String facility = dbOperationVo.getFacility();
         String address = heartName + "_" + tostringnum(Integer.parseInt(facility));
         String text = dbOperationVo.getOperationText();
+
         return send(address, text);
     }
 

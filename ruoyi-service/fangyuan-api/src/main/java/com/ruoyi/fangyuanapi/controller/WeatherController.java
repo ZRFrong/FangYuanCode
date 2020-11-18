@@ -3,11 +3,8 @@ package com.ruoyi.fangyuanapi.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.utils.HttpUtil;
 import com.ruoyi.system.domain.WeatherVo;
-import com.ruoyi.system.domain.weather;
-import com.ruoyi.system.feign.RemoteTcpService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -48,7 +45,7 @@ public class WeatherController {
     }
     @GetMapping("getWeatherWeChat")
     @ApiOperation(value = "根据经纬度查询天气情况", notes = "根据经纬度查询天气情况")
-    public AjaxResult getWeatherWeChat(@ApiParam(name = "lng", value = "经度", required = true) String lng, @ApiParam(name = "lat", value = "纬度", required = true) String lat, @ApiParam(name = "type", value = "\t输入的坐标类型： 1：GPS设备获取的角度坐标; 2：GPS获取的米制坐标、sogou地图所用坐标; 3：google地图、soso地图、aliyun地图、mapabc地图和amap地图所用坐标 4：3中列表地图坐标对应的米制坐标 5：百度地图采用的经纬度坐标 6：百度地图采用的米制坐标 7：mapbar地图坐标; 8：51地图坐标", required = true) String type) {
+    public AjaxResult getWeatherWeChat(@ApiParam(name = "lat", value = "经度", required = true) String lat, @ApiParam(name = "lng", value = "纬度", required = true) String lng, @ApiParam(name = "type", value = "\t输入的坐标类型： 1：GPS设备获取的角度坐标; 2：GPS获取的米制坐标、sogou地图所用坐标; 3：google地图、soso地图、aliyun地图、mapabc地图和amap地图所用坐标 4：3中列表地图坐标对应的米制坐标 5：百度地图采用的经纬度坐标 6：百度地图采用的米制坐标 7：mapbar地图坐标; 8：51地图坐标", required = true) String type) {
 
         WeatherVo toget = toget(lng, lat, type,2);
         if (toget==null){
@@ -73,8 +70,8 @@ public class WeatherController {
         headers.put("Authorization", "APPCODE " + appcode);
         Map<String, String> querys = new HashMap<String, String>();
         querys.put("from", type);
-        querys.put("lat", lng);
-        querys.put("lng", lat);
+        querys.put("lat", lat);
+        querys.put("lng", lng);
         querys.put("need3HourForcast", "0");
         querys.put("needAlarm", "1");
         querys.put("needHourData", "0");
@@ -151,6 +148,7 @@ public class WeatherController {
         }
         return parse1;
     }
+
 
 
 

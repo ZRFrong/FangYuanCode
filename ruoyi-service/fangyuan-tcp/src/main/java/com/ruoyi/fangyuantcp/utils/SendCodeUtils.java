@@ -25,7 +25,7 @@ public class SendCodeUtils {
     /*
      * 普通操作指令发送
      * */
-    public int query(DbOperationVo tcpOrder) {
+    public static int query(DbOperationVo tcpOrder) {
         String address = tcpOrder.getHeartName();
         try {
 //          text处理
@@ -55,12 +55,12 @@ public class SendCodeUtils {
             channel.write(Unpooled.copiedBuffer(data));
             channel.flush();
 
-            return 1;
-        } catch (NumberFormatException e) {
-//            删除心跳
 
+        } catch (Exception e) {
+//            删除心跳
             return 0;
         }
+        return 1;
     }
     /*
      * 普通操作指令发送  06  自动状态设置更改
@@ -208,6 +208,7 @@ public class SendCodeUtils {
             executorService.shutdown();
             while (!executorService.isTerminated()) {
 //            等待执行完成再返回
+
             }
             return 1;
         } catch (Exception e) {
@@ -227,6 +228,7 @@ public class SendCodeUtils {
 //                    循环list
 //                    int query = query(dbOperationVo);
                 for (int i = 0; i < dbOperationVos.size(); i++) {
+                    int query = query(dbOperationVos.get(i));
                     System.out.println(dbOperationVos.get(i) + "执行了");
 //                    线程礼让让其他的先执行
                     if (i < dbOperationVos.size()) {

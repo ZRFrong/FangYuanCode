@@ -59,5 +59,6 @@ public interface IDbEquipmentService
      */
     public int deleteDbEquipmentById(Long equipmentId);
 
+
     int qrCodeGenerate(DbEquipment equipment) throws Exception;
 }
