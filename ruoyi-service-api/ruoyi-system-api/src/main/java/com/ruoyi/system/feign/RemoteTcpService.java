@@ -50,5 +50,6 @@ public interface RemoteTcpService {
     R operateTongFengType(@RequestBody DbEquipment dbEquipment, @PathVariable("i")int i,@PathVariable("temp")String temp);
 
     @GetMapping(value="type/operateTongFengHand", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    R operateTongFengHand(@RequestBody DbEquipment dbEquipment, @PathVariable("i")int i);
+    R
+    operateTongFengHand(@RequestBody @RequestParam("equipment") DbEquipment equipment,@RequestParam(name = "i") int i);
 }

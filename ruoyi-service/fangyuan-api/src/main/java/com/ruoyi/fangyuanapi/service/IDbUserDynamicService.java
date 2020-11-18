@@ -111,4 +111,11 @@ public interface IDbUserDynamicService
      * @return
      */
     ArrayList<DbUserDynamic> selectDynamicList(int start, int end);
+
+    /**
+     * 搜索动态
+     * @param word
+     * @return
+     */
+    List<DbUserDynamic> searchDynamic(String word);
 }

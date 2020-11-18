@@ -3,16 +3,13 @@ package com.ruoyi.fangyuanapi.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.utils.HttpUtil;
 import com.ruoyi.system.domain.WeatherVo;
-import com.ruoyi.system.domain.weather;
-import com.ruoyi.system.feign.RemoteTcpService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static java.lang.StrictMath.pow;
-
 /*
  *天气调用服务
  * */
@@ -73,8 +67,8 @@ public class WeatherController {
         headers.put("Authorization", "APPCODE " + appcode);
         Map<String, String> querys = new HashMap<String, String>();
         querys.put("from", type);
-        querys.put("lat", lng);
-        querys.put("lng", lat);
+        querys.put("lat", lat);
+        querys.put("lng", lng);
         querys.put("need3HourForcast", "0");
         querys.put("needAlarm", "1");
         querys.put("needHourData", "0");
@@ -82,8 +76,7 @@ public class WeatherController {
         querys.put("needMoreDay", "0");
 
         try {
-
-            org.apache.http.HttpResponse httpResponse = HttpUtil.doGet(host, path, method, headers, querys);
+            HttpResponse httpResponse = HttpUtil.doGet(host, path, method, headers, querys);
             //获取response的body
             String s = EntityUtils.toString(httpResponse.getEntity());
             Map<String, Object> parse = (Map<String, Object>) JSONObject.parse(s);

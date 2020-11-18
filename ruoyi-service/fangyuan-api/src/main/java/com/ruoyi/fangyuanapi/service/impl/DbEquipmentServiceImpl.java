@@ -65,7 +65,7 @@ public class DbEquipmentServiceImpl implements IDbEquipmentService {
      */
     @Override
     public int insertDbEquipment(DbEquipment dbEquipment) {
-        dbEquipment.setCreateTime(DateUtils.getNowDate());
+        //dbEquipment.setCreateTime(DateUtils.getNowDate());
         return dbEquipmentMapper.insertDbEquipment(dbEquipment);
     }
 
@@ -77,7 +77,7 @@ public class DbEquipmentServiceImpl implements IDbEquipmentService {
      */
     @Override
     public int updateDbEquipment(DbEquipment dbEquipment) {
-        dbEquipment.setUpdateTime(DateUtils.getNowDate());
+        //dbEquipment.setUpdateTime(DateUtils.getNowDate());
         return dbEquipmentMapper.updateDbEquipment(dbEquipment);
     }
 

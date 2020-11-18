@@ -5,6 +5,7 @@ package com.ruoyi.fangyuanapi.controller;
  * 微信小程序操作类
  * */
 
+import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
@@ -13,6 +14,7 @@ import com.ruoyi.system.domain.*;
 import com.ruoyi.system.feign.RemoteTcpService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,6 +54,31 @@ public class OperateControllerWeChat extends BaseController {
         return AjaxResult.success(getOperateWeChatVos(dbLands));
     }
 
+    /*
+    *页面操作（单项）
+    * */
+    @GetMapping("operate")
+    @ApiOperation(value = "查询当前用户下的操作列表", notes = "查询当前用户下的操作列表")
+    public AjaxResult operate(@ApiParam(name = "id", value = "设备id", required = true)Long equipmentId, @ApiParam(name = "text", value = "操作指令", required = true)String text) {
+        DbOperationVo dbOperationVo = new DbOperationVo();
+        DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(equipmentId);
+        dbOperationVo.setHeartName(dbEquipment.getHeartbeatText());
+        dbOperationVo.setFacility(dbEquipment.getEquipmentNo());
+        dbOperationVo.setOperationText(text);
+          return AjaxResult.success(remoteTcpService.operation(dbOperationVo));
+    }
+    /*
+     *页面操作（单项）
+     * */
+    @GetMapping("operateVentilate")
+    @ApiOperation(value = "查询当前用户下的操作列表", notes = "查询当前用户下的操作列表")
+    public AjaxResult operateVentilate(@ApiParam(name = "id", value = "设备id", required = true)Long equipmentId) {
+        DbOperationVo dbOperationVo = new DbOperationVo();
+        DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(equipmentId);
+        String handlerText = dbEquipment.getHandlerText();
+
+        return AjaxResult.success(remoteTcpService.operation(dbOperationVo));
+    }
 
 
 
@@ -71,6 +98,8 @@ public class OperateControllerWeChat extends BaseController {
             DbEquipmentVo dbEquipmentVo = new DbEquipmentVo();
                 DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(Long.valueOf(s));
                 dbEquipmentVo.setEquipment(dbEquipment);
+                List<OperatePojo> pojos = JSON.parseArray(dbEquipment.getHandlerText(), OperatePojo.class);
+                dbEquipment.setPojos(pojos);
                 DbTcpType dbTcpType = new DbTcpType();
                 dbTcpType.setHeartName(dbEquipment.getHeartbeatText() + "_" + dbEquipment.getEquipmentNo());
 

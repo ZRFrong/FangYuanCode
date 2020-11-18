@@ -46,7 +46,6 @@ mybatis:
 mapper:
   not-empty: true
   identity: MYSQL
-
 # PageHelper分页插件
 pagehelper:
   helperDialect: mysql

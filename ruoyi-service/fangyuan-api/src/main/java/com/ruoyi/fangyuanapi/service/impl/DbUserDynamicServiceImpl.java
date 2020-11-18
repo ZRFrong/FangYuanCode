@@ -243,4 +243,9 @@ public class DbUserDynamicServiceImpl implements IDbUserDynamicService
     public ArrayList<DbUserDynamic> selectDynamicList(int start, int end) {
         return dbUserDynamicMapper.selectDynamicList(start,end) ;
     }
+
+    @Override
+    public List<DbUserDynamic> searchDynamic(String word) {
+        return dbUserDynamicMapper.searchDynamic(word);
+    }
 }

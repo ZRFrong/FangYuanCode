@@ -297,12 +297,7 @@ public class DbUserController extends BaseController {
                 dbUser = dbUserService.wxRegister(phone,openId,nickname,avatar);
             }
             if (dbUser != null){
-                HashMap<Object, Object> tokenMap = new HashMap<>();
-                tokenMap.put("id", dbUser.getId());
-                tokenMap.put("expireTime", System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000));
-                tokenMap.put("topic", 0);
-                String token = TokenUtils.encrypt(JSON.toJSONString(tokenMap), tokenConf.getAccessTokenKey());
-                return R.data(token);
+                return R.data(getToken(dbUser.getId(), tokenConf.getAccessTokenKey(),System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000)));
             }
             return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
         }else {
@@ -329,6 +324,7 @@ public class DbUserController extends BaseController {
             map.put("js_code",code);
             map.put("grant_type",wxSmallConf.getGrant_type());
             HttpResponse response = HttpUtil.doGet(wxSmallConf.getHost(), wxSmallConf.getPath(), HttpMethod.GET.name(), null, map);
+            System.out.println(response.toString());
             String string = EntityUtils.toString(response.getEntity());
             Map result = JSONUtil.toBean(string, Map.class);
             String openid;
@@ -337,13 +333,28 @@ public class DbUserController extends BaseController {
             }catch (Exception e){
                 openid =null;
             }
+            Map<String, String> stringMap = new HashMap<>();
             if (StringUtils.isNotEmpty(openid)){
-               return  R.data(openid);
+                DbUser user = dbUserService.selectDbUserByOpenId(openid);
+                if (user != null){
+                    stringMap.put("token",getToken(user.getId(), tokenConf.getAccessTokenKey(),System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000)));
+                    return  R.data(stringMap) ;
+                }
+                stringMap.put("openId",openid);
+                return  R.data(stringMap);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return R.error();
+    }
+
+    private String getToken(Long id,String key,Long time){
+        HashMap<Object, Object> tokenMap = new HashMap<>();
+        tokenMap.put("id", id);
+        tokenMap.put("expireTime", time);
+        tokenMap.put("topic", 0);
+        return TokenUtils.encrypt(JSON.toJSONString(tokenMap), key);
     }
 
     /**
