@@ -71,7 +71,7 @@ public class DbEquipmentController extends BaseController {
      */
     @PostMapping("save")
     @ApiOperation(value = "新增保存设备", notes = "新增保存设备")
-    public R addSave(@ApiParam(name = "DbEquipment", value = "传入json格式", required = true) @RequestBody DbEquipment dbEquipment) {
+    public R addSave(@ApiParam(name = "DbEquipment", value = "传入json格式", required = true) DbEquipment dbEquipment) {
         return toAjax(dbEquipmentService.insertDbEquipment(dbEquipment));
     }
 
@@ -80,7 +80,7 @@ public class DbEquipmentController extends BaseController {
      */
     @PostMapping("update")
     @ApiOperation(value = "修改保存设备", notes = "修改保存设备")
-    public R editSave(@ApiParam(name = "DbEquipment", value = "传入json格式", required = true) @RequestBody DbEquipment dbEquipment) {
+    public R editSave(@ApiParam(name = "DbEquipment", value = "传入json格式", required = true) DbEquipment dbEquipment) {
         return toAjax(dbEquipmentService.updateDbEquipment(dbEquipment));
     }
 
@@ -126,7 +126,7 @@ public class DbEquipmentController extends BaseController {
      * */
     @PostMapping("qrCodeGenerate")
     @ApiOperation(value = "修改保存设备", notes = "修改保存设备")
-    public R qrCodeGenerate(@ApiParam(name = "DbEquipment", value = "传入json格式", required = true) @RequestBody DbEquipment equipment) throws Exception {
+    public R qrCodeGenerate(@ApiParam(name = "DbEquipment", value = "传入json格式", required = true)  DbEquipment equipment) throws Exception {
         /*
          * 指定网址     拼接一个参数（设备id）
          * */

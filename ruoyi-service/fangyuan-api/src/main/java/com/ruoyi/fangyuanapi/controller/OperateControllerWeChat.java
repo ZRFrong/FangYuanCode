@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.fangyuanapi.aspect.OperationLog;
 import com.ruoyi.fangyuanapi.aspect.OperationLogType;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
@@ -62,7 +63,7 @@ public class OperateControllerWeChat extends BaseController {
     *页面操作（单项）
     * */
     @GetMapping("operate")
-    @ApiOperation(value = "查询当前用户下的操作列表", notes = "查询当前用户下的操作列表")
+    @ApiOperation(value = "页面操作（单项）", notes = "页面操作（单项）")
     @OperationLog(OperationLogNmae=OperationLogType.EQUIPMENT,OperationLogSource = OperationLogType.WEchat)
     public R operate(@ApiParam(name = "id", value = "设备id", required = true)Long id, @ApiParam(name = "text", value = "操作指令", required = true)String text,
                      @ApiParam(name = "name", value = "操作对象", required = true)String name,
@@ -131,7 +132,7 @@ public class OperateControllerWeChat extends BaseController {
             OperateWeChatVo operateWeChatVo = new OperateWeChatVo();
             operateWeChatVo.setDbLandId(dbLand.getLandId());
             operateWeChatVo.setNickName(dbLand.getNickName());
-            if (dbLand.getEquipmentIds().equals("") && dbLand == null) {
+            if (StringUtils.isEmpty(dbLand.getEquipmentIds()) ) {
                 operateWeChatVo.setIsBound(0);
                 break;
             }
@@ -140,7 +141,7 @@ public class OperateControllerWeChat extends BaseController {
             DbEquipmentVo dbEquipmentVo = new DbEquipmentVo();
                 DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(Long.valueOf(s));
                 dbEquipmentVo.setEquipment(dbEquipment);
-                List<OperatePojo> pojos = JSON.parseArray(dbEquipment.getHeartbeatText(), OperatePojo.class);
+                List<OperatePojo> pojos = JSON.parseArray(dbEquipment.getHandlerText(), OperatePojo.class);
                 dbEquipment.setPojos(pojos);
                 DbTcpType dbTcpType = new DbTcpType();
                 dbTcpType.setHeartName(dbEquipment.getHeartbeatText() + "_" + dbEquipment.getEquipmentNo());

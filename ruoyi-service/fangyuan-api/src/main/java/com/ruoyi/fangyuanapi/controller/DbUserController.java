@@ -288,10 +288,11 @@ public class DbUserController extends BaseController {
             @ApiImplicitParam(name = "avatar",value = "头像",required = false)
     })
     public R wxRegister(@RequestParam String phone,@RequestParam String code,String openId,String nickname,String avatar) {
-       // R r = sendSmsClient.checkCode(phone, code);
-        R r = new R();
+        R r = sendSmsClient.checkCode(phone, code);
+        //R r = new R();
         if ("200".equals(r.get("code")+"") ){
             DbUser dbUser= dbUserService.selectDbUserByPhoneAndOpenId(phone,openId);
+
             if (dbUser == null){
                 //already
                 dbUser = dbUserService.wxRegister(phone,openId,nickname,avatar);
@@ -316,7 +317,7 @@ public class DbUserController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code", value = "由微信颁发的临时凭证code，有效期五分钟", required = true)
     })
-    public R getOpenId(@RequestBody @RequestParam(value = "code") String code){
+    public R getOpenId(String code){
         try {
             HashMap<String, String> map = new HashMap<>();
             map.put("appid",wxSmallConf.getAppid());

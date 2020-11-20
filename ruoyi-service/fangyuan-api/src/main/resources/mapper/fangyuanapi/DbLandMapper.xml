@@ -17,11 +17,12 @@
         <result property="nickName"    column="nick_name"    />
         <result property="siteId"    column="site_id"    />
         <result property="equipmentIds"    column="equipment_ids"    />
+        <result property="address"    column="address"    />
         <result property="parentName" column="parent_name" />
     </resultMap>
 
     <sql id="selectDbLandVo">
-        select land_id, region, longitude, latitude, product_category, product_name, note_text, create_time, db_user_id, nick_name, site_id, equipment_ids from db_land
+        select land_id, region, longitude, latitude, product_category, product_name,address, note_text, create_time, db_user_id, nick_name, site_id, equipment_ids from db_land
     </sql>
 
     <select id="selectDbLandList" parameterType="DbLand" resultMap="DbLandResult">
@@ -34,7 +35,7 @@
     </select>
 
     <select id="selectDbLandById" parameterType="Long" resultMap="DbLandResult">
-        select t.land_id, t.region, t.longitude, t.latitude, t.product_category, t.product_name, t.note_text, t.create_time, t.db_user_id, t.nick_name, t.site_id, t.equipment_ids, p.nick_name as parent_name
+        select t.land_id, t.region, t.longitude, t.latitude,t.address, t.product_category, t.product_name, t.note_text, t.create_time, t.db_user_id, t.nick_name, t.site_id, t.equipment_ids, p.nick_name as parent_name
         from db_land t
         left join db_land p on p.land_id = t.site_id
         where t.land_id = #{landId}
@@ -46,6 +47,7 @@
             <if test="region != null  and region != ''">region,</if>
             <if test="longitude != null  and longitude != ''">longitude,</if>
             <if test="latitude != null  and latitude != ''">latitude,</if>
+            <if test="address != null  and address != ''">address,</if>
             <if test="productCategory != null  and productCategory != ''">product_category,</if>
             <if test="productName != null  and productName != ''">product_name,</if>
             <if test="noteText != null  and noteText != ''">note_text,</if>
@@ -59,6 +61,7 @@
             <if test="region != null  and region != ''">#{region},</if>
             <if test="longitude != null  and longitude != ''">#{longitude},</if>
             <if test="latitude != null  and latitude != ''">#{latitude},</if>
+            <if test="address != null  and address != ''">#{address},</if>
             <if test="productCategory != null  and productCategory != ''">#{productCategory},</if>
             <if test="productName != null  and productName != ''">#{productName},</if>
             <if test="noteText != null  and noteText != ''">#{noteText},</if>
@@ -81,6 +84,7 @@
             <if test="noteText != null  and noteText != ''">note_text = #{noteText},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="dbUserId != null ">db_user_id = #{dbUserId},</if>
+            <if test="address != null ">address = #{address},</if>
             <if test="nickName != null  and nickName != ''">nick_name = #{nickName},</if>
             <if test="siteId != null ">site_id = #{siteId},</if>
             <if test="equipmentIds != null  and equipmentIds != ''">equipment_ids = #{equipmentIds},</if>

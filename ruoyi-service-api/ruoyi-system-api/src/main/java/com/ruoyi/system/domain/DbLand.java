@@ -56,6 +56,41 @@ public class DbLand extends TreeEntity
     @ApiModelProperty(value = "关联用户id")
     private Long dbUserId;
 
+    /** 详细地址 */
+    @Excel(name = "详细地址")
+    @ApiModelProperty(value = "详细地址")
+    private String address;
+
+    @Override
+    public String toString() {
+        return "DbLand{" +
+                "landId=" + landId +
+                ", region='" + region + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", productCategory='" + productCategory + '\'' +
+                ", productName='" + productName + '\'' +
+                ", noteText='" + noteText + '\'' +
+                ", dbUserId=" + dbUserId +
+                ", address='" + address + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", siteId=" + siteId +
+                ", equipmentIds='" + equipmentIds + '\'' +
+                '}';
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     /** 别称自定义 */
     @Excel(name = "别称自定义")
     @ApiModelProperty(value = "别称自定义")
@@ -171,21 +206,4 @@ public class DbLand extends TreeEntity
         return equipmentIds;
     }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-                .append("landId", getLandId())
-                .append("region", getRegion())
-                .append("longitude", getLongitude())
-                .append("latitude", getLatitude())
-                .append("productCategory", getProductCategory())
-                .append("productName", getProductName())
-                .append("noteText", getNoteText())
-                .append("createTime", getCreateTime())
-                .append("dbUserId", getDbUserId())
-                .append("nickName", getNickName())
-                .append("siteId", getSiteId())
-                .append("equipmentIds", getEquipmentIds())
-                .toString();
-    }
 }
