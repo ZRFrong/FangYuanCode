@@ -9,6 +9,22 @@ public class DbEquipmentVo {
     public DbEquipmentVo() {
     }
 
+    public String getRemaining() {
+        return remaining;
+    }
+
+    public void setRemaining(String remaining) {
+        this.remaining = remaining;
+    }
+
+    public String getRuntime() {
+        return runtime;
+    }
+
+    public void setRuntime(String runtime) {
+        this.runtime = runtime;
+    }
+
     public DbEquipment getEquipment() {
 
         return equipment;
@@ -46,6 +62,15 @@ public class DbEquipmentVo {
     public  DbTcpType  dbTcpType;
 
 
+    /*
+     * 剩余时长
+     * */
+    @ApiModelProperty(value = "剩余时长")
+    public String remaining;
 
+    /*使用时长
+     * */
+    @ApiModelProperty(value = "剩余时长")
+    public String runtime;
 
 }
