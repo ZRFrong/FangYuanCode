@@ -41,8 +41,5 @@ public class InitController {
          * */
         TaskHeartbeat taskHeartbeat = new TaskHeartbeat();
         taskHeartbeat.HeartbeatRun();
-
-
-
     }
 }
