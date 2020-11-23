@@ -95,13 +95,25 @@ public class DbUserDynamicController extends BaseController {
 	@Autowired
 	private IDbForwardService dbForwardService;
 
-	@PostMapping("comment")
-	public R userComment(Long dynamicId,String observer,String commentContent,Long parentCommentId, HttpServletRequest request){
-
-		return null;
+	@GetMapping("searchDynamic")
+	@ApiOperation(value = "动态搜索接口",notes = "关键字搜索",httpMethod = "GET")
+	public R searchDynamic( String  word){
+		if (StringUtils.isEmpty(word)){
+			return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
+		}
+		List<DbUserDynamic> dynamics = dbUserDynamicService.searchDynamic(word);
+		String userId = getRequest().getHeader(Constants.CURRENT_ID);
+		List<Long> ids = null;
+		if (StringUtils.isNotEmpty(userId)){
+			ids = dbAttentionService.selectReplyAttentionUserIds(userId);
+		}
+		ArrayList<DynamicDto> dtos = new ArrayList<>();
+		for (DbUserDynamic dynamic : dynamics) {
+			DynamicDto dto = getDynamicDto(dynamic, ids);
+			dtos.add(dto);
+		}
+		return dtos.size()>0?R.data(dtos):R.ok("没有搜索结果！");
 	}
-
-
 
 	/**
 	 * 获取动态
@@ -415,6 +427,12 @@ public class DbUserDynamicController extends BaseController {
 		return list;
 	}
 
+	/**
+	 * 是否关注
+	 * @param attentionIds
+	 * @param userId
+	 * @return
+	 */
 	private Integer getIsAttention(List<Long> attentionIds,Long userId){
 		if (attentionIds != null && attentionIds.size() > 0){
 			for (Long id : attentionIds) {

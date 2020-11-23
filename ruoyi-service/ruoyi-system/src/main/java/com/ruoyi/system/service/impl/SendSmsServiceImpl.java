@@ -118,11 +118,6 @@ public class SendSmsServiceImpl implements SendSmsService {
         return is_susses;
     }
 
-    //LTAI4GKgwtvuAiRAuVKXhYSY
-    //5KKPLPvGrhevKExHi8HSkDbgl7zq0f
-    //飞天遁地旅游网
-//    //SMS_173252813
-
 
     public CommonRequest getCommonRequest(){
         CommonRequest request = new CommonRequest();

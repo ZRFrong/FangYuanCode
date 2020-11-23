@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,8 +51,8 @@ public class OperateVentilate {
     @GetMapping("operateTongFengHand")
     @ApiOperation(value = "操作自动通风是否开启自动", notes = "操作自动通风是否开启自动")
     public R operateTongFengHand( @ApiParam(name = "dbEquipmentId", value = "dbEquipmentID")Long dbEquipmentId, @ApiParam(name = "i", value = "是否开启0,1")int i) {
-
-        return    remoteTcpService.operateTongFengHand(equipmentService.selectDbEquipmentById(dbEquipmentId),i);
+        DbEquipment equipment = equipmentService.selectDbEquipmentById(dbEquipmentId);
+        return    remoteTcpService.operateTongFengHand( equipment,i);
 
     }
 

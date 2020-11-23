@@ -117,6 +117,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDynamicList" resultMap="DbUserDynamicResult">
         select * from db_user_dynamic order by created_time desc limit  #{start}, #{end}
     </select>
+    <select id="searchDynamic" resultMap="DbUserDynamicResult">
+        select * from db_blog where content
+          <bind name="word" value="'%'+name + '%'"></bind>
+         like #{word}
+    </select>
 
 
 </mapper>

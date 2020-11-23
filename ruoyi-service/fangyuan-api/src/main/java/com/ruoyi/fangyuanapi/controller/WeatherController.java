@@ -8,8 +8,8 @@ import com.ruoyi.system.domain.WeatherVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static java.lang.StrictMath.pow;
-
 /*
  *天气调用服务
  * */
@@ -79,8 +76,7 @@ public class WeatherController {
         querys.put("needMoreDay", "0");
 
         try {
-
-            org.apache.http.HttpResponse httpResponse = HttpUtil.doGet(host, path, method, headers, querys);
+            HttpResponse httpResponse = HttpUtil.doGet(host, path, method, headers, querys);
             //获取response的body
             String s = EntityUtils.toString(httpResponse.getEntity());
             Map<String, Object> parse = (Map<String, Object>) JSONObject.parse(s);

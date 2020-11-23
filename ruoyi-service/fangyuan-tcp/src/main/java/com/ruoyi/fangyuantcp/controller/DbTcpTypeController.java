@@ -132,7 +132,7 @@ public class DbTcpTypeController extends BaseController {
     * 通风 自动手动状态更改
     * */
     @GetMapping("operateTongFengHand")
-    public R operateTongFengHand(@ApiParam(name = "DbEquipment", value = "DbEquipment")DbEquipment dbEquipment, @ApiParam(name = "i", value = "是否开启0,1")int i) {
+    public R operateTongFengHand(@ApiParam(name = "dbEquipment", value = "dbEquipment")DbEquipment dbEquipment, @ApiParam(name = "i", value = "是否开启0,1")int i) {
         int operation =   dbTcpTypeService.operateTongFengHand(dbEquipment,i);
 
         return toAjax(operation);

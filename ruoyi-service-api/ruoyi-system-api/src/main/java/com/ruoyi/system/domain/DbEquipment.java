@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.ruoyi.common.core.domain.BaseEntity;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -31,16 +32,32 @@ public class DbEquipment extends BaseEntity
 
     private Long equipmentId;
 
+
+    /*
+    *
+    * */
+
+    private List<OperatePojo> pojos;
+
     public DbEquipment() {
     }
 
-    public DbEquipment(Long equipmentId, String heartbeatText, Date allottedTime, Integer isPause, String pauseState, Integer isFault, Long equipmentTemplateId, Integer equipmentNo, String handlerText, Integer isOnline, String qrCodePic) {
+    public List<OperatePojo> getPojos() {
+        return pojos;
+    }
 
+    public void setPojos(List<OperatePojo> pojos) {
+        this.pojos = pojos;
+    }
+
+    public DbEquipment(Long equipmentId, List<OperatePojo> pojos, String heartbeatText, Date allottedTime, Integer isPause, String pauseState, String equipmentName, Integer isFault, Long equipmentTemplateId, Integer equipmentNo, String handlerText, Integer isOnline, String qrCodePic) {
         this.equipmentId = equipmentId;
+        this.pojos = pojos;
         this.heartbeatText = heartbeatText;
         this.allottedTime = allottedTime;
         this.isPause = isPause;
         this.pauseState = pauseState;
+        this.equipmentName = equipmentName;
         this.isFault = isFault;
         this.equipmentTemplateId = equipmentTemplateId;
         this.equipmentNo = equipmentNo;
@@ -249,7 +266,6 @@ public class DbEquipment extends BaseEntity
                 .append("isPause", getIsPause())
                 .append("pauseState", getPauseState())
                 .append("isFault", getIsFault())
-                .append("createTime", getCreateTime())
                 .append("equipmentTemplateId", getEquipmentTemplateId())
                 .append("equipmentNo", getEquipmentNo())
                 .append("handlerText", getHandlerText())

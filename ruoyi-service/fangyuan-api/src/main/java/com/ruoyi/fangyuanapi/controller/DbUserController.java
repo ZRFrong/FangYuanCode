@@ -288,21 +288,17 @@ public class DbUserController extends BaseController {
             @ApiImplicitParam(name = "avatar",value = "头像",required = false)
     })
     public R wxRegister(@RequestParam String phone,@RequestParam String code,String openId,String nickname,String avatar) {
-       // R r = sendSmsClient.checkCode(phone, code);
-        R r = new R();
+        R r = sendSmsClient.checkCode(phone, code);
+        //R r = new R();
         if ("200".equals(r.get("code")+"") ){
             DbUser dbUser= dbUserService.selectDbUserByPhoneAndOpenId(phone,openId);
+
             if (dbUser == null){
                 //already
                 dbUser = dbUserService.wxRegister(phone,openId,nickname,avatar);
             }
             if (dbUser != null){
-                HashMap<Object, Object> tokenMap = new HashMap<>();
-                tokenMap.put("id", dbUser.getId());
-                tokenMap.put("expireTime", System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000));
-                tokenMap.put("topic", 0);
-                String token = TokenUtils.encrypt(JSON.toJSONString(tokenMap), tokenConf.getAccessTokenKey());
-                return R.data(token);
+                return R.data(getToken(dbUser.getId(), tokenConf.getAccessTokenKey(),System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000)));
             }
             return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
         }else {
@@ -321,7 +317,7 @@ public class DbUserController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code", value = "由微信颁发的临时凭证code，有效期五分钟", required = true)
     })
-    public R getOpenId(@RequestBody @RequestParam(value = "code") String code){
+    public R getOpenId(String code){
         try {
             HashMap<String, String> map = new HashMap<>();
             map.put("appid",wxSmallConf.getAppid());
@@ -329,6 +325,7 @@ public class DbUserController extends BaseController {
             map.put("js_code",code);
             map.put("grant_type",wxSmallConf.getGrant_type());
             HttpResponse response = HttpUtil.doGet(wxSmallConf.getHost(), wxSmallConf.getPath(), HttpMethod.GET.name(), null, map);
+            System.out.println(response.toString());
             String string = EntityUtils.toString(response.getEntity());
             Map result = JSONUtil.toBean(string, Map.class);
             String openid;
@@ -337,13 +334,28 @@ public class DbUserController extends BaseController {
             }catch (Exception e){
                 openid =null;
             }
+            Map<String, String> stringMap = new HashMap<>();
             if (StringUtils.isNotEmpty(openid)){
-               return  R.data(openid);
+                DbUser user = dbUserService.selectDbUserByOpenId(openid);
+                if (user != null){
+                    stringMap.put("token",getToken(user.getId(), tokenConf.getAccessTokenKey(),System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000)));
+                    return  R.data(stringMap) ;
+                }
+                stringMap.put("openId",openid);
+                return  R.data(stringMap);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return R.error();
+    }
+
+    private String getToken(Long id,String key,Long time){
+        HashMap<Object, Object> tokenMap = new HashMap<>();
+        tokenMap.put("id", id);
+        tokenMap.put("expireTime", time);
+        tokenMap.put("topic", 0);
+        return TokenUtils.encrypt(JSON.toJSONString(tokenMap), key);
     }
 
     /**
