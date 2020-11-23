@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.fangyuanapi.aspect.OperationLog;
 import com.ruoyi.fangyuanapi.aspect.OperationLogType;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
@@ -150,6 +151,16 @@ public class OperateControllerWeChat extends BaseController {
                 DbTcpType dbTcpType1 = list.get(0);
                     dbEquipmentVo.setDbTcpType(dbTcpType1);
                 }
+                /*
+                * 剩余时长，到期时长计算
+                * */
+//                运行时长
+                dbEquipmentVo.setRemaining(DateUtils.getDatePoor(dbEquipment.getAllottedTime(),new Date()));
+//              剩余时长
+                dbEquipmentVo.setRuntime(DateUtils.getDatePoor(new Date(),dbEquipment.getCreateTime()));
+
+
+
                 dbEquipmentVos.add(dbEquipmentVo);
 //                到期
                 if (dbEquipment.getIsFault() == 1) {
