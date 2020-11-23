@@ -156,9 +156,9 @@ public class OperateControllerWeChat extends BaseController {
                 * 剩余时长，到期时长计算
                 * */
 //                运行时长
-                dbEquipmentVo.setRemaining(DateUtils.getDatePoor(dbEquipment.getAllottedTime(),new Date()));
+                dbEquipmentVo.setRemaining(DateUtils.getDatePoorDay(dbEquipment.getAllottedTime(),new Date()));
 //              剩余时长
-                dbEquipmentVo.setRuntime(DateUtils.getDatePoor(new Date(),dbEquipment.getCreateTime()));
+                dbEquipmentVo.setRuntime(DateUtils.getDatePoorDay(new Date(),dbEquipment.getCreateTime()));
 
 
 
