@@ -156,19 +156,23 @@ public class DbUserController extends BaseController {
             return R.error(ResultEnum.PHONE_ERROR.getCode(), ResultEnum.PHONE_ERROR.getMessage());
         }
         String token = redisUtils.get(RedisKeyConf.REFRESH_TOKEN_.name() + dbUser.getId());
-        if (token != null) {
-            return R.error(ResultEnum.LOGIN_ERROR.getCode(), ResultEnum.LOGIN_ERROR.getMessage());
-        }
+//        if (token != null) {
+//            return R.error(ResultEnum.LOGIN_ERROR.getCode(), ResultEnum.LOGIN_ERROR.getMessage());
+//        }
         if (dbUser != null && StringUtils.isNotEmpty(password) && StringUtils.isEmpty(code)) {
             //密码登录
             String salt = dbUser.getSalt();
             if (ZhaoMD5Utils.string2MD5(password + salt).equals(dbUser.getPassword())) {
+                if (StringUtils.isNotEmpty(token)){
+                    redisUtils.delete(RedisKeyConf.REFRESH_TOKEN_.name() + dbUser.getId());
+                }
                 //登录成功
-                Map<String, String> map = resultTokens(dbUser.getId(), "XIAOSI", tokenConf.getAccessTokenKey(), tokenConf.getRefreshTokenKey());
+                //Map<String, String> map = resultTokens(dbUser.getId(), "XIAOSI", tokenConf.getAccessTokenKey(), tokenConf.getRefreshTokenKey());
+                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000));
                 /* 返回token 并且记录 */
-                redisUtils.set(RedisKeyConf.REFRESH_TOKEN_.name() + dbUser.getId(), map.get("refreshToken"), 60 * 60 * 24 * 30 * 2L);
+                redisUtils.set(RedisKeyConf.REFRESH_TOKEN_.name() + dbUser.getId(), token, 60 * 60 * 24 * 30 * 2L);
                 //TODO
-                return R.data(map);
+                return R.data(token);
             } else {
                 redisUtils.set(CategoryType.PHONE_LOGIN_NUM_.name() + phone, num + 1, RedisTimeConf.ONE_HOUR);
                 return R.error(ResultEnum.PASSWORD_ERROE.getCode(), ResultEnum.PASSWORD_ERROE.getMessage());
@@ -178,9 +182,13 @@ public class DbUserController extends BaseController {
         if (dbUser != null && StringUtils.isEmpty(password) && StringUtils.isNotEmpty(code)) {//验证码登录
             R r = sendSmsClient.checkCode(phone, code);
             if ("200".equals(r.get("code") + "")) {
-                Map<String, String> map = resultTokens(dbUser.getId(), "XIAOSI", tokenConf.getAccessTokenKey(), tokenConf.getRefreshTokenKey());
-                redisUtils.set(RedisKeyConf.REFRESH_TOKEN_.name() + dbUser.getId(), map.get("refreshToken"), 60 * 60 * 24 * 30 * 2L);
-                return R.data(map);
+                if (StringUtils.isNotEmpty(token)){
+                    redisUtils.delete(RedisKeyConf.REFRESH_TOKEN_.name() + dbUser.getId());
+                }
+                //Map<String, String> map = resultTokens(dbUser.getId(), "XIAOSI", tokenConf.getAccessTokenKey(), tokenConf.getRefreshTokenKey());
+                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000));
+                redisUtils.set(RedisKeyConf.REFRESH_TOKEN_.name() + dbUser.getId(),token, 60 * 60 * 24 * 30 * 2L);
+                return R.data(token);
             } else {
                 redisUtils.set(CategoryType.PHONE_LOGIN_NUM_.name() + phone, num + 1, RedisTimeConf.ONE_HOUR);
                 return r;
