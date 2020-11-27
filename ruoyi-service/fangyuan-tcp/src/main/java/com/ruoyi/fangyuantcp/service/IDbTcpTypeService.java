@@ -74,7 +74,9 @@ public interface IDbTcpTypeService {
 
     int timingTongFengType();
 
-    int operateTongFengHand(DbEquipment equipmentIds,int i);
 
-    int operateTongFengType(DbEquipment dbEquipment, int i,String type);
+
+    int operateTongFengHand(String heartbeatText, String equipmentNo, Integer i);
+
+    int operateTongFengType(String heartbeatText, String equipmentNo, Integer i, String temp);
 }

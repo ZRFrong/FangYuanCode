@@ -27,7 +27,7 @@ import java.util.List;
  * @date 2020-09-30
  */
 @RestController
-@Api("category")
+@Api("提供者")
 @RequestMapping("category")
 public class DbCategoryController extends BaseController
 {
@@ -85,8 +85,7 @@ public class DbCategoryController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{id}")
-    @ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbCategory get(@ApiParam(name="id",value="long",required=true)  @PathVariable("id") Long id)
+	public DbCategory get(  @PathVariable("id") Long id)
 	{
 		return dbCategoryService.selectDbCategoryById(id);
 		
@@ -96,8 +95,7 @@ public class DbCategoryController extends BaseController
 	 * 查询db_category列表
 	 */
 	@GetMapping("list")
-    @ApiOperation(value = "查询db_category列表" , notes = "db_category列表")
-	public R list(@ApiParam(name="DbCategory",value="传入json格式",required=true) DbCategory dbCategory)
+	public R list( DbCategory dbCategory)
 	{
 		startPage();
         return result(dbCategoryService.selectDbCategoryList(dbCategory));
@@ -108,8 +106,7 @@ public class DbCategoryController extends BaseController
 	 * 新增保存db_category
 	 */
 	@PostMapping("save")
-    @ApiOperation(value = "新增保存db_category" , notes = "新增保存db_category")
-	public R addSave(@ApiParam(name="DbCategory",value="传入json格式",required=true) @RequestBody DbCategory dbCategory)
+	public R addSave( @RequestBody DbCategory dbCategory)
 	{		
 		return toAjax(dbCategoryService.insertDbCategory(dbCategory));
 	}
@@ -118,8 +115,7 @@ public class DbCategoryController extends BaseController
 	 * 修改保存db_category
 	 */
 	@PostMapping("update")
-    @ApiOperation(value = "修改保存db_category" , notes = "修改保存db_category")
-	public R editSave(@ApiParam(name="DbCategory",value="传入json格式",required=true) @RequestBody DbCategory dbCategory)
+	public R editSave( @RequestBody DbCategory dbCategory)
 	{		
 		return toAjax(dbCategoryService.updateDbCategory(dbCategory));
 	}
@@ -128,8 +124,7 @@ public class DbCategoryController extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-    @ApiOperation(value = "删除db_category" , notes = "删除db_category")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{		
 		return toAjax(dbCategoryService.deleteDbCategoryByIds(ids));
 	}

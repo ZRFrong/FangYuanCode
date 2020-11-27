@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbSewageMapper">
+    
+    <resultMap type="DbSewage" id="DbSewageResult">
+        <result property="id"    column="id"    />
+        <result property="heartName"    column="heart_name"    />
+        <result property="equipmentNo"    column="equipment_no"    />
+        <result property="dbUserId"    column="db_user_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="isOverdue"    column="is_overdue"    />
+        <result property="overdueTime"    column="overdue_time"    />
+        <result property="isDrops"    column="is_drops"    />
+        <result property="equipmentIds"    column="equipment_ids"    />
+    </resultMap>
+
+    <sql id="selectDbSewageVo">
+        select id, heart_name, equipment_no, db_user_id, create_time, is_overdue, overdue_time, is_drops, equipment_ids from db_sewage
+    </sql>
+
+    <select id="selectDbSewageList" parameterType="DbSewage" resultMap="DbSewageResult">
+        <include refid="selectDbSewageVo"/>
+        <where>  
+            <if test="heartName != null  and heartName != ''"> and heart_name like concat('%', #{heartName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectDbSewageById" parameterType="Long" resultMap="DbSewageResult">
+        <include refid="selectDbSewageVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbSewage" parameterType="DbSewage" useGeneratedKeys="true" keyProperty="id">
+        insert into db_sewage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="heartName != null  and heartName != ''">heart_name,</if>
+            <if test="equipmentNo != null ">equipment_no,</if>
+            <if test="dbUserId != null ">db_user_id,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="isOverdue != null ">is_overdue,</if>
+            <if test="overdueTime != null ">overdue_time,</if>
+            <if test="isDrops != null ">is_drops,</if>
+            <if test="equipmentIds != null  and equipmentIds != ''">equipment_ids,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="heartName != null  and heartName != ''">#{heartName},</if>
+            <if test="equipmentNo != null ">#{equipmentNo},</if>
+            <if test="dbUserId != null ">#{dbUserId},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="isOverdue != null ">#{isOverdue},</if>
+            <if test="overdueTime != null ">#{overdueTime},</if>
+            <if test="isDrops != null ">#{isDrops},</if>
+            <if test="equipmentIds != null  and equipmentIds != ''">#{equipmentIds},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbSewage" parameterType="DbSewage">
+        update db_sewage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="heartName != null  and heartName != ''">heart_name = #{heartName},</if>
+            <if test="equipmentNo != null ">equipment_no = #{equipmentNo},</if>
+            <if test="dbUserId != null ">db_user_id = #{dbUserId},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="isOverdue != null ">is_overdue = #{isOverdue},</if>
+            <if test="overdueTime != null ">overdue_time = #{overdueTime},</if>
+            <if test="isDrops != null ">is_drops = #{isDrops},</if>
+            <if test="equipmentIds != null  and equipmentIds != ''">equipment_ids = #{equipmentIds},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbSewageById" parameterType="Long">
+        delete from db_sewage where id = #{id}
+    </delete>
+
+    <delete id="deleteDbSewageByIds" parameterType="String">
+        delete from db_sewage where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

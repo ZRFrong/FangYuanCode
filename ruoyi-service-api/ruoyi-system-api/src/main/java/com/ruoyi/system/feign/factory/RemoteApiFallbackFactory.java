@@ -21,10 +21,7 @@ public class RemoteApiFallbackFactory implements FallbackFactory<RemoteApiServic
                 return null;
             }
 
-            @Override
-            public R syncEquipmentList() {
-                return null;
-            }
+
         };
     }
 }

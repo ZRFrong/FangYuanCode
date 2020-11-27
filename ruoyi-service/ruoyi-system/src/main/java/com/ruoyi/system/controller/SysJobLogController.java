@@ -23,7 +23,7 @@ import com.ruoyi.system.service.ISysJobLogService;
  * @date 2020-09-22
  */
 @RestController
-@Api("jobLog")
+@Api("定时任务调度日志")
 @RequestMapping("jobLog")
 public class SysJobLogController extends BaseController
 {
@@ -35,7 +35,6 @@ public class SysJobLogController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{jobLogId}")
-    @ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
 	public SysJobLog get(@ApiParam(name="id",value="long",required=true)  @PathVariable("jobLogId") Long jobLogId)
 	{
 		return sysJobLogService.selectSysJobLogById(jobLogId);
@@ -46,8 +45,7 @@ public class SysJobLogController extends BaseController
 	 * 查询定时任务调度日志列表
 	 */
 	@GetMapping("list")
-    @ApiOperation(value = "查询定时任务调度日志列表" , notes = "定时任务调度日志列表")
-	public R list(@ApiParam(name="SysJobLog",value="传入json格式",required=true) SysJobLog sysJobLog)
+	public R list( SysJobLog sysJobLog)
 	{
 		startPage();
         return result(sysJobLogService.selectSysJobLogList(sysJobLog));
@@ -58,8 +56,7 @@ public class SysJobLogController extends BaseController
 	 * 新增保存定时任务调度日志
 	 */
 	@PostMapping("save")
-    @ApiOperation(value = "新增保存定时任务调度日志" , notes = "新增保存定时任务调度日志")
-	public R addSave(@ApiParam(name="SysJobLog",value="传入json格式",required=true) @RequestBody SysJobLog sysJobLog)
+	public R addSave( @RequestBody SysJobLog sysJobLog)
 	{		
 		return toAjax(sysJobLogService.insertSysJobLog(sysJobLog));
 	}
@@ -68,8 +65,7 @@ public class SysJobLogController extends BaseController
 	 * 修改保存定时任务调度日志
 	 */
 	@PostMapping("update")
-    @ApiOperation(value = "修改保存定时任务调度日志" , notes = "修改保存定时任务调度日志")
-	public R editSave(@ApiParam(name="SysJobLog",value="传入json格式",required=true) @RequestBody SysJobLog sysJobLog)
+	public R editSave( @RequestBody SysJobLog sysJobLog)
 	{		
 		return toAjax(sysJobLogService.updateSysJobLog(sysJobLog));
 	}
@@ -78,8 +74,7 @@ public class SysJobLogController extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-    @ApiOperation(value = "删除定时任务调度日志" , notes = "删除定时任务调度日志")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{		
 		return toAjax(sysJobLogService.deleteSysJobLogByIds(ids));
 	}

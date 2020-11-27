@@ -13,6 +13,7 @@ import com.ruoyi.system.feign.factory.RemoteTcpFallbackFactory;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,32 +25,38 @@ public interface RemoteTcpService {
     /*
      * 指令发送  单个
      * */
-    @GetMapping(value = "client/operation", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public R operation( DbOperationVo dbOperationVo);
+    @PostMapping(value = "client/operation")
+    public R operation(@RequestBody DbOperationVo dbOperationVo);
     /*
-     * 指令发送  多个
+     * 指令发送  多个operationList
      * */
-    @GetMapping(value = "client/operationList", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "client/operationList")
     public R operationList(@RequestBody List<DbOperationVo> dbOperationVo) ;
 
     /*
     *状态查询
     * */
-    @GetMapping(value="type/listonly", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @GetMapping(value="type/listonly")
     public List<DbTcpType> list(@RequestBody DbTcpType dbTcpType);
 
+    @GetMapping(value="client/sinceOrHand")
+    R sinceOrHand();
 
-    @GetMapping(value="type/timingType", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+
+    @GetMapping("order/curing")
+    void  curingTiming();
+
+
+    @GetMapping(value="type/timingType")
     R strtTiming();
 
-    @GetMapping(value="type/curingType", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @GetMapping(value="type/curingType")
     R startSaveTiming();
 
 
-    @GetMapping(value="type/operateTongFengType", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    R operateTongFengType(@RequestBody DbEquipment dbEquipment, @PathVariable("i")int i,@PathVariable("temp")String temp);
+    @RequestMapping(method = RequestMethod.GET,value="type/operateTongFengType/{heartbeatText}/{equipmentNo}/{i}/{temp}")
+    R operateTongFengType(  @PathVariable("heartbeatText")String heartbeatText,@PathVariable("equipmentNo")String equipmentNo, @PathVariable("i")Integer i,@PathVariable("temp")String temp);
 
-    @GetMapping(value="type/operateTongFengHand", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    R
-    operateTongFengHand(@RequestBody @RequestParam("equipment") DbEquipment equipment,@RequestParam(name = "i") int i);
+    @RequestMapping( method = RequestMethod.GET,value="type/operateTongFengHand/{heartbeatText}/{equipmentNo}/{i}")
+    R operateTongFengHand(  @PathVariable("heartbeatText")String heartbeatText,@PathVariable("equipmentNo")String equipmentNo, @PathVariable(name = "i") Integer i);
 }

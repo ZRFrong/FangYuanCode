@@ -1,6 +1,7 @@
 package com.ruoyi.fangyuantcp.mapper;
 
 import com.ruoyi.system.domain.DbTcpClient;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
@@ -55,12 +56,14 @@ public interface DbTcpClientMapper
 
     /**
      * 批量删除tcp在线设备
-     * 
      * @param tcpClientIds 需要删除的数据ID
      * @return 结果
      */
     public int deleteDbTcpClientByIds(String[] tcpClientIds);
 
-    @Update("UPDATE db_tcp_client set is_online='0' WHERE heart_name=#{heartbeatName}")
+    @Update("UPDATE db_tcp_client set is_online='1' WHERE heart_name=#{heartbeatName}")
     void updateByHeartbeatName(String heartbeatName);
+
+    @Delete("delete from db_tcp_client where  heart_name=#{heartbeatName}")
+    void deleteDbtcpHeartbeatName(String heartbeatName);
 }

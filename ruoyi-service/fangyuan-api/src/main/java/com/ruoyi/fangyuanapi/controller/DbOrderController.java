@@ -66,8 +66,7 @@ public class DbOrderController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{id}")
-    @ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbOrder get(@ApiParam(name="id",value="long",required=true)  @PathVariable("id") Long id)
+	public DbOrder get(  @PathVariable("id") Long id)
 	{
 		return dbOrderService.selectDbOrderById(id);
 
@@ -77,8 +76,7 @@ public class DbOrderController extends BaseController
 	 * 查询db_order列表
 	 */
 	@GetMapping("list")
-    @ApiOperation(value = "查询db_order列表" , notes = "db_order列表")
-	public R list(@ApiParam(name="DbOrder",value="传入json格式",required=true) DbOrder dbOrder)
+	public R list( DbOrder dbOrder)
 	{
 		startPage();
         return result(dbOrderService.selectDbOrderList(dbOrder));
@@ -89,8 +87,7 @@ public class DbOrderController extends BaseController
 	 * 新增保存db_order
 	 */
 	@PostMapping("save")
-    @ApiOperation(value = "新增保存db_order" , notes = "新增保存db_order")
-	public R addSave(@ApiParam(name="DbOrder",value="传入json格式",required=true) @RequestBody DbOrder dbOrder)
+	public R addSave( @RequestBody DbOrder dbOrder)
 	{
 		return toAjax(dbOrderService.insertDbOrder(dbOrder));
 	}
@@ -99,8 +96,7 @@ public class DbOrderController extends BaseController
 	 * 修改保存db_order
 	 */
 	@PostMapping("update")
-    @ApiOperation(value = "修改保存db_order" , notes = "修改保存db_order")
-	public R editSave(@ApiParam(name="DbOrder",value="传入json格式",required=true) @RequestBody DbOrder dbOrder)
+	public R editSave( @RequestBody DbOrder dbOrder)
 	{
 		return toAjax(dbOrderService.updateDbOrder(dbOrder));
 	}
@@ -109,8 +105,7 @@ public class DbOrderController extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-    @ApiOperation(value = "删除db_order" , notes = "删除db_order")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{
 		return toAjax(dbOrderService.deleteDbOrderByIds(ids));
 	}

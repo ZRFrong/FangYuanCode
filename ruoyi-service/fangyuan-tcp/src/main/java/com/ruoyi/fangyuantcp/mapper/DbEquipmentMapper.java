@@ -1,15 +1,16 @@
-package com.ruoyi.fangyuanapi.service;
+package com.ruoyi.fangyuantcp.mapper;
 
 import com.ruoyi.system.domain.DbEquipment;
+
 import java.util.List;
 
 /**
- * 设备Service接口
+ * 设备Mapper接口
  * 
  * @author fangyuan
  * @date 2020-09-01
  */
-public interface IDbEquipmentService 
+public interface DbEquipmentMapper 
 {
     /**
      * 查询设备
@@ -44,20 +45,18 @@ public interface IDbEquipmentService
     public int updateDbEquipment(DbEquipment dbEquipment);
 
     /**
-     * 批量删除设备
-     * 
-     * @param ids 需要删除的数据ID
-     * @return 结果
-     */
-    public int deleteDbEquipmentByIds(String ids);
-
-    /**
-     * 删除设备信息
+     * 删除设备
      * 
      * @param equipmentId 设备ID
      * @return 结果
      */
     public int deleteDbEquipmentById(Long equipmentId);
 
-
+    /**
+     * 批量删除设备
+     * 
+     * @param equipmentIds 需要删除的数据ID
+     * @return 结果
+     */
+    public int deleteDbEquipmentByIds(String[] equipmentIds);
 }

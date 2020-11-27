@@ -23,7 +23,7 @@ import com.ruoyi.fangyuanapi.service.IDbUserAndDynamicService;
  * @date 2020-09-07
  */
 @RestController
-@Api("dynamic")
+@Api("前台用户和动态中间")
 @RequestMapping("dynamic")
 public class DbUserAndDynamicController extends BaseController
 {
@@ -35,8 +35,7 @@ public class DbUserAndDynamicController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{id}")
-	@ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbUserAndDynamic get(@ApiParam(name="id",value="long",required=true)  @PathVariable("id") Long id)
+	public DbUserAndDynamic get(  @PathVariable("id") Long id)
 	{
 		return dbUserAndDynamicService.selectDbUserAndDynamicById(id);
 
@@ -46,8 +45,7 @@ public class DbUserAndDynamicController extends BaseController
 	 * 查询前台用户和动态中间列表
 	 */
 	@GetMapping("list")
-	@ApiOperation(value = "查询前台用户和动态中间列表" , notes = "前台用户和动态中间列表")
-	public R list(@ApiParam(name="DbUserAndDynamic",value="传入json格式",required=true) DbUserAndDynamic dbUserAndDynamic)
+	public R list( DbUserAndDynamic dbUserAndDynamic)
 	{
 		startPage();
 		return result(dbUserAndDynamicService.selectDbUserAndDynamicList(dbUserAndDynamic));
@@ -58,8 +56,7 @@ public class DbUserAndDynamicController extends BaseController
 	 * 新增保存前台用户和动态中间
 	 */
 	@PostMapping("save")
-	@ApiOperation(value = "新增保存前台用户和动态中间" , notes = "新增保存前台用户和动态中间")
-	public R addSave(@ApiParam(name="DbUserAndDynamic",value="传入json格式",required=true) @RequestBody DbUserAndDynamic dbUserAndDynamic)
+	public R addSave( @RequestBody DbUserAndDynamic dbUserAndDynamic)
 	{
 		return toAjax(dbUserAndDynamicService.insertDbUserAndDynamic(dbUserAndDynamic));
 	}
@@ -68,8 +65,7 @@ public class DbUserAndDynamicController extends BaseController
 	 * 修改保存前台用户和动态中间
 	 */
 	@PostMapping("update")
-	@ApiOperation(value = "修改保存前台用户和动态中间" , notes = "修改保存前台用户和动态中间")
-	public R editSave(@ApiParam(name="DbUserAndDynamic",value="传入json格式",required=true) @RequestBody DbUserAndDynamic dbUserAndDynamic)
+	public R editSave( @RequestBody DbUserAndDynamic dbUserAndDynamic)
 	{
 		return toAjax(dbUserAndDynamicService.updateDbUserAndDynamic(dbUserAndDynamic));
 	}
@@ -78,8 +74,7 @@ public class DbUserAndDynamicController extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-	@ApiOperation(value = "删除前台用户和动态中间" , notes = "删除前台用户和动态中间")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{
 		return toAjax(dbUserAndDynamicService.deleteDbUserAndDynamicByIds(ids));
 	}

@@ -28,7 +28,7 @@ import java.util.List;
  * @date 2020-10-16
  */
 @RestController
-@Api("operationRecord")
+@Api("用户操作记录")
 @RequestMapping("operationRecord")
 public class DbOperationRecordController extends BaseController
 {
@@ -40,8 +40,7 @@ public class DbOperationRecordController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{id}")
-    @ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbOperationRecord get(@ApiParam(name="id",value="long",required=true)  @PathVariable("id") Long id)
+	public DbOperationRecord get(  @PathVariable("id") Long id)
 	{
 		return dbOperationRecordService.selectDbOperationRecordById(id);
 		
@@ -51,8 +50,7 @@ public class DbOperationRecordController extends BaseController
 	 * 查询用户操作记录列表
 	 */
 	@GetMapping("list")
-    @ApiOperation(value = "查询用户操作记录列表" , notes = "用户操作记录列表")
-	public R list(@ApiParam(name="DbOperationRecord",value="传入json格式",required=true) DbOperationRecord dbOperationRecord)
+	public R list( DbOperationRecord dbOperationRecord)
 	{
 		startPage();
         return result(dbOperationRecordService.selectDbOperationRecordList(dbOperationRecord));
@@ -97,8 +95,7 @@ public class DbOperationRecordController extends BaseController
 	 * 新增保存用户操作记录
 	 */
 	@PostMapping("save")
-    @ApiOperation(value = "新增保存用户操作记录" , notes = "新增保存用户操作记录")
-	public R addSave(@ApiParam(name="DbOperationRecord",value="传入json格式",required=true) @RequestBody DbOperationRecord dbOperationRecord)
+	public R addSave(@RequestBody DbOperationRecord dbOperationRecord)
 	{		
 		return toAjax(dbOperationRecordService.insertDbOperationRecord(dbOperationRecord));
 	}
@@ -107,8 +104,7 @@ public class DbOperationRecordController extends BaseController
 	 * 修改保存用户操作记录
 	 */
 	@PostMapping("update")
-    @ApiOperation(value = "修改保存用户操作记录" , notes = "修改保存用户操作记录")
-	public R editSave(@ApiParam(name="DbOperationRecord",value="传入json格式",required=true) @RequestBody DbOperationRecord dbOperationRecord)
+	public R editSave( @RequestBody DbOperationRecord dbOperationRecord)
 	{		
 		return toAjax(dbOperationRecordService.updateDbOperationRecord(dbOperationRecord));
 	}
@@ -117,8 +113,7 @@ public class DbOperationRecordController extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-    @ApiOperation(value = "删除用户操作记录" , notes = "删除用户操作记录")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{		
 		return toAjax(dbOperationRecordService.deleteDbOperationRecordByIds(ids));
 	}

@@ -45,7 +45,7 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
             DbTcpClient dbTcpClient = getIp(ctx);
             dbTcpClient.setHeartName(msg.toString());
             receiveUtil.heartbeatChoose(dbTcpClient, ctx);
-//            log.info("时间："+new Date()+"心跳处理："+msg);
+            log.info("时间："+new Date()+"心跳处理："+msg);
         } else {
             //       前两位是设备号   然后是标识符 03状态返回  05操作响应
             String charStic = s.substring(2, 4);

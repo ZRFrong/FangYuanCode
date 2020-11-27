@@ -27,7 +27,7 @@ import java.util.List;
  * @date 2020-09-07
  */
 @RestController
-@Api("dbEquipment")
+@Api("设备")
 @RequestMapping("dbEquipment")
 public class DbEquipmentController extends BaseController {
 
@@ -50,8 +50,7 @@ public class DbEquipmentController extends BaseController {
      * 查询${tableComment}
      */
     @GetMapping("get/{equipmentId}")
-    @ApiOperation(value = "根据id查询", notes = "查询${tableComment}")
-    public DbEquipment get(@ApiParam(name = "id", value = "long", required = true) @PathVariable("equipmentId") Long equipmentId) {
+    public DbEquipment get( @PathVariable("equipmentId") Long equipmentId) {
         return dbEquipmentService.selectDbEquipmentById(equipmentId);
     }
 
@@ -59,8 +58,7 @@ public class DbEquipmentController extends BaseController {
      * 查询设备列表
      */
     @GetMapping("list")
-    @ApiOperation(value = "查询设备列表", notes = "设备列表")
-    public R list(@ApiParam(name = "DbEquipment", value = "传入json格式", required = true) DbEquipment dbEquipment) {
+    public R list( DbEquipment dbEquipment) {
         startPage();
         return result(dbEquipmentService.selectDbEquipmentList(dbEquipment));
     }
@@ -70,8 +68,7 @@ public class DbEquipmentController extends BaseController {
      * 新增保存设备
      */
     @PostMapping("save")
-    @ApiOperation(value = "新增保存设备", notes = "新增保存设备")
-    public R addSave(@ApiParam(name = "DbEquipment", value = "传入json格式", required = true) DbEquipment dbEquipment) {
+    public R addSave( DbEquipment dbEquipment) {
         return toAjax(dbEquipmentService.insertDbEquipment(dbEquipment));
     }
 
@@ -79,8 +76,7 @@ public class DbEquipmentController extends BaseController {
      * 修改保存设备
      */
     @PostMapping("update")
-    @ApiOperation(value = "修改保存设备", notes = "修改保存设备")
-    public R editSave(@ApiParam(name = "DbEquipment", value = "传入json格式", required = true) DbEquipment dbEquipment) {
+    public R editSave( DbEquipment dbEquipment) {
         return toAjax(dbEquipmentService.updateDbEquipment(dbEquipment));
     }
 
@@ -88,8 +84,7 @@ public class DbEquipmentController extends BaseController {
      * 删除${tableComment}
      */
     @PostMapping("remove")
-    @ApiOperation(value = "删除设备", notes = "删除设备")
-    public R remove(@ApiParam(name = "删除的id子串", value = "已逗号分隔的id集", required = true) String ids) {
+    public R remove( String ids) {
         return toAjax(dbEquipmentService.deleteDbEquipmentByIds(ids));
     }
 
@@ -121,43 +116,11 @@ public class DbEquipmentController extends BaseController {
     }
 
 
-    /*
-     * 生成二维码   指定网页，内部选择土地，
-     * */
-    @PostMapping("qrCodeGenerate")
-    @ApiOperation(value = "修改保存设备", notes = "修改保存设备")
-    public R qrCodeGenerate(@ApiParam(name = "DbEquipment", value = "传入json格式", required = true)  DbEquipment equipment) throws Exception {
-        /*
-         * 指定网址     拼接一个参数（设备id）
-         * */
-        int i = dbEquipmentService.qrCodeGenerate(equipment);
-        return toAjax(i);
-    }
-
-
-
-    /*
-    * 同步设备列表到redis
-    * */
-    @GetMapping("syncEquipmentList")
-    @ApiOperation(value = "同步设备列表到redis", notes = "同步设备列表到redis")
-    public R syncList() {
-
-        List<DbEquipment> dbEquipments = dbEquipmentService.selectDbEquipmentList(new DbEquipment(0, 0));
-        for (DbEquipment dbEquipment : dbEquipments) {
-            toRedis(dbEquipment);
-        }
-        return toAjax(0);
-    }
 
 
 
 
-    public  void toRedis (DbEquipment dbEquipment){
-        String s = JSON.toJSONString(dbEquipment);
-        String key = RedisKeyConf.EQUIPMENT_LIST+":"+dbEquipment.getHeartbeatText()+"_"+dbEquipment.getEquipmentNo();
-        redisUtils.set(key,s,redisUtils.NOT_EXPIRE);
-    }
+
 
 
 

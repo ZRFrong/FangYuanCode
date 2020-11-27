@@ -15,10 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Api("OperateVentilate")
@@ -37,11 +34,11 @@ public class OperateVentilate {
      * */
     @GetMapping("operateTongFengType")
     @ApiOperation(value = "操作自动通风自动开启关闭的温度", notes = "操作自动通风自动开启关闭的温度")
-    public R operateTongFengType( @ApiParam(name = "dbEquipmentId", value = "dbEquipmentID")Long dbEquipmentId,
-                                  @ApiParam(name = "i", value = "是否开启0,1")int i,
-                                  @ApiParam(name = "temp", value = "温度")String temp) {
+    public R operateTongFengType(@ApiParam(name = "dbEquipmentId", value = "dbEquipmentID") Long dbEquipmentId,
+                                 @ApiParam(name = "i", value = "是否开启0,1") Integer i,
+                                 @ApiParam(name = "temp", value = "温度") Integer temp) {
 
-     return    remoteTcpService.operateTongFengType(equipmentService.selectDbEquipmentById(dbEquipmentId),i,temp);
+        return remoteTcpService.operateTongFengType(equipmentService.selectDbEquipmentById(dbEquipmentId).getHeartbeatText(), equipmentService.selectDbEquipmentById(dbEquipmentId).getEquipmentNo(), i, temp+"");
 
     }
 
@@ -50,9 +47,9 @@ public class OperateVentilate {
      * */
     @GetMapping("operateTongFengHand")
     @ApiOperation(value = "操作自动通风是否开启自动", notes = "操作自动通风是否开启自动")
-    public R operateTongFengHand( @ApiParam(name = "dbEquipmentId", value = "dbEquipmentID")Long dbEquipmentId, @ApiParam(name = "i", value = "是否开启0,1")int i) {
+    public R operateTongFengHand(@ApiParam(name = "dbEquipmentId", value = "dbEquipmentID") Long dbEquipmentId, @ApiParam(name = "i", value = "是否开启0,1") Integer i) {
         DbEquipment equipment = equipmentService.selectDbEquipmentById(dbEquipmentId);
-        return    remoteTcpService.operateTongFengHand( equipment,i);
+        return remoteTcpService.operateTongFengHand(equipment.getHeartbeatText(), equipment.getEquipmentNo(), i);
 
     }
 

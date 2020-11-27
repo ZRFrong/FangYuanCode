@@ -23,7 +23,7 @@ import com.ruoyi.fangyuanapi.service.IDbManualReviewService;
  * @date 2020-09-22
  */
 @RestController
-@Api("manualReview")
+@Api("审核表")
 @RequestMapping("manualReview")
 public class DbManualReviewController extends BaseController
 {
@@ -35,8 +35,7 @@ public class DbManualReviewController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{id}")
-    @ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbManualReview get(@ApiParam(name="id",value="long",required=true)  @PathVariable("id") Long id)
+	public DbManualReview get(  @PathVariable("id") Long id)
 	{
 		return dbManualReviewService.selectDbManualReviewById(id);
 		
@@ -46,8 +45,7 @@ public class DbManualReviewController extends BaseController
 	 * 查询审核表列表
 	 */
 	@GetMapping("list")
-    @ApiOperation(value = "查询审核表列表" , notes = "审核表列表")
-	public R list(@ApiParam(name="DbManualReview",value="传入json格式",required=true) DbManualReview dbManualReview)
+	public R list( DbManualReview dbManualReview)
 	{
 		startPage();
         return result(dbManualReviewService.selectDbManualReviewList(dbManualReview));
@@ -58,8 +56,7 @@ public class DbManualReviewController extends BaseController
 	 * 新增保存审核表
 	 */
 	@PostMapping("save")
-    @ApiOperation(value = "新增保存审核表" , notes = "新增保存审核表")
-	public R addSave(@ApiParam(name="DbManualReview",value="传入json格式",required=true) @RequestBody DbManualReview dbManualReview)
+	public R addSave( @RequestBody DbManualReview dbManualReview)
 	{		
 		return toAjax(dbManualReviewService.insertDbManualReview(dbManualReview));
 	}
@@ -68,8 +65,7 @@ public class DbManualReviewController extends BaseController
 	 * 修改保存审核表
 	 */
 	@PostMapping("update")
-    @ApiOperation(value = "修改保存审核表" , notes = "修改保存审核表")
-	public R editSave(@ApiParam(name="DbManualReview",value="传入json格式",required=true) @RequestBody DbManualReview dbManualReview)
+	public R editSave( @RequestBody DbManualReview dbManualReview)
 	{		
 		return toAjax(dbManualReviewService.updateDbManualReview(dbManualReview));
 	}
@@ -78,8 +74,7 @@ public class DbManualReviewController extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-    @ApiOperation(value = "删除审核表" , notes = "删除审核表")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{		
 		return toAjax(dbManualReviewService.deleteDbManualReviewByIds(ids));
 	}

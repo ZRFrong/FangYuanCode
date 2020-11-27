@@ -72,4 +72,6 @@ public interface IDbTcpClientService
     int operationList(List<DbOperationVo> dbOperationVo);
 
     int sinceOrHand();
+
+    void deleteDbtcpHeartbeatName(String heartbeatName);
 }

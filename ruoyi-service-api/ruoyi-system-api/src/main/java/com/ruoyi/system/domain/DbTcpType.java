@@ -18,6 +18,23 @@ public class DbTcpType extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    @Override
+    public String toString() {
+        return "DbTcpType{" +
+                "tcpTypeId=" + tcpTypeId +
+                ", temperatureSoil='" + temperatureSoil + '\'' +
+                ", humiditySoil='" + humiditySoil + '\'' +
+                ", light='" + light + '\'' +
+                ", heartName='" + heartName + '\'' +
+                ", co2='" + co2 + '\'' +
+                ", idAuto=" + idAuto +
+                ", autocontrolType='" + autocontrolType + '\'' +
+                ", temperatureAir='" + temperatureAir + '\'' +
+                ", humidityAir='" + humidityAir + '\'' +
+                ", isShow=" + isShow +
+                '}';
+    }
+
     /** 主键 */
     private Long tcpTypeId;
 
@@ -171,21 +188,4 @@ public class DbTcpType extends BaseEntity
         return isShow;
     }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-                .append("tcpTypeId", getTcpTypeId())
-                .append("temperatureSoil", getTemperatureSoil())
-                .append("humiditySoil", getHumiditySoil())
-                .append("light", getLight())
-                .append("heartName", getHeartName())
-                .append("co2", getCo2())
-                .append("idAuto", getIdAuto())
-                .append("autocontrolType", getAutocontrolType())
-                .append("updateTime", getUpdateTime())
-                .append("temperatureAir", getTemperatureAir())
-                .append("humidityAir", getHumidityAir())
-                .append("isShow", getIsShow())
-                .toString();
-    }
 }

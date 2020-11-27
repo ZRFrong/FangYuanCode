@@ -35,8 +35,7 @@ public class DbEquipmentTempController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{equipmentTemId}")
-    @ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbEquipmentTemp get(@ApiParam(name="id",value="long",required=true)  @PathVariable("equipmentTemId") Long equipmentTemId)
+	public DbEquipmentTemp get(  @PathVariable("equipmentTemId") Long equipmentTemId)
 	{
 		return dbEquipmentTempService.selectDbEquipmentTempById(equipmentTemId);
 		
@@ -46,8 +45,7 @@ public class DbEquipmentTempController extends BaseController
 	 * 查询设备模板列表
 	 */
 	@GetMapping("list")
-    @ApiOperation(value = "查询设备模板列表" , notes = "设备模板列表")
-	public R list(@ApiParam(name="DbEquipmentTemp",value="传入json格式",required=true) DbEquipmentTemp dbEquipmentTemp)
+	public R list( DbEquipmentTemp dbEquipmentTemp)
 	{
 		startPage();
         return result(dbEquipmentTempService.selectDbEquipmentTempList(dbEquipmentTemp));
@@ -58,8 +56,7 @@ public class DbEquipmentTempController extends BaseController
 	 * 新增保存设备模板
 	 */
 	@PostMapping("save")
-    @ApiOperation(value = "新增保存设备模板" , notes = "新增保存设备模板")
-	public R addSave(@ApiParam(name="DbEquipmentTemp",value="传入json格式",required=true) @RequestBody DbEquipmentTemp dbEquipmentTemp)
+	public R addSave( @RequestBody DbEquipmentTemp dbEquipmentTemp)
 	{		
 		return toAjax(dbEquipmentTempService.insertDbEquipmentTemp(dbEquipmentTemp));
 	}
@@ -68,8 +65,7 @@ public class DbEquipmentTempController extends BaseController
 	 * 修改保存设备模板
 	 */
 	@PostMapping("update")
-    @ApiOperation(value = "修改保存设备模板" , notes = "修改保存设备模板")
-	public R editSave(@ApiParam(name="DbEquipmentTemp",value="传入json格式",required=true) @RequestBody DbEquipmentTemp dbEquipmentTemp)
+	public R editSave( @RequestBody DbEquipmentTemp dbEquipmentTemp)
 	{		
 		return toAjax(dbEquipmentTempService.updateDbEquipmentTemp(dbEquipmentTemp));
 	}
@@ -78,8 +74,7 @@ public class DbEquipmentTempController extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-    @ApiOperation(value = "删除设备模板" , notes = "删除设备模板")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{		
 		return toAjax(dbEquipmentTempService.deleteDbEquipmentTempByIds(ids));
 	}

@@ -1,6 +1,9 @@
 package com.ruoyi.fangyuanapi.controller;
 
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbQrCode;
+import com.ruoyi.system.domain.DbQrCodeVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +26,7 @@ import com.ruoyi.fangyuanapi.service.IDbQrCodeService;
  * @date 2020-09-30
  */
 @RestController
-@Api("qrcode")
+@Api("二维码")
 @RequestMapping("qrcode")
 public class DbQrCodeController extends BaseController
 {
@@ -35,8 +38,7 @@ public class DbQrCodeController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{qrCodeId}")
-    @ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbQrCode get(@ApiParam(name="id",value="long",required=true)  @PathVariable("qrCodeId") Long qrCodeId)
+	public DbQrCode get(  @PathVariable("qrCodeId") Long qrCodeId)
 	{
 		return dbQrCodeService.selectDbQrCodeById(qrCodeId);
 		
@@ -46,8 +48,7 @@ public class DbQrCodeController extends BaseController
 	 * 查询二维码列表
 	 */
 	@GetMapping("list")
-    @ApiOperation(value = "查询二维码列表" , notes = "二维码列表")
-	public R list(@ApiParam(name="DbQrCode",value="传入json格式",required=true) DbQrCode dbQrCode)
+	public R list( DbQrCode dbQrCode)
 	{
 		startPage();
         return result(dbQrCodeService.selectDbQrCodeList(dbQrCode));
@@ -59,8 +60,7 @@ public class DbQrCodeController extends BaseController
 	 * 新增保存二维码
 	 */
 	@PostMapping("save")
-    @ApiOperation(value = "新增保存二维码" , notes = "新增保存二维码")
-	public R addSave(@ApiParam(name="DbQrCode",value="传入json格式",required=true) @RequestBody DbQrCode dbQrCode)
+	public R addSave( @RequestBody DbQrCode dbQrCode)
 	{		
 		return toAjax(dbQrCodeService.insertDbQrCode(dbQrCode));
 	}
@@ -69,8 +69,7 @@ public class DbQrCodeController extends BaseController
 	 * 修改保存二维码
 	 */
 	@PostMapping("update")
-    @ApiOperation(value = "修改保存二维码" , notes = "修改保存二维码")
-	public R editSave(@ApiParam(name="DbQrCode",value="传入json格式",required=true) @RequestBody DbQrCode dbQrCode)
+	public R editSave( @RequestBody DbQrCode dbQrCode)
 	{		
 		return toAjax(dbQrCodeService.updateDbQrCode(dbQrCode));
 	}
@@ -79,10 +78,58 @@ public class DbQrCodeController extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-    @ApiOperation(value = "删除二维码" , notes = "删除二维码")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{		
 		return toAjax(dbQrCodeService.deleteDbQrCodeByIds(ids));
 	}
-	
+
+
+	/*
+	 * 生成二维码   指定网页，内部选择土地，
+	 * */
+	@PostMapping("qrCodeGenerate")
+	@ApiOperation(value = "生成二维码", notes = "生成二维码")
+	public R qrCodeGenerate(@ApiParam(name = "DbEquipment", value = "传入json格式", required = true) DbQrCode dbQrCode) throws Exception {
+		/*
+		 * 指定网址     拼接一个参数（设备id）
+		 * */
+        String s = dbQrCodeService.qrCodeGenerate(dbQrCode);
+        if (StringUtils.isEmpty(s)){
+            return R.error("生成失败");
+        }else {
+
+        return R.data(s);
+        }
+	}
+
+
+
+
+
+	/*
+	*二维码扫码进入页面后调用接口
+	* */
+    @GetMapping("qrCodeGenerate")
+    @ApiOperation(value = "扫码进入页面调用", notes = "扫码进入页面调用")
+    public R qrCodeInfo(@ApiParam(name = "token",value = "登录信息唯一码",required = true)String token,@ApiParam(name = "qrCodeId",value = "二维码id",required = true)String qrCodeId ) throws Exception {
+      /*
+      * 需要回写   二维码表+ 设备信息
+      * */
+         DbQrCodeVo dbQrCodeVo= dbQrCodeService.qrCodeInfo(token,qrCodeId);
+        if (dbQrCodeVo == null) {
+            return R.error("token识别错误,用户未找到");
+        }
+         return R.data(dbQrCodeVo);
+    }
+
+    /*
+    *点击选择操作集
+    * */
+
+
+
+
+
+
+
 }

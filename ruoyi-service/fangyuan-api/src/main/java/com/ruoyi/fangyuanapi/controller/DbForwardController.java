@@ -23,7 +23,7 @@ import com.ruoyi.fangyuanapi.service.IDbForwardService;
  * @date 2020-09-07
  */
 @RestController
-@Api("forward")
+@Api("转发")
 @RequestMapping("forward")
 public class DbForwardController extends BaseController
 {
@@ -35,8 +35,7 @@ public class DbForwardController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{id}")
-	@ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbForward get(@ApiParam(name="id",value="long",required=true)  @PathVariable("id") Long id)
+	public DbForward get(  @PathVariable("id") Long id)
 	{
 		return dbForwardService.selectDbForwardById(id);
 
@@ -46,8 +45,7 @@ public class DbForwardController extends BaseController
 	 * 查询转发列表
 	 */
 	@GetMapping("list")
-	@ApiOperation(value = "查询转发列表" , notes = "转发列表")
-	public R list(@ApiParam(name="DbForward",value="传入json格式",required=true) DbForward dbForward)
+	public R list(DbForward dbForward)
 	{
 		startPage();
 		return result(dbForwardService.selectDbForwardList(dbForward));
@@ -58,8 +56,7 @@ public class DbForwardController extends BaseController
 	 * 新增保存转发
 	 */
 	@PostMapping("save")
-	@ApiOperation(value = "新增保存转发" , notes = "新增保存转发")
-	public R addSave(@ApiParam(name="DbForward",value="传入json格式",required=true) @RequestBody DbForward dbForward)
+	public R addSave(@RequestBody DbForward dbForward)
 	{
 		return toAjax(dbForwardService.insertDbForward(dbForward));
 	}
@@ -68,8 +65,7 @@ public class DbForwardController extends BaseController
 	 * 修改保存转发
 	 */
 	@PostMapping("update")
-	@ApiOperation(value = "修改保存转发" , notes = "修改保存转发")
-	public R editSave(@ApiParam(name="DbForward",value="传入json格式",required=true) @RequestBody DbForward dbForward)
+	public R editSave( @RequestBody DbForward dbForward)
 	{
 		return toAjax(dbForwardService.updateDbForward(dbForward));
 	}
@@ -78,8 +74,7 @@ public class DbForwardController extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-	@ApiOperation(value = "删除转发" , notes = "删除转发")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{
 		return toAjax(dbForwardService.deleteDbForwardByIds(ids));
 	}

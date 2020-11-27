@@ -21,10 +21,10 @@ public interface RemoteApiService {
 
 
 
-    @GetMapping(value="weather/curingType", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @GetMapping(value="weather/curingType")
     R startSaveTiming();
 
-    @GetMapping(value="equipment/syncEquipmentList", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    R syncEquipmentList();
+
+
 
 }

@@ -1,6 +1,7 @@
 package com.ruoyi.fangyuantcp.utils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -280,6 +281,10 @@ public class DateUtilLong extends org.apache.commons.lang3.time.DateUtils {
         minutes = (l_e - l_s) / MILLIS_PER_MINUTE;
         return minutes;
     }
+
+  /*
+  * 
+  * */
 
     /**
      * 返回两个时间的相差秒数

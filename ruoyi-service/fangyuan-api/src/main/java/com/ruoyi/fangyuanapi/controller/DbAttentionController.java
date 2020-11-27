@@ -57,7 +57,6 @@ public class DbAttentionController extends BaseController
      * @return
      */
 	@GetMapping("getFans/currPage")
-
 	public R getFans(HttpServletRequest request,@PathVariable(value = "currPage",required = false) Integer currPage){
         String userId = request.getHeader(Constants.CURRENT_ID);
 		currPage = currPage == null || currPage <=0 ? 0:(currPage - 1) * PageConf.pageSize;
@@ -101,8 +100,7 @@ public class DbAttentionController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{id}")
-	@ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbAttention get(@ApiParam(name="id",value="long",required=true)  @PathVariable("id") Long id)
+	public DbAttention get( @PathVariable("id") Long id)
 	{
 		return dbAttentionService.selectDbAttentionById(id);
 	}
@@ -111,8 +109,7 @@ public class DbAttentionController extends BaseController
 	 * 查询关注和被关注列表
 	 */
 	@GetMapping("list")
-	@ApiOperation(value = "查询关注和被关注列表" , notes = "关注和被关注列表")
-	public R list(@ApiParam(name="DbAttention",value="传入json格式",required=true) DbAttention dbAttention)
+	public R list( DbAttention dbAttention)
 	{
 		startPage();
 		return result(dbAttentionService.selectDbAttentionList(dbAttention));
@@ -122,8 +119,7 @@ public class DbAttentionController extends BaseController
 	 * 新增保存关注和被关注
 	 */
 	@PostMapping("save")
-	@ApiOperation(value = "新增保存关注和被关注" , notes = "新增保存关注和被关注")
-	public R addSave(@ApiParam(name="DbAttention",value="传入json格式",required=true) @RequestBody DbAttention dbAttention)
+	public R addSave( @RequestBody DbAttention dbAttention)
 	{
 		return toAjax(dbAttentionService.insertDbAttention(dbAttention));
 	}
@@ -132,8 +128,7 @@ public class DbAttentionController extends BaseController
 	 * 修改保存关注和被关注
 	 */
 	@PostMapping("update")
-	@ApiOperation(value = "修改保存关注和被关注" , notes = "修改保存关注和被关注")
-	public R editSave(@ApiParam(name="DbAttention",value="传入json格式",required=true) @RequestBody DbAttention dbAttention)
+	public R editSave( @RequestBody DbAttention dbAttention)
 	{
 		return toAjax(dbAttentionService.updateDbAttention(dbAttention));
 	}
@@ -142,8 +137,7 @@ public class DbAttentionController extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-	@ApiOperation(value = "删除关注和被关注" , notes = "删除关注和被关注")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{
 		return toAjax(dbAttentionService.deleteDbAttentionByIds(ids));
 	}

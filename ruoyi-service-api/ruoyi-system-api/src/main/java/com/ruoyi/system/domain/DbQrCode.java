@@ -52,6 +52,80 @@ public class DbQrCode extends BaseEntity
     @ApiModelProperty(value = "二维码图片地址")
     private String qrCodePic;
 
+    /** 生产地点 */
+    @Excel(name = "生产地点")
+    @ApiModelProperty(value = "生产地点")
+    private String equipmentProductionSite;
+
+
+    /** 产品型号 */
+    @Excel(name = "产品型号")
+    @ApiModelProperty(value = "生产批次")
+
+    private String equipmentProductionBatch;
+
+    /** 产品型号 */
+    @Excel(name = "生产日期")
+    @ApiModelProperty(value = "产品型号")
+    private String equipmentProductionDate;
+
+    /** 产品型号 */
+    @Excel(name = "产品型号")
+    @ApiModelProperty(value = "产品型号")
+    private String equipmentModel;
+
+    @Override
+    public String toString() {
+        return "DbQrCode{" +
+                "qrCodeId=" + qrCodeId +
+                ", heartbeatText='" + heartbeatText + '\'' +
+                ", firstTimeBinding=" + firstTimeBinding +
+                ", adminUserId=" + adminUserId +
+                ", equipmentId=" + equipmentId +
+                ", qrCodeUrl='" + qrCodeUrl + '\'' +
+                ", qrCodePic='" + qrCodePic + '\'' +
+                ", equipmentProductionSite='" + equipmentProductionSite + '\'' +
+                ", equipmentProductionBatch='" + equipmentProductionBatch + '\'' +
+                ", equipmentProductionDate='" + equipmentProductionDate + '\'' +
+                ", equipmentModel='" + equipmentModel + '\'' +
+                '}';
+    }
+
+    public String getEquipmentProductionSite() {
+        return equipmentProductionSite;
+    }
+
+    public void setEquipmentProductionSite(String equipmentProductionSite) {
+        this.equipmentProductionSite = equipmentProductionSite;
+    }
+
+    public String getEquipmentProductionBatch() {
+        return equipmentProductionBatch;
+    }
+
+    public void setEquipmentProductionBatch(String equipmentProductionBatch) {
+        this.equipmentProductionBatch = equipmentProductionBatch;
+    }
+
+    public String getEquipmentProductionDate() {
+        return equipmentProductionDate;
+    }
+
+    public void setEquipmentProductionDate(String equipmentProductionDate) {
+        this.equipmentProductionDate = equipmentProductionDate;
+    }
+
+    public String getEquipmentModel() {
+        return equipmentModel;
+    }
+
+    public void setEquipmentModel(String equipmentModel) {
+        this.equipmentModel = equipmentModel;
+    }
+
+
+
+
     public void setQrCodeId(Long qrCodeId) 
     {
         this.qrCodeId = qrCodeId;
@@ -116,17 +190,4 @@ public class DbQrCode extends BaseEntity
         return qrCodePic;
     }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("qrCodeId", getQrCodeId())
-            .append("heartbeatText", getHeartbeatText())
-            .append("createTime", getCreateTime())
-            .append("firstTimeBinding", getFirstTimeBinding())
-            .append("adminUserId", getAdminUserId())
-            .append("equipmentId", getEquipmentId())
-            .append("qrCodeUrl", getQrCodeUrl())
-            .append("qrCodePic", getQrCodePic())
-            .toString();
-    }
 }
