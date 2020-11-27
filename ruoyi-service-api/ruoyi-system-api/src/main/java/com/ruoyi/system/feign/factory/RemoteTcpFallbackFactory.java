@@ -29,6 +29,16 @@ public class RemoteTcpFallbackFactory implements FallbackFactory<RemoteTcpServic
             }
 
             @Override
+            public R sinceOrHand() {
+                return null;
+            }
+
+            @Override
+            public void curingTiming() {
+
+            }
+
+            @Override
             public R strtTiming() {
                 return null;
             }
@@ -39,14 +49,15 @@ public class RemoteTcpFallbackFactory implements FallbackFactory<RemoteTcpServic
             }
 
             @Override
-            public R operateTongFengType(DbEquipment dbEquipment, int i, String temp) {
+            public R operateTongFengType(String heartbeatText, String equipmentNo, Integer i, String temp) {
                 return null;
             }
 
             @Override
-            public R operateTongFengHand(DbEquipment dbEquipment, int i) {
+            public R operateTongFengHand(String heartbeatText, String equipmentNo, Integer i) {
                 return null;
             }
+
 
             @Override
             public R operationList(List<DbOperationVo> dbOperationVo) {

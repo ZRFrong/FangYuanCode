@@ -17,6 +17,13 @@
             <version>${ruoyi.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/io.github.openfeign/feign-httpclient -->
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+            <version>10.2.3</version>
+        </dependency>
+
         <!-- swagger模块 -->
         <dependency>
             <groupId>com.ruoyi.cloud</groupId>
