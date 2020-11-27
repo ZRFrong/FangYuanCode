@@ -1,10 +1,7 @@
 package com.ruoyi.fangyuanapi.aspect;
 
 
-import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.R;
-import com.ruoyi.common.utils.ServletUtils;
-import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuanapi.service.IDbOperationRecordService;
 import com.ruoyi.system.domain.DbOperationRecord;
@@ -16,7 +13,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

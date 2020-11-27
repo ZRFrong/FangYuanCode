@@ -66,7 +66,7 @@ public class SysJobController extends BaseController
 	 */
 	@PostMapping("update")
     @ApiOperation(value = "修改保存定时任务调度" , notes = "修改保存定时任务调度")
-	public R editSave(@ApiParam(name="SysJob",value="传入json格式",required=true) @RequestBody SysJob sysJob)
+	public R editSave(@ApiParam(name="SysJob",value="传入json格式",required=true)@RequestBody SysJob sysJob)
 	{
 		return toAjax(sysJobService.updateSysJob(sysJob));
 	}

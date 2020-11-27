@@ -38,6 +38,9 @@ public enum RedisKeyConf {
      * 刷新token
      */
     REFRESH_TOKEN_,
-
+    /**
+     *
+     */
+    ACCESS_TOKEN_
 
 }

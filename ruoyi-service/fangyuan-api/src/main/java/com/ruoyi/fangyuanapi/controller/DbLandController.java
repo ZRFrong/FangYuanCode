@@ -40,7 +40,6 @@ public class DbLandController extends BaseController {
     @GetMapping("get/{landId}")
     @ApiOperation(value = "根据id查询", notes = "查询${tableComment}")
     public DbLand get(@ApiParam(name = "id", value = "long", required = true) @PathVariable("landId") Long landId) {
-
         return dbLandService.selectDbLandById(landId);
 
     }
@@ -63,8 +62,7 @@ public class DbLandController extends BaseController {
      */
     @PostMapping("save")
     @ApiOperation(value = "新增保存土地", notes = "新增保存土地")
-    public R addSave(@ApiParam(name = "DbLand", value = "传入json格式", required = true)@RequestBody DbLand dbLand, HttpServletRequest request)
-
+    public R addSave(@ApiParam(name = "DbLand", value = "传入json格式", required = true) DbLand dbLand, HttpServletRequest request)
     {
         String userId = request.getHeader(Constants.CURRENT_ID);
         dbLand.setDbUserId(Long.valueOf(userId));
@@ -78,7 +76,7 @@ public class DbLandController extends BaseController {
      */
     @PostMapping("update")
     @ApiOperation(value = "修改保存土地", notes = "修改保存土地")
-    public R editSave(@ApiParam(name = "DbLand", value = "传入json格式", required = true) @RequestBody DbLand dbLand, HttpServletRequest request) {
+    public R editSave(@ApiParam(name = "DbLand", value = "传入json格式", required = true)@RequestBody DbLand dbLand, HttpServletRequest request) {
         String userId = request.getHeader(Constants.CURRENT_ID);
         dbLand.setDbUserId(Long.valueOf(userId));
         return toAjax(dbLandService.updateDbLand(dbLand));

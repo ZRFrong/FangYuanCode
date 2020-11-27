@@ -162,16 +162,18 @@ public class DbUserController extends BaseController {
         if (dbUser != null && StringUtils.isNotEmpty(password) && StringUtils.isEmpty(code)) {
             //密码登录
             String salt = dbUser.getSalt();
+            if (StringUtils.isNotEmpty(dbUser.getPassword())){
+                return R.error(ResultEnum.PASSWORD_IS_NULL.getCode(),ResultEnum.PASSWORD_IS_NULL.getMessage());
+            }
             if (ZhaoMD5Utils.string2MD5(password + salt).equals(dbUser.getPassword())) {
                 if (StringUtils.isNotEmpty(token)){
-                    redisUtils.delete(RedisKeyConf.REFRESH_TOKEN_.name() + dbUser.getId());
+                    redisUtils.delete(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId());
                 }
                 //登录成功
                 //Map<String, String> map = resultTokens(dbUser.getId(), "XIAOSI", tokenConf.getAccessTokenKey(), tokenConf.getRefreshTokenKey());
                 token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000));
                 /* 返回token 并且记录 */
-                redisUtils.set(RedisKeyConf.REFRESH_TOKEN_.name() + dbUser.getId(), token, 60 * 60 * 24 * 30 * 2L);
-                //TODO
+                redisUtils.set(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId(), token, 60 * 60 * 24 * 30 * 2L);
                 return R.data(token);
             } else {
                 redisUtils.set(CategoryType.PHONE_LOGIN_NUM_.name() + phone, num + 1, RedisTimeConf.ONE_HOUR);
@@ -183,11 +185,11 @@ public class DbUserController extends BaseController {
             R r = sendSmsClient.checkCode(phone, code);
             if ("200".equals(r.get("code") + "")) {
                 if (StringUtils.isNotEmpty(token)){
-                    redisUtils.delete(RedisKeyConf.REFRESH_TOKEN_.name() + dbUser.getId());
+                    redisUtils.delete(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId());
                 }
                 //Map<String, String> map = resultTokens(dbUser.getId(), "XIAOSI", tokenConf.getAccessTokenKey(), tokenConf.getRefreshTokenKey());
                 token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000));
-                redisUtils.set(RedisKeyConf.REFRESH_TOKEN_.name() + dbUser.getId(),token, 60 * 60 * 24 * 30 * 2L);
+                redisUtils.set(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId(),token, 60 * 60 * 24 * 30 * 2L);
                 return R.data(token);
             } else {
                 redisUtils.set(CategoryType.PHONE_LOGIN_NUM_.name() + phone, num + 1, RedisTimeConf.ONE_HOUR);
@@ -295,7 +297,7 @@ public class DbUserController extends BaseController {
             @ApiImplicitParam(name = "nickname",value = "昵称",required = false),
             @ApiImplicitParam(name = "avatar",value = "头像",required = false)
     })
-    public R wxRegister(@RequestParam String phone,@RequestParam String code,String openId,String nickname,String avatar) {
+    public R wxRegister(String phone,String code,String openId,String nickname,String avatar) {
         R r = sendSmsClient.checkCode(phone, code);
         //R r = new R();
         if ("200".equals(r.get("code")+"") ){
