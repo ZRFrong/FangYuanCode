@@ -95,21 +95,23 @@ public class OperateControllerWeChat extends BaseController {
         dbLandEquipment.setDbEquipmentId(dbEquipment.getEquipmentId());
 
         List<OperatePojo> pojos = JSON.parseArray(dbEquipment.getHandlerText(), OperatePojo.class);
-        DbOperationVo dbOperationVo = new DbOperationVo();
-//        心跳名称
-        dbOperationVo.setHeartName(dbEquipment.getHeartbeatText());
-//        设备号
-        dbOperationVo.setFacility(dbEquipment.getEquipmentNo() + "");
-//        是否完成
-        dbOperationVo.setIsTrue("1");
-//        创建时间
-        dbOperationVo.setCreateTime(new Date());
+        List<DbOperationVo> vos = new ArrayList<>();
 
         for (OperatePojo pojo : pojos) {
             if (type.equals(pojo.getCheckCode())) {
                 for (OperatePojo.OperateSp operateSp : pojo.getSpList()) {
                     if (operateSp.getHandleName().equals(handleName)) {
+                        DbOperationVo dbOperationVo = new DbOperationVo();
+//        心跳名称
+                        dbOperationVo.setHeartName(dbEquipment.getHeartbeatText());
+//        设备号
+                        dbOperationVo.setFacility(dbEquipment.getEquipmentNo() + "");
+//        是否完成
+                        dbOperationVo.setIsTrue("1");
+//        创建时间
+                        dbOperationVo.setCreateTime(new Date());
                         dbOperationVo.setOperationText(operateSp.getHandleCode());
+                        vos.add(dbOperationVo);
                     }
                 }
             }
@@ -119,7 +121,7 @@ public class OperateControllerWeChat extends BaseController {
 //        发送接口
 
 //        调用发送模块
-        R operation = remoteTcpService.operation(dbOperationVo);
+        R operation = remoteTcpService.operationList(vos);
         return operation;
 
 
@@ -140,6 +142,7 @@ public class OperateControllerWeChat extends BaseController {
             ArrayList<DbEquipmentVo> dbEquipmentVos = new ArrayList<>();
             for (String s : dbLand.getEquipmentIds().split(",")) {
             DbEquipmentVo dbEquipmentVo = new DbEquipmentVo();
+
                 DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(Long.valueOf(s));
                 dbEquipmentVo.setEquipment(dbEquipment);
                 List<OperatePojo> pojos = JSON.parseArray(dbEquipment.getHandlerText(), OperatePojo.class);

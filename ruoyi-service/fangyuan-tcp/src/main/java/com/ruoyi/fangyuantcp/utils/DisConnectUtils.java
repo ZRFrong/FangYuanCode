@@ -53,23 +53,23 @@ public class DisConnectUtils {
      * 循环map寻找符合的key  然后删除map
      * */
     private String deleteCtx(ChannelHandlerContext ctx) {
-        final String[] str = {null};
-        map.keySet().forEach(item -> {
-            if (map.get(item).equals(ctx)) {
-                map.remove(item);
+        for (String s : map.keySet()) {
+            if (map.get(s).equals(ctx)) {
+                map.remove(s);
                 ctx.close();
-                str[0] = item;
+                deleteClient(s);
+                return s;
             }
-        });
-        deleteClient(str[0]);
-        return str[0];
+        }
+        return null;
+
     }
 
     /*
     * 删除指定在线表
     * */
     private  void deleteClient(String heartbeatName){
-        tcpClientService.updateByHeartbeatName(heartbeatName);
+        tcpClientService.deleteDbtcpHeartbeatName(heartbeatName);
 
     }
 

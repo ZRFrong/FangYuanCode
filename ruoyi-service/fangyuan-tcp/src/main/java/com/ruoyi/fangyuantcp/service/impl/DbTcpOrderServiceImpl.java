@@ -105,7 +105,12 @@ public class DbTcpOrderServiceImpl implements IDbTcpOrderService {
     @Override
     public void curingTiming() {
         Set<String> keys = redisUtils.keys(RedisKeyConf.HANDLE.toString());
-        keys.forEach(item->insertDbTcpOrder(redisUtils.get(item, DbTcpOrder.class)));
+        for (String key : keys) {
+            int i = insertDbTcpOrder(redisUtils.get(key, DbTcpOrder.class));
+            if (i>0){
+                redisUtils.delete(key);
+            }
+        }
     }
 
 

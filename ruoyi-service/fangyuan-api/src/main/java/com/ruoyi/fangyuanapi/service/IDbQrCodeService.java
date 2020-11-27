@@ -1,6 +1,7 @@
 package com.ruoyi.fangyuanapi.service;
 
 import com.ruoyi.system.domain.DbQrCode;
+import com.ruoyi.system.domain.DbQrCodeVo;
 
 import java.util.List;
 
@@ -59,4 +60,8 @@ public interface IDbQrCodeService
      * @return 结果
      */
     public int deleteDbQrCodeById(Long qrCodeId);
+
+    String qrCodeGenerate(DbQrCode dbQrCode) throws Exception;
+
+    DbQrCodeVo qrCodeInfo(String token, String qrCodeId);
 }

@@ -120,7 +120,7 @@ public class DbTcpTypeController extends BaseController {
     /*
      * 通风当前的开风口，关风口温度查询
      * */
-    @GetMapping("timingTongFengType")
+    @GetMapping("saveTongFengType")
     public R timingTongFengType() {
         int operation =   dbTcpTypeService.timingTongFengType();
 
@@ -131,9 +131,11 @@ public class DbTcpTypeController extends BaseController {
     /*
     * 通风 自动手动状态更改
     * */
-    @GetMapping("operateTongFengHand")
-    public R operateTongFengHand(@ApiParam(name = "dbEquipment", value = "dbEquipment")DbEquipment dbEquipment, @ApiParam(name = "i", value = "是否开启0,1")int i) {
-        int operation =   dbTcpTypeService.operateTongFengHand(dbEquipment,i);
+    @GetMapping("operateTongFengHand/{heartbeatText}/{equipmentNo}/{i}")
+    public R operateTongFengHand(@ApiParam(name = "heartbeatText", value = "string")@PathVariable String heartbeatText,
+                                 @ApiParam(name = "equipmentNo", value = "string", required = true) @PathVariable("equipmentNo") String equipmentNo,
+                                 @ApiParam(name = "i", value = "inter", required = true) @PathVariable("i")Integer i) {
+        int operation =   dbTcpTypeService.operateTongFengHand(heartbeatText,equipmentNo,i);
 
         return toAjax(operation);
 
@@ -142,9 +144,12 @@ public class DbTcpTypeController extends BaseController {
     /*
     * 自动通风  开启关闭温度修改
     * */
-    @GetMapping("operateTongFengType")
-    public R operateTongFengType(@ApiParam(name = "DbEquipment", value = "DbEquipment")DbEquipment dbEquipment, @ApiParam(name = "i", value = "是否开启0,1")int i, @ApiParam(name = "temp", value = "温度")String temp) {
-        int operation =   dbTcpTypeService.operateTongFengType(dbEquipment,i,temp);
+    @GetMapping("operateTongFengType/{heartbeatText}/{equipmentNo}/{i}/{temp}")
+    public R operateTongFengType(@ApiParam(name = "heartbeatText", value = "string")@PathVariable String heartbeatText,
+                                 @ApiParam(name = "equipmentNo", value = "string", required = true) @PathVariable("equipmentNo") String equipmentNo,
+                                 @ApiParam(name = "i", value = "inter", required = true) @PathVariable("i")Integer i,
+                                 @ApiParam(name = "temp", value = "温度") @PathVariable("temp") String temp) {
+        int operation =   dbTcpTypeService.operateTongFengType(heartbeatText,equipmentNo,i,temp);
 
         return toAjax(operation);
 

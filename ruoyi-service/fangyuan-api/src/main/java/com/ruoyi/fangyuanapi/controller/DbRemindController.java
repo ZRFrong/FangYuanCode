@@ -23,7 +23,7 @@ import com.ruoyi.fangyuanapi.service.IDbRemindService;
  * @date 2020-09-07
  */
 @RestController
-@Api("remind")
+@Api("提醒")
 @RequestMapping("remind")
 public class DbRemindController extends BaseController
 {
@@ -35,8 +35,7 @@ public class DbRemindController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{id}")
-	@ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbRemind get(@ApiParam(name="id",value="long",required=true)  @PathVariable("id") Long id)
+	public DbRemind get(  @PathVariable("id") Long id)
 	{
 		return dbRemindService.selectDbRemindById(id);
 
@@ -46,8 +45,7 @@ public class DbRemindController extends BaseController
 	 * 查询提醒列表
 	 */
 	@GetMapping("list")
-	@ApiOperation(value = "查询提醒列表" , notes = "提醒列表")
-	public R list(@ApiParam(name="DbRemind",value="传入json格式",required=true) DbRemind dbRemind)
+	public R list( DbRemind dbRemind)
 	{
 		startPage();
 		return result(dbRemindService.selectDbRemindList(dbRemind));
@@ -58,8 +56,7 @@ public class DbRemindController extends BaseController
 	 * 新增保存提醒
 	 */
 	@PostMapping("save")
-	@ApiOperation(value = "新增保存提醒" , notes = "新增保存提醒")
-	public R addSave(@ApiParam(name="DbRemind",value="传入json格式",required=true) @RequestBody DbRemind dbRemind)
+	public R addSave( @RequestBody DbRemind dbRemind)
 	{
 		return toAjax(dbRemindService.insertDbRemind(dbRemind));
 	}
@@ -68,8 +65,7 @@ public class DbRemindController extends BaseController
 	 * 修改保存提醒
 	 */
 	@PostMapping("update")
-	@ApiOperation(value = "修改保存提醒" , notes = "修改保存提醒")
-	public R editSave(@ApiParam(name="DbRemind",value="传入json格式",required=true) @RequestBody DbRemind dbRemind)
+	public R editSave( @RequestBody DbRemind dbRemind)
 	{
 		return toAjax(dbRemindService.updateDbRemind(dbRemind));
 	}
@@ -78,10 +74,11 @@ public class DbRemindController extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-	@ApiOperation(value = "删除提醒" , notes = "删除提醒")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{
 		return toAjax(dbRemindService.deleteDbRemindByIds(ids));
 	}
+
+
 
 }

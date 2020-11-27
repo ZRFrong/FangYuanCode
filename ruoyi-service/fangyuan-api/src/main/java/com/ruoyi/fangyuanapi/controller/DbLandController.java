@@ -38,8 +38,7 @@ public class DbLandController extends BaseController {
      * 查询${tableComment}
      */
     @GetMapping("get/{landId}")
-    @ApiOperation(value = "根据id查询", notes = "查询${tableComment}")
-    public DbLand get(@ApiParam(name = "id", value = "long", required = true) @PathVariable("landId") Long landId) {
+    public DbLand get( @PathVariable("landId") Long landId) {
 
         return dbLandService.selectDbLandById(landId);
 
@@ -49,8 +48,7 @@ public class DbLandController extends BaseController {
      * 查询土地列表
      */
     @GetMapping("list")
-    @ApiOperation(value = "查询土地列表", notes = "土地列表")
-    public R list(@ApiParam(name = "DbLand", value = "传入json格式", required = true) DbLand dbLand) {
+    public R list( DbLand dbLand) {
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
         dbLand.setDbUserId(Long.valueOf(userId));
         startPage();
@@ -62,8 +60,7 @@ public class DbLandController extends BaseController {
      * 新增保存土地
      */
     @PostMapping("save")
-    @ApiOperation(value = "新增保存土地", notes = "新增保存土地")
-    public R addSave(@ApiParam(name = "DbLand", value = "传入json格式", required = true)@RequestBody DbLand dbLand, HttpServletRequest request)
+    public R addSave(@RequestBody DbLand dbLand, HttpServletRequest request)
 
     {
         String userId = request.getHeader(Constants.CURRENT_ID);
@@ -77,8 +74,7 @@ public class DbLandController extends BaseController {
      * 修改保存土地
      */
     @PostMapping("update")
-    @ApiOperation(value = "修改保存土地", notes = "修改保存土地")
-    public R editSave(@ApiParam(name = "DbLand", value = "传入json格式", required = true) @RequestBody DbLand dbLand, HttpServletRequest request) {
+    public R editSave( @RequestBody DbLand dbLand, HttpServletRequest request) {
         String userId = request.getHeader(Constants.CURRENT_ID);
         dbLand.setDbUserId(Long.valueOf(userId));
         return toAjax(dbLandService.updateDbLand(dbLand));
@@ -88,8 +84,7 @@ public class DbLandController extends BaseController {
      * 删除${tableComment}
      */
     @GetMapping("remove")
-    @ApiOperation(value = "删除土地", notes = "删除土地")
-    public R remove( @ApiParam(name = "删除的id子串", value = "已逗号分隔的id集", required = true) String landId) {
+    public R remove(  String landId) {
         return toAjax(dbLandService.deleteDbLandByIds(landId));
     }
 
@@ -97,8 +92,7 @@ public class DbLandController extends BaseController {
     * 用户关联地块返回
     * */
     @GetMapping("listPlot")
-    @ApiOperation(value = "查询地块列表", notes = "地块列表")
-    public R listPlot(@ApiParam(name = "DbLand", value = "传入json格式", required = true) DbLand dbLand) {
+    public R listPlot( DbLand dbLand) {
 //        获取当前用户id
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
         dbLand.setDbUserId(Long.valueOf(userId));

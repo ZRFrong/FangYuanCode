@@ -23,7 +23,7 @@ import java.util.List;
  * @date 2020-11-12
  */
 @RestController
-@Api("banner")
+@Api("轮播图")
 @RequestMapping("banner")
 public class DbBannerController extends BaseController
 {
@@ -35,8 +35,7 @@ public class DbBannerController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{id}")
-    @ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbBanner get(@ApiParam(name="id",value="long",required=true)  @PathVariable("id") Long id)
+	public DbBanner get(  @PathVariable("id") Long id)
 	{
 		return dbBannerService.selectDbBannerById(id);
 		
@@ -46,8 +45,7 @@ public class DbBannerController extends BaseController
 	 * 查询轮播图列表
 	 */
 	@GetMapping("list")
-    @ApiOperation(value = "查询轮播图列表" , notes = "轮播图列表")
-	public R list(@ApiParam(name="DbBanner",value="传入json格式",required=true) DbBanner dbBanner)
+	public R list( DbBanner dbBanner)
 	{
 		startPage();
         return result(dbBannerService.selectDbBannerList(dbBanner));
@@ -58,8 +56,7 @@ public class DbBannerController extends BaseController
 	 * 新增保存轮播图
 	 */
 	@PostMapping("save")
-    @ApiOperation(value = "新增保存轮播图" , notes = "新增保存轮播图")
-	public R addSave(@ApiParam(name="DbBanner",value="传入json格式",required=true) @RequestBody DbBanner dbBanner)
+	public R addSave( @RequestBody DbBanner dbBanner)
 	{		
 		return toAjax(dbBannerService.insertDbBanner(dbBanner));
 	}
@@ -68,8 +65,7 @@ public class DbBannerController extends BaseController
 	 * 修改保存轮播图
 	 */
 	@PostMapping("update")
-    @ApiOperation(value = "修改保存轮播图" , notes = "修改保存轮播图")
-	public R editSave(@ApiParam(name="DbBanner",value="传入json格式",required=true) @RequestBody DbBanner dbBanner)
+	public R editSave( @RequestBody DbBanner dbBanner)
 	{		
 		return toAjax(dbBannerService.updateDbBanner(dbBanner));
 	}
@@ -78,8 +74,7 @@ public class DbBannerController extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-    @ApiOperation(value = "删除轮播图" , notes = "删除轮播图")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{		
 		return toAjax(dbBannerService.deleteDbBannerByIds(ids));
 	}

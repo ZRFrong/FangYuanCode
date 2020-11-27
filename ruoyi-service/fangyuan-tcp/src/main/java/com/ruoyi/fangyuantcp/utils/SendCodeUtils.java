@@ -65,7 +65,7 @@ public class SendCodeUtils {
     /*
      * 普通操作指令发送  06  自动状态设置更改
      * */
-    public int query06(DbOperationVo tcpOrder) {
+    public static int query06(DbOperationVo tcpOrder) {
         String address = tcpOrder.getHeartName();
         try {
 //          text处理
@@ -152,8 +152,47 @@ public class SendCodeUtils {
         }
     }
 
+
     /*
-    *状态查询指令发送01
+     * 状态查询指令发送03
+     * */
+    public static int querystate03Ctx( ChannelHandlerContext ctx) {
+        try {
+//        text处理
+            ArrayList<String> strings1 = new ArrayList<>();
+            String text = "01" + "," + "03," + TcpOrderTextConf.stateSave;
+            String[] split3 = text.split(",");
+            for (String s : split3) {
+                strings1.add(s);
+            }
+            Object[] objects = strings1.toArray();
+            String[] split = new String[objects.length];
+            for (int i = 0; i < split.length; i++) {
+                split[i] = objects[i].toString();
+            }
+            List<String> strings = new ArrayList<>();
+            for (String s : split) {
+                int i = Integer.parseInt(s);
+                //            十六进制转成十进制
+                String tmp = StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 4, '0');
+                strings.add(tmp);
+            }
+            String[] split1 = strings.toArray(new String[strings.size()]);
+            String[] bytes = Crc16Util.to_byte(split1);
+            byte[] data = Crc16Util.getData(bytes);
+            Channel channel = ctx.channel();
+            channel.write(Unpooled.copiedBuffer(data));
+            channel.flush();
+
+            return 1;
+        } catch (NumberFormatException e) {
+//            删除心跳
+
+            return 0;
+        }
+    }
+    /*
+    *状态操作指令发送01
     * */
     public static int querystate01(DbOperationVo tcpOrder) {
         String address = tcpOrder.getHeartName();
@@ -252,7 +291,7 @@ public class SendCodeUtils {
     /*
      * 手动自动状态查询
      * */
-    public void sinceOrHand(DbEquipment equipment) {
+    public int sinceOrHand(DbEquipment equipment) {
         DbOperationVo dbOperationVo = new DbOperationVo();
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
         dbOperationVo.setFacility(equipment.getEquipmentNo().toString());
@@ -260,12 +299,13 @@ public class SendCodeUtils {
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
         int querystate = querystate03(dbOperationVo);
+        return querystate;
     }
 
     /*
     *通风手自状态查询
     * */
-    public  void sinceOrHandTongFeng(DbEquipment equipment){
+    public  int sinceOrHandTongFeng(DbEquipment equipment){
         DbOperationVo dbOperationVo = new DbOperationVo();
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
         dbOperationVo.setFacility(equipment.getEquipmentNo().toString());
@@ -273,49 +313,51 @@ public class SendCodeUtils {
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
         int querystate = querystate01(dbOperationVo);
+        return querystate;
 
     }
 
     /*
      *通风手自  开启关闭温度状态查询
      * */
-    public void timingTongFengType(DbEquipment equipment) {
+    public int timingTongFengType(DbEquipment equipment) {
         DbOperationVo dbOperationVo = new DbOperationVo();
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
-        dbOperationVo.setFacility(equipment.getEquipmentNo().toString());
+        dbOperationVo.setFacility(equipment.getEquipmentNo());
         dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFengType);
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
         int querystate = querystate01(dbOperationVo);
-
+return querystate;
     }
 
     /*
      *通风手自  装态更改
      * */
-    public void operateTongFengHand(DbEquipment equipment,int i) {
+    public int operateTongFengHand(DbEquipment equipment,int i) {
         DbOperationVo dbOperationVo = new DbOperationVo();
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
-        dbOperationVo.setFacility(equipment.getEquipmentNo().toString());
+        dbOperationVo.setFacility(equipment.getEquipmentNo());
         dbOperationVo.setOperationText(i==0?TcpOrderTextConf.operateTongFeng:TcpOrderTextConf.operateTongFengOver);
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
-        int querystate = querystate01(dbOperationVo);
-
+        int querystate = query(dbOperationVo);
+        return querystate;
     }
 
     /*
      *通风手自温度  装态更改
      * */
-    public void operateTongFengType(DbEquipment equipment, int i,String type) {
-        String temp = ReceiveUtil.getTemp(type);
+    public int operateTongFengType(DbEquipment equipment, int i,String type) {
+        int i2 = Integer.parseInt(type, 16);
         DbOperationVo dbOperationVo = new DbOperationVo();
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
         dbOperationVo.setFacility(equipment.getEquipmentNo().toString());
-        dbOperationVo.setOperationText(i==0?TcpOrderTextConf.operateTongFengType+temp:TcpOrderTextConf.operateTongFengOverType+temp);
+        dbOperationVo.setOperationText(i==0?TcpOrderTextConf.operateTongFengType+","+i2:TcpOrderTextConf.operateTongFengOverType+","+i2);
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
         int querystate = query06(dbOperationVo);
+        return querystate;
 
 
     }

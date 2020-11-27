@@ -2,12 +2,14 @@ package com.ruoyi.fangyuantcp.controller;
 
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
 import com.ruoyi.fangyuantcp.timing.TaskHeartbeat;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
 
 @RestController
+@Log4j2
 public class InitController {
 
     @Value("${person.listen-port}")
@@ -36,11 +38,11 @@ public class InitController {
         }.start();
 
 
+
+
         /*
-         *开启心跳定时查询
-         * */
-        TaskHeartbeat taskHeartbeat = new TaskHeartbeat();
-        taskHeartbeat.HeartbeatRun();
+        * 开启手动 自动装填查询
+        * */
 
 
 

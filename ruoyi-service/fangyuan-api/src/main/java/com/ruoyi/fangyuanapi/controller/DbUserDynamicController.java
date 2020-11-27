@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  */
 
 @RestController
-@Api("dynamic1")
+@Api("动态")
 @RequestMapping("dynamic1")
 public class DbUserDynamicController extends BaseController {
 
@@ -565,31 +565,26 @@ public class DbUserDynamicController extends BaseController {
 
 
 	@PostMapping("save")
-	@ApiOperation(value = "新增保存动态" , notes = "新增保存动态")
-	public R addSave(@ApiParam(name="DbUserDynamic",value="传入json格式",required=true) @RequestBody DbUserDynamic dbUserDynamic)
+	public R addSave( @RequestBody DbUserDynamic dbUserDynamic)
 	{
 		return toAjax(dbUserDynamicService.insertDbUserDynamic(dbUserDynamic));
 	}
 
 
 	@PostMapping("update")
-	@ApiOperation(value = "修改保存动态" , notes = "修改保存动态")
-	public R editSave(@ApiParam(name="DbUserDynamic",value="传入json格式",required=true) @RequestBody DbUserDynamic dbUserDynamic)
+	public R editSave( @RequestBody DbUserDynamic dbUserDynamic)
 	{
 		return toAjax(dbUserDynamicService.updateDbUserDynamic(dbUserDynamic));
 	}
 
 
 	@PostMapping("remove")
-	@ApiOperation(value = "删除动态" , notes = "删除动态")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{
 		return toAjax(dbUserDynamicService.deleteDbUserDynamicByIds(ids));
 	}
 
 
-	public static void main(String[] args){
-//
-	}
+
 
 }

@@ -1,6 +1,7 @@
-package com.ruoyi.fangyuanapi.service;
+package com.ruoyi.fangyuantcp.service;
 
 import com.ruoyi.system.domain.DbEquipment;
+
 import java.util.List;
 
 /**

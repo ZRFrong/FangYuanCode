@@ -5,10 +5,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.system.domain.DbEquipment;
-import com.ruoyi.system.domain.DbTcpClient;
-import com.ruoyi.system.domain.DbTcpOrder;
-import com.ruoyi.system.domain.DbTcpType;
+import com.ruoyi.fangyuantcp.service.IDbEquipmentService;
+import com.ruoyi.system.domain.*;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.fangyuantcp.service.IDbTcpOrderService;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
@@ -29,7 +27,7 @@ import java.util.*;
 @Slf4j
 public class ReceiveUtil {
     private IDbTcpClientService tcpClientService = SpringUtils.getBean(IDbTcpClientService.class);
-    private IDbTcpOrderService tcpOrderService = SpringUtils.getBean(IDbTcpOrderService.class);
+    private IDbEquipmentService iDbEquipmentService = SpringUtils.getBean(IDbEquipmentService.class);
     private IDbTcpTypeService tcpTypeService = SpringUtils.getBean(IDbTcpTypeService.class);
 
     /*
@@ -37,10 +35,14 @@ public class ReceiveUtil {
      * */
     public void heartbeatChoose(DbTcpClient dbTcpClient, ChannelHandlerContext ctx) {
         int i = tcpClientService.heartbeatChoose(dbTcpClient);
-        if (i == 1) {
 //            不存在 新建，添加map管理
-            NettyServer.map.put(dbTcpClient.getHeartName(), ctx);
+        NettyServer.map.put(dbTcpClient.getHeartName(), ctx);
+        if (i==1){
+//            发送心跳查询指令
+            SendCodeUtils.querystate03Ctx(ctx);
         }
+
+
     }
 
     /*
@@ -84,7 +86,14 @@ public class ReceiveUtil {
             }
 //            目前5个
         }
+//        存储或者添加
+        DbTcpType tcpType = new DbTcpType();
+        tcpType.setHeartName(dbTcpType.getHeartName());
+        if (tcpTypeService.selectDbTcpTypeList(tcpType).isEmpty()){
+            int i = tcpTypeService.insertDbTcpType(dbTcpType);
+        }else {
         int i = tcpTypeService.updateOrInstart(dbTcpType);
+        }
 
     }
 
@@ -99,7 +108,15 @@ public class ReceiveUtil {
 //      手自判断
         List<String> arr = getCharToArr(type);
         int i = Integer.parseInt(arr.get(3) + arr.get(4), 16);
-        DbEquipment dbEquipment = JSON.parseObject(redisUtils.get(RedisKeyConf.EQUIPMENT_LIST + ":" + getname + "_" + substring), DbEquipment.class);
+        DbEquipment dbEquipment1 = new DbEquipment();
+        dbEquipment1.setHeartbeatText(getname);
+        dbEquipment1.setEquipmentNo(Integer.parseInt(substring));
+        List<DbEquipment> dbEquipments = iDbEquipmentService.selectDbEquipmentList(dbEquipment1);
+
+        DbEquipment dbEquipment = dbEquipments.get(0);
+
+
+
         if (i < 600) {
 //            手动
             dbEquipment.setIsOnline(1);
@@ -107,7 +124,7 @@ public class ReceiveUtil {
 //            自动
             dbEquipment.setIsOnline(0);
         }
-        redisUtils.set(RedisKeyConf.EQUIPMENT_LIST + ":" + getname + "_" + substring, JSON.toJSONString(dbEquipment));
+        iDbEquipmentService.updateDbEquipment(dbEquipment);
 //        完事  END
 
     }
@@ -116,11 +133,10 @@ public class ReceiveUtil {
      *通风系列返回处理
      * */
 
-
     /*
      * 设备号处理，不满10加零
      * */
-    public String intToString(int i) {
+    public static String intToString(int i) {
         if (i < 10) {
             return "0" + i;
         } else {
@@ -144,6 +160,7 @@ public class ReceiveUtil {
                 stringBuilder.append(chars[i]);
             }
             num++;
+
         }
         return strings;
     }
@@ -156,7 +173,7 @@ public class ReceiveUtil {
         String temperatureNow = new String();
         if (i > 32768) {
 //    负值
-            i = i - 65535;
+//            i = i - 65535;
             float getfloat = getfloat(i);
             temperatureNow = "-" + getfloat;
         } else {
@@ -179,6 +196,7 @@ public class ReceiveUtil {
      * 光照处理
      * */
     public static String getLight(String s) {
+
         return Integer.parseInt(s, 16) + "";
     }
 
@@ -188,7 +206,7 @@ public class ReceiveUtil {
         int i = Integer.parseInt(String.valueOf(sor));
         DecimalFormat df = new DecimalFormat("0.00");//设置保留位数
         float v = (float) i / 10;
-        System.out.println(v);
+//        System.out.println(v);
         return v;
     }
 
@@ -220,7 +238,7 @@ public class ReceiveUtil {
     private String getRedisKey(String string, String getname) {
         String charStic = getname.substring(0, 2);
 
-        return RedisKeyConf.HANDLE + ":" + getname + "_" + charStic + "_" + string;
+        return RedisKeyConf.HANDLE +":" + getname + "_" + charStic + "_" + string;
     }
 
     /*
@@ -249,6 +267,58 @@ public class ReceiveUtil {
         DbTcpType dbTcpType1 = list.get(0);
         dbTcpType1.setIdAuto(arr.get(3).equals("00")?0:1);
         int i = tcpTypeService.updateDbTcpType(dbTcpType1);
+
+    }
+
+
+    public static void main(String[] args) {
+        String ar="01030A000000340000000000331160 ";
+
+        stateRead(ar);
+    }
+
+    /*
+     *传感器状态接收处理
+     * */
+    public static void stateRead(String type) {
+        /*
+            状态码 01 03   0A代码后边有10位
+         *01 03 0A 00 FD 01 09 01 06 00 01 00 C1 39 6F
+         *5组   空气温度 湿度   土壤温度 湿度   光照
+         * */
+        List<String> arr = getCharToArr(type);
+        DbTcpType dbTcpType = new DbTcpType();
+//        设备号
+
+//        设备号
+        String s3 = intToString(Integer.parseInt(Long.toString(Long.parseLong(arr.get(0), 16))));
+        dbTcpType.setHeartName("01" + "_" + s3);
+
+//      几位返回
+        int i1 = Integer.parseInt(Long.toString(Long.parseLong(arr.get(2), 16)));
+        for (int i = 0; i < (i1 / 2); i++) {
+            switch (i) {
+                case 0:
+//                      空气  温度
+                    dbTcpType.setTemperatureAir(getTemp(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
+                case 1:
+//                    空气     湿度
+                    dbTcpType.setHumidityAir(getHum(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
+
+                case 2:
+//                土壤   温度
+                    dbTcpType.setTemperatureSoil(getHum(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
+                case 3:
+                    //                土壤   湿度
+                    dbTcpType.setHumiditySoil(getTemp(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
+                case 4:
+                    //                光照
+                    dbTcpType.setLight(getLight(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
+            }
+//            目前5个
+        }
+//        存储或者添加
+        System.out.println(dbTcpType);
 
     }
 }

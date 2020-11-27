@@ -41,18 +41,26 @@ public class TimingController {
         return remoteTcpService.startSaveTiming();
     }
 
+
+
+
     /*
-    * 更新redis中的设备列表
-    * */
-    @GetMapping("syncEquipmentList")
-    public R syncEquipmentList() {
-        return remoteApiService.syncEquipmentList();
+     * 状态更新调用
+     * */
+    @GetMapping("sinceOrHand")
+    public R sinceOrHand() {
+
+        return remoteTcpService.strtTiming();
     }
 
-
     /*
-    *
-    * */
+     * 操作记录固化
+     * */
+    @GetMapping("curing")
+    public void curing() {
+
+         remoteTcpService.curingTiming();
+    }
 
 
 

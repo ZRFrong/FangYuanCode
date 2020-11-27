@@ -23,7 +23,7 @@ import com.ruoyi.fangyuanapi.service.IDbEntryService;
  * @date 2020-09-07
  */
 @RestController
-@Api("entry1")
+@Api("词条")
 @RequestMapping("entry1")
 public class DbEntryController extends BaseController
 {
@@ -35,8 +35,7 @@ public class DbEntryController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{id}")
-	@ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbEntry get(@ApiParam(name="id",value="long",required=true)  @PathVariable("id") Long id)
+	public DbEntry get(  @PathVariable("id") Long id)
 	{
 		return dbEntryService.selectDbEntryById(id);
 
@@ -46,8 +45,7 @@ public class DbEntryController extends BaseController
 	 * 查询词条列表
 	 */
 	@GetMapping("list")
-	@ApiOperation(value = "查询词条列表" , notes = "词条列表")
-	public R list(@ApiParam(name="DbEntry",value="传入json格式",required=true) DbEntry dbEntry)
+	public R list( DbEntry dbEntry)
 	{
 		startPage();
 		return result(dbEntryService.selectDbEntryList(dbEntry));
@@ -58,8 +56,7 @@ public class DbEntryController extends BaseController
 	 * 新增保存词条
 	 */
 	@PostMapping("save")
-	@ApiOperation(value = "新增保存词条" , notes = "新增保存词条")
-	public R addSave(@ApiParam(name="DbEntry",value="传入json格式",required=true) @RequestBody DbEntry dbEntry)
+	public R addSave( @RequestBody DbEntry dbEntry)
 	{
 		return toAjax(dbEntryService.insertDbEntry(dbEntry));
 	}
@@ -68,8 +65,7 @@ public class DbEntryController extends BaseController
 	 * 修改保存词条
 	 */
 	@PostMapping("update")
-	@ApiOperation(value = "修改保存词条" , notes = "修改保存词条")
-	public R editSave(@ApiParam(name="DbEntry",value="传入json格式",required=true) @RequestBody DbEntry dbEntry)
+	public R editSave( @RequestBody DbEntry dbEntry)
 	{
 		return toAjax(dbEntryService.updateDbEntry(dbEntry));
 	}
@@ -78,8 +74,7 @@ public class DbEntryController extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-	@ApiOperation(value = "删除词条" , notes = "删除词条")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{
 		return toAjax(dbEntryService.deleteDbEntryByIds(ids));
 	}

@@ -35,7 +35,7 @@ import java.util.Date;
  * @date 2020-09-07
  */
 @RestController
-@Api("giveLike")
+@Api("点赞")
 @RequestMapping("giveLike")
 public class DbGiveLikeController extends BaseController
 {
@@ -51,8 +51,7 @@ public class DbGiveLikeController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{id}")
-	@ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbGiveLike get(@ApiParam(name="id",value="long",required=true)  @PathVariable("id") Long id)
+	public DbGiveLike get(  @PathVariable("id") Long id)
 	{
 		return dbGiveLikeService.selectDbGiveLikeById(id);
 
@@ -62,8 +61,7 @@ public class DbGiveLikeController extends BaseController
 	 * 查询点赞列表
 	 */
 	@GetMapping("list")
-	@ApiOperation(value = "查询点赞列表" , notes = "点赞列表")
-	public R list(@ApiParam(name="DbGiveLike",value="传入json格式",required=true) DbGiveLike dbGiveLike)
+	public R list( DbGiveLike dbGiveLike)
 	{
 		startPage();
 		return result(dbGiveLikeService.selectDbGiveLikeList(dbGiveLike));
@@ -74,8 +72,7 @@ public class DbGiveLikeController extends BaseController
 	 * 新增保存点赞
 	 */
 	@PostMapping("save")
-	@ApiOperation(value = "新增保存点赞" , notes = "新增保存点赞")
-	public R addSave(@ApiParam(name="DbGiveLike",value="传入json格式",required=true) @RequestBody DbGiveLike dbGiveLike)
+	public R addSave( @RequestBody DbGiveLike dbGiveLike)
 	{
 		return toAjax(dbGiveLikeService.insertDbGiveLike(dbGiveLike));
 	}
@@ -84,8 +81,7 @@ public class DbGiveLikeController extends BaseController
 	 * 修改保存点赞
 	 */
 	@PostMapping("update")
-	@ApiOperation(value = "修改保存点赞" , notes = "修改保存点赞")
-	public R editSave(@ApiParam(name="DbGiveLike",value="传入json格式",required=true) @RequestBody DbGiveLike dbGiveLike)
+	public R editSave( @RequestBody DbGiveLike dbGiveLike)
 	{
 		return toAjax(dbGiveLikeService.updateDbGiveLike(dbGiveLike));
 	}
@@ -94,8 +90,7 @@ public class DbGiveLikeController extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-	@ApiOperation(value = "删除点赞" , notes = "删除点赞")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{
 		return toAjax(dbGiveLikeService.deleteDbGiveLikeByIds(ids));
 	}

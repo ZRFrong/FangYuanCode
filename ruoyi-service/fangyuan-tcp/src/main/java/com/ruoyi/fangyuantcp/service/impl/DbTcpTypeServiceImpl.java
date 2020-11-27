@@ -8,7 +8,9 @@ import java.util.Set;
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.util.RedisUtils;
+import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper;
 import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
+import com.ruoyi.fangyuantcp.utils.TcpOrderTextConf;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.fangyuantcp.utils.SendCodeUtils;
 import com.ruoyi.fangyuantcp.mapper.DbStateRecordsMapper;
@@ -31,6 +33,11 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
 
     @Autowired
     private DbStateRecordsMapper dbStateRecordsMapper;
+
+
+
+    @Autowired
+    private DbEquipmentMapper dbEquipmentMapper;
 
     @Autowired
     private RedisUtils redisUtils;
@@ -97,7 +104,6 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
     }
 
     /*
-     *
      * 信息状态同步
      * */
     @Override
@@ -117,13 +123,20 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
         DbTcpClient dbTcpClient = new DbTcpClient();
         dbTcpClient.setIsOnline(0);
         List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
+        int i1=0;
         for (DbTcpClient tcpClient : dbTcpClients) {
+            DbEquipment dbEquipment = new DbEquipment();
+            dbEquipment.setHeartbeatText(tcpClient.getHeartName());
+            for (DbEquipment equipment : dbEquipmentMapper.selectDbEquipmentList(dbEquipment)) {
+                int i = sendCodeUtils.sinceOrHandTongFeng(equipment);
+                if (i!=0){
+                    i1=1;
+                }
+            }
 
-            Set<String> keys = redisUtils.keys(RedisKeyConf.EQUIPMENT_LIST.toString()+":"+tcpClient.getHeartName());
-            keys.forEach(ite->sendCodeUtils.sinceOrHandTongFeng(JSON.parseObject(redisUtils.get(ite),DbEquipment.class)));
         }
 
-        return 0;
+        return i1;
     }
 
     @Override
@@ -131,30 +144,41 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
         DbTcpClient dbTcpClient = new DbTcpClient();
         dbTcpClient.setIsOnline(0);
         List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
+        int i1=0;
         for (DbTcpClient tcpClient : dbTcpClients) {
 
-            Set<String> keys = redisUtils.keys(RedisKeyConf.EQUIPMENT_LIST.toString()+":"+tcpClient.getHeartName());
-            keys.forEach(ite->sendCodeUtils.timingTongFengType(JSON.parseObject(redisUtils.get(ite),DbEquipment.class)));
+            DbEquipment dbEquipment = new DbEquipment();
+            dbEquipment.setHeartbeatText(tcpClient.getHeartName());
+            for (DbEquipment equipment : dbEquipmentMapper.selectDbEquipmentList(dbEquipment)) {
+                int i = sendCodeUtils.timingTongFengType(equipment);
+                if (i!=0){
+                    i1=1;
+                }
+            }
         }
 
         return 0;
     }
 
     @Override
-    public int operateTongFengHand(DbEquipment equipmentIds,int i) {
-
-            Set<String> keys = redisUtils.keys(RedisKeyConf.EQUIPMENT_LIST.toString()+":"+equipmentIds.getHeartbeatText());
-        keys.forEach(ite->sendCodeUtils.operateTongFengHand(JSON.parseObject(redisUtils.get(ite),DbEquipment.class),i));
-
-        return 0;
+    public int operateTongFengHand(String heartbeatText, String equipmentNo, Integer i) {
+        DbEquipment dbEquipment = new DbEquipment();
+        dbEquipment.setHeartbeatText(heartbeatText);
+        dbEquipment.setEquipmentNo(Integer.parseInt(equipmentNo));
+        int i1 = sendCodeUtils.operateTongFengHand(dbEquipment, i);
+        return i1;
     }
 
     @Override
-    public int operateTongFengType(DbEquipment dbEquipment, int i,String type) {
-        Set<String> keys = redisUtils.keys(RedisKeyConf.EQUIPMENT_LIST.toString()+":"+dbEquipment.getHeartbeatText());
-        keys.forEach(ite->sendCodeUtils.operateTongFengType(JSON.parseObject(redisUtils.get(ite),DbEquipment.class),i,type));
-        return 0;
+    public int operateTongFengType(String heartbeatText, String equipmentNo, Integer i, String temp) {
+        DbEquipment dbEquipment = new DbEquipment();
+        dbEquipment.setHeartbeatText(heartbeatText);
+        dbEquipment.setEquipmentNo(Integer.parseInt(equipmentNo));
+        int i1 = sendCodeUtils.operateTongFengType(dbEquipment, i,temp);
+        return i1;
     }
+
+
 
     @Override
     public void timingType() {
@@ -162,13 +186,17 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
         List<DbTcpType> dbTcpTypes = selectDbTcpTypeList(dbTcpType);
         DbOperationVo dbOperationVo = new DbOperationVo();
         List<DbOperationVo> list=new ArrayList<>();
-        for (DbTcpType tcpType : dbTcpTypes) {
-            String[] split = tcpType.getHeartName().split(",");
-            dbOperationVo.setHeartName(split[0]);
-            dbOperationVo.setFacility(split[1]);
-            list.add(dbOperationVo);
+        if (!dbTcpTypes.isEmpty()){
+            for (DbTcpType tcpType : dbTcpTypes) {
+                String[] split = tcpType.getHeartName().split("_");
+                dbOperationVo.setHeartName(split[0]);
+                dbOperationVo.setFacility(split[1]);
+                dbOperationVo.setOperationText(TcpOrderTextConf.stateSave);
+                list.add(dbOperationVo);
+            }
+            int i = SendCodeUtils.timingState(list);
         }
-        int i = SendCodeUtils.timingState(list);
+
 
     }
 

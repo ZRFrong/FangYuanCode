@@ -23,7 +23,7 @@ import com.ruoyi.fangyuanapi.service.IDbUserLoginService;
  * @date 2020-09-07
  */
 @RestController
-@Api("UserLoginLog")
+@Api("登录日志")
 @RequestMapping("UserLoginLog")
 public class DbUserLoginController extends BaseController
 {
@@ -35,8 +35,7 @@ public class DbUserLoginController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{id}")
-	@ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbUserLogin get(@ApiParam(name="id",value="long",required=true)  @PathVariable("id") Long id)
+	public DbUserLogin get(  @PathVariable("id") Long id)
 	{
 		return dbUserLoginService.selectDbUserLoginById(id);
 
@@ -46,8 +45,7 @@ public class DbUserLoginController extends BaseController
 	 * 查询登录日志列表
 	 */
 	@GetMapping("list")
-	@ApiOperation(value = "查询登录日志列表" , notes = "登录日志列表")
-	public R list(@ApiParam(name="DbUserLogin",value="传入json格式",required=true) DbUserLogin dbUserLogin)
+	public R list( DbUserLogin dbUserLogin)
 	{
 		startPage();
 		return result(dbUserLoginService.selectDbUserLoginList(dbUserLogin));
@@ -58,8 +56,7 @@ public class DbUserLoginController extends BaseController
 	 * 新增保存登录日志
 	 */
 	@PostMapping("save")
-	@ApiOperation(value = "新增保存登录日志" , notes = "新增保存登录日志")
-	public R addSave(@ApiParam(name="DbUserLogin",value="传入json格式",required=true) @RequestBody DbUserLogin dbUserLogin)
+	public R addSave( @RequestBody DbUserLogin dbUserLogin)
 	{
 		return toAjax(dbUserLoginService.insertDbUserLogin(dbUserLogin));
 	}
@@ -68,8 +65,7 @@ public class DbUserLoginController extends BaseController
 	 * 修改保存登录日志
 	 */
 	@PostMapping("update")
-	@ApiOperation(value = "修改保存登录日志" , notes = "修改保存登录日志")
-	public R editSave(@ApiParam(name="DbUserLogin",value="传入json格式",required=true) @RequestBody DbUserLogin dbUserLogin)
+	public R editSave( @RequestBody DbUserLogin dbUserLogin)
 	{
 		return toAjax(dbUserLoginService.updateDbUserLogin(dbUserLogin));
 	}
@@ -78,8 +74,7 @@ public class DbUserLoginController extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-	@ApiOperation(value = "删除登录日志" , notes = "删除登录日志")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{
 		return toAjax(dbUserLoginService.deleteDbUserLoginByIds(ids));
 	}

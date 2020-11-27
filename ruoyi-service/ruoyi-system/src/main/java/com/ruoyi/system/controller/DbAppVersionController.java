@@ -40,8 +40,7 @@ public class DbAppVersionController extends BaseController
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{id}")
-    @ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
-	public DbAppVersion get(@ApiParam(name="id",value="long",required=true)  @PathVariable("id") Long id)
+	public DbAppVersion get( @PathVariable("id") Long id)
 	{
 		return dbAppVersionService.selectDbAppVersionById(id);
 		
@@ -59,8 +58,7 @@ public class DbAppVersionController extends BaseController
 	 * 查询app版本更新列表
 	 */
 	@GetMapping("list")
-    @ApiOperation(value = "查询app版本更新列表" , notes = "app版本更新列表")
-	public R list(@ApiParam(name="DbAppVersion",value="传入json格式",required=true) DbAppVersion dbAppVersion)
+	public R list( DbAppVersion dbAppVersion)
 	{
 		startPage();
         return result(dbAppVersionService.selectDbAppVersionList(dbAppVersion));
@@ -71,8 +69,7 @@ public class DbAppVersionController extends BaseController
 	 * 新增保存app版本更新
 	 */
 	@PostMapping("save")
-    @ApiOperation(value = "新增保存app版本更新" , notes = "新增保存app版本更新")
-	public R addSave(@ApiParam(name="DbAppVersion",value="传入json格式",required=true) @RequestBody DbAppVersion dbAppVersion)
+	public R addSave( @RequestBody DbAppVersion dbAppVersion)
 	{
 
 		return toAjax(dbAppVersionService.insertDbAppVersion(dbAppVersion));
@@ -82,8 +79,7 @@ public class DbAppVersionController extends BaseController
 	 * 修改保存app版本更新
 	 */
 	@PostMapping("update")
-    @ApiOperation(value = "修改保存app版本更新" , notes = "修改保存app版本更新")
-	public R editSave(@ApiParam(name="DbAppVersion",value="传入json格式",required=true) @RequestBody DbAppVersion dbAppVersion)
+	public R editSave( @RequestBody DbAppVersion dbAppVersion)
 	{		
 		return toAjax(dbAppVersionService.updateDbAppVersion(dbAppVersion));
 	}
@@ -92,8 +88,7 @@ public class DbAppVersionController extends BaseController
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-    @ApiOperation(value = "删除app版本更新" , notes = "删除app版本更新")
-	public R remove(@ApiParam(name="删除的id子串",value="已逗号分隔的id集",required=true) String ids)
+	public R remove( String ids)
 	{		
 		return toAjax(dbAppVersionService.deleteDbAppVersionByIds(ids));
 	}

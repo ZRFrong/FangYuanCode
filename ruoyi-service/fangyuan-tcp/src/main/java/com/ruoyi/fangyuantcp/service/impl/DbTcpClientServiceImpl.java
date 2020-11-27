@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.util.RedisUtils;
+import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.system.domain.DbTcpOrder;
@@ -34,12 +35,14 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     @Autowired
     private RedisUtils redisUtils;
 
+    @Autowired
+    private DbEquipmentMapper dbEquipmentMapper;
+
 
     private SendCodeUtils sendCodeUtils = new SendCodeUtils();
 
     @Autowired
     private DbTcpClientMapper dbTcpClientMapper;
-
 
 
     /**
@@ -117,6 +120,22 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     }
 
 
+    @Override
+    public void deleteDbtcpHeartbeatName(String heartbeatName) {
+        /*
+        * 设备装填修改
+        * */
+        DbEquipment dbEquipment = new DbEquipment();
+        dbEquipment.setHeartbeatText(heartbeatName);
+        for (DbEquipment equipment : dbEquipmentMapper.selectDbEquipmentList(dbEquipment)) {
+            equipment.setIsFault(1);
+            dbEquipmentMapper.updateDbEquipment(equipment);
+        }
+
+
+        dbTcpClientMapper.deleteDbtcpHeartbeatName(heartbeatName);
+    }
+
     /*
      *在线设备手动  自动查询
      *
@@ -127,15 +146,18 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
         DbTcpClient dbTcpClient = new DbTcpClient();
         dbTcpClient.setIsOnline(0);
         List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
+        int i = 0;
         for (DbTcpClient tcpClient : dbTcpClients) {
-
-        Set<String> keys = redisUtils.keys(RedisKeyConf.EQUIPMENT_LIST.toString()+":"+tcpClient.getHeartName());
-            keys.forEach(ite->sendCodeUtils.sinceOrHand(JSON.parseObject(redisUtils.get(ite),DbEquipment.class)));
+            DbEquipment dbEquipment = new DbEquipment();
+            dbEquipment.setHeartbeatText(tcpClient.getHeartName());
+            for (DbEquipment equipment : dbEquipmentMapper.selectDbEquipmentList(dbEquipment)) {
+                int i1 = sendCodeUtils.sinceOrHand(equipment);
+                if (i1 != 0) {
+                    i = 1;
+                }
+            }
         }
-
-        return 0;
-
-
+        return i;
     }
 
     /*
@@ -162,7 +184,7 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
         String facility = dbTcpClient.getFacility();
         String heartName = dbTcpClient.getHeartName();
 
-        String s = RedisKeyConf.HANDLE + ":" + heartName +"_"+ facility +"_"+ operationText;
+        String s = RedisKeyConf.HANDLE + ":" + heartName + "_" + facility + "_" + operationText;
         DbTcpOrder order = getOrder(dbTcpClient);
         String s2 = JSONArray.toJSONString(order);
         redisUtils.set(s, s2);
@@ -180,19 +202,30 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
 
     @Override
     public int heartbeatChoose(DbTcpClient dbTcpClient) {
-        List<DbTcpClient> dbTcpClients = selectDbTcpClientList(dbTcpClient);
+        List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
         int i = 0;
+        /*
+         * 设备在线
+         * */
+        DbEquipment dbEquipment = new DbEquipment();
+        dbEquipment.setHeartbeatText(dbTcpClient.getHeartName());
+        List<DbEquipment> dbEquipments = dbEquipmentMapper.selectDbEquipmentList(dbEquipment);
+        for (DbEquipment equipment : dbEquipments) {
+            equipment.setIsFault(0);
+            int i2 = dbEquipmentMapper.updateDbEquipment(equipment);
+        }
         if (dbTcpClients.size() > 0 && dbTcpClients != null) {
             //            存在更新
-            dbTcpClient.setHeartbeatTime(new Date());
-            dbTcpClient.setIsOnline(0);
-            updateDbTcpClient(dbTcpClient);
+            dbTcpClients.get(0).setHeartbeatTime(new Date());
+            dbTcpClients.get(0).setIsOnline(0);
+            int i1 = dbTcpClientMapper.updateDbTcpClient(dbTcpClients.get(0));
 
         } else {
 //            不存在新建
             dbTcpClient.setHeartbeatTime(new Date());
             dbTcpClient.setIsOnline(0);
-            i = insertDbTcpClient(dbTcpClient);
+             int i3 = dbTcpClientMapper.insertDbTcpClient(dbTcpClient);
+            i=1;
         }
         return i;
     }

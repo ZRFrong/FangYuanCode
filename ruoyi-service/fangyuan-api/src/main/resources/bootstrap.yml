@@ -34,11 +34,8 @@ spring:
 feign:
   hystrix:
     enabled: false
-  client:
-    config:
-      default:
-        connect-timeout: 10000
-        read-timeout: 10000
+  httpclient:
+    enabled: true
 
 # MyBatis
 mybatis:

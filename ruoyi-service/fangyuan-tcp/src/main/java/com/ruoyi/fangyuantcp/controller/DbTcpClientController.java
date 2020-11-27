@@ -22,7 +22,7 @@ import java.util.List;
  * @date 2020-09-07
  */
 @RestController
-@Api("client")
+@Api("tcp在线设备")
 @RequestMapping("client")
 public class DbTcpClientController extends BaseController {
 
@@ -93,7 +93,7 @@ public class DbTcpClientController extends BaseController {
     * */
     @PostMapping("operationList")
     @ApiOperation(value = "操作设备", notes = "tcp在线设备列表")
-    public R operationList(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true)@RequestBody  List<DbOperationVo> dbOperationVo) {
+    public R operationList(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) @RequestBody List<DbOperationVo> dbOperationVo) {
 
         int operation = dbTcpClientService.operationList(dbOperationVo);
 
@@ -104,7 +104,7 @@ public class DbTcpClientController extends BaseController {
      * 手动 自动查询      手动自动状态更新
      *    01 03 00 00 00 01 84 0A
      * */
-    @GetMapping("sinceOrHand")
+    @RequestMapping("sinceOrHand")
     @ApiOperation(value = "时间毫秒", notes = "手动自动查询")
     public R sinceOrHand() {
         int operation = dbTcpClientService.sinceOrHand();

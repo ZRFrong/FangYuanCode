@@ -1,19 +1,13 @@
-package com.ruoyi.fangyuanapi.service.impl;
+package com.ruoyi.fangyuantcp.service.impl;
 
-import java.util.Date;
-import java.util.List;
-
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.fangyuanapi.mapper.DbQrCodeMapper;
-import com.ruoyi.fangyuanapi.utils.QrCodeUtils;
-import com.ruoyi.system.domain.DbQrCode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import com.ruoyi.fangyuanapi.mapper.DbEquipmentMapper;
-import com.ruoyi.system.domain.DbEquipment;
-import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.common.core.text.Convert;
+import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper;
+import com.ruoyi.fangyuantcp.service.IDbEquipmentService;
+import com.ruoyi.system.domain.DbEquipment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 设备Service业务层处理
@@ -26,8 +20,7 @@ public class DbEquipmentServiceImpl implements IDbEquipmentService {
     @Autowired
     private DbEquipmentMapper dbEquipmentMapper;
 
-    @Autowired
-    private DbQrCodeMapper dbQrCodeMapper;
+
 
 
 
