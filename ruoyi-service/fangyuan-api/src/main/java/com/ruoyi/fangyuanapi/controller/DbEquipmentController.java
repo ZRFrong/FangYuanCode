@@ -4,10 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.fangyuanapi.service.IDbLandService;
 import com.ruoyi.fangyuanapi.service.IDbUserService;
-import com.ruoyi.system.domain.DbQrCode;
-import com.ruoyi.system.domain.DbStateRecords;
-import com.ruoyi.system.domain.DbUser;
+import com.ruoyi.system.domain.*;
 import com.ruoyi.system.feign.RemoteTcpService;
 import com.ruoyi.system.feign.SendSmsClient;
 import org.apache.ibatis.annotations.Param;
@@ -19,7 +18,6 @@ import io.swagger.annotations.ApiParam;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 
 import java.util.Date;
@@ -39,6 +37,8 @@ public class DbEquipmentController extends BaseController {
     @Autowired
     private IDbEquipmentService dbEquipmentService;
 
+    @Autowired
+    private IDbLandService dbLandService;
 
     @Autowired
     private IDbUserService userService;
@@ -48,8 +48,8 @@ public class DbEquipmentController extends BaseController {
     private SendSmsClient sendSmsClient;
 
 
-@Autowired
-private RemoteTcpService remoteTcpService;
+    @Autowired
+    private RemoteTcpService remoteTcpService;
     /**
      * 查询${tableComment}
      */
@@ -121,11 +121,15 @@ private RemoteTcpService remoteTcpService;
      * 获取当前设备的温湿度变化曲线    24小时   2小时间隔   温湿度空气土壤
      * */
 
-    @GetMapping("getTrend/{intervalTime}/{beforeTime}")
-    @ApiOperation(value = "获取当前设备的温湿度变化曲线", notes = "获取当前设备的温湿度变化曲线")
-    public R getTrend(@ApiParam(name = "间隔时间单位小时") @PathVariable("intervalTime")Integer intervalTime,@ApiParam(name = "之前多久时间")@PathVariable("beforeTime") String beforeTime,@ApiParam(name = "设备id")@PathVariable("beforeTime") String equipmentId) {
+    @GetMapping("getTrend/{intervalTime}/{landid}")
+    public R getTrend(@ApiParam(name = "间隔时间单位小时") @PathVariable("intervalTime")Integer intervalTime,
+                      @ApiParam(name = "之前多久时间")@PathVariable("beforeTime") String beforeTime,
+                      @ApiParam(name = "设备id")@PathVariable("landid") String landid) {
         Date type = DateUtils.getType(DateUtils.HOUR, -Integer.parseInt(beforeTime));
-        DbEquipment dbEquipment = dbEquipmentService.selectDbEquipmentById(Long.valueOf(equipmentId));
+        DbLand dbLand = dbLandService.selectDbLandById(Long.valueOf(landid));
+        String equipmentIds = dbLand.getEquipmentIds();
+        String[] split = equipmentIds.split(",");
+        DbEquipment dbEquipment = dbEquipmentService.selectDbEquipmentById(Long.valueOf(split[0]));
         String path=dbEquipment.getHeartbeatText()+"_"+dbEquipment.getEquipmentNo();
         String s = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, type);
         String s1 = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, DateUtils.getNowDate());
