@@ -1,7 +1,9 @@
 package com.ruoyi.fangyuantcp.mapper;
 
 import com.ruoyi.system.domain.DbStateRecords;
+import org.apache.ibatis.annotations.Select;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -59,4 +61,8 @@ public interface DbStateRecordsMapper
      * @return 结果
      */
     public int deleteDbStateRecordsByIds(String[] stateRecordsIds);
+
+    /*指定时间段内的数据*/
+    @Select("select * from db_state_records s WHERE s.demand_time >= #{startTime} and s.demand_time<=#{endTime}")
+    List<DbStateRecords> intervalState(Date startTime, Date endTime);
 }

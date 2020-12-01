@@ -114,19 +114,15 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
     public String qrCodeGenerate(DbQrCode dbQrCode) throws Exception {
 
         dbQrCode.setCreateTime(new Date());
-
-
         String argument = "?qrCodeId=" + dbQrCode.getQrCodeId();
         String text = url + argument;
-
         String encode = QrCodeUtils.encode(text, "http://cdn.fangyuancun.cn/logo9.png", true);
         dbQrCode.setQrCodePic(encode);
-        int i = dbQrCodeMapper.insertDbQrCode(dbQrCode);
+        int i = dbQrCodeMapper.updateDbQrCode(dbQrCode);
         if (i > 0) {
             return encode;
         } else {
             return null;
-
         }
     }
 
@@ -135,7 +131,6 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
      * */
     @Override
     public DbQrCodeVo qrCodeInfo(String token, String qrCodeId) {
-
         Map<String, Object> map = TokenUtils.verifyToken(token, tokenConf.getAccessTokenKey());
         if (map != null) {
             /* id == null token被篡改 解密失败 */
@@ -143,11 +138,11 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
             DbQrCodeVo dbQrCodeVo = new DbQrCodeVo();
             DbQrCode dbQrCode = dbQrCodeMapper.selectDbQrCodeById(Long.valueOf(qrCodeId));
             dbQrCodeVo.setDbQrCode(dbQrCode);
-            dbQrCodeVo.setFirstBind(dbQrCode.getAdminUserId().equals(id)?true:false);
-            dbQrCodeVo.setOperatePojo(JSON.parseObject(dbEquipmentMapper.selectDbEquipmentById(dbQrCode.getEquipmentId()).getHandlerText(),OperatePojo.class));
-            return  dbQrCodeVo;
-        }else {
-        return null;
+            dbQrCodeVo.setFirstBind(dbQrCode.getAdminUserId().equals(id) ? true : false);
+            dbQrCodeVo.setOperatePojo(JSON.parseObject(dbEquipmentMapper.selectDbEquipmentById(dbQrCode.getEquipmentId()).getHandlerText(), OperatePojo.class));
+            return dbQrCodeVo;
+        } else {
+            return null;
         }
     }
 

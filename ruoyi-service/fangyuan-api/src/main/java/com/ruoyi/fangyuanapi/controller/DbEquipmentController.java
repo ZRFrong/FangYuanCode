@@ -3,10 +3,12 @@ package com.ruoyi.fangyuanapi.controller;
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.util.RedisUtils;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.fangyuanapi.service.IDbUserService;
 import com.ruoyi.system.domain.DbQrCode;
 import com.ruoyi.system.domain.DbUser;
 import com.ruoyi.system.feign.SendSmsClient;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
@@ -18,6 +20,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -50,7 +53,7 @@ public class DbEquipmentController extends BaseController {
      * 查询${tableComment}
      */
     @GetMapping("get/{equipmentId}")
-    public DbEquipment get( @PathVariable("equipmentId") Long equipmentId) {
+    public DbEquipment get(@PathVariable("equipmentId") Long equipmentId) {
         return dbEquipmentService.selectDbEquipmentById(equipmentId);
     }
 
@@ -58,7 +61,7 @@ public class DbEquipmentController extends BaseController {
      * 查询设备列表
      */
     @GetMapping("list")
-    public R list( DbEquipment dbEquipment) {
+    public R list(DbEquipment dbEquipment) {
         startPage();
         return result(dbEquipmentService.selectDbEquipmentList(dbEquipment));
     }
@@ -68,7 +71,7 @@ public class DbEquipmentController extends BaseController {
      * 新增保存设备
      */
     @PostMapping("save")
-    public R addSave( DbEquipment dbEquipment) {
+    public R addSave(DbEquipment dbEquipment) {
         return toAjax(dbEquipmentService.insertDbEquipment(dbEquipment));
     }
 
@@ -76,7 +79,7 @@ public class DbEquipmentController extends BaseController {
      * 修改保存设备
      */
     @PostMapping("update")
-    public R editSave( DbEquipment dbEquipment) {
+    public R editSave(DbEquipment dbEquipment) {
         return toAjax(dbEquipmentService.updateDbEquipment(dbEquipment));
     }
 
@@ -84,7 +87,7 @@ public class DbEquipmentController extends BaseController {
      * 删除${tableComment}
      */
     @PostMapping("remove")
-    public R remove( String ids) {
+    public R remove(String ids) {
         return toAjax(dbEquipmentService.deleteDbEquipmentByIds(ids));
     }
 
@@ -101,8 +104,6 @@ public class DbEquipmentController extends BaseController {
     }
 
 
-
-
     /*
      * 发送短信验证码   设备验证
      * */
@@ -115,18 +116,17 @@ public class DbEquipmentController extends BaseController {
         return r;
     }
 
+    /*
+     * 获取当前设备的温湿度变化曲线    24小时   2小时间隔   温湿度空气土壤
+     * */
+
+    @GetMapping("getTrend/{intervalTime}/{beforeTime}")
+    public R getTrend(@ApiParam(name = "间隔时间单位小时") @PathVariable("intervalTime")Integer intervalTime,@ApiParam(name = "之前多久时间")@PathVariable("beforeTime") Integer beforeTime) {
+        Date type = DateUtils.getType(DateUtils.HOUR, -beforeTime);
 
 
-
-
-
-
-
-
-
-
-
-
+        return null;
+    }
 
 
 }

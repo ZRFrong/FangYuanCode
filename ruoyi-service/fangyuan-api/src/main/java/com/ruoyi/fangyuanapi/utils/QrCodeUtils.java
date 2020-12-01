@@ -1,7 +1,6 @@
 package com.ruoyi.fangyuanapi.utils;
 
 
-import cn.hutool.core.img.ImgUtil;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -105,6 +104,7 @@ public class QrCodeUtils {
             graph.setStroke(new BasicStroke(3f));
             graph.draw(shape);
             graph.dispose();
+
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -133,7 +133,6 @@ public class QrCodeUtils {
             BASE64Encoder encoder = new BASE64Encoder();
             String png_base64 = encoder.encodeBuffer(bytes).trim();//转换成base64串
             png_base64 = png_base64.replaceAll("\n", "").replaceAll("\r", "");//删除 \r\n
-
             //        ImageIO.write(bufferedImage, "png", new File("D:/qrcode1.png"));
         return "data:image/jpg;base64,"+png_base64;
     }

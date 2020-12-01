@@ -2,6 +2,7 @@ package com.ruoyi.fangyuantcp.controller;
 
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbLand;
+import com.ruoyi.system.domain.DbStateRecords;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
@@ -13,6 +14,8 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 
+import javax.naming.Name;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,7 +47,7 @@ public class DbTcpTypeController extends BaseController {
      */
     @GetMapping("list")
     @ApiOperation(value = "查询设备状态列表", notes = "设备状态列表")
-    public R list(@ApiParam(name = "DbTcpType", value = "传入json格式", required = true)@RequestBody DbTcpType dbTcpType) {
+    public R list(@ApiParam(name = "DbTcpType", value = "传入json格式", required = true) @RequestBody DbTcpType dbTcpType) {
         startPage();
         return result(dbTcpTypeService.selectDbTcpTypeList(dbTcpType));
     }
@@ -53,11 +56,10 @@ public class DbTcpTypeController extends BaseController {
      * 查询设备状态列表
      */
     @RequestMapping("listonly")
-    public List<DbTcpType> listonly( DbTcpType dbTcpType) {
+    public List<DbTcpType> listonly(DbTcpType dbTcpType) {
         List<DbTcpType> list = dbTcpTypeService.selectDbTcpTypeList(dbTcpType);
         return list;
     }
-
 
 
     /**
@@ -105,12 +107,13 @@ public class DbTcpTypeController extends BaseController {
         return R.ok();
 
     }
+
     /*
      *通风 自动手动监测
      * */
     @GetMapping("timingTongFengHand")
     public R timingTongFengHand() {
-        int operation =   dbTcpTypeService.timingTongFengHand();
+        int operation = dbTcpTypeService.timingTongFengHand();
 
         return toAjax(operation);
 
@@ -122,37 +125,55 @@ public class DbTcpTypeController extends BaseController {
      * */
     @GetMapping("saveTongFengType")
     public R timingTongFengType() {
-        int operation =   dbTcpTypeService.timingTongFengType();
+        int operation = dbTcpTypeService.timingTongFengType();
 
         return toAjax(operation);
 
     }
 
     /*
-    * 通风 自动手动状态更改
-    * */
+     * 通风 自动手动状态更改
+     * */
     @GetMapping("operateTongFengHand/{heartbeatText}/{equipmentNo}/{i}")
-    public R operateTongFengHand(@ApiParam(name = "heartbeatText", value = "string")@PathVariable String heartbeatText,
+    public R operateTongFengHand(@ApiParam(name = "heartbeatText", value = "string") @PathVariable String heartbeatText,
                                  @ApiParam(name = "equipmentNo", value = "string", required = true) @PathVariable("equipmentNo") String equipmentNo,
-                                 @ApiParam(name = "i", value = "inter", required = true) @PathVariable("i")Integer i) {
-        int operation =   dbTcpTypeService.operateTongFengHand(heartbeatText,equipmentNo,i);
+                                 @ApiParam(name = "i", value = "inter", required = true) @PathVariable("i") Integer i) {
+        int operation = dbTcpTypeService.operateTongFengHand(heartbeatText, equipmentNo, i);
 
         return toAjax(operation);
 
     }
 
     /*
-    * 自动通风  开启关闭温度修改
-    * */
+     * 自动通风  开启关闭温度修改
+     * */
     @GetMapping("operateTongFengType/{heartbeatText}/{equipmentNo}/{i}/{temp}")
-    public R operateTongFengType(@ApiParam(name = "heartbeatText", value = "string")@PathVariable String heartbeatText,
+    public R operateTongFengType(@ApiParam(name = "heartbeatText", value = "string") @PathVariable("heartbeatText") String heartbeatText,
                                  @ApiParam(name = "equipmentNo", value = "string", required = true) @PathVariable("equipmentNo") String equipmentNo,
-                                 @ApiParam(name = "i", value = "inter", required = true) @PathVariable("i")Integer i,
+                                 @ApiParam(name = "i", value = "inter", required = true) @PathVariable("i") Integer i,
                                  @ApiParam(name = "temp", value = "温度") @PathVariable("temp") String temp) {
-        int operation =   dbTcpTypeService.operateTongFengType(heartbeatText,equipmentNo,i,temp);
+        int operation = dbTcpTypeService.operateTongFengType(heartbeatText, equipmentNo, i, temp);
 
         return toAjax(operation);
 
     }
+
+
+    /*
+     * 根据描述返回状态的变化集
+     * */
+    @GetMapping("intervalState/{startTime}/{endTime}/{INterval}")
+    public R intervalState(
+            @ApiParam(name = "开始时间", value = "date") @PathVariable("startTime") Date startTime,
+            @ApiParam(name = "结束时间", value = "date", required = true) @PathVariable("equipmentNo") Date endTime,
+            @ApiParam(name = "指定条数", value = "Integer", required = true) @PathVariable("INterval") Integer INterval
+    ) {
+        /*
+        *
+        * */
+          List<DbStateRecords> dbStateRecords= dbTcpTypeService.intervalState(startTime,endTime,INterval);
+        return null;
+    }
+
 
 }

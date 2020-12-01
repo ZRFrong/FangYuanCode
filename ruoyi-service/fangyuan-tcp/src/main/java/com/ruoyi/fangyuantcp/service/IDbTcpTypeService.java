@@ -1,8 +1,10 @@
 package com.ruoyi.fangyuantcp.service;
 
 import com.ruoyi.system.domain.DbEquipment;
+import com.ruoyi.system.domain.DbStateRecords;
 import com.ruoyi.system.domain.DbTcpType;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -79,4 +81,6 @@ public interface IDbTcpTypeService {
     int operateTongFengHand(String heartbeatText, String equipmentNo, Integer i);
 
     int operateTongFengType(String heartbeatText, String equipmentNo, Integer i, String temp);
+
+    List<DbStateRecords> intervalState(Date startTime, Date endTime, Integer iNterval);
 }

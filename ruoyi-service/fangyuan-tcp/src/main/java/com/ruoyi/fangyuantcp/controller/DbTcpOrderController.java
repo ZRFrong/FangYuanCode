@@ -95,6 +95,7 @@ public class DbTcpOrderController extends BaseController
 		dbTcpOrderService.curingTiming();
 	}
 
+
 	@Autowired
 	private IDbTcpTypeService dbTcpTypeService;
 

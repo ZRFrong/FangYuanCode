@@ -8,6 +8,7 @@ import java.util.Set;
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.util.RedisUtils;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper;
 import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
 import com.ruoyi.fangyuantcp.utils.TcpOrderTextConf;
@@ -33,7 +34,6 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
 
     @Autowired
     private DbStateRecordsMapper dbStateRecordsMapper;
-
 
 
     @Autowired
@@ -115,22 +115,22 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
     }
 
     /*
-    * 通风手动自动监测
-    * */
+     * 通风手动自动监测
+     * */
     @Override
     public int timingTongFengHand() {
 
         DbTcpClient dbTcpClient = new DbTcpClient();
         dbTcpClient.setIsOnline(0);
         List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
-        int i1=0;
+        int i1 = 0;
         for (DbTcpClient tcpClient : dbTcpClients) {
             DbEquipment dbEquipment = new DbEquipment();
             dbEquipment.setHeartbeatText(tcpClient.getHeartName());
             for (DbEquipment equipment : dbEquipmentMapper.selectDbEquipmentList(dbEquipment)) {
                 int i = sendCodeUtils.sinceOrHandTongFeng(equipment);
-                if (i!=0){
-                    i1=1;
+                if (i != 0) {
+                    i1 = 1;
                 }
             }
 
@@ -144,15 +144,15 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
         DbTcpClient dbTcpClient = new DbTcpClient();
         dbTcpClient.setIsOnline(0);
         List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
-        int i1=0;
+        int i1 = 0;
         for (DbTcpClient tcpClient : dbTcpClients) {
 
             DbEquipment dbEquipment = new DbEquipment();
             dbEquipment.setHeartbeatText(tcpClient.getHeartName());
             for (DbEquipment equipment : dbEquipmentMapper.selectDbEquipmentList(dbEquipment)) {
                 int i = sendCodeUtils.timingTongFengType(equipment);
-                if (i!=0){
-                    i1=1;
+                if (i != 0) {
+                    i1 = 1;
                 }
             }
         }
@@ -174,19 +174,38 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
         DbEquipment dbEquipment = new DbEquipment();
         dbEquipment.setHeartbeatText(heartbeatText);
         dbEquipment.setEquipmentNo(Integer.parseInt(equipmentNo));
-        int i1 = sendCodeUtils.operateTongFengType(dbEquipment, i,temp);
+        int i1 = sendCodeUtils.operateTongFengType(dbEquipment, i, temp);
         return i1;
     }
 
 
+    /*
+     *
+     * 状态记录查询   指定时间段，指定时间间隔
+     *
+     * */
+    @Override
+    public List<DbStateRecords> intervalState(Date startTime, Date endTime, Integer iNterval) {
+
+        List<DbStateRecords> dbStateRecords = dbStateRecordsMapper.intervalState(startTime, endTime);
+//        获取符合条件的数据的间隔秒数
+        Long betweenTime = ((dbStateRecords.get(dbStateRecords.size() - 1).getDemandTime().getTime() - dbStateRecords.get(0).getDemandTime().getTime()) / 1000);
+//        根据根据数据长度判断每条数据的时间间隔
+        Long i=  (betweenTime/dbStateRecords.size());
+
+
+
+
+        return null;
+    }
 
     @Override
     public void timingType() {
         DbTcpType dbTcpType = new DbTcpType();
         List<DbTcpType> dbTcpTypes = selectDbTcpTypeList(dbTcpType);
         DbOperationVo dbOperationVo = new DbOperationVo();
-        List<DbOperationVo> list=new ArrayList<>();
-        if (!dbTcpTypes.isEmpty()){
+        List<DbOperationVo> list = new ArrayList<>();
+        if (!dbTcpTypes.isEmpty()) {
             for (DbTcpType tcpType : dbTcpTypes) {
                 String[] split = tcpType.getHeartName().split("_");
                 dbOperationVo.setHeartName(split[0]);

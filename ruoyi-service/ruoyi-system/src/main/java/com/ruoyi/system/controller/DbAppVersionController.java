@@ -46,7 +46,7 @@ public class DbAppVersionController extends BaseController
 		
 	}
 
-	@RequestMapping("downapp")
+	@GetMapping("downapp")
 	@ApiOperation(value = "查询app版本更新列表" , notes = "app版本更新列表")
 	public void alipayforward( HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String downloadUrl = dbAppVersionService.selectDbAppVersionList(new DbAppVersion()).get(0).getDownloadUrl();

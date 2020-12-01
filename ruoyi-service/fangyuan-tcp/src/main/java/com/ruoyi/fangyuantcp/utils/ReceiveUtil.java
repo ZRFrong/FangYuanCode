@@ -172,13 +172,11 @@ public class ReceiveUtil {
         int i = Integer.parseInt(s, 16);
         String temperatureNow = new String();
         if (i > 32768) {
-//    负值
-//            i = i - 65535;
-            float getfloat = getfloat(i);
-            temperatureNow = "-" + getfloat;
+//    负值 65486
+            i = i - 65535;
+            temperatureNow = "" + i;
         } else {
-            float getfloat = getfloat(i);
-            temperatureNow = "" + getfloat;
+            temperatureNow = "" + i;
         }
         return temperatureNow;
     }
@@ -204,9 +202,7 @@ public class ReceiveUtil {
     public static float getfloat(long sor) {
 
         int i = Integer.parseInt(String.valueOf(sor));
-        DecimalFormat df = new DecimalFormat("0.00");//设置保留位数
         float v = (float) i / 10;
-//        System.out.println(v);
         return v;
     }
 
@@ -272,7 +268,7 @@ public class ReceiveUtil {
 
 
     public static void main(String[] args) {
-        String ar="01030A000000340000000000331160 ";
+        String ar="01030AFFCE0000000000000001CCE0";
 
         stateRead(ar);
     }
@@ -301,19 +297,20 @@ public class ReceiveUtil {
                 case 0:
 //                      空气  温度
                     dbTcpType.setTemperatureAir(getTemp(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
+
                 case 1:
 //                    空气     湿度
-                    dbTcpType.setHumidityAir(getHum(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
+                    dbTcpType.setHumidityAir(getHum(arr.get(2 + i + 1+1) + arr.get(2 + i + 2+1)));
 
                 case 2:
 //                土壤   温度
-                    dbTcpType.setTemperatureSoil(getHum(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
+                    dbTcpType.setTemperatureSoil(getHum(arr.get(2 + i + 1+2) + arr.get(2 + i + 2+2)));
                 case 3:
                     //                土壤   湿度
-                    dbTcpType.setHumiditySoil(getTemp(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
+                    dbTcpType.setHumiditySoil(getTemp(arr.get(2 + i + 1+3) + arr.get(2 + i + 2+3)));
                 case 4:
                     //                光照
-                    dbTcpType.setLight(getLight(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
+                    dbTcpType.setLight(getLight(arr.get(2 + i + 1+4) + arr.get(2 + i + 2+4)));
             }
 //            目前5个
         }

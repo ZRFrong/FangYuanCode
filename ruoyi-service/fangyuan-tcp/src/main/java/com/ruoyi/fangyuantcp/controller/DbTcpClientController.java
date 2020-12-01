@@ -82,7 +82,7 @@ public class DbTcpClientController extends BaseController {
      * 操作设备
      * */
     @PostMapping("operation")
-    @ApiOperation(value = "操作设备", notes = "tcp在线设备列表")
+    @ApiOperation(value = "操作设备", notes = "操作设备")
     public R operation(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true)@RequestBody  DbOperationVo dbOperationVo) {
         int operation = dbTcpClientService.operation(dbOperationVo);
         return toAjax(operation);
@@ -92,7 +92,7 @@ public class DbTcpClientController extends BaseController {
     * 批量操作设备
     * */
     @PostMapping("operationList")
-    @ApiOperation(value = "操作设备", notes = "tcp在线设备列表")
+    @ApiOperation(value = "批量操作设备", notes = "批量操作设备")
     public R operationList(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) @RequestBody List<DbOperationVo> dbOperationVo) {
 
         int operation = dbTcpClientService.operationList(dbOperationVo);
@@ -104,8 +104,8 @@ public class DbTcpClientController extends BaseController {
      * 手动 自动查询      手动自动状态更新
      *    01 03 00 00 00 01 84 0A
      * */
-    @RequestMapping("sinceOrHand")
-    @ApiOperation(value = "时间毫秒", notes = "手动自动查询")
+    @GetMapping("sinceOrHand")
+    @ApiOperation(value = "手动，自动查询", notes = "手动，自动查询")
     public R sinceOrHand() {
         int operation = dbTcpClientService.sinceOrHand();
 
