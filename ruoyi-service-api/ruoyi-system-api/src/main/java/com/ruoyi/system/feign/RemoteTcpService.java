@@ -8,6 +8,7 @@ import com.ruoyi.common.constant.ServiceNameConstants;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
+import com.ruoyi.system.domain.DbStateRecords;
 import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.system.feign.factory.RemoteTcpFallbackFactory;
 import io.swagger.annotations.ApiOperation;
@@ -59,4 +60,7 @@ public interface RemoteTcpService {
 
     @RequestMapping( method = RequestMethod.GET,value="type/operateTongFengHand/{heartbeatText}/{equipmentNo}/{i}")
     R operateTongFengHand(  @PathVariable("heartbeatText")String heartbeatText,@PathVariable("equipmentNo")String equipmentNo, @PathVariable(name = "i") Integer i);
+
+    @GetMapping("intervalState/{startTime}/{endTime}/{interval}")
+    List<DbStateRecords> intervalState(@PathVariable("startTime")String s, @PathVariable("endTime")String s1, @PathVariable("interval")String intervalTime);
 }

@@ -1,11 +1,10 @@
 package com.ruoyi.fangyuantcp.service.impl;
 
 import com.ruoyi.common.core.text.Convert;
-import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper;
+import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
 import com.ruoyi.fangyuantcp.service.IDbEquipmentService;
 import com.ruoyi.system.domain.DbEquipment;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
@@ -21,7 +20,7 @@ import java.util.List;
 @Service
 public class DbEquipmentServiceImpl implements IDbEquipmentService {
     @Autowired
-    private DbEquipmentMapper dbEquipmentMapper;
+    private DbEquipmentMapper1 dbEquipmentMapper;
 
 
 

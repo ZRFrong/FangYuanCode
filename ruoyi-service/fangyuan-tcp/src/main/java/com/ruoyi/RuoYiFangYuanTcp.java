@@ -29,10 +29,7 @@ public class RuoYiFangYuanTcp
         /*
          *开启心跳定时查询
          * */
-
-
         SpringApplication.run(RuoYiFangYuanTcp.class, args);
-
         log.info("开启心跳定时查询");
         TaskHeartbeat taskHeartbeat = new TaskHeartbeat();
         taskHeartbeat.HeartbeatRun();

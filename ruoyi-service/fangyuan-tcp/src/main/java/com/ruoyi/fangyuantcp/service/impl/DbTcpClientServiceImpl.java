@@ -10,7 +10,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.util.RedisUtils;
-import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper;
+import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.system.domain.DbTcpOrder;
@@ -36,7 +36,7 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     private RedisUtils redisUtils;
 
     @Autowired
-    private DbEquipmentMapper dbEquipmentMapper;
+    private DbEquipmentMapper1 dbEquipmentMapper;
 
 
     private SendCodeUtils sendCodeUtils = new SendCodeUtils();

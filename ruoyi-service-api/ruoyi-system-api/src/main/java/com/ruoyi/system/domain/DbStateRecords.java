@@ -16,7 +16,7 @@ import java.util.Date;
  * @date 2020-09-23
  */
 @ApiModel
-public class DbStateRecords extends BaseEntity
+public class DbStateRecords
 {
     private static final long serialVersionUID = 1L;
 
@@ -28,7 +28,23 @@ public class DbStateRecords extends BaseEntity
     @ApiModelProperty(value = "心跳名称+设备号")
     private String codeOnly;
 
+    @ApiModelProperty(value = "状态值")
+    private DbTcpType type;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public DbTcpType getType() {
+        return type;
+    }
+
+    public void setType(DbTcpType type) {
+        this.type = type;
+    }
+
     /** 时间 */
+
     @Excel(name = "时间", width = 30, dateFormat = "yyyy-MM-dd")
     @ApiModelProperty(value = "时间")
     private Date demandTime;
@@ -84,5 +100,7 @@ public class DbStateRecords extends BaseEntity
                 .append("stateJson", getStateJson())
                 .toString();
     }
+
+
 }
 

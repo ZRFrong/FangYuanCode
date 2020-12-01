@@ -1,5 +1,7 @@
 package com.ruoyi.fangyuantcp.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbLand;
 import com.ruoyi.system.domain.DbStateRecords;
@@ -15,7 +17,9 @@ import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 
 import javax.naming.Name;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -162,17 +166,23 @@ public class DbTcpTypeController extends BaseController {
     /*
      * 根据描述返回状态的变化集
      * */
-    @GetMapping("intervalState/{startTime}/{endTime}/{INterval}")
+    @GetMapping("intervalState/{startTime}/{endTime}/{interval}")
     public R intervalState(
-            @ApiParam(name = "开始时间", value = "date") @PathVariable("startTime") Date startTime,
-            @ApiParam(name = "结束时间", value = "date", required = true) @PathVariable("equipmentNo") Date endTime,
-            @ApiParam(name = "指定条数", value = "Integer", required = true) @PathVariable("INterval") Integer INterval
+            @ApiParam(name = "开始时间", value = "string") @PathVariable("startTime") String startTime,
+            @ApiParam(name = "结束时间", value = "string", required = true) @PathVariable("endTime") String endTime,
+            @ApiParam(name = "单位小时", value = "interval", required = true) @PathVariable("interval") String INterval
     ) {
         /*
-        *
-        * */
-          List<DbStateRecords> dbStateRecords= dbTcpTypeService.intervalState(startTime,endTime,INterval);
-        return null;
+         *
+         * */
+        List<DbStateRecords> dbStateRecords = dbTcpTypeService.intervalState(DateUtils.dateTime(DateUtils.YYYY_MM_DD_HH_MM_SS, startTime), DateUtils.dateTime(DateUtils.YYYY_MM_DD_HH_MM_SS, endTime), INterval);
+        List<DbStateRecords> dbStateRecords1 = new ArrayList<>();
+        for (DbStateRecords dbStateRecord : dbStateRecords) {
+            dbStateRecord.setType(JSON.parseObject(dbStateRecord.getStateJson(), DbTcpType.class));
+            dbStateRecords1.add(dbStateRecord);
+        }
+
+        return R.data(dbStateRecords1);
     }
 
 

@@ -6,10 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
-import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.util.RedisUtils;
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper;
+import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
 import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
 import com.ruoyi.fangyuantcp.utils.TcpOrderTextConf;
 import com.ruoyi.system.domain.*;
@@ -37,7 +35,7 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
 
 
     @Autowired
-    private DbEquipmentMapper dbEquipmentMapper;
+    private DbEquipmentMapper1 dbEquipmentMapper;
 
     @Autowired
     private RedisUtils redisUtils;
@@ -179,24 +177,37 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
     }
 
 
+    @Override
+    public void demo(DbTcpType dbTcpType) {
+        DbStateRecords dbStateRecords = new DbStateRecords();
+        List<DbStateRecords> dbStateRecords1 = dbStateRecordsMapper.selectDbStateRecordsList(dbStateRecords);
+        for (DbStateRecords stateRecords : dbStateRecords1) {
+            stateRecords.setStateJson(JSON.toJSONString(dbTcpType));
+            dbStateRecordsMapper.updateDbStateRecords(stateRecords);
+        }
+    }
+
     /*
      *
      * 状态记录查询   指定时间段，指定时间间隔
      *
      * */
     @Override
-    public List<DbStateRecords> intervalState(Date startTime, Date endTime, Integer iNterval) {
+    public List<DbStateRecords> intervalState(Date startTime, Date endTime, String iNterval) {
+
 
         List<DbStateRecords> dbStateRecords = dbStateRecordsMapper.intervalState(startTime, endTime);
-//        获取符合条件的数据的间隔秒数
-        Long betweenTime = ((dbStateRecords.get(dbStateRecords.size() - 1).getDemandTime().getTime() - dbStateRecords.get(0).getDemandTime().getTime()) / 1000);
-//        根据根据数据长度判断每条数据的时间间隔
-        Long i=  (betweenTime/dbStateRecords.size());
+        List<DbStateRecords> dbStateRecords1 = new ArrayList<>();
+        for (int i = 0; i < dbStateRecords.size(); i++) {
+            if (i%(Integer.parseInt(iNterval)*(6))==0){
+                dbStateRecords1.add(dbStateRecords.get(i));
+            }
+            
+        }
 
 
 
-
-        return null;
+        return dbStateRecords1;
     }
 
     @Override

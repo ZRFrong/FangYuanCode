@@ -60,5 +60,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{stateRecordsId}
         </foreach>
     </delete>
+    <!--  @Select("select * from db_state_records s WHERE s.demand_time >= #{startTime} and s.demand_time<=#{endTime} ORDER BY s.demand_time ")-->
+    <select id="intervalState" parameterType="String" resultMap="DbStateRecordsResult">
+        <include refid="selectDbStateRecordsVo"/>
+        <where>
+            demand_time &gt;= #{startTime} and demand_time &lt;=#{endTime} ORDER BY demand_time
+        </where>
+    </select>
+
     
 </mapper>

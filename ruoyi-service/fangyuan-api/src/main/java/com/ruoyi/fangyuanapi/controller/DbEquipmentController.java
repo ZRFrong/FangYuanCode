@@ -6,7 +6,9 @@ import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.fangyuanapi.service.IDbUserService;
 import com.ruoyi.system.domain.DbQrCode;
+import com.ruoyi.system.domain.DbStateRecords;
 import com.ruoyi.system.domain.DbUser;
+import com.ruoyi.system.feign.RemoteTcpService;
 import com.ruoyi.system.feign.SendSmsClient;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +48,8 @@ public class DbEquipmentController extends BaseController {
     private SendSmsClient sendSmsClient;
 
 
-    @Autowired
-    private RedisUtils redisUtils;
-
+@Autowired
+private RemoteTcpService remoteTcpService;
     /**
      * 查询${tableComment}
      */
@@ -123,9 +124,13 @@ public class DbEquipmentController extends BaseController {
     @GetMapping("getTrend/{intervalTime}/{beforeTime}")
     public R getTrend(@ApiParam(name = "间隔时间单位小时") @PathVariable("intervalTime")Integer intervalTime,@ApiParam(name = "之前多久时间")@PathVariable("beforeTime") Integer beforeTime) {
         Date type = DateUtils.getType(DateUtils.HOUR, -beforeTime);
+        String s = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, type);
+        String s1 = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, DateUtils.getNowDate());
+
+          List<DbStateRecords> records= remoteTcpService.intervalState(s,s1,intervalTime.toString());
 
 
-        return null;
+        return R.data(records);
     }
 
 

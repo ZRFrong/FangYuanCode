@@ -10,7 +10,7 @@ import java.util.List;
  * @author fangyuan
  * @date 2020-09-01
  */
-public interface DbEquipmentMapper 
+public interface DbEquipmentMapper1
 {
     /**
      * 查询设备

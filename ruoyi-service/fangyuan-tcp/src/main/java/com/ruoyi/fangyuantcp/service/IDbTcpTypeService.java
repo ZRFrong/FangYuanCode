@@ -82,5 +82,7 @@ public interface IDbTcpTypeService {
 
     int operateTongFengType(String heartbeatText, String equipmentNo, Integer i, String temp);
 
-    List<DbStateRecords> intervalState(Date startTime, Date endTime, Integer iNterval);
+    List<DbStateRecords> intervalState(Date startTime, Date endTime, String iNterval);
+
+    void demo(DbTcpType dbTcpType);
 }
