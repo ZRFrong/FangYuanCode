@@ -114,6 +114,10 @@ public enum ResultEnum {
     /**
      *
      */
+    PASSWORD_IS_NULL(25,"未设置过密码，请使用验证码登陆！"),
+    /**
+     *
+     */
     REFRESH_TOKEN_LOSE(401,"")
     ;
     /**

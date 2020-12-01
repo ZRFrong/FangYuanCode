@@ -1,9 +1,6 @@
 package com.ruoyi.fangyuanapi.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.DbUserDynamic;
@@ -177,8 +174,15 @@ public class DbUserServiceImpl implements IDbUserService
 
     @Override
     public Map<String, String> getUserData(Long userId) {
-        Map<String,String> map = dbUserMapper.selectUserData(userId);
-
+        Map<String,String> map = new HashMap<>();
+        DbUser user = dbUserMapper.selectUserData(userId);
+        map.put("id",user.getId()+"");
+        map.put("avatar",user.getAvatar()+"");
+        map.put("user_name",user.getUserName()+"");
+        map.put("nickname",user.getNickname()+"");
+        map.put("gender",user.getGender()+"");
+        map.put("age",user.getAge()+"");
+        map.put("signature",user.getSignature()+"");
         return map;
     }
 

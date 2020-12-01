@@ -19,6 +19,7 @@ import com.ruoyi.fangyuanapi.service.IDbLandService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 土地 提供者
@@ -56,11 +57,24 @@ public class DbLandController extends BaseController {
         return result(dbLandService.selectDbLandList(dbLand));
     }
 
+    /**
+     * 查询土地列表
+     */
+    @GetMapping("listApp")
+    @ApiOperation(value = "查询土地列表app", notes = "土地列表")
+    public R listApp(@ApiParam(name = "DbLand", value = "传入json格式", required = true) DbLand dbLand) {
+        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+        dbLand.setDbUserId(Long.valueOf(userId));
+        List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
+        return R.data(dbLands);
+    }
+
 
     /**
      * 新增保存土地
      */
     @PostMapping("save")
+    @ApiOperation(value = "新增土地/地块", notes = "土地/地块id")
     public R addSave(@RequestBody DbLand dbLand, HttpServletRequest request)
 
     {

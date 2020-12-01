@@ -30,6 +30,8 @@
         <where>
             <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
             <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
+            <if test="siteId != null "> and site_id = #{siteId}</if>
+            <if test="dbUserId != null  and dbUserId != ''"> and db_user_id = #{dbUserId}</if>
         </where>
         order by site_id
     </select>
