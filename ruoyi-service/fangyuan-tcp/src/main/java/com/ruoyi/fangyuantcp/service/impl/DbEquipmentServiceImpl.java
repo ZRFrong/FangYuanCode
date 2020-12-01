@@ -5,8 +5,11 @@ import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper;
 import com.ruoyi.fangyuantcp.service.IDbEquipmentService;
 import com.ruoyi.system.domain.DbEquipment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.stereotype.Service;
 
+import javax.sql.DataSource;
+import javax.swing.*;
 import java.util.List;
 
 /**
@@ -19,7 +22,6 @@ import java.util.List;
 public class DbEquipmentServiceImpl implements IDbEquipmentService {
     @Autowired
     private DbEquipmentMapper dbEquipmentMapper;
-
 
 
 

@@ -33,6 +33,11 @@
 			<version>${ruoyi.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.ruoyi.cloud</groupId>
+			<artifactId>ruoyi-common-redis</artifactId>
+			<version>${ruoyi.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>

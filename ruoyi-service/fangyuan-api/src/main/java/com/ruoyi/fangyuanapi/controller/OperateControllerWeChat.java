@@ -149,7 +149,6 @@ public class OperateControllerWeChat extends BaseController {
                 dbEquipment.setPojos(pojos);
                 DbTcpType dbTcpType = new DbTcpType();
                 dbTcpType.setHeartName(dbEquipment.getHeartbeatText() + "_" + dbEquipment.getEquipmentNo());
-
                 List<DbTcpType> list = remoteTcpService.list(dbTcpType);
                 if (list.size() != 0&&list!=null) {
                 DbTcpType dbTcpType1 = list.get(0);

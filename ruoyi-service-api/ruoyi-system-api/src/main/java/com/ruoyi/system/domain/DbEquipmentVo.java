@@ -55,6 +55,23 @@ public class DbEquipmentVo {
     public  DbEquipment  equipment;
 
 
+
+    /*
+    * 判断是否显示
+    * */
+
+    public boolean isShow() {
+        return isShow;
+    }
+
+    public void setShow(boolean show) {
+        isShow = show;
+    }
+
+    @ApiModelProperty(value = "判断是否显示")
+    public  boolean  isShow;
+
+
     /*
      * 设备状态表
      * */

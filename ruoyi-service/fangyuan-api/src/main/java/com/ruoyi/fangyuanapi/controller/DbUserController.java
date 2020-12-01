@@ -106,17 +106,25 @@ public class DbUserController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "phone",value = "手机号",required = true),
             @ApiImplicitParam(name = "code",value = "验证码",required = true),
-            @ApiImplicitParam(name = "password",value = "密码",required = true)
+            @ApiImplicitParam(name = "password",value = "密码",required = true),
+            @ApiImplicitParam(name = "passwordAgain",value = "确认密码",required = true)
     })
-    public R appUpdatePassword(String phone, String code, String password) {
-        if (StringUtils.isNotEmpty(phone) && PhoneUtils.checkPhone(phone) && StringUtils.isNotEmpty(code) && StringUtils.isNotEmpty(password)) {
+    public R appUpdatePassword(String phone, String code, String password,String passwordAgain) {
+        if (StringUtils.isNotEmpty(phone) && PhoneUtils.checkPhone(phone) && StringUtils.isNotEmpty(code) && StringUtils.isNotEmpty(password) && StringUtils.isNotEmpty(passwordAgain)) {
+            if (!StringUtils.checkPassword(password)){
+                return R.error(ResultEnum.PASSWORD_NOT_RULE.getCode(),ResultEnum.PASSWORD_NOT_RULE.getMessage());
+            }
+            if (!password.equals(passwordAgain)){
+                return R.error();
+            }
             R r = sendSmsClient.checkCode(phone, code);
             if ("200".equals(r.get("code"))){
                 String uuid = StringUtils.getUUID();
                 String s = ZhaoMD5Utils.string2MD5(password + uuid);
                 int i =  dbUserService.updateUserPassword(phone,s,uuid);
+                return i>0 ? R.ok():R.error();
             }
-            return null;
+            return r;
         }
         return R.error(ResultEnum.PARAMETERS_ERROR.getCode(), ResultEnum.PARAMETERS_ERROR.getMessage());
     }
@@ -162,16 +170,18 @@ public class DbUserController extends BaseController {
         if (dbUser != null && StringUtils.isNotEmpty(password) && StringUtils.isEmpty(code)) {
             //密码登录
             String salt = dbUser.getSalt();
+            if (StringUtils.isEmpty(dbUser.getPassword())){
+                return R.error(ResultEnum.PASSWORD_IS_NULL.getCode(),ResultEnum.PASSWORD_IS_NULL.getMessage());
+            }
             if (ZhaoMD5Utils.string2MD5(password + salt).equals(dbUser.getPassword())) {
                 if (StringUtils.isNotEmpty(token)){
-                    redisUtils.delete(RedisKeyConf.REFRESH_TOKEN_.name() + dbUser.getId());
+                    redisUtils.delete(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId());
                 }
                 //登录成功
                 //Map<String, String> map = resultTokens(dbUser.getId(), "XIAOSI", tokenConf.getAccessTokenKey(), tokenConf.getRefreshTokenKey());
                 token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000));
                 /* 返回token 并且记录 */
-                redisUtils.set(RedisKeyConf.REFRESH_TOKEN_.name() + dbUser.getId(), token, 60 * 60 * 24 * 30 * 2L);
-                //TODO
+                redisUtils.set(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId(), token, 60 * 60 * 24 * 30 * 2L);
                 return R.data(token);
             } else {
                 redisUtils.set(CategoryType.PHONE_LOGIN_NUM_.name() + phone, num + 1, RedisTimeConf.ONE_HOUR);
@@ -183,11 +193,11 @@ public class DbUserController extends BaseController {
             R r = sendSmsClient.checkCode(phone, code);
             if ("200".equals(r.get("code") + "")) {
                 if (StringUtils.isNotEmpty(token)){
-                    redisUtils.delete(RedisKeyConf.REFRESH_TOKEN_.name() + dbUser.getId());
+                    redisUtils.delete(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId());
                 }
                 //Map<String, String> map = resultTokens(dbUser.getId(), "XIAOSI", tokenConf.getAccessTokenKey(), tokenConf.getRefreshTokenKey());
                 token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000));
-                redisUtils.set(RedisKeyConf.REFRESH_TOKEN_.name() + dbUser.getId(),token, 60 * 60 * 24 * 30 * 2L);
+                redisUtils.set(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId(),token, 60 * 60 * 24 * 30 * 2L);
                 return R.data(token);
             } else {
                 redisUtils.set(CategoryType.PHONE_LOGIN_NUM_.name() + phone, num + 1, RedisTimeConf.ONE_HOUR);
@@ -295,7 +305,7 @@ public class DbUserController extends BaseController {
             @ApiImplicitParam(name = "nickname",value = "昵称",required = false),
             @ApiImplicitParam(name = "avatar",value = "头像",required = false)
     })
-    public R wxRegister(@RequestParam String phone,@RequestParam String code,String openId,String nickname,String avatar) {
+    public R wxRegister(String phone,String code,String openId,String nickname,String avatar) {
         R r = sendSmsClient.checkCode(phone, code);
         //R r = new R();
         if ("200".equals(r.get("code")+"") ){

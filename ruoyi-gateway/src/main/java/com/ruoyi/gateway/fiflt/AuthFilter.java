@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
+
+import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.utils.aes.TokenUtils;
 import com.ruoyi.gateway.config.TokenConf;
 import org.apache.commons.lang3.StringUtils;
@@ -45,7 +47,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
      * 方便测试，
      */
     private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/appLogin","fangyuanapi/wxUser/appRegister","fangyuanapi/dynamic1","fangyuanapi/category","fangyuanapi/wx/v3",
-            "/fangyuanapi/order/insertOrder","fangyuanapi/giveLike","fangyuanapi/wxUser/getOpenId","fangyuanapi/wxUser/smallRegister","/fangyuanapi/banner/getBannerList");
+            "/fangyuanapi/order/insertOrder","fangyuanapi/giveLike","fangyuanapi/wxUser/getOpenId","fangyuanapi/wxUser/smallRegister","/fangyuanapi/banner/getBannerList","fangyuanapi/wxUser/appUpdatePassword");
 
     @Autowired
     private TokenConf tokenConf;
@@ -71,7 +73,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
 
         // token为空
         if (StringUtils.isBlank(token)) {
-            return setUnauthorizedResponse(exchange, "token can't null or empty string");
+            return setUnauthorizedResponse(exchange, "token can't null or empty string","401");
         }
         //        请求来自客户端api 转化token为userHomeId
         if (url.contains("fangyuanapi")) {
@@ -79,6 +81,10 @@ public class AuthFilter implements GlobalFilter, Ordered {
             if (map != null){
                 /* id == null token被篡改 解密失败 */
                 String id = map.get("id")+"";
+                String redisToken = ops.get(RedisKeyConf.ACCESS_TOKEN_.name() + id);
+                if (!token.equals(redisToken)){
+                    return setUnauthorizedResponse(exchange, "token verify error","403");
+                }
                 ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, id).build();
                 ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();
                 return chain.filter(mutableExchange);
@@ -87,13 +93,13 @@ public class AuthFilter implements GlobalFilter, Ordered {
 
         String userStr = ops.get(Constants.ACCESS_TOKEN + token);
         if (StringUtils.isBlank(userStr)) {
-            return setUnauthorizedResponse(exchange, "token verify error");
+            return setUnauthorizedResponse(exchange, "token verify error","401");
         }
         JSONObject jo = JSONObject.parseObject(userStr);
         String userId = jo.getString("userId");
         // 查询token信息
         if (StringUtils.isBlank(userId)) {
-            return setUnauthorizedResponse(exchange, "token verify error");
+            return setUnauthorizedResponse(exchange, "token verify error","401");
         }
 
         // 设置userId到request里，后续根据userId，获取用户信息
@@ -106,7 +112,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     }
 
 
-    private Mono<Void> setUnauthorizedResponse(ServerWebExchange exchange, String msg) {
+    private Mono<Void> setUnauthorizedResponse(ServerWebExchange exchange, String msg,String code) {
         ServerHttpResponse originalResponse = exchange.getResponse();
         originalResponse.setStatusCode(HttpStatus.UNAUTHORIZED);
         originalResponse.getHeaders().add("Content-Type", "application/json;charset=UTF-8");

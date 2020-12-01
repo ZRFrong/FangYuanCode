@@ -84,7 +84,7 @@ public interface DbUserMapper
      * @param userId
      * @return
      */
-    Map<String,String> selectUserData(Long userId);
+    DbUser selectUserData(Long userId);
 
     /**
      * 根据手机号修改用户密码
