@@ -5,24 +5,20 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
-import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.aes.TokenUtils;
 import com.ruoyi.fangyuanapi.conf.TokenConf;
 import com.ruoyi.fangyuanapi.mapper.DbEquipmentMapper;
 import com.ruoyi.fangyuanapi.utils.QrCodeUtils;
-import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbQrCode;
 import com.ruoyi.system.domain.DbQrCodeVo;
 import com.ruoyi.system.domain.OperatePojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.mapper.DbQrCodeMapper;
 import com.ruoyi.fangyuanapi.service.IDbQrCodeService;
 import com.ruoyi.common.core.text.Convert;
-import org.springframework.web.server.ServerWebExchange;
 
 /**
  * 二维码Service业务层处理

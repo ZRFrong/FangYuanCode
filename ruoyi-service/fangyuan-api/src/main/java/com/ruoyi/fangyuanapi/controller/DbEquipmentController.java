@@ -122,6 +122,7 @@ private RemoteTcpService remoteTcpService;
      * */
 
     @GetMapping("getTrend/{intervalTime}/{beforeTime}")
+    @ApiOperation(value = "获取当前设备的温湿度变化曲线", notes = "获取当前设备的温湿度变化曲线")
     public R getTrend(@ApiParam(name = "间隔时间单位小时") @PathVariable("intervalTime")Integer intervalTime,@ApiParam(name = "之前多久时间")@PathVariable("beforeTime") String beforeTime,@ApiParam(name = "设备id")@PathVariable("beforeTime") String equipmentId) {
         Date type = DateUtils.getType(DateUtils.HOUR, -Integer.parseInt(beforeTime));
         DbEquipment dbEquipment = dbEquipmentService.selectDbEquipmentById(Long.valueOf(equipmentId));
