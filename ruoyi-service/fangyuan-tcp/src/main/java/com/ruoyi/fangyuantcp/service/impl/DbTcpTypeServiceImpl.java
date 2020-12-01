@@ -177,15 +177,7 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
     }
 
 
-    @Override
-    public void demo(DbTcpType dbTcpType) {
-        DbStateRecords dbStateRecords = new DbStateRecords();
-        List<DbStateRecords> dbStateRecords1 = dbStateRecordsMapper.selectDbStateRecordsList(dbStateRecords);
-        for (DbStateRecords stateRecords : dbStateRecords1) {
-            stateRecords.setStateJson(JSON.toJSONString(dbTcpType));
-            dbStateRecordsMapper.updateDbStateRecords(stateRecords);
-        }
-    }
+
 
     /*
      *
@@ -193,10 +185,10 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
      *
      * */
     @Override
-    public List<DbStateRecords> intervalState(Date startTime, Date endTime, String iNterval) {
+    public List<DbStateRecords> intervalState(Date startTime, Date endTime, String iNterval,String hearName) {
 
 
-        List<DbStateRecords> dbStateRecords = dbStateRecordsMapper.intervalState(startTime, endTime);
+        List<DbStateRecords> dbStateRecords = dbStateRecordsMapper.intervalState(startTime, endTime,hearName);
         List<DbStateRecords> dbStateRecords1 = new ArrayList<>();
         for (int i = 0; i < dbStateRecords.size(); i++) {
             if (i%(Integer.parseInt(iNterval)*(6))==0){

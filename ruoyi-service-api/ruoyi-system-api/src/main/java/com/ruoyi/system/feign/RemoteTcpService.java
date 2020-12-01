@@ -61,6 +61,6 @@ public interface RemoteTcpService {
     @RequestMapping( method = RequestMethod.GET,value="type/operateTongFengHand/{heartbeatText}/{equipmentNo}/{i}")
     R operateTongFengHand(  @PathVariable("heartbeatText")String heartbeatText,@PathVariable("equipmentNo")String equipmentNo, @PathVariable(name = "i") Integer i);
 
-    @GetMapping("intervalState/{startTime}/{endTime}/{interval}")
-    List<DbStateRecords> intervalState(@PathVariable("startTime")String s, @PathVariable("endTime")String s1, @PathVariable("interval")String intervalTime);
+    @GetMapping("intervalState/{startTime}/{endTime}/{interval}/{hearName}")
+    List<DbStateRecords> intervalState(@PathVariable("startTime")String s, @PathVariable("endTime")String s1, @PathVariable("interval")String intervalTime,@PathVariable("interval")String hearName);
 }

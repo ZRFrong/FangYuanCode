@@ -166,16 +166,17 @@ public class DbTcpTypeController extends BaseController {
     /*
      * 根据描述返回状态的变化集
      * */
-    @GetMapping("intervalState/{startTime}/{endTime}/{interval}")
+    @GetMapping("intervalState/{startTime}/{endTime}/{interval}/{hearName}")
     public R intervalState(
             @ApiParam(name = "开始时间", value = "string") @PathVariable("startTime") String startTime,
             @ApiParam(name = "结束时间", value = "string", required = true) @PathVariable("endTime") String endTime,
-            @ApiParam(name = "单位小时", value = "interval", required = true) @PathVariable("interval") String INterval
+            @ApiParam(name = "单位小时", value = "interval", required = true) @PathVariable("interval") String INterval,
+            @ApiParam(name = "心跳名称", value = "hearName", required = true) @PathVariable("hearName") String hearName
     ) {
         /*
          *
          * */
-        List<DbStateRecords> dbStateRecords = dbTcpTypeService.intervalState(DateUtils.dateTime(DateUtils.YYYY_MM_DD_HH_MM_SS, startTime), DateUtils.dateTime(DateUtils.YYYY_MM_DD_HH_MM_SS, endTime), INterval);
+        List<DbStateRecords> dbStateRecords = dbTcpTypeService.intervalState(DateUtils.dateTime(DateUtils.YYYY_MM_DD_HH_MM_SS, startTime), DateUtils.dateTime(DateUtils.YYYY_MM_DD_HH_MM_SS, endTime), INterval,hearName);
         List<DbStateRecords> dbStateRecords1 = new ArrayList<>();
         for (DbStateRecords dbStateRecord : dbStateRecords) {
             dbStateRecord.setType(JSON.parseObject(dbStateRecord.getStateJson(), DbTcpType.class));

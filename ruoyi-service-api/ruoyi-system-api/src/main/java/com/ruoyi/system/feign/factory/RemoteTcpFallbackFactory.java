@@ -60,7 +60,7 @@ public class RemoteTcpFallbackFactory implements FallbackFactory<RemoteTcpServic
             }
 
             @Override
-            public List<DbStateRecords> intervalState(String s, String s1, String intervalTime) {
+            public List<DbStateRecords> intervalState(String s, String s1, String intervalTime, String hearName) {
                 return null;
             }
 

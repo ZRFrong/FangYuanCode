@@ -65,5 +65,5 @@ public interface DbStateRecordsMapper
 
     /*指定时间段内的数据*/
 
-    List<DbStateRecords> intervalState(@Param("startTime") Date startTime,@Param("endTime") Date endTime);
+    List<DbStateRecords> intervalState(@Param("startTime") Date startTime,@Param("endTime") Date endTime,@Param("hearName") String hearName);
 }

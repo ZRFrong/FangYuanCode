@@ -122,12 +122,14 @@ private RemoteTcpService remoteTcpService;
      * */
 
     @GetMapping("getTrend/{intervalTime}/{beforeTime}")
-    public R getTrend(@ApiParam(name = "间隔时间单位小时") @PathVariable("intervalTime")Integer intervalTime,@ApiParam(name = "之前多久时间")@PathVariable("beforeTime") Integer beforeTime) {
-        Date type = DateUtils.getType(DateUtils.HOUR, -beforeTime);
+    public R getTrend(@ApiParam(name = "间隔时间单位小时") @PathVariable("intervalTime")Integer intervalTime,@ApiParam(name = "之前多久时间")@PathVariable("beforeTime") String beforeTime,@ApiParam(name = "设备id")@PathVariable("beforeTime") String equipmentId) {
+        Date type = DateUtils.getType(DateUtils.HOUR, -Integer.parseInt(beforeTime));
+        DbEquipment dbEquipment = dbEquipmentService.selectDbEquipmentById(Long.valueOf(equipmentId));
+        String path=dbEquipment.getHeartbeatText()+"_"+dbEquipment.getEquipmentNo();
         String s = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, type);
         String s1 = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, DateUtils.getNowDate());
 
-          List<DbStateRecords> records= remoteTcpService.intervalState(s,s1,intervalTime.toString());
+          List<DbStateRecords> records= remoteTcpService.intervalState(s,s1,intervalTime.toString(),path);
 
 
         return R.data(records);
