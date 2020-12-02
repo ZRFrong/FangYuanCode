@@ -66,6 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             demand_time &gt;= #{startTime} and demand_time &lt;=#{endTime} ORDER BY demand_time and code_only=#{hearName}
         </where>
+        order by demand_time
     </select>
 
     

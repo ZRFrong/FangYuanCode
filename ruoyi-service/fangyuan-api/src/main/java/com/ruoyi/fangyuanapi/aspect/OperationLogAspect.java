@@ -30,7 +30,7 @@ public class OperationLogAspect {
 
 
 //    //切入点
-//    @Pointcut(value = "@annotation(com.ruoyi.fangyuanapi.aspect.OperationLog)")
+//    @Pointcut(value = "@annotation(com.ruoyi.fangyuanapi.abnormal.OperationLog)")
 //    private void pointcut( ) {
 //
 //    }

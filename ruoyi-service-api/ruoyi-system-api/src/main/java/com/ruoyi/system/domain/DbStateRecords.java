@@ -16,7 +16,7 @@ import java.util.Date;
  * @date 2020-09-23
  */
 @ApiModel
-public class DbStateRecords
+public class DbStateRecords extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 

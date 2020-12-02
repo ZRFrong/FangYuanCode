@@ -111,6 +111,7 @@ public class OperateControllerWeChat extends BaseController {
 //        创建时间
                         dbOperationVo.setCreateTime(new Date());
                         dbOperationVo.setOperationText(operateSp.getHandleCode());
+
                         vos.add(dbOperationVo);
                     }
                 }

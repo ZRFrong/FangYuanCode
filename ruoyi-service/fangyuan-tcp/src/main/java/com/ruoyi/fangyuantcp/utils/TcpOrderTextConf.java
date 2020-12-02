@@ -6,6 +6,7 @@ package com.ruoyi.fangyuantcp.utils;
  * */
 public class TcpOrderTextConf {
 
+
     public static final String SinceOrhand = "00,00,00,01";
 
     /*
@@ -38,6 +39,9 @@ public class TcpOrderTextConf {
 
     /*更改自动手动通风温度操作 关*/
     public static String operateTongFengOverType = "00,77";
+
+
+
 
     /*
      * 施肥量更改 00 C8 01 2C   00,200,01，44
