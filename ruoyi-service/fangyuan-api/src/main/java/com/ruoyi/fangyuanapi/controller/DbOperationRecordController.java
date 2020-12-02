@@ -3,7 +3,6 @@ package com.ruoyi.fangyuanapi.controller;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.DbOperationRecord;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -74,18 +73,22 @@ public class DbOperationRecordController extends BaseController {
     @ApiOperation(value = "查询操作记录列表", notes = "pagesize,pageName后边跟参即可，拦截会进行处理")
     public R listGroupDay(@ApiParam(name = "operationTime", value = "date", required = false)  String operationTime,
                           @ApiParam(name = "operationText", value = "string", required = false) String operationText) {
-        String header = getRequest().getHeader(Constants.CURRENT_ID);
+//        String header = getRequest().getHeader(Constants.CURRENT_ID);
+        String header = getRequest().getHeader(Constants.PAGE_NUM);
+        String size = getRequest().getHeader(Constants.PAGE_SIZE);
+        int i = Integer.parseInt(header);
+        header=(i-1)+"";
         DbOperationRecord dbOperationRecord = new DbOperationRecord();
-        dbOperationRecord.setDbUserId(Long.valueOf(header));
-        if (!StringUtils.isEmpty(operationText)) {
+//        dbOperationRecord.setDbUserId(Long.valueOf(header));
+//        dbOperationRecord.setDbUserId(Long.valueOf("1"));
+        if (!operationText.isEmpty()) {
             dbOperationRecord.setOperationText(operationText);
-        } else if (!StringUtils.isEmpty(operationText)) {
+        } else if (!operationTime.isEmpty()) {
             dbOperationRecord.setOperationTime(DateUtils.dateTime(DateUtils.YYYY_MM_DD,operationTime));
         }
 
 //	    日期分组的操作记录
-        startPage();
-        List<DbOperationRecord> objects = dbOperationRecordService.listGroupDay(dbOperationRecord);
+        List<DbOperationRecord> objects = dbOperationRecordService.listGroupDay(dbOperationRecord,header,size);
 
         return R.data(objects);
     }

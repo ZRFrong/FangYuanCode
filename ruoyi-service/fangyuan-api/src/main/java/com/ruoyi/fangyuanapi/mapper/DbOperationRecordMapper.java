@@ -1,6 +1,7 @@
 package com.ruoyi.fangyuanapi.mapper;
 
 import com.ruoyi.system.domain.DbOperationRecord;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -62,5 +63,5 @@ public interface DbOperationRecordMapper
     public int deleteDbOperationRecordByIds(String[] ids);
 
 
-    List<DbOperationRecord> listGroupDay(DbOperationRecord dbOperationRecord);
+    List<DbOperationRecord> listGroupDay(@Param("dbOperationRecord") DbOperationRecord dbOperationRecord, @Param("pageSize") String pageSize,@Param("pageNum") String pageNum);
 }

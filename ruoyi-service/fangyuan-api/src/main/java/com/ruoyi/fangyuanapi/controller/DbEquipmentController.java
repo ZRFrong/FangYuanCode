@@ -1,8 +1,5 @@
 package com.ruoyi.fangyuanapi.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.ruoyi.common.redis.config.RedisKeyConf;
-import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
 import com.ruoyi.fangyuanapi.service.IDbUserService;
@@ -93,16 +90,7 @@ public class DbEquipmentController extends BaseController {
     }
 
 
-    /*
-     *扫码链接    重定向单独的页面
-     * scan
-     * */
-    @GetMapping("scanPage")
-    public R scanPage(@ApiParam(name = "设备id", value = "设备id", required = true) String equipmentId) {
 
-
-        return R.error();
-    }
 
 
     /*
@@ -126,7 +114,6 @@ public class DbEquipmentController extends BaseController {
     public R getTrend(@ApiParam(name = "间隔时间单位小时") @PathVariable("intervalTime")String intervalTime,
                       @ApiParam(name = "之前多久时间")@PathVariable("beforeTime") String beforeTime,
                       @ApiParam(name = "设备id")@PathVariable("landid") String landid) {
-
         Date type = DateUtils.getType(DateUtils.HOUR, -Integer.parseInt(beforeTime));
         DbLand dbLand = dbLandService.selectDbLandById(Long.valueOf(landid));
         String equipmentIds = dbLand.getEquipmentIds();
@@ -136,7 +123,7 @@ public class DbEquipmentController extends BaseController {
         String s = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, type);
         String s1 = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, DateUtils.getNowDate());
 
-          R r= remoteTcpService.intervalState(s,s1,intervalTime.toString(),path);
+          R r= remoteTcpService.intervalState(s,s1,intervalTime,path);
 
 
         return r;

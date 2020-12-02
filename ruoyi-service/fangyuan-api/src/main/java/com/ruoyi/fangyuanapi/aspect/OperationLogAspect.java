@@ -3,7 +3,11 @@ package com.ruoyi.fangyuanapi.aspect;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
+import com.ruoyi.fangyuanapi.service.IDbLandService;
 import com.ruoyi.fangyuanapi.service.IDbOperationRecordService;
+import com.ruoyi.system.domain.DbEquipment;
+import com.ruoyi.system.domain.DbLand;
 import com.ruoyi.system.domain.DbOperationRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -27,6 +31,8 @@ public class OperationLogAspect {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
 
+    private  static IDbLandService landService=SpringUtils.getBean(IDbLandService.class);
+    private  static IDbEquipmentService dbEquipmentService=SpringUtils.getBean(IDbEquipmentService.class);
 
 
 //    //切入点
@@ -99,7 +105,8 @@ public class OperationLogAspect {
     private DbOperationRecord fillInEquipment(Map<String, Object> maps, boolean type) {
         DbOperationRecord dbOperationRecord = new DbOperationRecord();
         dbOperationRecord.setOperationObjectType(1);
-        dbOperationRecord.setOperationObject(maps.get("id").toString());
+        DbEquipment id = dbEquipmentService.selectDbEquipmentById(Long.valueOf(maps.get("id").toString()));
+        dbOperationRecord.setOperationObject(id.getEquipmentName());
         if (type) {
             //   是批量
             String text = OperationLogUtils.toOperationText(maps.get("type").toString(), maps.get("handleName").toString());
@@ -116,7 +123,14 @@ public class OperationLogAspect {
     private DbOperationRecord fillInLand(Map<String, Object> maps, boolean type) {
         DbOperationRecord dbOperationRecord = new DbOperationRecord();
         dbOperationRecord.setOperationObjectType(0);
-        dbOperationRecord.setOperationObject(maps.get("ids").toString());
+        String ids = maps.get("ids").toString();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String s : ids.split(",")) {
+
+            DbLand dbLand = landService.selectDbLandById(Long.valueOf(s));
+            stringBuilder.append(dbLand.getNickName()+"/n");
+        }
+        dbOperationRecord.setOperationObject(stringBuilder.toString());
         if (type) {
             //   是批量
             String text = OperationLogUtils.toOperationText(maps.get("type").toString(), maps.get("handleName").toString());
