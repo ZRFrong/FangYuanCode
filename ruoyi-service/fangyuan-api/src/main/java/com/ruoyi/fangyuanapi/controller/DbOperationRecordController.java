@@ -72,18 +72,15 @@ public class DbOperationRecordController extends BaseController {
     @GetMapping("listGroupDay")
     @ApiOperation(value = "查询操作记录列表", notes = "pagesize,pageName后边跟参即可，拦截会进行处理")
     public R listGroupDay(@ApiParam(name = "operationTime", value = "date", required = false) String operationTime,
-                          @ApiParam(name = "operationText", value = "string", required = false) String operationText,
-                          @ApiParam(name = "LandId", value = "long", required = false) String LandId) {
-//        String header = getRequest().getHeader(Constants.CURRENT_ID);
+                          @ApiParam(name = "operationText", value = "string", required = false) String operationText) {
+        String header = getRequest().getHeader(Constants.CURRENT_ID);
         DbOperationRecord dbOperationRecord = new DbOperationRecord();
-//        dbOperationRecord.setDbUserId(Long.valueOf(header));
+        dbOperationRecord.setDbUserId(Long.valueOf(header));
         dbOperationRecord.setDbUserId(Long.valueOf("1"));
         if (!operationText.isEmpty()) {
             dbOperationRecord.setOperationText(operationText);
         } else if (!operationTime.isEmpty()) {
             dbOperationRecord.setOperationTime(DateUtils.dateTime(DateUtils.YYYY_MM_DD_HH_MM_SS,operationTime));
-        } else if (!LandId.isEmpty()) {
-            dbOperationRecord.setOperationObject(LandId);
         }
 
 //	    日期分组的操作记录

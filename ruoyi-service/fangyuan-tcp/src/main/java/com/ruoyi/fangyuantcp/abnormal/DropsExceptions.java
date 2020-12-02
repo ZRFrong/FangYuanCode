@@ -18,12 +18,6 @@ public class DropsExceptions extends RuntimeException {
 
 
 
-    public String getMessage() {
-        return this.toString();
-    }
 
-    public String toString() {
-        return "系统异常，异常编码：" + this.code;
-    }
 
 }

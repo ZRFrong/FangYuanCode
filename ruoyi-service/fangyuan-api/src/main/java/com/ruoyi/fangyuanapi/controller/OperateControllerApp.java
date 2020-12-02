@@ -9,6 +9,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.*;
 import com.ruoyi.fangyuanapi.aspect.OperationLog;
 import com.ruoyi.fangyuanapi.aspect.OperationLogType;
+import com.ruoyi.fangyuanapi.aspect.OperationLogUtils;
 import com.ruoyi.fangyuanapi.service.*;
 import com.ruoyi.fangyuanapi.utils.OperateSendUtils;
 import com.ruoyi.system.domain.*;
@@ -101,6 +102,8 @@ public class OperateControllerApp extends BaseController {
                         dbOperationVo.setHeartName(equipment.getHeartbeatText());
 //        设备号
                         dbOperationVo.setFacility(equipment.getEquipmentNo() + "");
+//                        操作名称
+                        dbOperationVo.setOperationName(OperationLogUtils.toOperationText(object.getCheckCode(),operateSp.getHandleName()));
 //        是否完成
                         dbOperationVo.setIsTrue("1");
 //        创建时间
@@ -135,6 +138,8 @@ public class OperateControllerApp extends BaseController {
         DbOperationVo dbOperationVo = new DbOperationVo();
 //        心跳名称
         dbOperationVo.setHeartName(dbEquipment.getHeartbeatText());
+        //                        操作名称
+        dbOperationVo.setOperationName(OperationLogUtils.toOperationText(type,handleName));
 //        设备号
         dbOperationVo.setFacility(dbEquipment.getEquipmentNo() + "");
 //        是否完成
