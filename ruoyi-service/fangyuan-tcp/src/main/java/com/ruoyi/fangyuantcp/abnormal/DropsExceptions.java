@@ -11,6 +11,15 @@ public class DropsExceptions extends RuntimeException {
 //    掉线说明
     private final String message ;
 
+    public String getCode() {
+        return code;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
     public DropsExceptions(int code, String code1, String message) {
         this.code = code1;
         this.message = message;

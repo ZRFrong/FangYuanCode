@@ -80,7 +80,7 @@ public class DbOperationRecordController extends BaseController {
         if (!operationText.isEmpty()) {
             dbOperationRecord.setOperationText(operationText);
         } else if (!operationTime.isEmpty()) {
-            dbOperationRecord.setOperationTime(DateUtils.dateTime(DateUtils.YYYY_MM_DD_HH_MM_SS,operationTime));
+            dbOperationRecord.setOperationTime(DateUtils.dateTime(DateUtils.YYYY_MM_DD,operationTime));
         }
 
 //	    日期分组的操作记录
