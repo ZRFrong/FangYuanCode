@@ -14,6 +14,7 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.fangyuanapi.aspect.OperationLog;
 import com.ruoyi.fangyuanapi.aspect.OperationLogType;
+import com.ruoyi.fangyuanapi.aspect.OperationLogUtils;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
 import com.ruoyi.system.domain.*;
@@ -69,13 +70,14 @@ public class OperateControllerWeChat extends BaseController {
     @OperationLog(OperationLogNmae=OperationLogType.EQUIPMENT,OperationLogSource = OperationLogType.WEchat)
     public R operate(@ApiParam(name = "id", value = "设备id", required = true)Long id, @ApiParam(name = "text", value = "操作指令", required = true)String text,
                      @ApiParam(name = "name", value = "操作对象", required = true)String name,
-                     @ApiParam(name = "handleName",
-                             value = "开始 ：start，开始暂停：start_stop，结束暂停down_stop，结束down", required = true) String handleName) {
+                     @ApiParam(name = "handleName", value = "开始 ：start，开始暂停：start_stop，结束暂停down_stop，结束down", required = true) String handleName) {
         DbOperationVo dbOperationVo = new DbOperationVo();
         DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(id);
         dbOperationVo.setHeartName(dbEquipment.getHeartbeatText());
         dbOperationVo.setFacility(dbEquipment.getEquipmentNo());
         dbOperationVo.setOperationText(text);
+        //                        操作名称
+        dbOperationVo.setOperationName(OperationLogUtils.toOperationText(name,handleName));
         R operation = remoteTcpService.operation(dbOperationVo);
         return operation;
     }
@@ -109,6 +111,8 @@ public class OperateControllerWeChat extends BaseController {
                         dbOperationVo.setFacility(dbEquipment.getEquipmentNo() + "");
 //        是否完成
                         dbOperationVo.setIsTrue("1");
+//                        操作名称
+                        dbOperationVo.setOperationName(OperationLogUtils.toOperationText(pojo.getCheckCode(),operateSp.getHandleName()));
 //        创建时间
                         dbOperationVo.setCreateTime(new Date());
                         dbOperationVo.setOperationText(operateSp.getHandleCode());

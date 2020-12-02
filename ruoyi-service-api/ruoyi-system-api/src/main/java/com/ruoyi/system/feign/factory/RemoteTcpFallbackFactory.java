@@ -1,9 +1,7 @@
 package com.ruoyi.system.feign.factory;
 
 import com.ruoyi.common.core.domain.R;
-import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
-import com.ruoyi.system.domain.DbStateRecords;
 import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.system.feign.RemoteTcpService;
 import feign.hystrix.FallbackFactory;

@@ -1,8 +1,10 @@
 package com.ruoyi.fangyuantcp.utils;
+
 import java.util.Date;
 
 
 import cn.hutool.core.thread.ThreadUtil;
+import com.ruoyi.fangyuantcp.abnormal.FaultExceptions;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
@@ -26,81 +28,19 @@ public class SendCodeUtils {
      * 普通操作指令发送
      * */
     public static int query(DbOperationVo tcpOrder) {
-        String address = tcpOrder.getHeartName();
-        try {
-//          text处理
-            ArrayList<String> strings1 = new ArrayList<>();
-            String text = tcpOrder.getFacility() + "," + "05," + tcpOrder.getOperationText();
-            String[] split3 = text.split(",");
-            for (String s : split3) {
-                strings1.add(s);
-            }
-            Object[] objects = strings1.toArray();
-            String[] split = new String[objects.length];
-            for (int i = 0; i < split.length; i++) {
-                split[i] = objects[i].toString();
-            }
-            List<String> strings = new ArrayList<>();
-            for (String s : split) {
-                int i = Integer.parseInt(s);
-                //            十六进制转成十进制
-                String tmp = StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 4, '0');
-                strings.add(tmp);
-            }
-            String[] split1 = strings.toArray(new String[strings.size()]);
-            String[] bytes = Crc16Util.to_byte(split1);
-            byte[] data = Crc16Util.getData(bytes);
-            ChannelHandlerContext no1_1 = map.get(address);
-            Channel channel = no1_1.channel();
-            channel.write(Unpooled.copiedBuffer(data));
-            channel.flush();
-
-
-        } catch (Exception e) {
-//            删除心跳
-            return 0;
-        }
-        return 1;
+        String text = tcpOrder.getFacility() + "," + "05," + tcpOrder.getOperationText();
+        return operateCode(text, tcpOrder);
     }
+
+
+
+
     /*
      * 普通操作指令发送  06  自动状态设置更改
      * */
     public static int query06(DbOperationVo tcpOrder) {
-        String address = tcpOrder.getHeartName();
-        try {
-//          text处理
-            ArrayList<String> strings1 = new ArrayList<>();
-            String text = tcpOrder.getFacility() + "," + "06," + tcpOrder.getOperationText();
-            String[] split3 = text.split(",");
-            for (String s : split3) {
-                strings1.add(s);
-            }
-            Object[] objects = strings1.toArray();
-            String[] split = new String[objects.length];
-            for (int i = 0; i < split.length; i++) {
-                split[i] = objects[i].toString();
-            }
-            List<String> strings = new ArrayList<>();
-            for (String s : split) {
-                int i = Integer.parseInt(s);
-                //            十六进制转成十进制
-                String tmp = StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 4, '0');
-                strings.add(tmp);
-            }
-            String[] split1 = strings.toArray(new String[strings.size()]);
-            String[] bytes = Crc16Util.to_byte(split1);
-            byte[] data = Crc16Util.getData(bytes);
-            ChannelHandlerContext no1_1 = map.get(address);
-            Channel channel = no1_1.channel();
-            channel.write(Unpooled.copiedBuffer(data));
-            channel.flush();
-
-            return 1;
-        } catch (NumberFormatException e) {
-//            删除心跳
-
-            return 0;
-        }
+        String text = tcpOrder.getFacility() + "," + "06," + tcpOrder.getOperationText();
+        return operateCode(text, tcpOrder);
     }
 
     /*
@@ -115,52 +55,19 @@ public class SendCodeUtils {
      * 状态查询指令发送03
      * */
     public static int querystate03(DbOperationVo tcpOrder) {
-        String address = tcpOrder.getHeartName();
-        try {
-//        text处理
-            ArrayList<String> strings1 = new ArrayList<>();
-            String text = tcpOrder.getFacility() + "," + "03," + tcpOrder.getOperationText();
-            String[] split3 = text.split(",");
-            for (String s : split3) {
-                strings1.add(s);
-            }
-            Object[] objects = strings1.toArray();
-            String[] split = new String[objects.length];
-            for (int i = 0; i < split.length; i++) {
-                split[i] = objects[i].toString();
-            }
-            List<String> strings = new ArrayList<>();
-            for (String s : split) {
-                int i = Integer.parseInt(s);
-                //            十六进制转成十进制
-                String tmp = StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 4, '0');
-                strings.add(tmp);
-            }
-            String[] split1 = strings.toArray(new String[strings.size()]);
-            String[] bytes = Crc16Util.to_byte(split1);
-            byte[] data = Crc16Util.getData(bytes);
-            ChannelHandlerContext no1_1 = map.get(address);
-            Channel channel = no1_1.channel();
-            channel.write(Unpooled.copiedBuffer(data));
-            channel.flush();
-
-            return 1;
-        } catch (NumberFormatException e) {
-//            删除心跳
-
-            return 0;
-        }
+        String text = tcpOrder.getFacility() + "," + "03," + tcpOrder.getOperationText();
+       return operateCode(text, tcpOrder);
     }
 
 
     /*
      * 状态查询指令发送03
      * */
-    public static int querystate03Ctx( ChannelHandlerContext ctx) {
+    public static int querystate03Ctx(ChannelHandlerContext ctx) {
+        String text = "01" + "," + "03," + TcpOrderTextConf.stateSave;
         try {
 //        text处理
             ArrayList<String> strings1 = new ArrayList<>();
-            String text = "01" + "," + "03," + TcpOrderTextConf.stateSave;
             String[] split3 = text.split(",");
             for (String s : split3) {
                 strings1.add(s);
@@ -191,45 +98,13 @@ public class SendCodeUtils {
             return 0;
         }
     }
+
     /*
-    *状态操作指令发送01
-    * */
+     *状态操作指令发送01
+     * */
     public static int querystate01(DbOperationVo tcpOrder) {
-        String address = tcpOrder.getHeartName();
-        try {
-//        text处理
-            ArrayList<String> strings1 = new ArrayList<>();
-            String text = tcpOrder.getFacility() + "," + "01," + tcpOrder.getOperationText();
-            String[] split3 = text.split(",");
-            for (String s : split3) {
-                strings1.add(s);
-            }
-            Object[] objects = strings1.toArray();
-            String[] split = new String[objects.length];
-            for (int i = 0; i < split.length; i++) {
-                split[i] = objects[i].toString();
-            }
-            List<String> strings = new ArrayList<>();
-            for (String s : split) {
-                int i = Integer.parseInt(s);
-                //            十六进制转成十进制
-                String tmp = StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 4, '0');
-                strings.add(tmp);
-            }
-            String[] split1 = strings.toArray(new String[strings.size()]);
-            String[] bytes = Crc16Util.to_byte(split1);
-            byte[] data = Crc16Util.getData(bytes);
-            ChannelHandlerContext no1_1 = map.get(address);
-            Channel channel = no1_1.channel();
-            channel.write(Unpooled.copiedBuffer(data));
-            channel.flush();
-
-            return 1;
-        } catch (NumberFormatException e) {
-//            删除心跳
-
-            return 0;
-        }
+        String text = tcpOrder.getFacility() + "," + "01," + tcpOrder.getOperationText();
+        return operateCode(text, tcpOrder);
     }
 
 
@@ -268,7 +143,6 @@ public class SendCodeUtils {
 //                    int query = query(dbOperationVo);
                 for (int i = 0; i < dbOperationVos.size(); i++) {
                     int query = query(dbOperationVos.get(i));
-                    System.out.println(dbOperationVos.get(i) + "执行了");
 //                    线程礼让让其他的先执行
                     if (i < dbOperationVos.size()) {
                         try {
@@ -284,8 +158,6 @@ public class SendCodeUtils {
 
 
     }
-
-
 
 
     /*
@@ -304,9 +176,9 @@ public class SendCodeUtils {
     }
 
     /*
-    *通风手自状态查询
-    * */
-    public  int sinceOrHandTongFeng(DbEquipment equipment){
+     *通风手自状态查询
+     * */
+    public int sinceOrHandTongFeng(DbEquipment equipment) {
         DbOperationVo dbOperationVo = new DbOperationVo();
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
         dbOperationVo.setFacility(equipment.getEquipmentNo().toString());
@@ -332,18 +204,18 @@ public class SendCodeUtils {
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
         int querystate = querystate01(dbOperationVo);
-return querystate;
+        return querystate;
     }
 
     /*
      *通风手自  装态更改
      * */
-    public int operateTongFengHand(DbEquipment equipment,int i) {
+    public int operateTongFengHand(DbEquipment equipment, int i) {
         DbOperationVo dbOperationVo = new DbOperationVo();
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
         dbOperationVo.setFacility(equipment.getEquipmentNo());
-        dbOperationVo.setOperationText(i==0?TcpOrderTextConf.operateTongFeng:TcpOrderTextConf.operateTongFengOver);
-        dbOperationVo.setOperationName(i==0?"开启自动通风":"关闭自动通风");
+        dbOperationVo.setOperationText(i == 0 ? TcpOrderTextConf.operateTongFeng : TcpOrderTextConf.operateTongFengOver);
+        dbOperationVo.setOperationName(i == 0 ? "开启自动通风" : "关闭自动通风");
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
         int querystate = query(dbOperationVo);
@@ -353,18 +225,59 @@ return querystate;
     /*
      *通风手自温度  装态更改
      * */
-    public int operateTongFengType(DbEquipment equipment, int i,String type) {
+    public int operateTongFengType(DbEquipment equipment, int i, String type) {
         int i2 = Integer.parseInt(type, 16);
         DbOperationVo dbOperationVo = new DbOperationVo();
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
         dbOperationVo.setFacility(equipment.getEquipmentNo().toString());
-        dbOperationVo.setOperationText(i==0?TcpOrderTextConf.operateTongFengType+","+i2:TcpOrderTextConf.operateTongFengOverType+","+i2);
-        dbOperationVo.setOperationName(i==0?"更改开启自动通风温度为"+i2:"更改关闭自动通风温度为"+i2);
+        dbOperationVo.setOperationText(i == 0 ? TcpOrderTextConf.operateTongFengType + "," + i2 : TcpOrderTextConf.operateTongFengOverType + "," + i2);
+        dbOperationVo.setOperationName(i == 0 ? "更改开启自动通风温度为" + i2 : "更改关闭自动通风温度为" + i2);
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
         int querystate = query06(dbOperationVo);
         return querystate;
 
 
+    }
+
+    public static int operateCode(String text, DbOperationVo tcpOrder) {
+        try {
+            String address = tcpOrder.getHeartName();
+            ArrayList<String> strings1 = new ArrayList<>();
+//          text处理
+            String[] split3 = text.split(",");
+            for (String s : split3) {
+                strings1.add(s);
+            }
+            Object[] objects = strings1.toArray();
+            String[] split = new String[objects.length];
+            for (int i = 0; i < split.length; i++) {
+                split[i] = objects[i].toString();
+            }
+            List<String> strings = new ArrayList<>();
+            for (String s : split) {
+                int i = Integer.parseInt(s);
+                //            十六进制转成十进制
+                String tmp = StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 4, '0');
+                strings.add(tmp);
+            }
+            String[] split1 = strings.toArray(new String[strings.size()]);
+            String[] bytes = Crc16Util.to_byte(split1);
+            byte[] data = Crc16Util.getData(bytes);
+            ChannelHandlerContext no1_1 = null;
+            try {
+                no1_1 = map.get(address);
+            } catch (FaultExceptions e) {
+            }
+            Channel channel = no1_1.channel();
+            channel.write(Unpooled.copiedBuffer(data));
+            channel.flush();
+
+            return 1;
+        } catch (NumberFormatException e) {
+//            删除心跳
+
+            return 0;
+        }
     }
 }

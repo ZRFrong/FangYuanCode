@@ -84,8 +84,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectDbOperationRecordVo"/>
         <where>
             <if test="operationTime != null  and operationTime != ''"> and  DATE_FORMAT( operation_time, '%Y%m%d' ) = DATE_FORMAT( #{operationTime} , '%Y%m%d' )</if>
-            <if test="operationText != null  and operationText != ''"> and operation_text = #{operationText}, </if>
-            <if test="operationObject != null  and operationObject != ''"> and operation_object like concat('%', #{operationObject}, '%')</if>
+            <if test="operationText != null  and operationText != ''"> and operation_text = #{operationText}or operation_object like concat('%', #{operationText}, '%') </if>
             <if test="dbUserId != null  "> and db_user_id = #{dbUserId}</if>
         </where>
         order by operation_time  desc

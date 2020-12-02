@@ -11,6 +11,15 @@ public class DropsExceptions extends RuntimeException {
 //    掉线说明
     private final String message ;
 
+    public String getCode() {
+        return code;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
     public DropsExceptions(int code, String code1, String message) {
         this.code = code1;
         this.message = message;
@@ -18,12 +27,6 @@ public class DropsExceptions extends RuntimeException {
 
 
 
-    public String getMessage() {
-        return this.toString();
-    }
 
-    public String toString() {
-        return "系统异常，异常编码：" + this.code;
-    }
 
 }

@@ -6,16 +6,10 @@ package com.ruoyi.system.feign;
 
 import com.ruoyi.common.constant.ServiceNameConstants;
 import com.ruoyi.common.core.domain.R;
-import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
-import com.ruoyi.system.domain.DbStateRecords;
 import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.system.feign.factory.RemoteTcpFallbackFactory;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.cloud.openfeign.SpringQueryMap;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
