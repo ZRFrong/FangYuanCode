@@ -88,6 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dbUserId != null  "> and db_user_id = #{dbUserId}</if>
         </where>
         order by operation_time  desc
+        limit {pageNum},#{pageSize}
     </select>
 
 </mapper>

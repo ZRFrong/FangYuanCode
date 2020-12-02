@@ -73,10 +73,14 @@ public class DbOperationRecordController extends BaseController {
     @ApiOperation(value = "查询操作记录列表", notes = "pagesize,pageName后边跟参即可，拦截会进行处理")
     public R listGroupDay(@ApiParam(name = "operationTime", value = "date", required = false)  String operationTime,
                           @ApiParam(name = "operationText", value = "string", required = false) String operationText) {
-        String header = getRequest().getHeader(Constants.CURRENT_ID);
+//        String header = getRequest().getHeader(Constants.CURRENT_ID);
+        String header = getRequest().getHeader(Constants.PAGE_NUM);
+        String size = getRequest().getHeader(Constants.PAGE_SIZE);
+        int i = Integer.parseInt(header);
+        header=(i-1)+"";
         DbOperationRecord dbOperationRecord = new DbOperationRecord();
-        dbOperationRecord.setDbUserId(Long.valueOf(header));
-        dbOperationRecord.setDbUserId(Long.valueOf("1"));
+//        dbOperationRecord.setDbUserId(Long.valueOf(header));
+//        dbOperationRecord.setDbUserId(Long.valueOf("1"));
         if (!operationText.isEmpty()) {
             dbOperationRecord.setOperationText(operationText);
         } else if (!operationTime.isEmpty()) {
@@ -84,10 +88,9 @@ public class DbOperationRecordController extends BaseController {
         }
 
 //	    日期分组的操作记录
-        startPage();
-        List<DbOperationRecord> objects = dbOperationRecordService.listGroupDay(dbOperationRecord);
+        List<DbOperationRecord> objects = dbOperationRecordService.listGroupDay(dbOperationRecord,header,size);
 
-        return result(objects);
+        return R.data(objects);
     }
 
 

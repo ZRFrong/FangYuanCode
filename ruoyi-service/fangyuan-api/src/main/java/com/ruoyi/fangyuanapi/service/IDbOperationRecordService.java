@@ -61,6 +61,5 @@ public interface IDbOperationRecordService
     public int deleteDbOperationRecordById(Long id);
 
 
-    List<DbOperationRecord> listGroupDay(DbOperationRecord dbOperationRecord);
-
+    List<DbOperationRecord> listGroupDay(DbOperationRecord dbOperationRecord, String header, String size);
 }
