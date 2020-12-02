@@ -121,7 +121,8 @@ public class DbEquipmentController extends BaseController {
      * 获取当前设备的温湿度变化曲线    24小时   2小时间隔   温湿度空气土壤
      * */
 
-    @GetMapping("getTrend/{intervalTime}/{landid}")
+    @GetMapping("getTrend/{intervalTime}/{beforeTime}/{landid}")
+    @ApiOperation(value = "获取当前设备的温湿度变化曲线", notes = "获取当前设备的温湿度变化曲线")
     public R getTrend(@ApiParam(name = "间隔时间单位小时") @PathVariable("intervalTime")Integer intervalTime,
                       @ApiParam(name = "之前多久时间")@PathVariable("beforeTime") String beforeTime,
                       @ApiParam(name = "设备id")@PathVariable("landid") String landid) {
@@ -134,10 +135,10 @@ public class DbEquipmentController extends BaseController {
         String s = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, type);
         String s1 = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, DateUtils.getNowDate());
 
-          List<DbStateRecords> records= remoteTcpService.intervalState(s,s1,intervalTime.toString(),path);
+        R r = remoteTcpService.intervalState(s, s1, intervalTime.toString(), path);
 
 
-        return R.data(records);
+        return r;
     }
 
 

@@ -40,7 +40,6 @@ public class DbLandController extends BaseController {
      */
     @GetMapping("get/{landId}")
     public DbLand get( @PathVariable("landId") Long landId) {
-
         return dbLandService.selectDbLandById(landId);
 
     }
@@ -75,7 +74,7 @@ public class DbLandController extends BaseController {
      */
     @PostMapping("save")
     @ApiOperation(value = "新增土地/地块", notes = "土地/地块id")
-    public R addSave(@RequestBody DbLand dbLand, HttpServletRequest request)
+    public R addSave(DbLand dbLand, HttpServletRequest request)
     {
         String userId = request.getHeader(Constants.CURRENT_ID);
         dbLand.setDbUserId(Long.valueOf(userId));
