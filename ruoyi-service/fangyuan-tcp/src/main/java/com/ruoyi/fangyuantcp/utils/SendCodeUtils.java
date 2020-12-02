@@ -296,6 +296,7 @@ public class SendCodeUtils {
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
         dbOperationVo.setFacility(equipment.getEquipmentNo().toString());
         dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhand);
+        dbOperationVo.setOperationName("手动自动状态查询");
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
         int querystate = querystate03(dbOperationVo);
@@ -310,8 +311,10 @@ public class SendCodeUtils {
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
         dbOperationVo.setFacility(equipment.getEquipmentNo().toString());
         dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFeng);
+        dbOperationVo.setOperationName("查询自动通风是否开启");
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
+
         int querystate = querystate01(dbOperationVo);
         return querystate;
 
@@ -325,6 +328,7 @@ public class SendCodeUtils {
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
         dbOperationVo.setFacility(equipment.getEquipmentNo());
         dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFengType);
+        dbOperationVo.setOperationName("查询当前自动通风开始和关闭的温度");
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
         int querystate = querystate01(dbOperationVo);
@@ -339,6 +343,7 @@ return querystate;
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
         dbOperationVo.setFacility(equipment.getEquipmentNo());
         dbOperationVo.setOperationText(i==0?TcpOrderTextConf.operateTongFeng:TcpOrderTextConf.operateTongFengOver);
+        dbOperationVo.setOperationName(i==0?"开启自动通风":"关闭自动通风");
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
         int querystate = query(dbOperationVo);
@@ -354,6 +359,7 @@ return querystate;
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
         dbOperationVo.setFacility(equipment.getEquipmentNo().toString());
         dbOperationVo.setOperationText(i==0?TcpOrderTextConf.operateTongFengType+","+i2:TcpOrderTextConf.operateTongFengOverType+","+i2);
+        dbOperationVo.setOperationName(i==0?"更改开启自动通风温度为"+i2:"更改关闭自动通风温度为"+i2);
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
         int querystate = query06(dbOperationVo);

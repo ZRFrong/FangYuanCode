@@ -55,6 +55,7 @@ public class GlobalExceptionHandler
         return R.error(e.getCode(), e.getMessage());
     }
 
+
     @ExceptionHandler(DuplicateKeyException.class)
     public R handleDuplicateKeyException(DuplicateKeyException e)
     {
@@ -68,6 +69,10 @@ public class GlobalExceptionHandler
         logger.error(e.getMessage(), e);
         return R.error("服务器错误，请联系管理员");
     }
+/*
+* 业务异常
+* */
+
 
     /**
      * 捕获并处理未授权异常

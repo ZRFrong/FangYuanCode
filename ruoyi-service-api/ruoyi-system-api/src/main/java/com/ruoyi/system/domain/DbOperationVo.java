@@ -3,23 +3,67 @@ package com.ruoyi.system.domain;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 import java.util.Date;
 
 @ApiModel
-@Data
 public class DbOperationVo {
     public DbOperationVo() {
     }
 
-    public DbOperationVo(String heartName, String facility, String operationText, String isTrue, Date createTime) {
+
+    @Override
+    public String toString() {
+        return "DbOperationVo{" +
+                "heartName='" + heartName + '\'' +
+                ", facility='" + facility + '\'' +
+                ", operationText='" + operationText + '\'' +
+                ", isTrue='" + isTrue + '\'' +
+                ", createTime=" + createTime +
+                ", operationName=" + operationName +
+                '}';
+    }
+
+    public String getHeartName() {
+        return heartName;
+    }
+
+    public void setHeartName(String heartName) {
         this.heartName = heartName;
+    }
+
+    public String getFacility() {
+        return facility;
+    }
+
+    public void setFacility(String facility) {
         this.facility = facility;
+    }
+
+    public String getOperationText() {
+        return operationText;
+    }
+
+    public void setOperationText(String operationText) {
         this.operationText = operationText;
+    }
+
+    public String getIsTrue() {
+        return isTrue;
+    }
+
+    public void setIsTrue(String isTrue) {
         this.isTrue = isTrue;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
 
     /** 心跳名称 */
     @ApiModelProperty(value = "设备绑定心跳名称")
@@ -34,6 +78,14 @@ public class DbOperationVo {
     @ApiModelProperty(value = "操作指令")
     private String operationText;
 
+    public String getOperationName() {
+        return operationName;
+    }
+
+    public void setOperationName(String operationName) {
+        this.operationName = operationName;
+    }
+
     /** 是否成功 */
     @ApiModelProperty(value = "是否成功")
     private String isTrue;
@@ -41,6 +93,10 @@ public class DbOperationVo {
     /*创建时间*/
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
+
+    /*操作指令名称*/
+    @ApiModelProperty(value = "操作对象名称")
+    private String operationName;
 
 
 

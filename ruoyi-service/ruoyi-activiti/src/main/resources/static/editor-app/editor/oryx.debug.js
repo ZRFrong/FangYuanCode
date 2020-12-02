@@ -20675,7 +20675,7 @@ ORYX.Plugins.Resizer = Clazz.extend({
 		};
 		
 		if(this.aspectRatio) {
-			// fixed aspect ratio
+			// fixed abnormal ratio
 			newAspectRatio = (this.bounds.width()+offset.x) / (this.bounds.height()+offset.y);
 			if(newAspectRatio>this.aspectRatio) {
 				offset.x = this.aspectRatio * (this.bounds.height()+offset.y) - this.bounds.width();
