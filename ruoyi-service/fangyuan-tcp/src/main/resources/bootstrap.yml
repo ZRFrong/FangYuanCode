@@ -10,7 +10,7 @@ spring:
   application:
     name: fangyuan-tcp
   profiles:
-    active: prod
+    active: dev
   devtools:
     restart:
       enabled: true

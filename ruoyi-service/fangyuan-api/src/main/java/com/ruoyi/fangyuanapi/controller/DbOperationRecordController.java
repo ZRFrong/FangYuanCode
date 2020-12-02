@@ -3,6 +3,7 @@ package com.ruoyi.fangyuanapi.controller;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.DbOperationRecord;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -76,10 +77,9 @@ public class DbOperationRecordController extends BaseController {
         String header = getRequest().getHeader(Constants.CURRENT_ID);
         DbOperationRecord dbOperationRecord = new DbOperationRecord();
         dbOperationRecord.setDbUserId(Long.valueOf(header));
-        dbOperationRecord.setDbUserId(Long.valueOf("1"));
-        if (!operationText.isEmpty()) {
+        if (!StringUtils.isEmpty(operationText)) {
             dbOperationRecord.setOperationText(operationText);
-        } else if (!operationTime.isEmpty()) {
+        } else if (!StringUtils.isEmpty(operationText)) {
             dbOperationRecord.setOperationTime(DateUtils.dateTime(DateUtils.YYYY_MM_DD,operationTime));
         }
 
@@ -87,7 +87,7 @@ public class DbOperationRecordController extends BaseController {
         startPage();
         List<DbOperationRecord> objects = dbOperationRecordService.listGroupDay(dbOperationRecord);
 
-        return result(objects);
+        return R.data(objects);
     }
 
 
