@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.fangyuantcp.abnormal.DropsExceptions;
 import com.ruoyi.fangyuantcp.service.IDbEquipmentService;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
@@ -120,6 +121,8 @@ public class ReceiveUtil {
         if (i < 600) {
 //            手动
             dbEquipment.setIsOnline(1);
+//            提醒
+            throw new DropsExceptions(dbEquipment.getEquipmentName(),"已经切换手动状态");
         } else {
 //            自动
             dbEquipment.setIsOnline(0);

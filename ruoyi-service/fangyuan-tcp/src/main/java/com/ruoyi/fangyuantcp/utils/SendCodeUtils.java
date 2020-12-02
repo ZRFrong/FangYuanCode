@@ -4,15 +4,22 @@ import java.util.Date;
 
 
 import cn.hutool.core.thread.ThreadUtil;
+import com.alibaba.fastjson.JSONArray;
+import com.ruoyi.common.redis.config.RedisKeyConf;
+import com.ruoyi.common.redis.util.RedisUtils;
+import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuantcp.abnormal.FaultExceptions;
+import com.ruoyi.fangyuantcp.timing.TaskTcpOrder;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
 import com.ruoyi.system.domain.DbTcpClient;
+import com.ruoyi.system.domain.DbTcpOrder;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -24,6 +31,9 @@ public class SendCodeUtils {
     //    在线设备map
     private static Map<String, ChannelHandlerContext> map = NettyServer.map;
 
+    private static RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
+
+
     /*
      * 普通操作指令发送
      * */
@@ -31,9 +41,6 @@ public class SendCodeUtils {
         String text = tcpOrder.getFacility() + "," + "05," + tcpOrder.getOperationText();
         return operateCode(text, tcpOrder);
     }
-
-
-
 
     /*
      * 普通操作指令发送  06  自动状态设置更改
@@ -56,7 +63,7 @@ public class SendCodeUtils {
      * */
     public static int querystate03(DbOperationVo tcpOrder) {
         String text = tcpOrder.getFacility() + "," + "03," + tcpOrder.getOperationText();
-       return operateCode(text, tcpOrder);
+        return operateCode(text, tcpOrder);
     }
 
 
@@ -240,6 +247,7 @@ public class SendCodeUtils {
 
     }
 
+
     public static int operateCode(String text, DbOperationVo tcpOrder) {
         try {
             String address = tcpOrder.getHeartName();
@@ -265,19 +273,45 @@ public class SendCodeUtils {
             String[] bytes = Crc16Util.to_byte(split1);
             byte[] data = Crc16Util.getData(bytes);
             ChannelHandlerContext no1_1 = null;
-            try {
-                no1_1 = map.get(address);
-            } catch (FaultExceptions e) {
-            }
+            no1_1 = map.get(address);
             Channel channel = no1_1.channel();
             channel.write(Unpooled.copiedBuffer(data));
             channel.flush();
 
-            return 1;
-        } catch (NumberFormatException e) {
-//            删除心跳
 
-            return 0;
+            tcpOrder.setCreateTime(new Date());
+//        存储操作信息到redis
+            String operationText = tcpOrder.getOperationText();
+            String facility = tcpOrder.getFacility();
+            String heartName = tcpOrder.getHeartName();
+
+            DbTcpOrder order = getOrder(tcpOrder);
+            String s = RedisKeyConf.HANDLE + ":" + heartName + "_" + facility + "_" + operationText;
+            String s2 = JSONArray.toJSONString(order);
+            redisUtils.set(s, s2);
+
+
+            /*
+             * 建立监听返回的数据
+             * */
+            TaskTcpOrder taskTcpOrder = new TaskTcpOrder();
+            taskTcpOrder.HeartbeatRun(s,tcpOrder);
+
+
+            return 1;
+        } catch (Exception e) {
+//            删除心跳
+            throw new FaultExceptions(tcpOrder.getHeartName() + tcpOrder.getFacility(), tcpOrder.getOperationName());
         }
+    }
+
+
+    private static DbTcpOrder getOrder(DbOperationVo dbOperationVo) {
+        DbTcpOrder dbTcpOrder = new DbTcpOrder();
+        dbTcpOrder.setHeartName(dbOperationVo.getHeartName());
+        dbTcpOrder.setResults(0);
+        dbTcpOrder.setText(dbOperationVo.getFacility() + dbOperationVo.getOperationText());
+        dbTcpOrder.setCreateTime(new Date());
+        return dbTcpOrder;
     }
 }

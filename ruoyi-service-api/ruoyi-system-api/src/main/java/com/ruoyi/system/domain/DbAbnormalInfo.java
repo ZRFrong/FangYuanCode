@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain;
 
+import com.ruoyi.common.utils.DateUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -28,9 +29,38 @@ public class DbAbnormalInfo extends BaseEntity
     private String faultType;
 
     /** 报警时间 */
-    @Excel(name = "报警时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "报警时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "报警时间")
     private Date alarmTime;
+
+    @Override
+    public String toString() {
+        return "DbAbnormalInfo{" +
+                "id=" + id +
+                ", faultType='" + faultType + '\'' +
+                ", alarmTime=" + alarmTime +
+                ", dbEquipmentId=" + dbEquipmentId +
+                ", isDispose=" + isDispose +
+                ", alarmExplain='" + alarmExplain + '\'' +
+                ", objectType='" + objectType + '\'' +
+                '}';
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public Long getDbEquipmentId() {
+        return dbEquipmentId;
+    }
+
+    public void setDbEquipmentId(Long dbEquipmentId) {
+        this.dbEquipmentId = dbEquipmentId;
+    }
+
+    /** 报警时间 */
+    @ApiModelProperty(value = "报警时间")
+    private Long dbEquipmentId;
 
     /** 是否处理 */
     @Excel(name = "是否处理")
@@ -102,15 +132,4 @@ public class DbAbnormalInfo extends BaseEntity
         return objectType;
     }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("faultType", getFaultType())
-            .append("alarmTime", getAlarmTime())
-            .append("isDispose", getIsDispose())
-            .append("alarmExplain", getAlarmExplain())
-            .append("objectType", getObjectType())
-            .toString();
-    }
 }

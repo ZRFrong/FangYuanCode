@@ -27,7 +27,7 @@ public interface RemoteApiService {
     @GetMapping(value="weather/curingType")
     R startSaveTiming();
 
-    @PostMapping(value="abnormalInfo/save")
+    @PostMapping(value="abnormalInfo/saveEquiment")
     R abnormalInfoSave(@RequestBody DbAbnormalInfo dbAbnormalInfo);
 
 

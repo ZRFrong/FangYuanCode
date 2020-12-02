@@ -1,6 +1,9 @@
 package com.ruoyi.fangyuanapi.controller;
 
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.system.domain.DbAbnormalInfo;
+import com.ruoyi.system.domain.DbEquipment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,10 +30,13 @@ import com.ruoyi.fangyuanapi.service.IDbAbnormalInfoService;
 @RequestMapping("abnormalInfo")
 public class DbAbnormalInfoController extends BaseController
 {
-	
-	@Autowired
-	private IDbAbnormalInfoService dbAbnormalInfoService;
 
+    @Autowired
+    private IDbAbnormalInfoService dbAbnormalInfoService;
+
+
+    @Autowired
+    private IDbEquipmentService equipmentService;
 
 	
 	/**
@@ -61,9 +67,18 @@ public class DbAbnormalInfoController extends BaseController
 	@PostMapping("save")
     @ApiOperation(value = "新增保存报警信息" , notes = "新增保存报警信息")
 	public R addSave(@ApiParam(name="DbAbnormalInfo",value="传入json格式",required=true) @RequestBody DbAbnormalInfo dbAbnormalInfo)
-	{		
+	{
 		return toAjax(dbAbnormalInfoService.insertDbAbnormalInfo(dbAbnormalInfo));
 	}
+
+    @PostMapping("saveEquiment")
+    public R saveEquiment(@ApiParam(name="DbAbnormalInfo",value="传入json格式",required=true) @RequestBody DbAbnormalInfo dbAbnormalInfo)
+    {
+        String objectType = dbAbnormalInfo.getObjectType();
+        DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(Long.valueOf(objectType));
+
+        return toAjax(dbAbnormalInfoService.insertDbAbnormalInfo(dbAbnormalInfo));
+    }
 
 	/**
 	 * 修改保存报警信息
@@ -82,7 +97,19 @@ public class DbAbnormalInfoController extends BaseController
 	{		
 		return toAjax(dbAbnormalInfoService.deleteDbAbnormalInfoByIds(ids));
 	}
+	/**
+	 * 查询报警信息列表
+	 */
+	@GetMapping("listApp")
+	@ApiOperation(value = "查询报警信息列表" , notes = "报警信息列表")
+	public R list1(@ApiParam(name="开始时间",value="date",required=true) String startTime)
+	{
+        String header = getRequest().getHeader(Constants.CURRENT_ID);
 
+        DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();
+
+        return result(dbAbnormalInfoService.selectDbAbnormalInfoList(dbAbnormalInfo));
+	}
 
 	
 }

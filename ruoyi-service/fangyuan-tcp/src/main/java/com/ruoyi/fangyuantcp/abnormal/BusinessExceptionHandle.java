@@ -34,6 +34,7 @@ public class BusinessExceptionHandle {
         dbAbnormalInfo.setAlarmExplain(DROPS);
 
         remoteApiService.abnormalInfoSave(dbAbnormalInfo);
+
         return R.error(e.getMessage() + "设备掉线异常");
     }
 
@@ -48,8 +49,8 @@ public class BusinessExceptionHandle {
         dbAbnormalInfo.setAlarmExplain(e.getMessage());
         dbAbnormalInfo.setObjectType(e.getCode());
         dbAbnormalInfo.setAlarmExplain(FAULT);
-
         remoteApiService.abnormalInfoSave(dbAbnormalInfo);
+
         return R.error(e.getMessage() + "设备故障异常");
     }
 
@@ -64,8 +65,8 @@ public class BusinessExceptionHandle {
         dbAbnormalInfo.setAlarmExplain(e.getMessage());
         dbAbnormalInfo.setObjectType(e.getCode());
         dbAbnormalInfo.setAlarmExplain(OPERATIONEXCEPTIONS);
-
         remoteApiService.abnormalInfoSave(dbAbnormalInfo);
+
         return R.error(e.getMessage() + "设备操作异常");
     }
 

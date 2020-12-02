@@ -20,8 +20,8 @@ public class DropsExceptions extends RuntimeException {
         return message;
     }
 
-    public DropsExceptions(int code, String code1, String message) {
-        this.code = code1;
+    public DropsExceptions( String code, String message) {
+        this.code = code;
         this.message = message;
     }
 

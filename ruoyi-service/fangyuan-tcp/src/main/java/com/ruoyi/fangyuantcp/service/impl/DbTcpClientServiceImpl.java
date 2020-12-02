@@ -32,8 +32,7 @@ import com.ruoyi.common.core.text.Convert;
 @Service
 public class DbTcpClientServiceImpl implements IDbTcpClientService {
 
-    @Autowired
-    private RedisUtils redisUtils;
+
 
     @Autowired
     private DbEquipmentMapper1 dbEquipmentMapper;
@@ -177,28 +176,12 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     @Override
     public int operation(DbOperationVo dbTcpClient) {
 //        发送指令
-        dbTcpClient.setCreateTime(new Date());
         int query = sendCodeUtils.query(dbTcpClient);
-//        存储操作信息到redis
-        String operationText = dbTcpClient.getOperationText();
-        String facility = dbTcpClient.getFacility();
-        String heartName = dbTcpClient.getHeartName();
 
-        String s = RedisKeyConf.HANDLE + ":" + heartName + "_" + facility + "_" + operationText;
-        DbTcpOrder order = getOrder(dbTcpClient);
-        String s2 = JSONArray.toJSONString(order);
-        redisUtils.set(s, s2);
         return query;
     }
 
-    private DbTcpOrder getOrder(DbOperationVo dbOperationVo) {
-        DbTcpOrder dbTcpOrder = new DbTcpOrder();
-        dbTcpOrder.setHeartName(dbOperationVo.getHeartName());
-        dbTcpOrder.setResults(0);
-        dbTcpOrder.setText(dbOperationVo.getFacility() + dbOperationVo.getOperationText());
-        dbTcpOrder.setCreateTime(new Date());
-        return dbTcpOrder;
-    }
+
 
     @Override
     public int heartbeatChoose(DbTcpClient dbTcpClient) {
