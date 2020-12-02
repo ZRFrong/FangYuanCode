@@ -6,6 +6,7 @@ package com.ruoyi.fangyuanapi.controller;
  * */
 
 import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.R;
@@ -54,9 +55,9 @@ public class OperateControllerWeChat extends BaseController {
     @GetMapping("getList")
     @ApiOperation(value = "查询当前用户下的操作列表", notes = "查询当前用户下的操作列表")
     public AjaxResult getList() {
-//        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+        String userId = getRequest().getHeader(Constants.CURRENT_ID);
         DbLand dbLand = new DbLand();
-        dbLand.setDbUserId(Long.valueOf("1"));
+        dbLand.setDbUserId(Long.valueOf(userId));
         List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
         return AjaxResult.success(getOperateWeChatVos(dbLands));
     }
@@ -142,7 +143,7 @@ public class OperateControllerWeChat extends BaseController {
             operateWeChatVo.setNickName(dbLand.getNickName());
             if (StringUtils.isEmpty(dbLand.getEquipmentIds()) ) {
                 operateWeChatVo.setIsBound(0);
-                break;
+                continue;
             }
             ArrayList<DbEquipmentVo> dbEquipmentVos = new ArrayList<>();
             for (String s : dbLand.getEquipmentIds().split(",")) {

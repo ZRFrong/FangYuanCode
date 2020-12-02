@@ -1,26 +1,26 @@
 package com.ruoyi.fangyuantcp.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.system.domain.DbEquipment;
-import com.ruoyi.system.domain.DbLand;
-import com.ruoyi.system.domain.DbStateRecords;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+        import com.alibaba.fastjson.JSON;
+        import com.ruoyi.common.utils.DateUtils;
+        import com.ruoyi.system.domain.DbEquipment;
+        import com.ruoyi.system.domain.DbLand;
+        import com.ruoyi.system.domain.DbStateRecords;
+        import org.springframework.beans.factory.annotation.Autowired;
+        import org.springframework.web.bind.annotation.*;
+        import io.swagger.annotations.Api;
+        import io.swagger.annotations.ApiOperation;
+        import io.swagger.annotations.ApiParam;
 
-import com.ruoyi.common.core.domain.R;
-import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.system.domain.DbTcpType;
-import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
+        import com.ruoyi.common.core.domain.R;
+        import com.ruoyi.common.core.controller.BaseController;
+        import com.ruoyi.system.domain.DbTcpType;
+        import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 
-import javax.naming.Name;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+        import javax.naming.Name;
+        import java.util.ArrayList;
+        import java.util.Date;
+        import java.util.HashMap;
+        import java.util.List;
 
 /**
  * 设备状态 提供者     4g模块在线否

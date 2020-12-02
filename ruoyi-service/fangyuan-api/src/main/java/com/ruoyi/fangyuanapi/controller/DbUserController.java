@@ -2,6 +2,7 @@ package com.ruoyi.fangyuanapi.controller;
 
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.R;
@@ -179,7 +180,7 @@ public class DbUserController extends BaseController {
                 }
                 //登录成功
                 //Map<String, String> map = resultTokens(dbUser.getId(), "XIAOSI", tokenConf.getAccessTokenKey(), tokenConf.getRefreshTokenKey());
-                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000));
+                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000),null);
                 /* 返回token 并且记录 */
                 redisUtils.set(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId(), token, 60 * 60 * 24 * 30 * 2L);
                 return R.data(token);
@@ -196,7 +197,7 @@ public class DbUserController extends BaseController {
                     redisUtils.delete(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId());
                 }
                 //Map<String, String> map = resultTokens(dbUser.getId(), "XIAOSI", tokenConf.getAccessTokenKey(), tokenConf.getRefreshTokenKey());
-                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000));
+                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000),null);
                 redisUtils.set(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId(),token, 60 * 60 * 24 * 30 * 2L);
                 return R.data(token);
             } else {
@@ -316,7 +317,7 @@ public class DbUserController extends BaseController {
                 dbUser = dbUserService.wxRegister(phone,openId,nickname,avatar);
             }
             if (dbUser != null){
-                return R.data(getToken(dbUser.getId(), tokenConf.getAccessTokenKey(),System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000)));
+                return R.data(getToken(dbUser.getId(), tokenConf.getAccessTokenKey(),System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000),0));
             }
             return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
         }else {
@@ -356,7 +357,7 @@ public class DbUserController extends BaseController {
             if (StringUtils.isNotEmpty(openid)){
                 DbUser user = dbUserService.selectDbUserByOpenId(openid);
                 if (user != null){
-                    stringMap.put("token",getToken(user.getId(), tokenConf.getAccessTokenKey(),System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000)));
+                    stringMap.put("token",getToken(user.getId(), tokenConf.getAccessTokenKey(),System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000),0));
                     return  R.data(stringMap) ;
                 }
                 stringMap.put("openId",openid);
@@ -368,11 +369,14 @@ public class DbUserController extends BaseController {
         return R.error();
     }
 
-    private String getToken(Long id,String key,Long time){
+    private String getToken(Long id, String key, Long time, Integer type){
         HashMap<Object, Object> tokenMap = new HashMap<>();
         tokenMap.put("id", id);
         tokenMap.put("expireTime", time);
         tokenMap.put("topic", 0);
+        if (type != null){
+            tokenMap.put("type",0);
+        }
         return TokenUtils.encrypt(JSON.toJSONString(tokenMap), key);
     }
 

@@ -68,7 +68,7 @@ public class SendSmsController extends BaseController {
                             redisUtils.set(CategoryType.SMS_NUM.name(), Integer.valueOf(smsNum) + 1, RedisTimeConf.ONE_DAY);
                             redisUtils.set(CategoryType.USER_DAY_NUM_ + phone, Integer.valueOf(dayNum) + 1, RedisTimeConf.ONE_DAY);
                             redisUtils.set(CategoryType.USER_HOUR_NUM_ + phone, Integer.valueOf(hourNum) + 1, RedisTimeConf.ONE_HOUR);
-                            return R.data(result);
+                            return R.ok();
                         } else {
                             return R.error(ResultEnum.SERVICE_BUSY.getCode(), ResultEnum.SERVICE_BUSY.getMessage());
                         }
