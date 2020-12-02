@@ -126,7 +126,6 @@ public class DbEquipmentController extends BaseController {
     public R getTrend(@ApiParam(name = "间隔时间单位小时") @PathVariable("intervalTime")String intervalTime,
                       @ApiParam(name = "之前多久时间")@PathVariable("beforeTime") String beforeTime,
                       @ApiParam(name = "设备id")@PathVariable("landid") String landid) {
-
         Date type = DateUtils.getType(DateUtils.HOUR, -Integer.parseInt(beforeTime));
         DbLand dbLand = dbLandService.selectDbLandById(Long.valueOf(landid));
         String equipmentIds = dbLand.getEquipmentIds();

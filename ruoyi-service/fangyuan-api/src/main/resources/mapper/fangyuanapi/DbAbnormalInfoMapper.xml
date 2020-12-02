@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbAbnormalInfoMapper">
+    
+    <resultMap type="DbAbnormalInfo" id="DbAbnormalInfoResult">
+        <result property="id"    column="id"    />
+        <result property="faultType"    column="fault_type"    />
+        <result property="alarmTime"    column="alarm_time"    />
+        <result property="isDispose"    column="is_dispose"    />
+        <result property="alarmExplain"    column="alarm_explain"    />
+        <result property="objectType"    column="object_type"    />
+        <result property="dbEquipmentId"    column="db_equipment_id"    />
+    </resultMap>
+
+    <sql id="selectDbAbnormalInfoVo">
+        select id, fault_type, alarm_time, is_dispose, alarm_explain, object_type ,db_equipment_id from db_abnormal_info
+    </sql>
+
+    <select id="selectDbAbnormalInfoList" parameterType="DbAbnormalInfo" resultMap="DbAbnormalInfoResult">
+        <include refid="selectDbAbnormalInfoVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbAbnormalInfoById" parameterType="Long" resultMap="DbAbnormalInfoResult">
+        <include refid="selectDbAbnormalInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbAbnormalInfo" parameterType="DbAbnormalInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into db_abnormal_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="faultType != null  and faultType != ''">fault_type,</if>
+            <if test="alarmTime != null ">alarm_time,</if>
+            <if test="isDispose != null ">is_dispose,</if>
+            <if test="alarmExplain != null  and alarmExplain != ''">alarm_explain,</if>
+            <if test="objectType != null  and objectType != ''">object_type,</if>
+            <if test="dbEquipmentId != null  ">db_equipment_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="faultType != null  and faultType != ''">#{faultType},</if>
+            <if test="alarmTime != null ">#{alarmTime},</if>
+            <if test="isDispose != null ">#{isDispose},</if>
+            <if test="alarmExplain != null  and alarmExplain != ''">#{alarmExplain},</if>
+            <if test="objectType != null  and objectType != ''">#{objectType},</if>
+            <if test="dbEquipmentId != null  ">#{dbEquipmentId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbAbnormalInfo" parameterType="DbAbnormalInfo">
+        update db_abnormal_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="faultType != null  and faultType != ''">fault_type = #{faultType},</if>
+            <if test="alarmTime != null ">alarm_time = #{alarmTime},</if>
+            <if test="isDispose != null ">is_dispose = #{isDispose},</if>
+            <if test="alarmExplain != null  and alarmExplain != ''">alarm_explain = #{alarmExplain},</if>
+            <if test="objectType != null  and objectType != ''">object_type = #{objectType},</if>
+            <if test="dbEquipmentId != null  and dbEquipmentId != ''">db_equipment_id= #{objectType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbAbnormalInfoById" parameterType="Long">
+        delete from db_abnormal_info where id = #{id}
+    </delete>
+
+    <delete id="deleteDbAbnormalInfoByIds" parameterType="String">
+        delete from db_abnormal_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
