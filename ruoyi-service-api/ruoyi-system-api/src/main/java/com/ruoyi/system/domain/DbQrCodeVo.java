@@ -2,6 +2,8 @@ package com.ruoyi.system.domain;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.List;
+
 public class DbQrCodeVo {
 
     /*是否第一次绑定*/
@@ -14,7 +16,7 @@ public class DbQrCodeVo {
 
    /*操作集类*/
    @ApiModelProperty(value = "操作集类")
-   public  OperatePojo operatePojo;
+   public List<OperatePojo > operatePojo;
 
     public DbQrCodeVo() {
     }
@@ -44,11 +46,11 @@ public class DbQrCodeVo {
         this.dbQrCode = dbQrCode;
     }
 
-    public OperatePojo getOperatePojo() {
+    public List<OperatePojo> getOperatePojo() {
         return operatePojo;
     }
 
-    public void setOperatePojo(OperatePojo operatePojo) {
+    public void setOperatePojo(List<OperatePojo> operatePojo) {
         this.operatePojo = operatePojo;
     }
 }

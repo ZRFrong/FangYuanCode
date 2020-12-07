@@ -1,8 +1,12 @@
 package com.ruoyi.fangyuanapi.controller;
 
+import com.github.pagehelper.PageHelper;
 import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.core.page.PageConf;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.DbOperationRecord;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,24 +76,20 @@ public class DbOperationRecordController extends BaseController {
     @GetMapping("listGroupDay")
     @ApiOperation(value = "查询操作记录列表", notes = "pagesize,pageName后边跟参即可，拦截会进行处理")
     public R listGroupDay(@ApiParam(name = "operationTime", value = "date", required = false)  String operationTime,
-                          @ApiParam(name = "operationText", value = "string", required = false) String operationText) {
-//        String header = getRequest().getHeader(Constants.CURRENT_ID);
-        String header = getRequest().getHeader(Constants.PAGE_NUM);
-        String size = getRequest().getHeader(Constants.PAGE_SIZE);
-        int i = Integer.parseInt(header);
-        header=(i-1)+"";
+                          @ApiParam(name = "operationText", value = "string", required = false) String operationText,
+                          @ApiParam(name = "pageNum", value = "integer", required = true)Integer pageNum,
+                          @ApiParam(name = "pageSize", value = "integer", required = true) Integer pageSize) {
+        String header = getRequest().getHeader(Constants.CURRENT_ID);
+        pageNum = pageNum == null || pageNum <= 0  ? 0 :(pageNum -1) * pageSize;
         DbOperationRecord dbOperationRecord = new DbOperationRecord();
-//        dbOperationRecord.setDbUserId(Long.valueOf(header));
-//        dbOperationRecord.setDbUserId(Long.valueOf("1"));
-        if (!operationText.isEmpty()) {
+        if (!StringUtils.isEmpty(operationText)) {
             dbOperationRecord.setOperationText(operationText);
-        } else if (!operationTime.isEmpty()) {
+        } else if (!StringUtils.isEmpty(operationTime)) {
             dbOperationRecord.setOperationTime(DateUtils.dateTime(DateUtils.YYYY_MM_DD,operationTime));
         }
 
 //	    日期分组的操作记录
-        List<DbOperationRecord> objects = dbOperationRecordService.listGroupDay(dbOperationRecord,header,size);
-
+        List<DbOperationRecord> objects = dbOperationRecordService.listGroupDay(dbOperationRecord,pageNum,pageSize,Long.valueOf(header));
         return R.data(objects);
     }
 

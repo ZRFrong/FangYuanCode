@@ -122,7 +122,7 @@ public class DbAbnormalInfoController extends BaseController {
                 dbAbnormalInfos.addAll(dbAbnormalInfoService.selectDbAbnormalInfoList(dbAbnormalInfo));
             }
         }
-        return result(dbAbnormalInfos);
+        return result1(dbAbnormalInfos);
     }
 
 

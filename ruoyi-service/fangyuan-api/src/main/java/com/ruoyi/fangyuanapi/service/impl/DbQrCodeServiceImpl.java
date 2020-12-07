@@ -4,8 +4,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.aes.TokenUtils;
 import com.ruoyi.fangyuanapi.conf.TokenConf;
 import com.ruoyi.fangyuanapi.mapper.DbEquipmentMapper;
@@ -134,8 +137,10 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
             DbQrCodeVo dbQrCodeVo = new DbQrCodeVo();
             DbQrCode dbQrCode = dbQrCodeMapper.selectDbQrCodeById(Long.valueOf(qrCodeId));
             dbQrCodeVo.setDbQrCode(dbQrCode);
-            dbQrCodeVo.setFirstBind(dbQrCode.getAdminUserId().equals(id) ? true : false);
-            dbQrCodeVo.setOperatePojo(JSON.parseObject(dbEquipmentMapper.selectDbEquipmentById(dbQrCode.getEquipmentId()).getHandlerText(), OperatePojo.class));
+            dbQrCode.setAdminUserId(dbQrCode.getAdminUserId() == null ? 0 : dbQrCode.getAdminUserId());
+            dbQrCodeVo.setFirstBind( dbQrCode.getAdminUserId().equals(id) ? true : false);
+            String text = dbEquipmentMapper.selectDbEquipmentById(dbQrCode.getEquipmentId()).getHandlerText();
+            dbQrCodeVo.setOperatePojo( JSON.parseArray(text, OperatePojo.class));
             return dbQrCodeVo;
         } else {
             return null;
@@ -150,5 +155,16 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
      */
     public int deleteDbQrCodeById(Long qrCodeId) {
         return dbQrCodeMapper.deleteDbQrCodeById(qrCodeId);
+    }
+
+    public static void main(String [] args){
+        String s = "[{\"checkCode\":\"1\",\"checkName\":\"卷帘1\",\"spList\":[{\"handleCode\":\"15,160,255,00\",\"handleName\":\"start\"},{\"handleCode\":\"15,160,00,00\",\"handleName\":\"start_stop\"},{\"handleCode\":\"15,161,255,00\",\"handleName\":\"down\"},{\"handleCode\":\"15,161,00,00\",\"handleName\":\"down_stop\"}]},{\"checkCode\":\"1\",\"checkName\":\"卷帘2\",\"spList\":[{\"handleCode\":\"15,162,255,00\",\"handleName\":\"start\"},{\"handleCode\":\"15,162,00,00\",\"handleName\":\"start_stop\"},{\"handleCode\":\"15,163,255,00\",\"handleName\":\"down\"},{\"handleCode\":\"15,163,00,00\",\"handleName\":\"down_stop\"}]},{\"checkCode\":\"2\",\"checkName\":\"通风1\",\"spList\":[{\"handleCode\":\"15,164,255,00\",\"handleName\":\"start\"},{\"handleCode\":\"15,164,00,00\",\"handleName\":\"start_stop\"},{\"handleCode\":\"15,165,255,00\",\"handleName\":\"down\"},{\"handleCode\":\"15,165,00,00\",\"handleName\":\"down_stop\"}]},{\"checkCode\":\"2\",\"checkName\":\"通风2\",\"spList\":[{\"handleCode\":\"15,166,255,00\",\"handleName\":\"start\"},{\"handleCode\":\"15,166,00,00\",\"handleName\":\"start_stop\"},{\"handleCode\":\"15,167,255,00\",\"handleName\":\"down\"},{\"handleCode\":\"15,167,00,00\",\"handleName\":\"down_stop\"}]},{\"checkCode\":\"3\",\"checkName\":\"补光\",\"spList\":[{\"handleCode\":\"15,168,255,00\",\"handleName\":\"start\"},{\"handleCode\":\"15,168,00,00\",\"handleName\":\"start_stop\"}]},{\"checkCode\":\"4\",\"checkName\":\"浇水\",\"spList\":[{\"handleCode\":\"15,169,255,00\",\"handleName\":\"start\"},{\"handleCode\":\"15,169,00,00\",\"handleName\":\"start_stop\"}]}]";
+        Object parse = JSON.parse(s);
+        System.out.println(parse);
+        List<OperatePojo> list = JSON.parseArray(s, OperatePojo.class);
+        System.out.println(list);
+        OperatePojo operatePojo = JSONUtil.toBean(parse+"", OperatePojo.class);
+        System.out.println(operatePojo);
+
     }
 }
