@@ -34,6 +34,7 @@ public interface RemoteTcpService {
     @GetMapping(value="type/listonly")
     public List<DbTcpType> list(@RequestBody DbTcpType dbTcpType);
 
+
     @GetMapping(value="client/sinceOrHand")
     R sinceOrHand();
 

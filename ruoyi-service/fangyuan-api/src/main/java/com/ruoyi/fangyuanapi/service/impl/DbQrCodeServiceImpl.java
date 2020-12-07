@@ -1,11 +1,13 @@
 package com.ruoyi.fangyuanapi.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.aes.TokenUtils;
 import com.ruoyi.fangyuanapi.conf.TokenConf;
 import com.ruoyi.fangyuanapi.mapper.DbEquipmentMapper;
@@ -134,8 +136,14 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
             DbQrCodeVo dbQrCodeVo = new DbQrCodeVo();
             DbQrCode dbQrCode = dbQrCodeMapper.selectDbQrCodeById(Long.valueOf(qrCodeId));
             dbQrCodeVo.setDbQrCode(dbQrCode);
+            if (dbQrCode.getAdminUserId()!=null){
+
             dbQrCodeVo.setFirstBind(dbQrCode.getAdminUserId().equals(id) ? true : false);
-            dbQrCodeVo.setOperatePojo(JSON.parseObject(dbEquipmentMapper.selectDbEquipmentById(dbQrCode.getEquipmentId()).getHandlerText(), OperatePojo.class));
+            }else {
+            dbQrCodeVo.setFirstBind(false);
+            }
+            List<OperatePojo> lists = JSON.parseArray(dbEquipmentMapper.selectDbEquipmentById(dbQrCode.getEquipmentId()).getHandlerText(), OperatePojo.class);
+            dbQrCodeVo.setOperatePojo(lists);
             return dbQrCodeVo;
         } else {
             return null;

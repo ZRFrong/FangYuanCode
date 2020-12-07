@@ -15,6 +15,7 @@ import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.system.domain.DbTcpOrder;
 import com.ruoyi.fangyuantcp.utils.SendCodeUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,8 @@ import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.common.core.text.Convert;
 
+import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
+
 /**
  * tcp在线设备Service业务层处理
  *
@@ -30,8 +33,8 @@ import com.ruoyi.common.core.text.Convert;
  * @date 2020-09-01
  */
 @Service
+@Slf4j
 public class DbTcpClientServiceImpl implements IDbTcpClientService {
-
 
 
     @Autowired
@@ -39,6 +42,7 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
 
 
     private SendCodeUtils sendCodeUtils = new SendCodeUtils();
+
 
     @Autowired
     private DbTcpClientMapper dbTcpClientMapper;
@@ -122,8 +126,8 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     @Override
     public void deleteDbtcpHeartbeatName(String heartbeatName) {
         /*
-        * 设备装填修改
-        * */
+         * 设备装填修改
+         * */
         DbEquipment dbEquipment = new DbEquipment();
         dbEquipment.setHeartbeatText(heartbeatName);
         for (DbEquipment equipment : dbEquipmentMapper.selectDbEquipmentList(dbEquipment)) {
@@ -182,34 +186,42 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     }
 
 
-
     @Override
     public int heartbeatChoose(DbTcpClient dbTcpClient) {
-        List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
-        int i = 0;
-        /*
-         * 设备在线
-         * */
-        DbEquipment dbEquipment = new DbEquipment();
-        dbEquipment.setHeartbeatText(dbTcpClient.getHeartName());
-        List<DbEquipment> dbEquipments = dbEquipmentMapper.selectDbEquipmentList(dbEquipment);
-        for (DbEquipment equipment : dbEquipments) {
-            equipment.setIsFault(0);
-            int i2 = dbEquipmentMapper.updateDbEquipment(equipment);
-        }
-        if (dbTcpClients.size() > 0 && dbTcpClients != null) {
-            //            存在更新
-            dbTcpClients.get(0).setHeartbeatTime(new Date());
-            dbTcpClients.get(0).setIsOnline(0);
-            int i1 = dbTcpClientMapper.updateDbTcpClient(dbTcpClients.get(0));
 
-        } else {
+            int i = 0;
+        try {
+            List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
+            /*
+             * 设备在线
+             * */
+            DbEquipment dbEquipment = new DbEquipment();
+            dbEquipment.setHeartbeatText(dbTcpClient.getHeartName());
+
+
+            if (dbTcpClients.size() > 0 && dbTcpClients != null) {
+                //            存在更新
+                dbTcpClients.get(0).setHeartbeatTime(new Date());
+                dbTcpClients.get(0).setIsOnline(0);
+                int i1 = dbTcpClientMapper.updateDbTcpClient(dbTcpClients.get(0));
+
+            } else {
 //            不存在新建
-            dbTcpClient.setHeartbeatTime(new Date());
-            dbTcpClient.setIsOnline(0);
-             int i3 = dbTcpClientMapper.insertDbTcpClient(dbTcpClient);
-            i=1;
+                dbTcpClient.setHeartbeatTime(new Date());
+                dbTcpClient.setIsOnline(0);
+                int i3 = dbTcpClientMapper.insertDbTcpClient(dbTcpClient);
+                i = 1;
+            }
+            List<DbEquipment> dbEquipments = null;
+            dbEquipments = dbEquipmentMapper.selectDbEquipmentList(dbEquipment);
+            for (DbEquipment equipment : dbEquipments) {
+                equipment.setIsFault(0);
+                int i2 = dbEquipmentMapper.updateDbEquipment(equipment);
+            }
+        } catch (Exception e) {
+            log.error(dbTcpClient.getHeartName()+":设备未绑定");
         }
+
         return i;
     }
 
