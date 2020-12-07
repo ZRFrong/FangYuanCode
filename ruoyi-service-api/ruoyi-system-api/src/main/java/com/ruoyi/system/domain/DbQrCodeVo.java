@@ -16,7 +16,7 @@ public class DbQrCodeVo {
 
    /*操作集类*/
    @ApiModelProperty(value = "操作集类")
-   public List<OperatePojo > operatePojo;
+   public List<OperatePojo> operatePojo;
 
     public DbQrCodeVo() {
     }
@@ -45,6 +45,7 @@ public class DbQrCodeVo {
     public void setDbQrCode(DbQrCode dbQrCode) {
         this.dbQrCode = dbQrCode;
     }
+
 
     public List<OperatePojo> getOperatePojo() {
         return operatePojo;

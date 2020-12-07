@@ -64,7 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="intervalState" parameterType="String" resultMap="DbStateRecordsResult">
         <include refid="selectDbStateRecordsVo"/>
         <where>
-            demand_time &gt;= #{startTime} and demand_time &lt;=#{endTime} and code_only=#{hearName}
+            demand_time &gt;= #{startTime} and demand_time &lt;=#{endTime}and code_only=#{hearName}
         </where>
         order by demand_time
     </select>

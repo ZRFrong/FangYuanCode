@@ -6,7 +6,6 @@ import com.ruoyi.fangyuanapi.service.IDbUserService;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.feign.RemoteTcpService;
 import com.ruoyi.system.feign.SendSmsClient;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
@@ -18,7 +17,6 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * 设备 提供者
@@ -63,6 +61,7 @@ public class DbEquipmentController extends BaseController {
         startPage();
         return result(dbEquipmentService.selectDbEquipmentList(dbEquipment));
     }
+
 
 
     /**

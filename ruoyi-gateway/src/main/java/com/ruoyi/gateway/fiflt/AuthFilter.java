@@ -37,7 +37,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     // 排除过滤的 uri 地址
     // swagger排除自行添加
     private static final String[] whiteList = {"/auth/login", "/user/register", "/system/v2/api-docs", "/fangyuanapi/v2/api-docs", "/fangyuantcp/v2/api-docs",
-            "/auth/captcha/check", "/auth/captcha/get", "/act/v2/api-docs", "/auth/login/slide", "/system/appVersion/downapp"};
+            "/auth/captcha/check", "/auth/captcha/get", "/act/v2/api-docs", "/auth/login/slide", "/system/appVersion/downapp","/fangyuanapi/qrcode/qrCodeGenerate"};
 
     @Resource(name = "stringRedisTemplate")
     private ValueOperations<String, String> ops;

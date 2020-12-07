@@ -76,19 +76,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <delete id="deleteDbOperationRecordByIds" parameterType="String">
         delete from db_operation_record where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">
-            #{id}limit
+            #{id}
         </foreach>
     </delete>
 
-    <select id="listGroupDay" resultMap="DbOperationRecordResult">
+    <select id="listGroupDay" parameterType="String" resultMap="DbOperationRecordResult">
         <include refid="selectDbOperationRecordVo"/>
-
-        <where>
+        <if test="param.queryForm != null and param.queryForm.size()>0">
+            where  1=1
             <if test="operationTime != null  and operationTime != ''"> and  DATE_FORMAT( operation_time, '%Y%m%d' ) = DATE_FORMAT( #{operationTime} , '%Y%m%d' )</if>
             <if test="operationText != null  and operationText != ''"> and operation_text = #{operationText}or operation_object like concat('%', #{operationText}, '%') </if>
-            <if test="userId != null  "> and db_user_id = #{userId}</if>
-        </where>
-        order by operation_time  desc limit #{pageNum}, #{pageSize}
+            <if test="dbUserId != null  "> and db_user_id = #{dbUserId}</if>
+             order by operation_time  desc
+        limit {pageNum},#{pageSize}
+        </if>
     </select>
 
 </mapper>
