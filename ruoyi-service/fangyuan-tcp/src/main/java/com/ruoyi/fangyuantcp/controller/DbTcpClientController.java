@@ -13,6 +13,7 @@ import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -83,21 +84,24 @@ public class DbTcpClientController extends BaseController {
      * */
     @PostMapping("operation")
     @ApiOperation(value = "操作设备", notes = "操作设备")
-    public R operation(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true)@RequestBody  DbOperationVo dbOperationVo) {
+    public R operation(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) @RequestBody DbOperationVo dbOperationVo) {
         int operation = dbTcpClientService.operation(dbOperationVo);
         return toAjax(operation);
     }
 
     /*
-    * 批量操作设备
-    * */
+     * 批量操作设备
+     * */
     @PostMapping("operationList")
     @ApiOperation(value = "批量操作设备", notes = "批量操作设备")
     public R operationList(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) @RequestBody List<DbOperationVo> dbOperationVo) {
 
-        int operation = dbTcpClientService.operationList(dbOperationVo);
+        try {
+            return dbTcpClientService.operationList(dbOperationVo);
+        } catch (Exception e) {
 
-        return toAjax(operation);
+            return R.error();
+        }
     }
 
     /*
@@ -111,8 +115,6 @@ public class DbTcpClientController extends BaseController {
 
         return toAjax(operation);
     }
-
-
 
 
 }

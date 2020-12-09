@@ -4,13 +4,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
+import com.ruoyi.fangyuantcp.utils.SendCodeListUtils;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.system.domain.DbTcpOrder;
@@ -112,14 +115,14 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
      * 循环执行请求
      * */
     @Override
-    public int operationList(List<DbOperationVo> dbOperationVo) {
+    public R operationList(List<DbOperationVo> dbOperationVo) throws ExecutionException, InterruptedException {
 //       根据心跳分组
         Map<String, List<DbOperationVo>> mps = dbOperationVo.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
 //         多个map依次执行（多线程）
-        int query = sendCodeUtils.queryIoList(mps);
+        R r = SendCodeListUtils.queryIoList(mps);
 
 
-        return query;
+        return r;
     }
 
 

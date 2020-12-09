@@ -20,7 +20,8 @@ public class DbOperationVo {
                 ", operationText='" + operationText + '\'' +
                 ", isTrue='" + isTrue + '\'' +
                 ", createTime=" + createTime +
-                ", operationName=" + operationName +
+                ", operationName='" + operationName + '\'' +
+                ", operationId='" + operationId + '\'' +
                 '}';
     }
 
@@ -98,6 +99,15 @@ public class DbOperationVo {
     @ApiModelProperty(value = "操作对象名称")
     private String operationName;
 
+    /*操作指令名称*/
+    @ApiModelProperty(value = "操作设备id")
+    private String operationId;
 
+    public String getOperationId() {
+        return operationId;
+    }
 
+    public void setOperationId(String operationId) {
+        this.operationId = operationId;
+    }
 }

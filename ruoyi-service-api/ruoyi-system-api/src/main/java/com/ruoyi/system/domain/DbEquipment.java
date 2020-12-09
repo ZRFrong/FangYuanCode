@@ -224,7 +224,7 @@ public class DbEquipment extends BaseEntity
 
     public String getEquipmentNo()
     {
-        if (equipmentNo<10){
+        if (equipmentNo!=null&& equipmentNo<10){
             return "0"+equipmentNo;
         }
         return equipmentNo+"";
