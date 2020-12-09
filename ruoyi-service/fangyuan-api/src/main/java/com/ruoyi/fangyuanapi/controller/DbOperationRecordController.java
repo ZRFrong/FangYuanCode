@@ -1,9 +1,11 @@
 package com.ruoyi.fangyuanapi.controller;
 
 import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.core.page.PageConf;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.DbOperationRecord;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -74,10 +76,10 @@ public class DbOperationRecordController extends BaseController {
     @ApiOperation(value = "查询操作记录列表", notes = "pagesize,pageName后边跟参即可，拦截会进行处理")
     public R listGroupDay(@ApiParam(name = "operationTime", value = "date", required = false)  String operationTime,
                           @ApiParam(name = "operationText", value = "string", required = false) String operationText,
-                          @ApiParam(name = "pageNum", value = "integer", required = true)Integer pageNum1,
-                          @ApiParam(name = "pageSize", value = "integer", required = true) Integer pageSize1) {
+                          @ApiParam(name = "pageNum", value = "integer", required = true)Integer pageNum,
+                          @ApiParam(name = "pageSize", value = "integer", required = true) Integer pageSize) {
         String header = getRequest().getHeader(Constants.CURRENT_ID);
-        pageNum1 = pageNum1 == null || pageNum1 <= 0  ? 0 :(pageNum1 -1) * pageSize1;
+        pageNum = pageNum == null || pageNum <= 0  ? 0 :(pageNum -1) * pageSize;
         DbOperationRecord dbOperationRecord = new DbOperationRecord();
         if (!StringUtils.isEmpty(operationText)) {
             dbOperationRecord.setOperationText(operationText);
@@ -85,8 +87,8 @@ public class DbOperationRecordController extends BaseController {
             dbOperationRecord.setOperationTime(DateUtils.dateTime(DateUtils.YYYY_MM_DD,operationTime));
         }
 
-//     日期分组的操作记录
-        List<DbOperationRecord> objects = dbOperationRecordService.listGroupDay(dbOperationRecord,pageNum1,pageSize1,Long.valueOf(header));
+//	    日期分组的操作记录
+        List<DbOperationRecord> objects = dbOperationRecordService.listGroupDay(dbOperationRecord,pageNum,pageSize,Long.valueOf(header));
         return R.data(objects);
     }
 

@@ -145,7 +145,6 @@ public class DbAbnormalInfoController extends BaseController {
         dbLand.setDbUserId(Long.valueOf(header));
         List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
         List<DbAbnormalInfo> dbAbnormalInfos = new ArrayList<>();
-
         for (DbLand land : dbLands) {
             String equipmentIds = land.getEquipmentIds();
             DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();

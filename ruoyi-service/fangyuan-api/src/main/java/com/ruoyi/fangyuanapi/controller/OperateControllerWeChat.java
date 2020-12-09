@@ -147,6 +147,7 @@ public class OperateControllerWeChat extends BaseController {
                 continue;
             }
             ArrayList<DbEquipmentVo> dbEquipmentVos = new ArrayList<>();
+
             for (String s : dbLand.getEquipmentIds().split(",")) {
             DbEquipmentVo dbEquipmentVo = new DbEquipmentVo();
 

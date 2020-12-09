@@ -47,7 +47,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
      * 方便测试，
      */
     private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/appLogin","fangyuanapi/wxUser/appRegister","fangyuanapi/dynamic1","fangyuanapi/category","fangyuanapi/wx/v3",
-            "/fangyuanapi/order/insertOrder","fangyuanapi/giveLike","fangyuanapi/wxUser/getOpenId","fangyuanapi/wxUser/smallRegister","/fangyuanapi/banner/getBannerList","fangyuanapi/wxUser/appUpdatePassword");
+            "/fangyuanapi/order/insertOrder","fangyuanapi/giveLike","fangyuanapi/wxUser/getOpenId","fangyuanapi/wxUser/smallRegister","/fangyuanapi/banner/getBannerList","fangyuanapi/wxUser/appUpdatePassword","/fangyuanapi/qrcode");
 
     @Autowired
     private TokenConf tokenConf;
@@ -81,12 +81,12 @@ public class AuthFilter implements GlobalFilter, Ordered {
             if (map != null){
                 /* id == null token被篡改 解密失败 */
                 String id = map.get("id")+"";
-//                if (StringUtils.isEmpty(map.get("type")+"")) {
-//                    String redisToken = ops.get(RedisKeyConf.ACCESS_TOKEN_.name() + id);
-//                    if (!token.equals(redisToken)) {
-//                        return setUnauthorizedResponse(exchange, "token verify error", "403");
-//                    }
-//                }
+                if (StringUtils.isEmpty(map.get("type")+"")) {
+                    String redisToken = ops.get(RedisKeyConf.ACCESS_TOKEN_.name() + id);
+                    if (!token.equals(redisToken)) {
+                        return setUnauthorizedResponse(exchange, "token verify error", "403");
+                    }
+                }
                 ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, id).build();
                 ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();
                 return chain.filter(mutableExchange);

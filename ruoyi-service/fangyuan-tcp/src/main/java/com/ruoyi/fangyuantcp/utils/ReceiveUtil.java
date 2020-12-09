@@ -271,9 +271,11 @@ public class ReceiveUtil {
 
 
     public static void main(String[] args) {
-        String ar="01030AFFCE0000000000000001CCE0";
+        AutoVo autoVo = new AutoVo();
+        autoVo.setAutoDown(11.5);
+        autoVo.setAutoUp(12.0);
 
-        stateRead(ar);
+        System.out.println(autoVo);
     }
 
     /*
