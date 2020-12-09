@@ -79,8 +79,9 @@ public class DbAbnormalInfoController extends BaseController {
     @PostMapping("saveEquiment")
     public R saveEquiment(@ApiParam(name = "DbAbnormalInfo", value = "传入json格式", required = true) @RequestBody DbAbnormalInfo dbAbnormalInfo) {
         String objectType = dbAbnormalInfo.getObjectType();
-        DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(Long.valueOf(objectType));
-        dbAbnormalInfo.setDbEquipmentId(dbEquipment.getEquipmentId());
+
+//        DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(Long.valueOf(objectType));
+//        dbAbnormalInfo.setDbEquipmentId(dbEquipment.getEquipmentId());
         return toAjax(dbAbnormalInfoService.insertDbAbnormalInfo(dbAbnormalInfo));
     }
 

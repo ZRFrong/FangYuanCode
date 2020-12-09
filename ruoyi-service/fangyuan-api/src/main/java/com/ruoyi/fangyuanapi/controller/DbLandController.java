@@ -157,6 +157,7 @@ public class DbLandController extends BaseController {
      * 根据土地id返回当前的装态
      * */
     @GetMapping("typeNow/{landId}")
+    @ApiOperation(value = " 根据土地id返回当前的装态",notes = " 根据土地id返回当前的装态",httpMethod = "GET")
     public R typeNow(@ApiParam(name = "Long", value = "Long格式", required = true) @PathVariable("landId") Long landId) {
         DbLand dbLand = dbLandService.selectDbLandById(landId);
         String equipmentIds = dbLand.getEquipmentIds();

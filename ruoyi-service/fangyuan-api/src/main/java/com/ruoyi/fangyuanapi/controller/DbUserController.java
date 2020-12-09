@@ -123,7 +123,14 @@ public class DbUserController extends BaseController {
                 String uuid = StringUtils.getUUID();
                 String s = ZhaoMD5Utils.string2MD5(password + uuid);
                 int i =  dbUserService.updateUserPassword(phone,s,uuid);
-                return i>0 ? R.ok():R.error();
+                if (i>0){
+                    DbUser user = new DbUser();
+                    user.setPhone(phone);
+                    dbUserService.selectDbUserByPhone(user);
+                    redisUtils.delete(RedisKeyConf.ACCESS_TOKEN_.name() + user.getId());
+                    return  R.ok("修改密码成功,请重新登陆!");
+                }
+                return R.error();
             }
             return r;
         }
@@ -165,9 +172,7 @@ public class DbUserController extends BaseController {
             return R.error(ResultEnum.PHONE_ERROR.getCode(), ResultEnum.PHONE_ERROR.getMessage());
         }
         String token = redisUtils.get(RedisKeyConf.REFRESH_TOKEN_.name() + dbUser.getId());
-//        if (token != null) {
-//            return R.error(ResultEnum.LOGIN_ERROR.getCode(), ResultEnum.LOGIN_ERROR.getMessage());
-//        }
+
         if (dbUser != null && StringUtils.isNotEmpty(password) && StringUtils.isEmpty(code)) {
             //密码登录
             String salt = dbUser.getSalt();
@@ -179,10 +184,9 @@ public class DbUserController extends BaseController {
                     redisUtils.delete(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId());
                 }
                 //登录成功
-                //Map<String, String> map = resultTokens(dbUser.getId(), "XIAOSI", tokenConf.getAccessTokenKey(), tokenConf.getRefreshTokenKey());
                 token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000),null);
                 /* 返回token 并且记录 */
-                redisUtils.set(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId(), token, 60 * 60 * 24 * 30 * 2L);
+                redisUtils.set(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId(), token);
                 return R.data(token);
             } else {
                 redisUtils.set(CategoryType.PHONE_LOGIN_NUM_.name() + phone, num + 1, RedisTimeConf.ONE_HOUR);
@@ -196,9 +200,8 @@ public class DbUserController extends BaseController {
                 if (StringUtils.isNotEmpty(token)){
                     redisUtils.delete(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId());
                 }
-                //Map<String, String> map = resultTokens(dbUser.getId(), "XIAOSI", tokenConf.getAccessTokenKey(), tokenConf.getRefreshTokenKey());
                 token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000),null);
-                redisUtils.set(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId(),token, 60 * 60 * 24 * 30 * 2L);
+                redisUtils.set(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId(),token);
                 return R.data(token);
             } else {
                 redisUtils.set(CategoryType.PHONE_LOGIN_NUM_.name() + phone, num + 1, RedisTimeConf.ONE_HOUR);
