@@ -60,4 +60,5 @@ public interface IDbEquipmentService
     public int deleteDbEquipmentById(Long equipmentId);
 
 
+    DbEquipment selectByHeart(DbEquipment dbEquipment);
 }

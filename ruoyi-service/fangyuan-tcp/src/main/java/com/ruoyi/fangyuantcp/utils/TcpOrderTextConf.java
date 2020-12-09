@@ -66,6 +66,6 @@ public class TcpOrderTextConf {
     /*
     * 装态查询
     * */
-    public  static  String stateSave="00,00,00,05";
+    public  static  String stateSave="00,100,00,06";
 
 }

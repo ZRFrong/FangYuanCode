@@ -1,6 +1,9 @@
 package com.ruoyi.fangyuanapi.mapper;
 
 import com.ruoyi.system.domain.DbEquipment;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
 import java.util.List;
 
 /**
@@ -58,4 +61,7 @@ public interface DbEquipmentMapper
      * @return 结果
      */
     public int deleteDbEquipmentByIds(String[] equipmentIds);
+
+    @Select("select * from db_equipment where equipment_no=#{equipmentNo} and heartbeat_text LIKE CONCAT('%',#{heartbeatText},'%')")
+    DbEquipment selectByHeart(@Param("heartbeatText") String heartbeatText,@Param("equipmentNo") String equipmentNo);
 }

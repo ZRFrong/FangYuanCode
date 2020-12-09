@@ -4,11 +4,13 @@ import java.util.Date;
 
 
 import cn.hutool.core.thread.ThreadUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuantcp.abnormal.FaultExceptions;
+import com.ruoyi.fangyuantcp.abnormal.OperationExceptions;
 import com.ruoyi.fangyuantcp.timing.TaskTcpOrder;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
@@ -249,7 +251,7 @@ public class SendCodeUtils {
 
 
     public static int operateCode(String text, DbOperationVo tcpOrder) {
-        try {
+
             String address = tcpOrder.getHeartName();
             ArrayList<String> strings1 = new ArrayList<>();
 //          text处理
@@ -269,6 +271,7 @@ public class SendCodeUtils {
                 String tmp = StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 4, '0');
                 strings.add(tmp);
             }
+        try {
             String[] split1 = strings.toArray(new String[strings.size()]);
             String[] bytes = Crc16Util.to_byte(split1);
             byte[] data = Crc16Util.getData(bytes);
@@ -277,7 +280,10 @@ public class SendCodeUtils {
             Channel channel = no1_1.channel();
             channel.write(Unpooled.copiedBuffer(data));
             channel.flush();
-
+        } catch (Exception e) {
+//            抛出异常
+            throw new FaultExceptions( tcpOrder.getHeartName() , tcpOrder.getOperationName(),tcpOrder.getFacility());
+        }
 
             tcpOrder.setCreateTime(new Date());
 //        存储操作信息到redis
@@ -289,20 +295,15 @@ public class SendCodeUtils {
             String s = RedisKeyConf.HANDLE + ":" + heartName + "_" + facility + "_" + operationText;
             String s2 = JSONArray.toJSONString(order);
             redisUtils.set(s, s2);
-
-
             /*
              * 建立监听返回的数据
              * */
-            TaskTcpOrder taskTcpOrder = new TaskTcpOrder();
-            taskTcpOrder.HeartbeatRun(s,tcpOrder);
-
+            HeartbeatRun(s,tcpOrder);
 
             return 1;
-        } catch (Exception e) {
-//            删除心跳
-            throw new FaultExceptions(tcpOrder.getHeartName() + tcpOrder.getFacility(), tcpOrder.getOperationName());
-        }
+
+
+
     }
 
 
@@ -313,5 +314,26 @@ public class SendCodeUtils {
         dbTcpOrder.setText(dbOperationVo.getFacility() + dbOperationVo.getOperationText());
         dbTcpOrder.setCreateTime(new Date());
         return dbTcpOrder;
+    }
+
+    private  static  void HeartbeatRun(String text, DbOperationVo dbOperationVo)  {
+        try {
+        Thread.sleep(1000);
+            String s = redisUtils.get(text);
+            if (s.isEmpty()){
+                throw  new OperationExceptions(dbOperationVo.getHeartName(),dbOperationVo.getOperationName(),dbOperationVo.getFacility());
+            }else {
+                DbTcpOrder dbTcpOrder = JSON.parseObject(s, DbTcpOrder.class);
+                Integer results = dbTcpOrder.getResults();
+                if (results==0){
+                    throw  new OperationExceptions(dbOperationVo.getHeartName(),dbOperationVo.getOperationName(),dbOperationVo.getFacility());
+                }
+            }
+        } catch (OperationExceptions operationExceptions) {
+            throw  new OperationExceptions(dbOperationVo.getHeartName(),dbOperationVo.getOperationName(),dbOperationVo.getFacility());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 }

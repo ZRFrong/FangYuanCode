@@ -70,6 +70,7 @@ public class OperateControllerWeChat extends BaseController {
     @OperationLog(OperationLogNmae=OperationLogType.EQUIPMENT,OperationLogSource = OperationLogType.WEchat)
     public R operate(@ApiParam(name = "id", value = "设备id", required = true)Long id, @ApiParam(name = "text", value = "操作指令", required = true)String text,
                      @ApiParam(name = "name", value = "操作对象", required = true)String name,
+                     @ApiParam(name = "type", value = "操作对象类型", required = true)String type,
                      @ApiParam(name = "handleName", value = "开始 ：start，开始暂停：start_stop，结束暂停down_stop，结束down", required = true) String handleName) {
         DbOperationVo dbOperationVo = new DbOperationVo();
         DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(id);

@@ -7,7 +7,14 @@ public class OperationExceptions extends RuntimeException {
     //    操作对象
     private final String code;
     //    掉线说明
-    private final String message ;
+    private final String message;
+
+    //    设备id
+    private final String equipmentId;
+
+    public String getEquipmentId() {
+        return equipmentId;
+    }
 
     public String getCode() {
         return code;
@@ -18,9 +25,9 @@ public class OperationExceptions extends RuntimeException {
         return message;
     }
 
-    public OperationExceptions(String code, String message) {
+    public OperationExceptions(String code, String message, String equipmentId) {
         this.code = code;
-
         this.message = message;
+        this.equipmentId = equipmentId;
     }
 }

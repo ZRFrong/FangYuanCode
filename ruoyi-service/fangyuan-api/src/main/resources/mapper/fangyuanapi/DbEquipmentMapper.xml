@@ -26,6 +26,8 @@
     <select id="selectDbEquipmentList" parameterType="DbEquipment" resultMap="DbEquipmentResult">
         <include refid="selectDbEquipmentVo"/>
         <where>
+            <if test="heartbeatText != null  and heartbeatText != ''"> and heartbeat_text like concat('%', #{heartbeatText}, '%')</if>
+            <if test="equipmentNo != null "> and equipment_no =  #{equipmentNo}</if>
         </where>
     </select>
 

@@ -26,10 +26,10 @@ public class TaskTcpOrder {
                 try {
                     String s = redisUtils.get(text);
                     if (s.isEmpty()){
-                        throw  new OperationExceptions(dbOperationVo.getHeartName()+"_"+dbOperationVo.getFacility(),dbOperationVo.getOperationName());
+                        throw  new OperationExceptions(dbOperationVo.getHeartName(),dbOperationVo.getOperationName(),dbOperationVo.getFacility());
                     }
                 } catch (Exception e) {
-                    throw  new OperationExceptions(dbOperationVo.getHeartName()+"_"+dbOperationVo.getFacility(),dbOperationVo.getOperationName());
+                    throw  new OperationExceptions(dbOperationVo.getHeartName(),dbOperationVo.getOperationName(),dbOperationVo.getFacility());
                 }
             }
         };

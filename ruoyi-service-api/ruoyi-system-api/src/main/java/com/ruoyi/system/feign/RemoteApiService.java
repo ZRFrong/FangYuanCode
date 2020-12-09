@@ -31,4 +31,6 @@ public interface RemoteApiService {
     R abnormalInfoSave(@RequestBody DbAbnormalInfo dbAbnormalInfo);
 
 
+    @PostMapping(value="abnormalInfo/saveEquimentOperation")
+    R saveEquimentOperation(@RequestBody DbAbnormalInfo dbAbnormalInfo);
 }

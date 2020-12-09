@@ -29,7 +29,7 @@ import java.util.*;
 public class ReceiveUtil {
     private IDbTcpClientService tcpClientService = SpringUtils.getBean(IDbTcpClientService.class);
     private IDbEquipmentService iDbEquipmentService = SpringUtils.getBean(IDbEquipmentService.class);
-    private IDbTcpTypeService tcpTypeService = SpringUtils.getBean(IDbTcpTypeService.class);
+    private static IDbTcpTypeService tcpTypeService = SpringUtils.getBean(IDbTcpTypeService.class);
 
     /*
      * 心跳添加或者更改状态处理
@@ -122,7 +122,7 @@ public class ReceiveUtil {
 //            手动
             dbEquipment.setIsOnline(1);
 //            提醒
-            throw new DropsExceptions(dbEquipment.getEquipmentName(),"已经切换手动状态");
+            throw new DropsExceptions(dbEquipment.getEquipmentName(),"已经切换手动状态",dbEquipment.getEquipmentId().toString());
         } else {
 //            自动
             dbEquipment.setIsOnline(0);
@@ -283,7 +283,7 @@ public class ReceiveUtil {
         /*
             状态码 01 03   0A代码后边有10位
          *01 03 0A 00 FD 01 09 01 06 00 01 00 C1 39 6F
-         *5组   空气温度 湿度   土壤温度 湿度   光照
+         *5组   空气温度 湿度   土壤温度 湿度   光照  二氧化碳
          * */
         List<String> arr = getCharToArr(type);
         DbTcpType dbTcpType = new DbTcpType();
@@ -314,11 +314,22 @@ public class ReceiveUtil {
                 case 4:
                     //                光照
                     dbTcpType.setLight(getLight(arr.get(2 + i + 1+4) + arr.get(2 + i + 2+4)));
+                case  5:
+//                    二氧化碳
+                    dbTcpType.setCo2(getLight(arr.get(2+i+1+5)+arr.get(2+i+2+5)));
+                    ;
             }
 //            目前5个
         }
 //        存储或者添加
-        System.out.println(dbTcpType);
+        List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType);
+        if (list.size()==0||list==null){
+
+        int i = tcpTypeService.insertDbTcpType(dbTcpType);
+        }else {
+            int i = tcpTypeService.updateOrInstart(dbTcpType);
+        }
+
 
     }
 }

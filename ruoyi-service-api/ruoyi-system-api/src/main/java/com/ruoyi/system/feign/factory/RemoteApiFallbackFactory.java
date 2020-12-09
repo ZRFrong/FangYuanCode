@@ -27,6 +27,11 @@ public class RemoteApiFallbackFactory implements FallbackFactory<RemoteApiServic
                 return null;
             }
 
+            @Override
+            public R saveEquimentOperation(DbAbnormalInfo dbAbnormalInfo) {
+                return null;
+            }
+
 
         };
     }

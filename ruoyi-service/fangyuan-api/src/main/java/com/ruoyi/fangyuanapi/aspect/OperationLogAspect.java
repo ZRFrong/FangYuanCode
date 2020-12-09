@@ -114,12 +114,11 @@ public class OperationLogAspect {
 
         } else {
 //            单独
-            dbOperationRecord.setOperationText(maps.get("name").toString() + maps.get("handleName").toString());
+            dbOperationRecord.setOperationText(maps.get("name").toString()+OperationLogUtils.toOperationText(maps.get("type").toString(), maps.get("handleName").toString()));
         }
         return dbOperationRecord;
 
     }
-
     private DbOperationRecord fillInLand(Map<String, Object> maps, boolean type) {
         DbOperationRecord dbOperationRecord = new DbOperationRecord();
         dbOperationRecord.setOperationObjectType(0);

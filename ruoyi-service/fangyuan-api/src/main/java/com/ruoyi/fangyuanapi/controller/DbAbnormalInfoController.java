@@ -78,11 +78,45 @@ public class DbAbnormalInfoController extends BaseController {
 
     @PostMapping("saveEquiment")
     public R saveEquiment(@ApiParam(name = "DbAbnormalInfo", value = "传入json格式", required = true) @RequestBody DbAbnormalInfo dbAbnormalInfo) {
-        String objectType = dbAbnormalInfo.getObjectType();
-        DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(Long.valueOf(objectType));
-        dbAbnormalInfo.setDbEquipmentId(dbEquipment.getEquipmentId());
+        DbEquipment dbEquipment = new DbEquipment();
+        dbEquipment.setHandlerText(dbAbnormalInfo.getObjectType());
         return toAjax(dbAbnormalInfoService.insertDbAbnormalInfo(dbAbnormalInfo));
     }
+
+
+    @PostMapping("saveEquimentOperation")
+    public R saveEquimentOperation(@ApiParam(name = "DbAbnormalInfo", value = "传入json格式", required = true) @RequestBody DbAbnormalInfo dbAbnormalInfo) {
+        DbEquipment dbEquipment = new DbEquipment();
+        dbEquipment.setHeartbeatText(dbAbnormalInfo.getObjectType());
+        dbEquipment.setEquipmentNo(Integer.parseInt(dbAbnormalInfo.getText()));
+        List<DbEquipment> dbEquipments = equipmentService.selectDbEquipmentList(dbEquipment);
+        DbEquipment dbEquipment1 = dbEquipments.get(0);
+        /*
+        * 如果下边只有一个设备的话   显示到土地
+        * */
+
+
+        dbAbnormalInfo.setDbEquipmentId(dbEquipment1.getEquipmentId());
+
+        dbAbnormalInfo.setObjectType(dbEquipment1.getEquipmentName());
+        /*
+        * 处理名称   蘑菇棚-大棚1   卷帘一卷起-无响应
+        * */
+
+
+
+
+
+
+
+
+
+
+        int i = dbAbnormalInfoService.insertDbAbnormalInfo(dbAbnormalInfo);
+        return toAjax(i);
+    }
+
+
 
     /**
      * 修改保存报警信息
@@ -111,6 +145,7 @@ public class DbAbnormalInfoController extends BaseController {
         dbLand.setDbUserId(Long.valueOf(header));
         List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
         List<DbAbnormalInfo> dbAbnormalInfos = new ArrayList<>();
+
         for (DbLand land : dbLands) {
             String equipmentIds = land.getEquipmentIds();
             DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();
@@ -122,7 +157,9 @@ public class DbAbnormalInfoController extends BaseController {
                 dbAbnormalInfos.addAll(dbAbnormalInfoService.selectDbAbnormalInfoList(dbAbnormalInfo));
             }
         }
+
         return result(dbAbnormalInfos);
+
     }
 
 
