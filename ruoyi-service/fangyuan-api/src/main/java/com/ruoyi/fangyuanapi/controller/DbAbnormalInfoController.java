@@ -88,17 +88,16 @@ public class DbAbnormalInfoController extends BaseController {
     public R saveEquimentOperation(@ApiParam(name = "DbAbnormalInfo", value = "传入json格式", required = true) @RequestBody DbAbnormalInfo dbAbnormalInfo) {
         DbEquipment dbEquipment = new DbEquipment();
         dbEquipment.setHeartbeatText(dbAbnormalInfo.getObjectType());
-        dbEquipment.setEquipmentNo(Integer.parseInt(dbAbnormalInfo.getText()));
-        List<DbEquipment> dbEquipments = equipmentService.selectDbEquipmentList(dbEquipment);
-        DbEquipment dbEquipment1 = dbEquipments.get(0);
-        /*
-        * 如果下边只有一个设备的话   显示到土地
-        * */
-
-
-        dbAbnormalInfo.setDbEquipmentId(dbEquipment1.getEquipmentId());
-
-        dbAbnormalInfo.setObjectType(dbEquipment1.getEquipmentName());
+//        List<DbEquipment> dbEquipments = equipmentService.selectDbEquipmentList(dbEquipment);
+//        DbEquipment dbEquipment1 = dbEquipments.get(0);
+//        /*
+//        * 如果下边只有一个设备的话   显示到土地
+//        * */
+//
+//
+//        dbAbnormalInfo.setDbEquipmentId(dbEquipment1.getEquipmentId());
+//
+//        dbAbnormalInfo.setObjectType(dbEquipment1.getEquipmentName());
         /*
         * 处理名称   蘑菇棚-大棚1   卷帘一卷起-无响应
         * */

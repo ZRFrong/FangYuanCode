@@ -1,5 +1,7 @@
 package com.ruoyi.fangyuanapi.aspect;
 
+import java.sql.SQLOutput;
+
 public class OperationLogUtils {
     private  static String[]  typs=new String[]{"1","2","3","4"};
     private static String[] handleNamecode = new String[]{"start", "start_stop", "down_stop", "down"};
@@ -8,11 +10,13 @@ public class OperationLogUtils {
 
     public  static String toOperationText(String type, String handleName) {
         StringBuilder stringBuilder = new StringBuilder();
+
         if (type.equals("1")||type.equals("2")){
             stringBuilder.append(gettxt1("1", handleName));
         }else {
             stringBuilder.append(gettxt2("2", handleName));
         }
+
 
         return stringBuilder.toString();
     }
@@ -24,9 +28,11 @@ public class OperationLogUtils {
                 for (int i1 = 0; i1 < handleNamecode.length; i1++) {
                     if (handleNamecode[i1].equals(handleName)) {
                         if (i1 == 0) {
+                            stringBuilder.append(arrs[0][i]);
+                            stringBuilder.append(arrs[i][4]);
+                        } else if (i1 == 1) {
+                            stringBuilder.append(arrs[0][i]);
                             stringBuilder.append(arrs[i][5]);
-                        } else if (i1 == 4) {
-                            stringBuilder.append(arrs[i][6]);
                         }
                     }
                 }
@@ -34,6 +40,9 @@ public class OperationLogUtils {
         }
         return stringBuilder.toString();
     }
+
+
+
 
     private static String gettxt1(String s, String handleName) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -50,7 +59,5 @@ public class OperationLogUtils {
         }
         return stringBuilder.toString();
     }
-
-
 
 }

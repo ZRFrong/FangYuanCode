@@ -16,9 +16,9 @@ import java.util.Date;
 public class BusinessExceptionHandle {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private  final  String DROPS="掉线异常";
-    private  final  String FAULT="故障";
-    private  final  String OPERATIONEXCEPTIONS="操作返回异常";
+    private  static final  String DROPS="掉线异常";
+    public static final  String FAULT="故障";
+    public static final  String OPERATIONEXCEPTIONS="操作返回异常";
     private RemoteApiService remoteApiService = SpringUtils.getBean(RemoteApiService.class);
     private IDbAbnormalInfoService1 abnormalInfoSave = SpringUtils.getBean(IDbAbnormalInfoService1.class);
 
@@ -52,7 +52,7 @@ public class BusinessExceptionHandle {
         DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();
         dbAbnormalInfo.setAlarmTime(new Date());
         dbAbnormalInfo.setAlarmExplain(e.getMessage());
-        dbAbnormalInfo.setAlarmExplain(e.getCode());
+        dbAbnormalInfo.setObjectType(e.getCode());
         dbAbnormalInfo.setFaultType(FAULT);
         dbAbnormalInfo.setText(e.getEquipmentId());
 //        abnormalInfoSave.saveEquimentOperation(dbAbnormalInfo);
@@ -70,7 +70,7 @@ public class BusinessExceptionHandle {
         dbAbnormalInfo.setAlarmExplain(e.getMessage());
         dbAbnormalInfo.setObjectType(e.getCode());
 
-        dbAbnormalInfo.setAlarmExplain(OPERATIONEXCEPTIONS);
+        dbAbnormalInfo.setFaultType(OPERATIONEXCEPTIONS);
         dbAbnormalInfo.setText(e.getEquipmentId());
 //        abnormalInfoSave.saveEquimentOperation(dbAbnormalInfo);
         remoteApiService.saveEquimentOperation(dbAbnormalInfo);

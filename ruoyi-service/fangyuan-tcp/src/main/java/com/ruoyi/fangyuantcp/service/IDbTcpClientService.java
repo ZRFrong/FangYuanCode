@@ -1,8 +1,10 @@
 package com.ruoyi.fangyuantcp.service;
 
+import com.ruoyi.common.core.domain.R;
 import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.system.domain.DbTcpClient;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * tcp在线设备Service接口
@@ -69,7 +71,7 @@ public interface IDbTcpClientService
 
     void updateByHeartbeatName(String heartbeatName);
 
-    int operationList(List<DbOperationVo> dbOperationVo);
+    R operationList(List<DbOperationVo> dbOperationVo) throws ExecutionException, InterruptedException;
 
     int sinceOrHand();
 
