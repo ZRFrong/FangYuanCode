@@ -1,7 +1,9 @@
 package com.ruoyi.fangyuanapi.aspect;
 
 
+import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
@@ -49,6 +51,7 @@ public class OperationLogAspect {
     @Around("@annotation(operationLog)")
     public Object processAuthority(ProceedingJoinPoint point, OperationLog operationLog) throws Throwable {
         String name = operationLog.OperationLogNmae();
+
         boolean type = operationLog.OperationLogType();
         String source = operationLog.OperationLogSource();
         //        处理参数名称以及参数值  成map
@@ -60,7 +63,7 @@ public class OperationLogAspect {
 
         IDbOperationRecordService bean = SpringUtils.getBean(IDbOperationRecordService.class);
 //        用户id
-//        dbOperationRecord.setDbUserId(Long.valueOf(ServletUtils.getRequest().getHeader(Constants.CURRENT_ID)));
+        dbOperationRecord.setDbUserId(Long.valueOf(ServletUtils.getRequest().getHeader(Constants.CURRENT_ID)));
 
 
         //调用目标方法
@@ -72,6 +75,7 @@ public class OperationLogAspect {
             dbOperationRecord.setIsComplete(1);
         }
         dbOperationRecord.setOperationTime(new Date());
+
         bean.insertDbOperationRecord(dbOperationRecord);
         logger.info("操作记录记录完成"+new Date() );
         return  r;
@@ -79,6 +83,7 @@ public class OperationLogAspect {
 
     private DbOperationRecord determineType(String name, boolean type, String source, Map<String, Object> maps) {
         DbOperationRecord dbOperationRecord = new DbOperationRecord();
+
 
         if (name.equals(OperationLogType.EQUIPMENT)) {
             dbOperationRecord = fillInEquipment(maps, type);

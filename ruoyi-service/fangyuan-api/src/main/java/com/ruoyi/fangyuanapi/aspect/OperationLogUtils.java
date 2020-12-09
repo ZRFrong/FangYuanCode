@@ -13,7 +13,6 @@ public class OperationLogUtils {
         }else {
             stringBuilder.append(gettxt2("2", handleName));
         }
-
         return stringBuilder.toString();
     }
 
@@ -24,9 +23,9 @@ public class OperationLogUtils {
                 for (int i1 = 0; i1 < handleNamecode.length; i1++) {
                     if (handleNamecode[i1].equals(handleName)) {
                         if (i1 == 0) {
-                            stringBuilder.append(arrs[i][5]);
+                            stringBuilder.append(arrs[i][4]);
                         } else if (i1 == 4) {
-                            stringBuilder.append(arrs[i][6]);
+                            stringBuilder.append(arrs[i][5]);
                         }
                     }
                 }
