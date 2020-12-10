@@ -115,4 +115,10 @@ public class DbQrCodeController extends BaseController {
     /*
      *点击选择操作集
      * */
+
+    @GetMapping()
+    public R banDingEquipment(){
+        return null;
+    }
+
 }
