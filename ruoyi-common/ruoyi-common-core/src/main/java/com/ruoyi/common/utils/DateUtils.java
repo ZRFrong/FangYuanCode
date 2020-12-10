@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import cn.hutool.core.date.DateUtil;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 /**
@@ -200,4 +201,12 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
 
     }
 
+    public static void main(String[] args) throws ParseException {
+        System.out.println("......................");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = sdf.parse("2005-12-15");
+        Date da = new Date();
+        System.out.println(date);
+        System.out.println(da);
+    }
 }

@@ -82,10 +82,10 @@ public class DbOperationRecordServiceImpl implements IDbOperationRecordService
     }
 
     @Override
-    public List<DbOperationRecord> listGroupDay(DbOperationRecord dbOperationRecord, Integer pageNum, Integer pageSize, Long dbUserId) {
+    public List<DbOperationRecord> listGroupDay(String operationText,String operationTime, Integer currPage, Integer pageSize, Long dbUserId) {
 //        处理id替换为地块或者土地名称
 
-        return dbOperationRecordMapper.listGroupDay(dbOperationRecord.getOperationText(),dbOperationRecord.getOperationTime(),pageNum,pageSize,dbUserId);
+        return dbOperationRecordMapper.listGroupDay(operationText,operationTime,currPage,pageSize,dbUserId);
     }
 
     /**

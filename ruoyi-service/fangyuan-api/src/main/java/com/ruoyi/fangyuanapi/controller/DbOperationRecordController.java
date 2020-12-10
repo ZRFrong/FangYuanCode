@@ -88,7 +88,7 @@ public class DbOperationRecordController extends BaseController {
         }
 
 //	    日期分组的操作记录
-        List<DbOperationRecord> objects = dbOperationRecordService.listGroupDay(dbOperationRecord,pageNum,pageSize,Long.valueOf(header));
+        List<DbOperationRecord> objects = dbOperationRecordService.listGroupDay(operationText,operationTime,pageNum,pageSize,Long.valueOf(header));
         return R.data(objects);
     }
 

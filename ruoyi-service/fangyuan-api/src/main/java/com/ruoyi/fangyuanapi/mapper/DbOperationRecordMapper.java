@@ -63,5 +63,5 @@ public interface DbOperationRecordMapper
     public int deleteDbOperationRecordByIds(String[] ids);
 
 
-    List<DbOperationRecord> listGroupDay(@Param("operationText") String operationText, @Param("operationTime")Date operationTime, @Param("pageNum") Integer pageNum, @Param("pageSize")Integer pageSize, @Param("dbUserId")Long dbUserId);
+    List<DbOperationRecord> listGroupDay(@Param("operationText") String operationText, @Param("operationTime")String operationTime, @Param("currPage") Integer currPage, @Param("pageSize")Integer pageSize, @Param("dbUserId")Long dbUserId);
 }

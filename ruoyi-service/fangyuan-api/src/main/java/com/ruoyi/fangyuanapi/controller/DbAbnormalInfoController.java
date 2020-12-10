@@ -156,7 +156,7 @@ public class DbAbnormalInfoController extends BaseController {
             }
         }
 
-        return result(dbAbnormalInfos);
+        return result1(dbAbnormalInfos);
 
     }
 

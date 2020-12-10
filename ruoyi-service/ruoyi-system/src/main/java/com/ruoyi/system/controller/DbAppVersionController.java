@@ -98,7 +98,7 @@ public class DbAppVersionController extends BaseController
 	* */
 	@GetMapping("checkUpdate")
 	@ApiOperation(value = "检测版本更新" , notes = "检测当前版本是否为最新")
-	public R checkUpdate(@ApiParam(name="版本号",value="版本号",required=true) String versions)
+	public R checkUpdate(@ApiParam(name="versions",value="版本号",required=true) String versions)
 	{
 		DbAppVersion dbAppVersion = new DbAppVersion();
 		DbAppVersion dbAppVersion1 = dbAppVersionService.selectDbAppVersionList(dbAppVersion).get(0);
