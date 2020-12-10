@@ -132,7 +132,7 @@ public class OperationLogAspect {
         for (String s : ids.split(",")) {
 
             DbLand dbLand = landService.selectDbLandById(Long.valueOf(s));
-            stringBuilder.append(dbLand.getNickName()+"/n");
+            stringBuilder.append(dbLand.getNickName()+"\n");
         }
         dbOperationRecord.setOperationObject(stringBuilder.toString());
         if (type) {

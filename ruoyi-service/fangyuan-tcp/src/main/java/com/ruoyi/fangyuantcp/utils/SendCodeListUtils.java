@@ -59,7 +59,7 @@ public class SendCodeListUtils {
         }
         if (stringStringHashMap1.size() > 0) {
 //                有异常信息
-            return R.error(500,JSON.toJSONString(stringStringHashMap1) );
+            return R.error(502,JSON.toJSONString(stringStringHashMap1) );
         } else {
             return R.ok("操作成功");
         }

@@ -94,7 +94,9 @@ public class DbLandController extends BaseController {
         dbLand.setSiteId(0l);
         List<LandVo> landVos = new ArrayList<>();
         List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
+
         for (DbLand land : dbLands) {
+
             LandVo landVo = new LandVo();
             landVo.setPlotName(land.getNickName());
             DbLand dbLand1 = new DbLand();

@@ -57,7 +57,7 @@ public class OperateControllerApp extends BaseController {
     @OperationLog(OperationLogType = true, OperationLogNmae = OperationLogType.LAND, OperationLogSource = OperationLogType.APP)
     @ApiOperation(value = "土地页面操作", notes = "土地页面操作")
     public R oprateLand(@ApiParam(name = "ids", value = "土地的子串，分隔", required = true) String ids, @ApiParam(name = "type",
-            value = "卷帘:1，通风:2，浇水:3，补光:4", required = true) String type, @ApiParam(name = "handleName",
+            value = "卷帘:1，通风:2，补光:3,浇水:4", required = true) String type, @ApiParam(name = "handleName",
             value = "开始 ：start，开始暂停：start_stop，结束暂停down_stop，结束down", required = true) String handleName, Integer time) {
 
 
