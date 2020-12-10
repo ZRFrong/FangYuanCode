@@ -160,11 +160,13 @@ public class TokenUtils {
     }
 
     public static void main(String[] args) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException {
-        String data = "18D0E00C491ABD397CDC1E7E93652B7D784B4AA241CC9C510EB3AF20A9ABC7CB819D10CE3F2BB18FDE9990BB7D27BCDCFAE6450E749504690A5E34F6F68A08F051A62BA57E0D5F1357B84593FE0CCC6A";
-        String key = "196B0F14EBA66E10FBA74DBF9E99C22F";
-        String encrypt = encrypt("dadadasa", key);
-        String s = decrypt(encrypt, key);
-        System.out.println(s);
-        System.out.println(encrypt("54254", "4545215431321543213").length());
+//        String data = "18D0E00C491ABD397CDC1E7E93652B7D784B4AA241CC9C510EB3AF20A9ABC7CB819D10CE3F2BB18FDE9990BB7D27BCDCFAE6450E749504690A5E34F6F68A08F051A62BA57E0D5F1357B84593FE0CCC6A";
+//        String key = "196B0F14EBA66E10FBA74DBF9E99C22F";
+//        String encrypt = encrypt("dadadasa", key);
+//        String s = decrypt(encrypt, key);
+//        System.out.println(s);
+//        System.out.println(encrypt("54254", "4545215431321543213").length());
+        Map<String, Object> map = TokenUtils.verifyToken("3446DEFDFE916E14E7ACB44CC7D25E708C27A7B58311A32424993E5F2EB1D0EC3723496624DE30415EE93ABF403EF10E512B63BF28E5F21CD4E43BBDC5B76FB6", "196B0F14EBA66E10FBA74DBF9E99C22F");
+        System.out.println(map);
     }
 }

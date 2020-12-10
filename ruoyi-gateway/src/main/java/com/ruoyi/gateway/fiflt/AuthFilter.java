@@ -37,7 +37,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     // 排除过滤的 uri 地址
     // swagger排除自行添加
     private static final String[] whiteList = {"/auth/login", "/user/register", "/system/v2/api-docs", "/fangyuanapi/v2/api-docs", "/fangyuantcp/v2/api-docs",
-            "/auth/captcha/check", "/auth/captcha/get", "/act/v2/api-docs", "/auth/login/slide", "/system/appVersion/downapp","/fangyuanapi/qrcode/qrCodeGenerate"};
+            "/auth/captcha/check", "/auth/captcha/get", "/act/v2/api-docs", "/auth/login/slide","/system/appVersion/checkUpdate", "/system/appVersion/downapp","/fangyuanapi/qrcode/qrCodeGenerate"};
 
     @Resource(name = "stringRedisTemplate")
     private ValueOperations<String, String> ops;
@@ -81,7 +81,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
             if (map != null){
                 /* id == null token被篡改 解密失败 */
                 String id = map.get("id")+"";
-                if (StringUtils.isEmpty(map.get("type")+"")) {
+                if ("1".equals(map.get("type")+"") ) {
                     String redisToken = ops.get(RedisKeyConf.ACCESS_TOKEN_.name() + id);
                     if (!token.equals(redisToken)) {
                         return setUnauthorizedResponse(exchange, "token verify error", "403");

@@ -184,7 +184,7 @@ public class DbUserController extends BaseController {
                     redisUtils.delete(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId());
                 }
                 //登录成功
-                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000),null);
+                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000),1);
                 /* 返回token 并且记录 */
                 redisUtils.set(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId(), token);
                 return R.data(token);
@@ -200,8 +200,8 @@ public class DbUserController extends BaseController {
                 if (StringUtils.isNotEmpty(token)){
                     redisUtils.delete(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId());
                 }
-                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000),null);
-                redisUtils.set(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId(),token);
+                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 365*3),1);
+                redisUtils.set(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId(),token,60 * 60 * 24 * 365*3);
                 return R.data(token);
             } else {
                 redisUtils.set(CategoryType.PHONE_LOGIN_NUM_.name() + phone, num + 1, RedisTimeConf.ONE_HOUR);
@@ -378,7 +378,7 @@ public class DbUserController extends BaseController {
         tokenMap.put("expireTime", time);
         tokenMap.put("topic", 0);
         if (type != null){
-            tokenMap.put("type",0);
+            tokenMap.put("type",type);
         }
         return TokenUtils.encrypt(JSON.toJSONString(tokenMap), key);
     }
