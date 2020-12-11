@@ -18,23 +18,6 @@ public class DbTcpType extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    @Override
-    public String toString() {
-        return "DbTcpType{" +
-                "tcpTypeId=" + tcpTypeId +
-                ", temperatureSoil='" + temperatureSoil + '\'' +
-                ", humiditySoil='" + humiditySoil + '\'' +
-                ", light='" + light + '\'' +
-                ", heartName='" + heartName + '\'' +
-                ", co2='" + co2 + '\'' +
-                ", idAuto=" + idAuto +
-                ", autocontrolType='" + autocontrolType + '\'' +
-                ", temperatureAir='" + temperatureAir + '\'' +
-                ", humidityAir='" + humidityAir + '\'' +
-                ", isShow=" + isShow +
-                '}';
-    }
-
     /** 主键 */
     private Long tcpTypeId;
 
@@ -68,10 +51,15 @@ public class DbTcpType extends BaseEntity
     @ApiModelProperty(value = "是否开启自动控制")
     private Integer idAuto;
 
-    /** 自动控制温度区间（json） */
-    @Excel(name = "自动控制温度区间", readConverterExp = "j=son")
-    @ApiModelProperty(value = "自动控制温度区间")
+    /** 自动开风口温度（json） */
+    @Excel(name = "自动开风口温度", readConverterExp = "j=son")
+    @ApiModelProperty(value = "自动开风口温度")
     private String autocontrolType;
+
+    /** 自动开风口温度（json） */
+    @Excel(name = "自动关风口温度", readConverterExp = "j=son")
+    @ApiModelProperty(value = "自动关风口温度")
+    private String autocontrolTypeEnd;
 
     /** 空气温度 */
     @Excel(name = "空气温度")
@@ -82,6 +70,36 @@ public class DbTcpType extends BaseEntity
     @Excel(name = "空气湿度")
     @ApiModelProperty(value = "空气湿度")
     private String humidityAir;
+
+    @Override
+    public String toString() {
+        return "DbTcpType{" +
+                "tcpTypeId=" + tcpTypeId +
+                ", temperatureSoil='" + temperatureSoil + '\'' +
+                ", humiditySoil='" + humiditySoil + '\'' +
+                ", light='" + light + '\'' +
+                ", heartName='" + heartName + '\'' +
+                ", co2='" + co2 + '\'' +
+                ", idAuto=" + idAuto +
+                ", autocontrolType='" + autocontrolType + '\'' +
+                ", autocontrolTypeEnd='" + autocontrolTypeEnd + '\'' +
+                ", temperatureAir='" + temperatureAir + '\'' +
+                ", humidityAir='" + humidityAir + '\'' +
+                ", isShow=" + isShow +
+                '}';
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getAutocontrolTypeEnd() {
+        return autocontrolTypeEnd;
+    }
+
+    public void setAutocontrolTypeEnd(String autocontrolTypeEnd) {
+        this.autocontrolTypeEnd = autocontrolTypeEnd;
+    }
 
     /** 是否显示（掉线的话不显示） */
     @Excel(name = "是否显示", readConverterExp = "掉=线的话不显示")
