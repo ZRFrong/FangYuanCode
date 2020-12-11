@@ -13,6 +13,7 @@
         <result property="co2"    column="co2"    />
         <result property="idAuto"    column="id_auto"    />
         <result property="autocontrolType"    column="autocontrol_type"    />
+        <result property="autocontrolTypeEnd"    column="autocontrol_type_end"    />
         <result property="updateTime"    column="update_time"    />
         <result property="temperatureAir"    column="temperature_air"    />
         <result property="humidityAir"    column="humidity_air"    />
@@ -20,7 +21,7 @@
     </resultMap>
 
     <sql id="selectDbTcpTypeVo">
-        select tcp_type_id, temperature_soil, humidity_soil, light, heart_name, co2, id_auto, autocontrol_type, update_time, temperature_air, humidity_air, is_show from db_tcp_type
+        select tcp_type_id, temperature_soil, humidity_soil, light, heart_name, co2, id_auto,autocontrol_type_end, autocontrol_type, update_time, temperature_air, humidity_air, is_show from db_tcp_type
     </sql>
 
     <select id="selectDbTcpTypeList" parameterType="DbTcpType" resultMap="DbTcpTypeResult">
@@ -45,6 +46,7 @@
             <if test="co2 != null  and co2 != ''">co2,</if>
             <if test="idAuto != null ">id_auto,</if>
             <if test="autocontrolType != null  and autocontrolType != ''">autocontrol_type,</if>
+            <if test="autocontrolTypeEnd != null  and autocontrolTypeEnd != ''">autocontrol_type_end,</if>
             <if test="updateTime != null ">update_time,</if>
             <if test="temperatureAir != null  and temperatureAir != ''">temperature_air,</if>
             <if test="humidityAir != null  and humidityAir != ''">humidity_air,</if>
@@ -58,6 +60,7 @@
             <if test="co2 != null  and co2 != ''">#{co2},</if>
             <if test="idAuto != null ">#{idAuto},</if>
             <if test="autocontrolType != null  and autocontrolType != ''">#{autocontrolType},</if>
+            <if test="autocontrolTypeEnd != null  and autocontrolTypeEnd != ''">#{autocontrolTypeEnd},</if>
             <if test="updateTime != null ">#{updateTime},</if>
             <if test="temperatureAir != null  and temperatureAir != ''">#{temperatureAir},</if>
             <if test="humidityAir != null  and humidityAir != ''">#{humidityAir},</if>
@@ -75,6 +78,7 @@
             <if test="co2 != null  and co2 != ''">co2 = #{co2},</if>
             <if test="idAuto != null ">id_auto = #{idAuto},</if>
             <if test="autocontrolType != null  and autocontrolType != ''">autocontrol_type = #{autocontrolType},</if>
+            <if test="autocontrolTypeEnd != null  and autocontrolTypeEnd != ''">autocontrol_type = #{autocontrolTypeEnd},</if>
             <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="temperatureAir != null  and temperatureAir != ''">temperature_air = #{temperatureAir},</if>
             <if test="humidityAir != null  and humidityAir != ''">humidity_air = #{humidityAir},</if>

@@ -54,6 +54,7 @@ public class CaptchaCacheServiceRedisImpl implements CaptchaCacheService
     @Override
     public String get(String key)
     {
+
         return stringRedisTemplate.opsForValue().get(key);
     }
 }
