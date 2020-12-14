@@ -135,7 +135,6 @@ public class DbQrCodeController extends BaseController {
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
         R r = sendSmsClient.checkCode(phone, code);
         code = r.get("code")+"";
-        code = "200";
         if ("200".equals(code)){
             List<DbLand> dbLands = dbLandService.selectDbLandListByUserId(Long.valueOf(userId));
             if (dbLands != null && dbLands.size()>0){
