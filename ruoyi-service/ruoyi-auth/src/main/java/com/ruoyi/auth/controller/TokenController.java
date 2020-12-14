@@ -40,14 +40,11 @@ public class TokenController
     public R loginSilde(@RequestBody LoginForm form)
     {
         ResponseModel response = captchaService.verification(form.getCaptchaVO());
-        if (response.isSuccess())
-        {
+
             // 用户登录
             SysUser user = sysLoginService.login(form.getUsername(), form.getPassword());
             // 获取登录token
             return R.ok(tokenService.createToken(user));
-        }
-        return R.error().put("repCode", response.getRepCode());
     }
 
     @PostMapping("logout")
