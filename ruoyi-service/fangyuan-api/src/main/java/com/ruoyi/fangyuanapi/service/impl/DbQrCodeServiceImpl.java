@@ -11,16 +11,16 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.aes.TokenUtils;
 import com.ruoyi.fangyuanapi.conf.TokenConf;
 import com.ruoyi.fangyuanapi.mapper.DbEquipmentMapper;
+import com.ruoyi.fangyuanapi.mapper.DbLandMapper;
 import com.ruoyi.fangyuanapi.utils.QrCodeUtils;
-import com.ruoyi.system.domain.DbQrCode;
-import com.ruoyi.system.domain.DbQrCodeVo;
-import com.ruoyi.system.domain.OperatePojo;
+import com.ruoyi.system.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.mapper.DbQrCodeMapper;
 import com.ruoyi.fangyuanapi.service.IDbQrCodeService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 二维码Service业务层处理
@@ -39,6 +39,9 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
 
     @Autowired
     private TokenConf tokenConf;
+
+    @Autowired
+    private DbLandMapper dbLandMapper;
 
     /*
      * 二维码地址
@@ -148,6 +151,31 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
         } else {
             return null;
         }
+    }
+
+    /**
+     *
+     * @param dbLandId 土地id
+     * @param dbEquipmentId 设备id
+     * @param userId 用户id
+     * @param handleText 操作集
+     */
+    @Override
+    @Transactional
+    public boolean banDingEquipment(Long dbLandId, Long dbEquipmentId, Long userId, String handleText) {
+        DbLand dbLand = dbLandMapper.selectDbLandById(dbLandId);
+        String ids = dbLand.getEquipmentIds();
+        DbEquipment equipment = new DbEquipment();
+        if (StringUtils.isEmpty(ids)){
+            dbLand.setEquipmentIds(dbEquipmentId+"");
+            equipment.setCreateTime(new Date());
+        }
+        dbLand.setEquipmentIds(ids+","+dbEquipmentId);
+        dbLandMapper.updateDbLand(dbLand);
+        equipment.setEquipmentId(dbEquipmentId);
+        equipment.setHeartbeatText(handleText);
+        int i = dbEquipmentMapper.updateDbEquipment(equipment);
+        return i>0 ? true : false;
     }
 
     /**

@@ -121,10 +121,7 @@ public class DbEquipmentController extends BaseController {
         String path=dbEquipment.getHeartbeatText()+"_"+dbEquipment.getEquipmentNo();
         String s = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, type);
         String s1 = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, DateUtils.getNowDate());
-
-          R r= remoteTcpService.intervalState(s,s1,intervalTime,path);
-
-
+        R r= remoteTcpService.intervalState(s,s1,intervalTime,path);
         return r;
     }
 

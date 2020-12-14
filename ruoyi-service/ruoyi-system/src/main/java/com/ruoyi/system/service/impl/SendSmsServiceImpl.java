@@ -68,6 +68,7 @@ public class SendSmsServiceImpl implements SendSmsService {
                 redisUtils.set(CategoryType.USER_IDENTIFYING_CODE_+ phone, s, RedisTimeConf.FIVE_MINUTE);//后台纪录验证码2分钟不过其
                 return s;
             }
+            log.warn("阿里云返回信息："+map.toString());
             return null;
         }catch (Exception e) {
             e.printStackTrace();

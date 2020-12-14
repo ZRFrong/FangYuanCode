@@ -147,6 +147,9 @@ public class DbAbnormalInfoController extends BaseController {
         for (DbLand land : dbLands) {
             String equipmentIds = land.getEquipmentIds();
             DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();
+            if (StringUtils.isEmpty(equipmentIds)){
+                continue;
+            }
             for (String s : equipmentIds.split(",")) {
                 if (StringUtils.isEmpty(startTime)) {
                     dbAbnormalInfo.setAlarmExplain(startTime);

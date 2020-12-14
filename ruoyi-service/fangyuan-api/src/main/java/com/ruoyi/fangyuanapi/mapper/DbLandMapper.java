@@ -1,6 +1,8 @@
 package com.ruoyi.fangyuanapi.mapper;
 
 import com.ruoyi.system.domain.DbLand;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**
@@ -58,4 +60,13 @@ public interface DbLandMapper
      * @return 结果
      */
     public int deleteDbLandByIds(String[] landIds);
+
+    List<DbLand> selectDbLandByUserId(@Param("dbUserId") Long dbUserId,@Param("siteId") Long siteId);
+
+    /**
+     * 查詢用戶地的數量
+     * @param dbUserId
+     * @return
+     */
+    Integer selectDbLandCountByUserId(Long dbUserId);
 }

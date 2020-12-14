@@ -2,8 +2,11 @@ package com.ruoyi.fangyuanapi.service.impl;
 
 import java.util.List;
 import java.util.ArrayList;
+
+import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.domain.Ztree;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.fangyuanapi.utils.DbLandUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.mapper.DbLandMapper;
@@ -116,5 +119,43 @@ public class DbLandServiceImpl implements IDbLandService
             ztrees.add(ztree);
         }
         return ztrees;
+    }
+
+    /**
+     * 小程序新增土地
+     * @param dbLand
+     * @return
+     */
+    @Override
+    public R weChatAddSave(DbLand dbLand) {
+        List<DbLand> dbLands = dbLandMapper.selectDbLandByUserId(dbLand.getDbUserId(),0L);
+        if (dbLands == null){
+            dbLands.add(checkLand(dbLand,1));
+        }
+        Integer count = dbLandMapper.selectDbLandCountByUserId(dbLand.getDbUserId());
+        if (dbLands.size() == 6 && count == 54){
+            return R.error("土地已經達到上線！");
+        }
+        if (count / dbLands.size() == 9){
+            dbLands.add(checkLand(dbLand,dbLands.size()+1));
+        }
+        for (DbLand d : dbLands) {
+            List<DbLand> landList = dbLandMapper.selectDbLandByUserId(d.getDbUserId(), d.getLandId());
+            if (landList.size()<9){
+                dbLand.setSiteId(d.getLandId());
+                int j = dbLandMapper.insertDbLand(dbLand);
+                return j>0?R.data(dbLand.getLandId()): R.error();
+            }
+        }
+        return null;
+    }
+
+    private DbLand checkLand(DbLand land,Integer num){
+        DbLand dbLand = null;
+        dbLand =land;
+        dbLand.setProductName(DbLandUtils.getLnadName(num));
+        dbLand.setSiteId(0L);
+        int i = dbLandMapper.insertDbLand(dbLand);
+        return dbLand;
     }
 }
