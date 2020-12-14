@@ -2,10 +2,12 @@ package com.ruoyi.fangyuanapi.service.impl;
 
 import java.util.*;
 
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.DbUserDynamic;
 import com.ruoyi.fangyuanapi.dto.DynamicDto;
 import com.ruoyi.fangyuanapi.mapper.*;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.domain.DbUser;
@@ -183,6 +185,7 @@ public class DbUserServiceImpl implements IDbUserService
         map.put("gender",user.getGender()+"");
         map.put("age",user.getAge()+"");
         map.put("signature",user.getSignature()+"");
+        map.put("birthday",DateUtils.parseDateToStr("yyyy-MM-dd", user.getBirthday()));
         return map;
     }
 
