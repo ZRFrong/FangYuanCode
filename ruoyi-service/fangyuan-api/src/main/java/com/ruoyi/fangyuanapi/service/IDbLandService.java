@@ -1,5 +1,6 @@
 package com.ruoyi.fangyuanapi.service;
 
+import com.ruoyi.common.core.domain.R;
 import com.ruoyi.system.domain.DbLand;
 import java.util.List;
 import com.ruoyi.common.core.domain.Ztree;
@@ -66,4 +67,6 @@ public interface IDbLandService
      * @return 所有土地信息
      */
     public List<Ztree> selectDbLandTree();
+
+    R weChatAddSave(DbLand dbLand);
 }

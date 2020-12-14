@@ -42,6 +42,12 @@
         left join db_land p on p.land_id = t.site_id
         where t.land_id = #{landId}
     </select>
+    <select id="selectDbLandByUserId" resultMap="DbLandResult">
+        select * from  db_land where db_user_id = #{dbUserId} and site_id = #{siteId}
+    </select>
+    <select id="selectDbLandCountByUserId" resultType="java.lang.Integer">
+        select count(*) from  db_land where db_user_id = #{dbUserId} and site_id != 0
+    </select>
 
     <insert id="insertDbLand" parameterType="DbLand" useGeneratedKeys="true" keyProperty="landId" keyColumn="landId">
         insert into db_land

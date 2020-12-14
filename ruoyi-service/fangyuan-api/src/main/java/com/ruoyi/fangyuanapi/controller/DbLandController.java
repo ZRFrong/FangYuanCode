@@ -6,6 +6,7 @@ import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.system.domain.LandVo;
 import com.ruoyi.system.feign.RemoteTcpService;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,9 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
@@ -115,13 +113,32 @@ public class DbLandController extends BaseController {
      */
     @PostMapping("save")
     @ApiOperation(value = "新增土地/地块", notes = "土地/地块id")
-    public R addSave(DbLand dbLand, HttpServletRequest request) {
+    public R addSave(@RequestBody DbLand dbLand, HttpServletRequest request) {
+        if (dbLand == null){
+            return R.error();
+        }
         String userId = request.getHeader(Constants.CURRENT_ID);
         dbLand.setDbUserId(Long.valueOf(userId));
         dbLand.setCreateTime(new Date());
         int i = dbLandService.insertDbLand(dbLand);
         return R.data(dbLand.getLandId());
     }
+
+    /**
+     * 新增保存土地
+     */
+    @PostMapping("weChatSave")
+    @ApiOperation(value = "新增土地/地块", notes = "小程序新增土地地块")
+    public R weChatAddSave(DbLand dbLand) {
+        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+        if (dbLand == null){
+            return R.error("添加失败！");
+        }
+        dbLand.setDbUserId(Long.valueOf(userId));
+        R r = dbLandService.weChatAddSave(dbLand);
+        return r;
+    }
+
 
     /**
      * 修改保存土地

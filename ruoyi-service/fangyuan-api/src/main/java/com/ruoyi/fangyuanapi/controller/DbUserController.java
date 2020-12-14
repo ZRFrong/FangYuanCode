@@ -127,7 +127,7 @@ public class DbUserController extends BaseController {
                     DbUser user = new DbUser();
                     user.setPhone(phone);
                     dbUserService.selectDbUserByPhone(user);
-                    redisUtils.delete(RedisKeyConf.ACCESS_TOKEN_.name() + user.getId());
+                    redisUtils.delete(RedisKeyConf.APP_ACCESS_TOKEN_.name() + user.getId());
                     return  R.ok("修改密码成功,请重新登陆!");
                 }
                 return R.error();
@@ -181,12 +181,12 @@ public class DbUserController extends BaseController {
             }
             if (ZhaoMD5Utils.string2MD5(password + salt).equals(dbUser.getPassword())) {
                 if (StringUtils.isNotEmpty(token)){
-                    redisUtils.delete(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId());
+                    redisUtils.delete(RedisKeyConf.APP_ACCESS_TOKEN_.name() + dbUser.getId());
                 }
                 //登录成功
                 token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000),1);
                 /* 返回token 并且记录 */
-                redisUtils.set(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId(), token);
+                redisUtils.set(RedisKeyConf.APP_ACCESS_TOKEN_.name() + dbUser.getId(), token,60 * 60 * 24 * 365*3);
                 return R.data(token);
             } else {
                 redisUtils.set(CategoryType.PHONE_LOGIN_NUM_.name() + phone, num + 1, RedisTimeConf.ONE_HOUR);
@@ -198,10 +198,10 @@ public class DbUserController extends BaseController {
             R r = sendSmsClient.checkCode(phone, code);
             if ("200".equals(r.get("code") + "")) {
                 if (StringUtils.isNotEmpty(token)){
-                    redisUtils.delete(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId());
+                    redisUtils.delete(RedisKeyConf.APP_ACCESS_TOKEN_.name() + dbUser.getId());
                 }
                 token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 365*3),1);
-                redisUtils.set(RedisKeyConf.ACCESS_TOKEN_.name() + dbUser.getId(),token,60 * 60 * 24 * 365*3);
+                redisUtils.set(RedisKeyConf.APP_ACCESS_TOKEN_.name() + dbUser.getId(),token,60 * 60 * 24 * 365*3);
                 return R.data(token);
             } else {
                 redisUtils.set(CategoryType.PHONE_LOGIN_NUM_.name() + phone, num + 1, RedisTimeConf.ONE_HOUR);
@@ -287,6 +287,7 @@ public class DbUserController extends BaseController {
             if (dbUser.getUserFrom() == 0) {
                 dbUser.setUpdateTime(new Date());//修改时间
                 dbUser.setPassword(s);
+                user.setSalt(uuid);
                 int i = dbUserService.updateDbUser(dbUser);
                 return i > 0 ? new R() : R.error(ResultEnum.SERVICE_BUSY.getCode(), ResultEnum.SERVICE_BUSY.getMessage());
             }

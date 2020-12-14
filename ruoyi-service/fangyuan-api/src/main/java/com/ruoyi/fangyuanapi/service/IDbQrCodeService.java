@@ -64,4 +64,13 @@ public interface IDbQrCodeService
     String qrCodeGenerate(DbQrCode dbQrCode) throws Exception;
 
     DbQrCodeVo qrCodeInfo(String token, String qrCodeId);
+
+    /**
+     * 扫码绑定设备页面
+     * @param dbLandId 土地id
+     * @param dbEquipmentId 设备id
+     * @param userId 用户id
+     * @param handleText 操作集
+     */
+    boolean banDingEquipment(Long dbLandId, Long dbEquipmentId, Long userId, String handleText);
 }

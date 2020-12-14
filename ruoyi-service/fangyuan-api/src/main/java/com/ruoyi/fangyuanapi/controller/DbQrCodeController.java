@@ -1,20 +1,16 @@
 package com.ruoyi.fangyuanapi.controller;
 
+import cn.hutool.db.Db;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.DbEquipment;
+import com.ruoyi.system.domain.DbLand;
 import com.ruoyi.system.domain.DbQrCode;
 import com.ruoyi.system.domain.DbQrCodeVo;
+import com.ruoyi.system.feign.SendSmsClient;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
@@ -33,6 +29,9 @@ public class DbQrCodeController extends BaseController {
 
     @Autowired
     private IDbQrCodeService dbQrCodeService;
+
+    @Autowired
+    private SendSmsClient sendSmsClient;
 
     /**
      * 查询${tableComment}
@@ -116,8 +115,23 @@ public class DbQrCodeController extends BaseController {
      *点击选择操作集
      * */
 
-    @GetMapping()
-    public R banDingEquipment(){
+    @PostMapping("banDingEquipment")
+    @ApiOperation(value = "绑定设备接口",notes = "绑定设备接口",httpMethod = "post" )
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "dbLandId",value = "土地id",required = true),
+            @ApiImplicitParam(name = "dbEquipmentId",value = "设备id",required = true),
+            @ApiImplicitParam(name = "handleText",value = "操作集 json",required = true),
+            @ApiImplicitParam(name = "phone",value = "手机号",required = true),
+            @ApiImplicitParam(name = "code",value = "验证码",required = true)
+    })
+    public R banDingEquipment(@RequestParam Long dbLandId,@RequestParam Long dbEquipmentId,@RequestParam String handleText,@RequestParam String phone,@RequestParam String code){
+        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+        R r = sendSmsClient.checkCode(phone, code);
+        code = r.get("code")+"";
+        if ("200".equals(code)){
+            boolean b = dbQrCodeService.banDingEquipment(dbLandId, dbEquipmentId, Long.valueOf(userId), handleText);
+            return b?R.ok("绑定成功！"):R.error();
+        }
         return null;
     }
 

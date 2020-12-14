@@ -41,6 +41,10 @@ public enum RedisKeyConf {
     /**
      *
      */
-    ACCESS_TOKEN_
+    ACCESS_TOKEN_,
+    /**
+     *
+     */
+    APP_ACCESS_TOKEN_
 
 }
