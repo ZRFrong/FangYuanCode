@@ -136,7 +136,8 @@ public class DbLandServiceImpl implements IDbLandService
         if (dbLands.size() == 6 && count == 54){
             return R.error("土地已經達到上線！");
         }
-        if (count / dbLands.size() == 9){
+        Integer flag =  dbLands.size() == 0 ? 1 :dbLands.size();
+        if (count / flag == 9){
             dbLands.add(checkLand(dbLand,dbLands.size()+1));
         }
         for (DbLand d : dbLands) {
@@ -157,5 +158,9 @@ public class DbLandServiceImpl implements IDbLandService
         dbLand.setSiteId(0L);
         int i = dbLandMapper.insertDbLand(dbLand);
         return dbLand;
+    }
+    public static void main(String[] args){
+        System.out.println(0/1);
+
     }
 }
