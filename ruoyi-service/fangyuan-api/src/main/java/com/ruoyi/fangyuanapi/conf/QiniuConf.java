@@ -36,4 +36,5 @@ public class QiniuConf {
     @Value("${com.fangyuan.qiniu.contentType}")
     private String contentType;
 
+
 }

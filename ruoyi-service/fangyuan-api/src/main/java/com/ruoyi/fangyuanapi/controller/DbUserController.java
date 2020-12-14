@@ -18,12 +18,14 @@ import com.ruoyi.common.utils.md5.ZhaoMD5Utils;
 import com.ruoyi.common.utils.sms.CategoryType;
 import com.ruoyi.common.utils.sms.PhoneUtils;
 import com.ruoyi.common.utils.sms.ResultEnum;
+import com.ruoyi.fangyuanapi.conf.QiniuConf;
 import com.ruoyi.fangyuanapi.conf.TokenConf;
 import com.ruoyi.fangyuanapi.conf.WxSmallConf;
 import com.ruoyi.fangyuanapi.service.*;
 import com.ruoyi.system.domain.DbUser;
 import com.ruoyi.fangyuanapi.dto.DynamicDto;
 import com.ruoyi.system.domain.DbUserLogin;
+import com.ruoyi.system.feign.RemoteOssService;
 import com.ruoyi.system.feign.SendSmsClient;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -33,6 +35,8 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
@@ -477,23 +481,30 @@ public class DbUserController extends BaseController {
     /**
      * 修改个人资料
      *
-     * @param request
-     * @param dbUser
      * @return
      */
     @PutMapping("UpdateUserData")
     @ApiOperation(value = "修改个人资料",notes = "修改个人资料接口", httpMethod = "PUT")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "duUser",value = "user对象中的部分属性",required = true)
+            @ApiImplicitParam(name = "avatar",value = "头像",required = true),
+            @ApiImplicitParam(name = "username",value = "真实姓名",required = true),
+            @ApiImplicitParam(name = "nickName",value = "昵称",required = true),
+            @ApiImplicitParam(name = "gender",value = "性别",required = true),
+            @ApiImplicitParam(name = "birthday",value = "生日",required = true),
+            @ApiImplicitParam(name = "signature",value = "签名 不超过三十字",required = true),
     })
-    public R UpdateUserData(HttpServletRequest request, DbUser dbUser) {
-        String userId = request.getHeader(Constants.CURRENT_ID);
-        if (dbUser != null) {
-            dbUser.setId(Long.valueOf(userId));
-            int i = dbUserService.updateDbUser(dbUser);
-            return i > 0 ? new R() : R.error(ResultEnum.SERVICE_BUSY.getCode(), ResultEnum.SERVICE_BUSY.getMessage());
-        }
-        return R.error();
+    public R UpdateUserData(String avatar,String username,String nickName,Integer gender,Date birthday,String signature) {
+        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+        DbUser dbUser = new DbUser();
+        dbUser.setUserName(username);
+        dbUser.setNickname(nickName);
+        dbUser.setGender(gender);
+        dbUser.setBirthday(birthday);
+        dbUser.setSignature(signature);
+        dbUser.setAvatar(avatar);
+        dbUser.setId(Long.valueOf(userId));
+        int i = dbUserService.updateDbUser(dbUser);
+        return i > 0 ? new R() : R.error(ResultEnum.SERVICE_BUSY.getCode(), ResultEnum.SERVICE_BUSY.getMessage());
     }
 
     private void insertLoginStatus(DbUserLogin login, Long id, Integer userFrom) {
