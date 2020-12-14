@@ -184,7 +184,7 @@ public class DbUserController extends BaseController {
                     redisUtils.delete(RedisKeyConf.APP_ACCESS_TOKEN_.name() + dbUser.getId());
                 }
                 //登录成功
-                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000),1);
+                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 365*3),1);
                 /* 返回token 并且记录 */
                 redisUtils.set(RedisKeyConf.APP_ACCESS_TOKEN_.name() + dbUser.getId(), token,60 * 60 * 24 * 365*3);
                 return R.data(token);
@@ -200,7 +200,7 @@ public class DbUserController extends BaseController {
                 if (StringUtils.isNotEmpty(token)){
                     redisUtils.delete(RedisKeyConf.APP_ACCESS_TOKEN_.name() + dbUser.getId());
                 }
-                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 365*3),1);
+                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(),  System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 365*3),1);
                 redisUtils.set(RedisKeyConf.APP_ACCESS_TOKEN_.name() + dbUser.getId(),token,60 * 60 * 24 * 365*3);
                 return R.data(token);
             } else {

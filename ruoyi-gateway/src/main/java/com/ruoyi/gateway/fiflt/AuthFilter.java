@@ -85,7 +85,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
                 /* id == null token被篡改 解密失败 */
                 String id = map.get("id")+"";
                 if ("1".equals(map.get("type")+"") ) {
-                    String redisToken = ops.get(RedisKeyConf.ACCESS_TOKEN_.name() + id);
+                    String redisToken = ops.get(RedisKeyConf.APP_ACCESS_TOKEN_.name() + id);
                     if (!token.equals(redisToken)) {
                         return setUnauthorizedResponse(exchange, "token verify error", "403");
                     }
