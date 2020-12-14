@@ -69,4 +69,6 @@ public interface IDbLandService
     public List<Ztree> selectDbLandTree();
 
     R weChatAddSave(DbLand dbLand);
+
+    List<DbLand> selectDbLandListByUserId(Long aLong);
 }

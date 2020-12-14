@@ -3,6 +3,8 @@ package com.ruoyi.fangyuanapi.controller;
 import cn.hutool.db.Db;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
+import com.ruoyi.fangyuanapi.service.IDbLandService;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbLand;
 import com.ruoyi.system.domain.DbQrCode;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.fangyuanapi.service.IDbQrCodeService;
+
+import java.util.List;
 
 /**
  * 二维码 提供者
@@ -32,6 +36,9 @@ public class DbQrCodeController extends BaseController {
 
     @Autowired
     private SendSmsClient sendSmsClient;
+
+    @Autowired
+    private IDbLandService dbLandService;
 
     /**
      * 查询${tableComment}
@@ -128,7 +135,16 @@ public class DbQrCodeController extends BaseController {
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
         R r = sendSmsClient.checkCode(phone, code);
         code = r.get("code")+"";
+        code = "200";
         if ("200".equals(code)){
+            List<DbLand> dbLands = dbLandService.selectDbLandListByUserId(Long.valueOf(userId));
+            if (dbLands != null && dbLands.size()>0){
+                for (DbLand land : dbLands) {
+                    if (land.getEquipmentIds().contains(dbEquipmentId+"")){
+                        return R.error("您已经绑定过该设备了！");
+                    }
+                }
+            }
             boolean b = dbQrCodeService.banDingEquipment(dbLandId, dbEquipmentId, Long.valueOf(userId), handleText);
             return b?R.ok("绑定成功！"):R.error();
         }

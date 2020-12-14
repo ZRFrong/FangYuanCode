@@ -52,7 +52,7 @@ public class DbLandServiceImpl implements IDbLandService
 
     /**
      * 新增土地
-     * 
+     *
      * @param dbLand 土地
      * @return 结果
      */
@@ -149,6 +149,11 @@ public class DbLandServiceImpl implements IDbLandService
             }
         }
         return null;
+    }
+
+    @Override
+    public List<DbLand> selectDbLandListByUserId(Long userId) {
+        return dbLandMapper.selectDbLandByUserId(userId,null);
     }
 
     private DbLand checkLand(DbLand land,Integer num){
