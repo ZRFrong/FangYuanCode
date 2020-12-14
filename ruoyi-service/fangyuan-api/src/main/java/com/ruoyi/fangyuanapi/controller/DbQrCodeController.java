@@ -123,7 +123,7 @@ public class DbQrCodeController extends BaseController {
      * */
 
     @PostMapping("banDingEquipment")
-    @ApiOperation(value = "绑定设备接口",notes = "绑定设备接口",httpMethod = "post" )
+    @ApiOperation(value = "绑定设备接口",notes = "绑定设备接口",httpMethod = "POST" )
     @ApiImplicitParams({
             @ApiImplicitParam(name = "dbLandId",value = "土地id",required = true),
             @ApiImplicitParam(name = "dbEquipmentId",value = "设备id",required = true),
