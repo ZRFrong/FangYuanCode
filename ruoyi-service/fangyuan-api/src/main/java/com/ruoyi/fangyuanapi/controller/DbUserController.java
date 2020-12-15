@@ -77,6 +77,23 @@ public class DbUserController extends BaseController {
     @Autowired
     private WxSmallConf wxSmallConf;
 
+    @Autowired
+    private RemoteOssService remoteOssService;
+
+    @ApiOperation(value = "图片上传接口",notes = "头像上传接口 被允许的格式： .jpg.png.jpeg.gif",httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "file",value = "头像图片",required = true)
+    })
+    @PostMapping("avatarUpload")
+    public R avatarUpload(MultipartFile file){
+        if (file != null && StringUtils.checkFileIsImages(file.getOriginalFilename(),".jpg.png.jpeg.gif")){
+            R r = remoteOssService.editSave(file);
+            String url = r.get("msg")+"";
+            return StringUtils.isEmpty(url)?R.error("上传错误") : R.data(url);
+        }
+        return R.error("图片不能为空，或者图片格式不正确！");
+    }
+
     /**
      * 退出登陆
      *
