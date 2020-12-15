@@ -64,4 +64,6 @@ public interface DbEquipmentMapper
 
     @Select("select * from db_equipment where equipment_no=#{equipmentNo} and heartbeat_text LIKE CONCAT('%',#{heartbeatText},'%')")
     DbEquipment selectByHeart(@Param("heartbeatText") String heartbeatText,@Param("equipmentNo") String equipmentNo);
+
+    int updateDbEquipmentName(DbEquipment dbEquipment);
 }

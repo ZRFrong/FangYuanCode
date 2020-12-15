@@ -74,7 +74,8 @@ public class DbEquipmentServiceImpl implements IDbEquipmentService {
     @Override
     public int updateDbEquipment(DbEquipment dbEquipment) {
         //dbEquipment.setUpdateTime(DateUtils.getNowDate());
-        return dbEquipmentMapper.updateDbEquipment(dbEquipment);
+
+        return dbEquipmentMapper.updateDbEquipmentName(dbEquipment);
     }
 
     /**

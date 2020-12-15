@@ -124,7 +124,7 @@ public class SysOssController extends BaseController
      * @throws IOException
      */
     @PostMapping("upload")
-    @HasPermissions("sys:oss:add")
+   // @HasPermissions("sys:oss:add")
     public R editSave(@RequestParam("file") MultipartFile file) throws IOException
     {
         if (file.isEmpty())

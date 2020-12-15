@@ -84,6 +84,10 @@
         where equipment_id = #{equipmentId}
     </update>
 
+    <update id="updateDbEquipmentName" parameterType="DbEquipment">
+         update db_equipment set equipment_name = #{equipmentName} where equipment_id = #{equipmentId}
+    </update>
+
     <delete id="deleteDbEquipmentById" parameterType="Long">
         delete from db_equipment where equipment_id = #{equipmentId}
     </delete>

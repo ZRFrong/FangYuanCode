@@ -147,7 +147,7 @@ public class DbQrCodeController extends BaseController {
             boolean b = dbQrCodeService.banDingEquipment(dbLandId, dbEquipmentId, Long.valueOf(userId), handleText);
             return b?R.ok("绑定成功！"):R.error();
         }
-        return null;
+        return r;
     }
 
 }

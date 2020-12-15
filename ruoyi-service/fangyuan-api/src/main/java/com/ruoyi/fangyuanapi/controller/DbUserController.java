@@ -85,11 +85,15 @@ public class DbUserController extends BaseController {
             @ApiImplicitParam(name = "file",value = "头像图片",required = true)
     })
     @PostMapping("avatarUpload")
-    public R avatarUpload(MultipartFile file){
+    public R avatarUpload(@RequestPart("file") MultipartFile file){
         if (file != null && StringUtils.checkFileIsImages(file.getOriginalFilename(),".jpg.png.jpeg.gif")){
+            System.out.println(file.getOriginalFilename());
             R r = remoteOssService.editSave(file);
-            String url = r.get("msg")+"";
-            return StringUtils.isEmpty(url)?R.error("上传错误") : R.data(url);
+            if ("200".equals(r.get("code")+"")){
+                String url = r.get("msg")+"";
+                return R.data(url);
+            }
+            return R.error("上传错误,或者图片文件名字过长！");
         }
         return R.error("图片不能为空，或者图片格式不正确！");
     }
