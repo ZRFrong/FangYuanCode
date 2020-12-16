@@ -45,41 +45,39 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
             DbTcpClient dbTcpClient = getIp(ctx);
             dbTcpClient.setHeartName(msg.toString());
             receiveUtil.heartbeatChoose(dbTcpClient, ctx);
-            log.info("时间："+new Date()+"心跳处理："+msg);
+            log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "心跳处理：" + msg);
         } else {
+
             //       前两位是设备号   然后是标识符 03状态返回  05操作响应
-            String charStic = s.substring(2, 4);
-            if (charStic.equals("03")) {
-                log.info("时间：" + new Date() + "状态返回：" + msg);
+
+            try {
+                log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "收到信息" + msg);
+                if (s.contains("0302")) {
+                    log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "手动自动返回：" + msg);
 //                状态处理  返回几位处理
-                String charStic2 = s.substring(4, 6);
 
-                switch(charStic2){
-                    case "02":
-                        //手动自动返回    01 03 02  05 06
-                        receiveUtil.sinceOrHandRead(s,ctx);
-                    case "0A":
+                    //手动自动返回    01 03 02  05 06
+                    receiveUtil.sinceOrHandRead(s, ctx);
+                } else if (s.contains("030C")) {
+                    log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "状态返回：" + msg);
 //                        状态查询返回
-                        receiveUtil.stateRead(s,ctx);
+                    receiveUtil.stateRead(s, ctx);
 
-                }
-
-                if (charStic2.equals("02")) {
-
-
-                }
-                receiveUtil.stateRead(msg.toString(), ctx);
-            } else if (charStic.equals("05")) {
-                log.info("时间：" + new Date() + "操作响应返回：" + msg);
+                } else if (s.substring(2, 3).equals("05")) {
+                    log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "操作响应返回：" + msg);
 //               操作响应
-                receiveUtil.stateRespond(ctx, msg.toString());
-            }else  if (charStic.equals("01")){
-                log.info("时间：" + new Date() + "通风口自动控制设置：" + msg);
+                    receiveUtil.stateRespond(ctx, msg.toString());
+                } else if (s.substring(2, 3).equals("01")) {
+                    log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "通风口自动控制设置：" + msg);
 //                更改设备自动手动状态
-                receiveUtil.returnHand(ctx, msg.toString());
-            }else  if (charStic.equals("06")){
-                log.info("时间：" + new Date() + "写入自动控制通风" + msg);
+                    receiveUtil.returnHand(ctx, msg.toString());
+                } else if (s.substring(2, 3).equals("06")) {
+                    log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "写入自动控制通风" + msg);
+                }
+            } catch (Exception e) {
+                log.error("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "乱码:" + msg);
             }
+
         }
 
     }
@@ -152,6 +150,11 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
         String clientIp = insocket.getAddress().getHostAddress();
         int port = insocket.getPort();
         DbTcpClient dbTcpClient = new DbTcpClient();
+        for (String key : NettyServer.map.keySet()) {
+            if (NettyServer.map.get(key) != null && NettyServer.map.get(key).equals(ctx)) {
+                dbTcpClient.setHeartName(key);
+            }
+        }
         dbTcpClient.setIp(clientIp);
         dbTcpClient.setPort(port + "");
         return dbTcpClient;

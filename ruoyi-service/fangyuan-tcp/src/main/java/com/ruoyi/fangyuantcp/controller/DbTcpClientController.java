@@ -51,6 +51,17 @@ public class DbTcpClientController extends BaseController {
     }
 
 
+    /*
+    * 查询在线列表服务调用
+    * */
+    @GetMapping("listOnly")
+    public List<DbTcpClient> listOnly() {
+        DbTcpClient dbTcpClient = new DbTcpClient();
+        return dbTcpClientService.selectDbTcpClientList(dbTcpClient);
+    }
+
+
+
     /**
      * 新增保存tcp在线设备
      */

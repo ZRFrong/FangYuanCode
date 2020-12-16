@@ -325,12 +325,13 @@ public class SendCodeUtils {
             }else {
                 DbTcpOrder dbTcpOrder = JSON.parseObject(s, DbTcpOrder.class);
                 Integer results = dbTcpOrder.getResults();
-                if (results==0){
+                if (results==1){
                     throw  new OperationExceptions(dbOperationVo.getHeartName(),dbOperationVo.getOperationName(),dbOperationVo.getFacility());
                 }
             }
         } catch (OperationExceptions operationExceptions) {
             throw  new OperationExceptions(dbOperationVo.getHeartName(),dbOperationVo.getOperationName(),dbOperationVo.getFacility());
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -59,8 +59,8 @@ public class DbTcpTypeController extends BaseController {
     /**
      * 查询设备状态列表
      */
-    @RequestMapping("listonly")
-    public List<DbTcpType> listonly(DbTcpType dbTcpType) {
+    @PostMapping("listonly")
+    public List<DbTcpType> listonly(@RequestBody DbTcpType dbTcpType) {
         List<DbTcpType> list = dbTcpTypeService.selectDbTcpTypeList(dbTcpType);
         return list;
     }

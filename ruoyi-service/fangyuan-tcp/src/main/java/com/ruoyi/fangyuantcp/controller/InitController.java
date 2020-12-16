@@ -2,6 +2,7 @@ package com.ruoyi.fangyuantcp.controller;
 
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
 import com.ruoyi.fangyuantcp.timing.TaskHeartbeat;
+import com.ruoyi.fangyuantcp.timing.TaskTcpType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,7 +42,11 @@ public class InitController {
          * */
         TaskHeartbeat taskHeartbeat = new TaskHeartbeat();
         taskHeartbeat.HeartbeatRun();
-
+/*
+* 开始定时装态查询
+* */
+        TaskTcpType taskTcpType = new TaskTcpType();
+        taskTcpType.HeartbeatRun();
 
 
     }

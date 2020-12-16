@@ -177,7 +177,16 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
     }
 
 
-
+    @Override
+    public void timingTypeOnly(DbTcpClient dbTcpClient) {
+        DbOperationVo dbOperationVo = new DbOperationVo();
+        List<DbOperationVo> list = new ArrayList<>();
+        dbOperationVo.setHeartName(dbTcpClient.getHeartName());
+        dbOperationVo.setFacility("01");
+        dbOperationVo.setOperationText(TcpOrderTextConf.stateSave);
+        list.add(dbOperationVo);
+        SendCodeUtils.timingState(list);
+    }
 
     /*
      *
@@ -204,21 +213,19 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
 
     @Override
     public void timingType() {
-        DbTcpType dbTcpType = new DbTcpType();
-        List<DbTcpType> dbTcpTypes = selectDbTcpTypeList(dbTcpType);
+        DbTcpClient dbTcpClient = new DbTcpClient();
+        List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
         DbOperationVo dbOperationVo = new DbOperationVo();
         List<DbOperationVo> list = new ArrayList<>();
-        if (!dbTcpTypes.isEmpty()) {
-            for (DbTcpType tcpType : dbTcpTypes) {
-                String[] split = tcpType.getHeartName().split("_");
-                dbOperationVo.setHeartName(split[0]);
-                dbOperationVo.setFacility(split[1]);
+        if (!dbTcpClients.isEmpty()) {
+            for (DbTcpClient tcpClient : dbTcpClients) {
+                dbOperationVo.setHeartName(tcpClient.getHeartName());
+                dbOperationVo.setFacility("01");
                 dbOperationVo.setOperationText(TcpOrderTextConf.stateSave);
                 list.add(dbOperationVo);
             }
             int i = SendCodeUtils.timingState(list);
         }
-
 
     }
 

@@ -13,6 +13,7 @@ import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
+import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.fangyuantcp.utils.SendCodeListUtils;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
@@ -49,6 +50,9 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
 
     @Autowired
     private DbTcpClientMapper dbTcpClientMapper;
+
+    @Autowired
+    private IDbTcpTypeService dbTcpTypeService;
 
 
     /**
@@ -203,7 +207,7 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
 
 
             if (dbTcpClients.size() > 0 && dbTcpClients != null) {
-                //            存在更新
+//            存在更新
                 dbTcpClients.get(0).setHeartbeatTime(new Date());
                 dbTcpClients.get(0).setIsOnline(0);
                 int i1 = dbTcpClientMapper.updateDbTcpClient(dbTcpClients.get(0));
@@ -214,10 +218,15 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
                 dbTcpClient.setIsOnline(0);
                 int i3 = dbTcpClientMapper.insertDbTcpClient(dbTcpClient);
                 i = 1;
+//                查询温度
+                dbTcpTypeService.timingTypeOnly(dbTcpClient);
+
             }
+
             List<DbEquipment>   dbEquipments = dbEquipmentMapper.selectDbEquipmentList(dbEquipment);
             for (DbEquipment equipment : dbEquipments) {
                 equipment.setIsFault(0);
+                equipment.setIsOnline(0);
                 int i2 = dbEquipmentMapper.updateDbEquipment(equipment);
             }
         } catch (Exception e) {

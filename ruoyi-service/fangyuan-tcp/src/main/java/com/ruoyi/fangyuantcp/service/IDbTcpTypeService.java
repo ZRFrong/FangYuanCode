@@ -2,6 +2,7 @@ package com.ruoyi.fangyuantcp.service;
 
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbStateRecords;
+import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.system.domain.DbTcpType;
 
 import java.util.Date;
@@ -84,4 +85,5 @@ public interface IDbTcpTypeService {
 
     List<DbStateRecords> intervalState(Date startTime, Date endTime, String iNterval,String hearName);
 
+    void timingTypeOnly(DbTcpClient dbTcpClient);
 }
