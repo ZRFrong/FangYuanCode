@@ -7,6 +7,7 @@ package com.ruoyi.system.feign;
 import com.ruoyi.common.constant.ServiceNameConstants;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.system.domain.DbOperationVo;
+import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.system.feign.factory.RemoteTcpFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -31,7 +32,7 @@ public interface RemoteTcpService {
     /*
     *状态查询
     * */
-    @GetMapping(value="type/listonly")
+    @PostMapping(value="type/listonly")
     public List<DbTcpType> list(@RequestBody DbTcpType dbTcpType);
 
 
@@ -59,4 +60,8 @@ public interface RemoteTcpService {
 //    @GetMapping("intervalState/{startTime}/{endTime}/{interval}/{hearName}")
     @GetMapping("type/intervalState/{startTime}/{endTime}/{interval}/{hearName}")
     R intervalState(@PathVariable("startTime")String s, @PathVariable("endTime")String s1, @PathVariable("interval")String intervalTime,@PathVariable("hearName")String hearName);
+
+    @GetMapping(value="client/listOnly")
+    List<DbTcpClient> tcpClients();
+
 }

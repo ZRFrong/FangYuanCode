@@ -38,7 +38,7 @@ public class ReceiveUtil {
         int i = tcpClientService.heartbeatChoose(dbTcpClient);
 //            不存在 新建，添加map管理
         NettyServer.map.put(dbTcpClient.getHeartName(), ctx);
-        if (i==1){
+        if (i == 1) {
 //            发送心跳查询指令
             SendCodeUtils.querystate03Ctx(ctx);
         }
@@ -53,7 +53,9 @@ public class ReceiveUtil {
         /*
             状态码 01 03   0A代码后边有10位
          *01 03 0A 00 FD 01 09 01 06 00 01 00 C1 39 6F
-         *5组   空气温度 湿度   土壤温度 湿度   光照
+         * 01 03 0C 00 00 00 7C 00 00 00 00 00 87 03 2D D3 76
+         * 01 03 0C 00 64 03 20 00 00 00 00 00 00 00 00 11 8F
+         *5组   空气温度 湿度   土壤温度 湿度   光照  二样黄痰
          * */
         List<String> arr = getCharToArr(type);
         DbTcpType dbTcpType = new DbTcpType();
@@ -70,30 +72,38 @@ public class ReceiveUtil {
             switch (i) {
                 case 0:
 //                      空气  温度
-                    dbTcpType.setTemperatureAir(getTemp(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
+                    dbTcpType.setTemperatureAir(getTemp(arr.get(3) + arr.get(4)));
                 case 1:
 //                    空气     湿度
-                    dbTcpType.setHumidityAir(getHum(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
+                    dbTcpType.setHumidityAir(getHum(arr.get(5) + arr.get(6)));
 
                 case 2:
 //                土壤   温度
-                    dbTcpType.setTemperatureSoil(getHum(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
+                    dbTcpType.setTemperatureSoil(getHum(arr.get(7) + arr.get(8)));
                 case 3:
                     //                土壤   湿度
-                    dbTcpType.setHumiditySoil(getTemp(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
+                    dbTcpType.setHumiditySoil(getTemp(arr.get(9) + arr.get(10)));
                 case 4:
                     //                光照
-                    dbTcpType.setLight(getLight(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
+                    dbTcpType.setLight(getLight(arr.get(11) + arr.get(12)));
+
+                case 5:
+//                    二氧化碳
+//                    二氧化碳
+                    dbTcpType.setCo2(getLight(arr.get(13) + arr.get(14)));
+                    ;
             }
+
 //            目前5个
         }
-//        存储或者添加
-        DbTcpType tcpType = new DbTcpType();
-        tcpType.setHeartName(dbTcpType.getHeartName());
-        if (tcpTypeService.selectDbTcpTypeList(tcpType).isEmpty()){
+
+        dbTcpType.setUpdateTime(new Date());
+        dbTcpType.setIsShow(0);
+        List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType);
+        if (list != null && list.size() > 0) {
+            int i = tcpTypeService.updateOrInstart(dbTcpType);
+        } else {
             int i = tcpTypeService.insertDbTcpType(dbTcpType);
-        }else {
-        int i = tcpTypeService.updateOrInstart(dbTcpType);
         }
 
     }
@@ -117,12 +127,11 @@ public class ReceiveUtil {
         DbEquipment dbEquipment = dbEquipments.get(0);
 
 
-
         if (i < 600) {
 //            手动
             dbEquipment.setIsOnline(1);
 //            提醒
-            throw new DropsExceptions(dbEquipment.getEquipmentName(),"已经切换手动状态",dbEquipment.getEquipmentId().toString());
+            throw new DropsExceptions(dbEquipment.getEquipmentName(), "已经切换手动状态", dbEquipment.getEquipmentId().toString());
         } else {
 //            自动
             dbEquipment.setIsOnline(0);
@@ -177,9 +186,9 @@ public class ReceiveUtil {
         if (i > 32768) {
 //    负值 65486
             i = i - 65535;
-            temperatureNow = "" + i;
+            temperatureNow = "" + getfloat(i);
         } else {
-            temperatureNow = "" + i;
+            temperatureNow = "" + getfloat(i);
         }
         return temperatureNow;
     }
@@ -237,7 +246,7 @@ public class ReceiveUtil {
     private String getRedisKey(String string, String getname) {
         String charStic = getname.substring(0, 2);
 
-        return RedisKeyConf.HANDLE +":" + getname + "_" + charStic + "_" + string;
+        return RedisKeyConf.HANDLE + ":" + getname + "_" + charStic + "_" + string;
     }
 
     /*
@@ -255,16 +264,16 @@ public class ReceiveUtil {
 
 
     /*
-    * 通风自动手动状态返回
-    * */
+     * 通风自动手动状态返回
+     * */
     public void returnHand(ChannelHandlerContext ctx, String string) {
         DbTcpType dbTcpType = new DbTcpType();
         List<String> arr = getCharToArr(string);
         String getname = getname(ctx);
-        dbTcpType.setHeartName(getname+"_"+arr.get(0));
+        dbTcpType.setHeartName(getname + "_" + arr.get(0));
         List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType);
         DbTcpType dbTcpType1 = list.get(0);
-        dbTcpType1.setIdAuto(arr.get(3).equals("00")?0:1);
+        dbTcpType1.setIdAuto(arr.get(3).equals("00") ? 0 : 1);
         int i = tcpTypeService.updateDbTcpType(dbTcpType1);
 
     }
@@ -305,30 +314,30 @@ public class ReceiveUtil {
 
                 case 1:
 //                    空气     湿度
-                    dbTcpType.setHumidityAir(getHum(arr.get(2 + i + 1+1) + arr.get(2 + i + 2+1)));
+                    dbTcpType.setHumidityAir(getHum(arr.get(2 + i + 1 + 1) + arr.get(2 + i + 2 + 1)));
 
                 case 2:
 //                土壤   温度
-                    dbTcpType.setTemperatureSoil(getHum(arr.get(2 + i + 1+2) + arr.get(2 + i + 2+2)));
+                    dbTcpType.setTemperatureSoil(getHum(arr.get(2 + i + 1 + 2) + arr.get(2 + i + 2 + 2)));
                 case 3:
                     //                土壤   湿度
-                    dbTcpType.setHumiditySoil(getTemp(arr.get(2 + i + 1+3) + arr.get(2 + i + 2+3)));
+                    dbTcpType.setHumiditySoil(getTemp(arr.get(2 + i + 1 + 3) + arr.get(2 + i + 2 + 3)));
                 case 4:
                     //                光照
-                    dbTcpType.setLight(getLight(arr.get(2 + i + 1+4) + arr.get(2 + i + 2+4)));
-                case  5:
+                    dbTcpType.setLight(getLight(arr.get(2 + i + 1 + 4) + arr.get(2 + i + 2 + 4)));
+                case 5:
 //                    二氧化碳
-                    dbTcpType.setCo2(getLight(arr.get(2+i+1+5)+arr.get(2+i+2+5)));
+                    dbTcpType.setCo2(getLight(arr.get(2 + i + 1 + 5) + arr.get(2 + i + 2 + 5)));
                     ;
             }
 //            目前5个
         }
 //        存储或者添加
         List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType);
-        if (list.size()==0||list==null){
+        if (list.size() == 0 || list == null) {
 
-        int i = tcpTypeService.insertDbTcpType(dbTcpType);
-        }else {
+            int i = tcpTypeService.insertDbTcpType(dbTcpType);
+        } else {
             int i = tcpTypeService.updateOrInstart(dbTcpType);
         }
 

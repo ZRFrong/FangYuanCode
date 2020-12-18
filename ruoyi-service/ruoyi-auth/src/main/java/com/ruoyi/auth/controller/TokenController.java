@@ -39,7 +39,7 @@ public class TokenController
     @PostMapping("login/slide")
     public R loginSilde(@RequestBody LoginForm form)
     {
-        ResponseModel response = captchaService.verification(form.getCaptchaVO());
+//        ResponseModel response = captchaService.verification(form.getCaptchaVO());
 
             // 用户登录
             SysUser user = sysLoginService.login(form.getUsername(), form.getPassword());

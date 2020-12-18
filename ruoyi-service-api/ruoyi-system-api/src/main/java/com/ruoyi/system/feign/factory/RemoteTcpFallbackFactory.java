@@ -2,6 +2,7 @@ package com.ruoyi.system.feign.factory;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.system.domain.DbOperationVo;
+import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.system.feign.RemoteTcpService;
 import feign.hystrix.FallbackFactory;
@@ -59,6 +60,11 @@ public class RemoteTcpFallbackFactory implements FallbackFactory<RemoteTcpServic
 
             @Override
             public R intervalState(String s, String s1, String intervalTime, String hearName) {
+                return null;
+            }
+
+            @Override
+            public List<DbTcpClient> tcpClients() {
                 return null;
             }
 
