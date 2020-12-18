@@ -69,7 +69,7 @@ public class DbEquipmentController extends BaseController {
      */
     @PostMapping("save")
     public R addSave(DbEquipment dbEquipment) {
-        return toAjax(dbEquipmentService.insertDbEquipment(dbEquipment));
+         return toAjax(dbEquipmentService.insertDbEquipment(dbEquipment));
     }
 
     /**
