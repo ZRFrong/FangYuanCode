@@ -64,11 +64,11 @@ public class SendSmsServiceImpl implements SendSmsService {
 //            map.put("Message", "OK");
 //            map.put("Code", "OK");
 //            message = map.get("Message");
+            log.warn("阿里云返回信息："+map.toString());
             if (StringUtils.isNotEmpty(map.get("Message")) &&"OK".equals(map.get("Message"))) {
                 redisUtils.set(CategoryType.USER_IDENTIFYING_CODE_+ phone, s, RedisTimeConf.FIVE_MINUTE);//后台纪录验证码2分钟不过其
                 return s;
             }
-            log.warn("阿里云返回信息："+map.toString());
             return null;
         }catch (Exception e) {
             e.printStackTrace();
