@@ -222,12 +222,23 @@ public class DbEquipment extends BaseEntity
         this.equipmentNo = equipmentNo;
     }
 
-    public String getEquipmentNo()
+    public Integer getEquipmentNo()
     {
-        if (equipmentNo!=null&& equipmentNo<10){
-            return "0"+equipmentNo;
+        return equipmentNo;
+    }
+    public String getEquipmentNoString()
+    {
+        if (equipmentNo!=null){
+            if (equipmentNo<10){
+                return "0"+equipmentNo;
+            }
+            else {
+
+                return equipmentNo+"";
+            }
         }
         return equipmentNo+"";
+
     }
     public void setHandlerText(String handlerText)
     {

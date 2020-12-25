@@ -116,7 +116,7 @@ public class OperateControllerApp extends BaseController {
 //        心跳名称
                         dbOperationVo.setHeartName(equipment.getHeartbeatText());
 //        设备号
-                        dbOperationVo.setFacility(equipment.getEquipmentNo());
+                        dbOperationVo.setFacility(equipment.getEquipmentNoString());
 //                        操作名称
                         dbOperationVo.setOperationName(text+"-"+object.getCheckName()+"-"+OperationLogUtils.toOperationText(object.getCheckCode(), operateSp.getHandleName()));
 //        是否完成
@@ -158,7 +158,7 @@ public class OperateControllerApp extends BaseController {
         //                        操作名称
         dbOperationVo.setOperationName(OperationLogUtils.toOperationText(type, handleName));
 //        设备号
-        dbOperationVo.setFacility(dbEquipment.getEquipmentNo() + "");
+        dbOperationVo.setFacility(dbEquipment.getEquipmentNoString());
 //        是否完成
         dbOperationVo.setIsTrue("1");
 //        创建时间
@@ -206,7 +206,7 @@ public class OperateControllerApp extends BaseController {
 
     private void sendState(DbEquipment equipment) {
         DbTcpType dbTcpType = new DbTcpType();
-        dbTcpType.setHeartName(equipment.getHeartbeatText() + "," + equipment.getEquipmentNo());
+        dbTcpType.setHeartName(equipment.getHeartbeatText() + "," + equipment.getEquipmentNoString());
         List<DbTcpType> list = remoteTcpService.list(dbTcpType);
         lists2.addAll(list);
 
@@ -221,7 +221,7 @@ public class OperateControllerApp extends BaseController {
     public R StateEqment(@ApiParam(name = "id", value = "设备id", required = true) Long id) throws Exception {
         DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(id);
         DbTcpType dbTcpType = new DbTcpType();
-        dbTcpType.setHeartName(dbEquipment.getHeartbeatText() + "," + dbEquipment.getEquipmentNo());
+        dbTcpType.setHeartName(dbEquipment.getHeartbeatText() + "," + dbEquipment.getEquipmentNoString());
         DbTcpType dbTcpType1 = OperateSendUtils.StateList(dbEquipment.getHeartbeatText());
         return R.data(dbTcpType1);
     }

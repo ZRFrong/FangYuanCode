@@ -31,7 +31,7 @@ public class OperateSewageServiceImpl implements OperateSewageService {
         for (DbEquipment dbEquipment : dbEquipments) {
             DbOperationVo dbOperationVo = new DbOperationVo();
             dbOperationVo.setHeartName(dbEquipment.getHeartbeatText()); 
-            dbEquipment.getEquipmentNo();
+            dbEquipment.getEquipmentNoString();
         }
 
         return 0;

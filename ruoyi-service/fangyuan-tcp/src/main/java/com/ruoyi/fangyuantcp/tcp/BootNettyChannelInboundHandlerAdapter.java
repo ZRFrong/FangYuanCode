@@ -50,36 +50,34 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
 
             //       前两位是设备号   然后是标识符 03状态返回  05操作响应
 
-            try {
-                log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "收到信息" + msg);
-                if (s.contains("0302")) {
-                    log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "手动自动返回：" + msg);
+            log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "收到信息" + msg);
+            if (s.contains("0302")) {
+                log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "手动自动返回：" + msg);
 //                状态处理  返回几位处理
 
-                    //手动自动返回    01 03 02  05 06
-                    receiveUtil.sinceOrHandRead(s, ctx);
-                } else if (s.contains("030C")) {
-                    log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "状态返回：" + msg);
+                //手动自动返回    01 03 02  05 06
+                receiveUtil.sinceOrHandRead(s, ctx);
+            } else if (s.contains("030C")) {
+                log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "状态返回：" + msg);
 //                        状态查询返回
-                    receiveUtil.stateRead(s, ctx);
+                receiveUtil.stateRead(s, ctx);
 
-                } else if (s.substring(2, 3).equals("05")) {
-                    log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "操作响应返回：" + msg);
-//               操作响应
-                    receiveUtil.stateRespond(ctx, msg.toString());
-                } else if (s.substring(2, 3).equals("01")) {
-                    log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "通风口自动控制设置：" + msg);
+            } else if (s.contains("0105")) {
+                //               操作响应
+                receiveUtil.stateRespond(ctx, msg.toString());
+                log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "操作响应返回：" + msg);
+            } else if (s.contains("0101")) {
+                log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "通风口自动控制设置：" + msg);
 //                更改设备自动手动状态
-                    receiveUtil.returnHand(ctx, msg.toString());
-                } else if (s.substring(2, 3).equals("06")) {
-                    log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "写入自动控制通风" + msg);
-                }
-            } catch (Exception e) {
+                receiveUtil.returnHand(ctx, msg.toString());
+            } else if (s.contains("0106")) {
+                log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "写入自动控制通风" + msg);
+            } else {
+
                 log.error("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "乱码:" + msg);
             }
 
         }
-
     }
 
 
@@ -101,8 +99,8 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
-        disConnectUtils.errorClose(ctx);
+//        cause.printStackTrace();
+//        disConnectUtils.errorClose(ctx);
     }
 
     /**

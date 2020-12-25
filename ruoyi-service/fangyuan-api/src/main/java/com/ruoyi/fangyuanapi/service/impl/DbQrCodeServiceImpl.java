@@ -173,7 +173,7 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
         dbLand.setEquipmentIds(ids+","+dbEquipmentId);
         dbLandMapper.updateDbLand(dbLand);
         equipment.setEquipmentId(dbEquipmentId);
-        equipment.setHeartbeatText(handleText);
+        equipment.setHandlerText(handleText);
         int i = dbEquipmentMapper.updateDbEquipment(equipment);
         return i>0 ? true : false;
     }

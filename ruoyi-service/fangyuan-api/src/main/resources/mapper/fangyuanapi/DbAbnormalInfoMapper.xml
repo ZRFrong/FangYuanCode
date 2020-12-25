@@ -20,7 +20,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectDbAbnormalInfoList" parameterType="DbAbnormalInfo" resultMap="DbAbnormalInfoResult">
         <include refid="selectDbAbnormalInfoVo"/>
-        <where>  
+        <where>
+            <if test="dbEquipmentId != null "> and db_equipment_id =  #{dbEquipmentId}</if>
+        </where>
+    </select>
+    <select id="selectAbnormalList" parameterType="DbAbnormalInfo" resultMap="DbAbnormalInfoResult">
+        <include refid="selectDbAbnormalInfoVo"/>
+        <where>
+            <if test="dbEquipmentId != null "> and db_equipment_id =  #{dbEquipmentId}</if>
+            <if test="alarmTime != null "> and alarm_time &gt;  #{alarmTime}</if>
         </where>
     </select>
     

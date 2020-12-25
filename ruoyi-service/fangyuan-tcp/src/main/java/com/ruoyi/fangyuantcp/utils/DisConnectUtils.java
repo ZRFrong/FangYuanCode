@@ -39,8 +39,8 @@ public class DisConnectUtils {
      *异常断开连接
      * */
     public void errorClose(ChannelHandlerContext ctx) {
-        String s = deleteCtx(ctx);
-        log.error(DateUtils.getDate()+s+"异常断开连接");
+//        String s = deleteCtx(ctx);
+//        log.error(DateUtils.getDate()+s+"异常断开连接");
 
     }
     /*

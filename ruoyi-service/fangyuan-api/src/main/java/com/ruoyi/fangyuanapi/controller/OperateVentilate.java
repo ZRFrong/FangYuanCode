@@ -38,7 +38,8 @@ public class OperateVentilate {
                                  @ApiParam(name = "i", value = "是否开启0,1") Integer i,
                                  @ApiParam(name = "temp", value = "温度") Integer temp) {
 
-        return remoteTcpService.operateTongFengType(equipmentService.selectDbEquipmentById(dbEquipmentId).getHeartbeatText(), equipmentService.selectDbEquipmentById(dbEquipmentId).getEquipmentNo(), i, temp+"");
+        DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(dbEquipmentId);
+        return remoteTcpService.operateTongFengType(dbEquipment.getHeartbeatText(), dbEquipment.getEquipmentNoString(), i, temp+"");
 
     }
 
@@ -49,7 +50,7 @@ public class OperateVentilate {
     @ApiOperation(value = "操作自动通风是否开启自动", notes = "操作自动通风是否开启自动")
     public R operateTongFengHand(@ApiParam(name = "dbEquipmentId", value = "dbEquipmentID") Long dbEquipmentId, @ApiParam(name = "i", value = "是否开启0,1") Integer i) {
         DbEquipment equipment = equipmentService.selectDbEquipmentById(dbEquipmentId);
-        return remoteTcpService.operateTongFengHand(equipment.getHeartbeatText(), equipment.getEquipmentNo(), i);
+        return remoteTcpService.operateTongFengHand(equipment.getHeartbeatText(), equipment.getEquipmentNoString(), i);
 
     }
 

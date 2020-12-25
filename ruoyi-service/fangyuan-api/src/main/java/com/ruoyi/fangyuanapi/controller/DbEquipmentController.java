@@ -1,6 +1,7 @@
 package com.ruoyi.fangyuanapi.controller;
 
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
 import com.ruoyi.fangyuanapi.service.IDbUserService;
 import com.ruoyi.system.domain.*;
@@ -57,9 +58,17 @@ public class DbEquipmentController extends BaseController {
      * 查询设备列表
      */
     @GetMapping("list")
-    public R list(DbEquipment dbEquipment) {
+    public R list( DbEquipment dbEquipment) {
         startPage();
         return result(dbEquipmentService.selectDbEquipmentList(dbEquipment));
+    }
+
+    /**
+     * 查询设备列表
+     */
+    @GetMapping("listOnlyEquipment")
+    public R listOnly(  DbEquipment dbEquipment) {
+        return R.data(dbEquipmentService.selectDbEquipmentList(dbEquipment));
     }
 
 
@@ -68,7 +77,7 @@ public class DbEquipmentController extends BaseController {
      * 新增保存设备
      */
     @PostMapping("save")
-    public R addSave(DbEquipment dbEquipment) {
+    public R addSave(@RequestBody  DbEquipment dbEquipment) {
         return toAjax(dbEquipmentService.insertDbEquipment(dbEquipment));
     }
 
@@ -76,7 +85,7 @@ public class DbEquipmentController extends BaseController {
      * 修改保存设备
      */
     @PostMapping("update")
-    public R editSave(DbEquipment dbEquipment) {
+    public R editSave(@RequestBody  DbEquipment dbEquipment) {
         return toAjax(dbEquipmentService.updateDbEquipment(dbEquipment));
     }
 
@@ -116,14 +125,28 @@ public class DbEquipmentController extends BaseController {
         Date type = DateUtils.getType(DateUtils.HOUR, -Integer.parseInt(beforeTime));
         DbLand dbLand = dbLandService.selectDbLandById(Long.valueOf(landid));
         String equipmentIds = dbLand.getEquipmentIds();
+        String equipmentId=null;
+        if (StringUtils.isEmpty(equipmentIds)){
+            return R.error("当前土地未绑定设备！");
+        }
         String[] split = equipmentIds.split(",");
-        DbEquipment dbEquipment = dbEquipmentService.selectDbEquipmentById(Long.valueOf(split[0]));
-        String path=dbEquipment.getHeartbeatText()+"_"+dbEquipment.getEquipmentNo();
+        if (split.length==0){
+            equipmentId=equipmentIds;
+        }else {
+            equipmentId=split[0];
+        }
+
+        DbEquipment dbEquipment = dbEquipmentService.selectDbEquipmentById(Long.valueOf(equipmentId));
+        String path=dbEquipment.getHeartbeatText()+"_"+dbEquipment.getEquipmentNoString();
         String s = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, type);
         String s1 = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, DateUtils.getNowDate());
         R r= remoteTcpService.intervalState(s,s1,intervalTime,path);
         return r;
     }
+
+
+
+
 
 
 }

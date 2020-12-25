@@ -37,17 +37,6 @@ public class InitController {
         }.start();
 
 
-        /*
-         *开启心跳定时查询
-         * */
-        TaskHeartbeat taskHeartbeat = new TaskHeartbeat();
-        taskHeartbeat.HeartbeatRun();
-/*
-* 开始定时装态查询
-* */
-        TaskTcpType taskTcpType = new TaskTcpType();
-        taskTcpType.HeartbeatRun();
-
 
     }
 }

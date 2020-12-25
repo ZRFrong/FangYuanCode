@@ -2,6 +2,7 @@ package com.ruoyi.fangyuanapi.service;
 
 import com.ruoyi.system.domain.DbAbnormalInfo;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -59,4 +60,6 @@ public interface IDbAbnormalInfoService
      * @return 结果
      */
     public int deleteDbAbnormalInfoById(Long id);
+
+    List<DbAbnormalInfo> selectAbnormalList(DbAbnormalInfo dbAbnormalInfo);
 }

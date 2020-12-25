@@ -1,26 +1,26 @@
 package com.ruoyi.fangyuantcp.controller;
 
-        import com.alibaba.fastjson.JSON;
-        import com.ruoyi.common.utils.DateUtils;
-        import com.ruoyi.system.domain.DbEquipment;
-        import com.ruoyi.system.domain.DbLand;
-        import com.ruoyi.system.domain.DbStateRecords;
-        import org.springframework.beans.factory.annotation.Autowired;
-        import org.springframework.web.bind.annotation.*;
-        import io.swagger.annotations.Api;
-        import io.swagger.annotations.ApiOperation;
-        import io.swagger.annotations.ApiParam;
+import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.system.domain.DbEquipment;
+import com.ruoyi.system.domain.DbLand;
+import com.ruoyi.system.domain.DbStateRecords;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
-        import com.ruoyi.common.core.domain.R;
-        import com.ruoyi.common.core.controller.BaseController;
-        import com.ruoyi.system.domain.DbTcpType;
-        import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
+import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.system.domain.DbTcpType;
+import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 
-        import javax.naming.Name;
-        import java.util.ArrayList;
-        import java.util.Date;
-        import java.util.HashMap;
-        import java.util.List;
+import javax.naming.Name;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * 设备状态 提供者     4g模块在线否
@@ -98,7 +98,12 @@ public class DbTcpTypeController extends BaseController {
      * */
     @GetMapping("curingType")
     public R curingTypeTiming() {
-        dbTcpTypeService.curingTypeTiming();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                dbTcpTypeService.curingTypeTiming();
+            }
+        });
         return R.ok();
     }
 
@@ -107,7 +112,13 @@ public class DbTcpTypeController extends BaseController {
      * */
     @GetMapping("timingType")
     public R timingType() {
-        dbTcpTypeService.timingType();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                dbTcpTypeService.timingType();
+            }
+        });
+
         return R.ok();
 
     }
@@ -176,7 +187,7 @@ public class DbTcpTypeController extends BaseController {
         /*
          *
          * */
-        List<DbStateRecords> dbStateRecords = dbTcpTypeService.intervalState(DateUtils.dateTime(DateUtils.YYYY_MM_DD_HH_MM_SS, startTime), DateUtils.dateTime(DateUtils.YYYY_MM_DD_HH_MM_SS, endTime), INterval,hearName);
+        List<DbStateRecords> dbStateRecords = dbTcpTypeService.intervalState(DateUtils.dateTime(DateUtils.YYYY_MM_DD_HH_MM_SS, startTime), DateUtils.dateTime(DateUtils.YYYY_MM_DD_HH_MM_SS, endTime), INterval, hearName);
         List<DbStateRecords> dbStateRecords1 = new ArrayList<>();
         for (DbStateRecords dbStateRecord : dbStateRecords) {
             dbStateRecord.setType(JSON.parseObject(dbStateRecord.getStateJson(), DbTcpType.class));

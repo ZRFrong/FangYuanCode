@@ -71,4 +71,6 @@ public interface IDbLandService
     R weChatAddSave(DbLand dbLand);
 
     List<DbLand> selectDbLandListByUserId(Long aLong);
+
+    List<Long> groupByUserId();
 }

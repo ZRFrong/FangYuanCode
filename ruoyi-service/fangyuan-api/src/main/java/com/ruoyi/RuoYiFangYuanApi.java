@@ -12,7 +12,7 @@ import tk.mybatis.spring.annotation.MapperScan;
  * 
  * @author ruoyi
  */
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 @EnableDiscoveryClient
 @EnableRyFeignClients
 @MapperScan("com.ruoyi.*.mapper")
