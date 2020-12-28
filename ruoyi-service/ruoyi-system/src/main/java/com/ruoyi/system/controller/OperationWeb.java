@@ -8,10 +8,7 @@ import com.ruoyi.system.domain.SysConfig;
 import com.ruoyi.system.feign.RemoteTcpService;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /*
 *web操作  后台调试
@@ -41,7 +38,7 @@ public class OperationWeb {
     /*
     * 操作
     * */
-    @GetMapping("operationOnly")
+    @PostMapping("operationOnly")
     public R get( @ApiParam(name = "DbTcpClient", value = "传入json格式", required = true) DbOperationVo dbOperationVo)
     {
         return R.data(remoteTcpService.operation(dbOperationVo));

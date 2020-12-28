@@ -91,19 +91,22 @@ public class ReceiveUtil {
 //                    二氧化碳
 //                    二氧化碳
                     dbTcpType.setCo2(getLight(arr.get(13) + arr.get(14)));
-                    ;
             }
 
 //            目前5个
         }
 
-        dbTcpType.setUpdateTime(new Date());
         dbTcpType.setIsShow(0);
-        List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType);
-        if (list != null && list.size() > 0) {
-            int i = tcpTypeService.updateOrInstart(dbTcpType);
-        } else {
+        dbTcpType.setUpdateTime(new Date());
+        DbTcpType dbTcpType1 = new DbTcpType();
+        dbTcpType1.setHeartName(dbTcpType.getHeartName());
+        List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType1);
+        if (null == list || list.size() == 0) {
             int i = tcpTypeService.insertDbTcpType(dbTcpType);
+        } else {
+            DbTcpType dbTcpType2 = list.get(0);
+            dbTcpType2.setIsShow(0);
+            int i = tcpTypeService.updateOrInstart(dbTcpType2);
         }
 
     }
@@ -232,15 +235,15 @@ public class ReceiveUtil {
          * */
         String key = getRedisKey(string, getname);
 
-
+        log.info(new Date() + key + "进来了正在更改状态");
 //        从redis中拿到指定的数据
         DbTcpOrder dbTcpClient = redisUtils.get(key, DbTcpOrder.class);
         dbTcpClient.setResults(1);
         Long i = new Date().getTime() - dbTcpClient.getCreateTime().getTime();
         dbTcpClient.setWhenTime(i);
 //       改变状态存储进去
-        redisUtils.set(getname, JSONArray.toJSONString(dbTcpClient));
-
+        redisUtils.set(key, JSONArray.toJSONString(dbTcpClient));
+        log.info(new Date() + key + "改变了");
     }
 
     private String getRedisKey(String string, String getname) {

@@ -156,6 +156,11 @@ public class DbLandServiceImpl implements IDbLandService
         return dbLandMapper.selectDbLandByUserId(userId,null);
     }
 
+    @Override
+    public List<Long> groupByUserId() {
+        return dbLandMapper.groupByUserId();
+    }
+
     private DbLand checkLand(DbLand land,Integer num){
         DbLand dbLand = null;
         dbLand =land;

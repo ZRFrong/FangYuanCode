@@ -14,6 +14,7 @@ import com.ruoyi.fangyuanapi.mapper.DbEquipmentMapper;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * 设备Service业务层处理
@@ -60,7 +61,7 @@ public class DbEquipmentServiceImpl implements IDbEquipmentService {
      * @return 结果
      */
     @Override
-    public int insertDbEquipment(DbEquipment dbEquipment) {
+    public int insertDbEquipment(  DbEquipment dbEquipment) {
         //dbEquipment.setCreateTime(DateUtils.getNowDate());
         return dbEquipmentMapper.insertDbEquipment(dbEquipment);
     }
@@ -75,7 +76,7 @@ public class DbEquipmentServiceImpl implements IDbEquipmentService {
     public int updateDbEquipment(DbEquipment dbEquipment) {
         //dbEquipment.setUpdateTime(DateUtils.getNowDate());
 
-        return dbEquipmentMapper.updateDbEquipmentName(dbEquipment);
+        return dbEquipmentMapper.updateDbEquipment(dbEquipment);
     }
 
     /**
@@ -108,6 +109,6 @@ public class DbEquipmentServiceImpl implements IDbEquipmentService {
 
     @Override
     public DbEquipment selectByHeart(DbEquipment dbEquipment) {
-        return dbEquipmentMapper.selectByHeart(dbEquipment.getHeartbeatText(),dbEquipment.getEquipmentNo());
+        return dbEquipmentMapper.selectByHeart(dbEquipment.getHeartbeatText(), dbEquipment.getEquipmentNoString());
     }
 }

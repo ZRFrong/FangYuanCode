@@ -16,6 +16,8 @@ import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentTempService;
 
+import java.util.List;
+
 /**
  * 设备模板 提供者
  * 
@@ -50,7 +52,14 @@ public class DbEquipmentTempController extends BaseController
 		startPage();
         return result(dbEquipmentTempService.selectDbEquipmentTempList(dbEquipmentTemp));
 	}
-	
+	/**
+	 * 查询设备模板列表
+	 */
+	@GetMapping("listOnly")
+	public R listOnly(DbEquipmentTemp dbEquipmentTemp)
+	{
+		return R.data(dbEquipmentTempService.selectDbEquipmentTempList(dbEquipmentTemp));
+	}
 	
 	/**
 	 * 新增保存设备模板

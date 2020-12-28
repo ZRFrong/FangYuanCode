@@ -234,17 +234,9 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
      * */
     @Override
     public int updateOrInstart(DbTcpType dbTcpType) {
-        List<DbTcpType> dbTcpTypes = selectDbTcpTypeList(dbTcpType);
-        if (dbTcpTypes.size() == 0 && dbTcpTypes == null) {
 //            新增
             dbTcpType.setUpdateTime(new Date());
-//
-            dbTcpType.setIsShow(0);
-            return insertDbTcpType(dbTcpType);
-        } else {
-            dbTcpType.setUpdateTime(new Date());
             return updateDbTcpType(dbTcpType);
-        }
     }
 
     private void insert(DbTcpType item) {

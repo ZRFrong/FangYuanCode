@@ -1,6 +1,7 @@
 package com.ruoyi;
 
 import com.ruoyi.fangyuantcp.timing.TaskHeartbeat;
+import com.ruoyi.fangyuantcp.timing.TaskTcpType;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -33,6 +34,12 @@ public class RuoYiFangYuanTcp
         log.info("开启心跳定时查询");
         TaskHeartbeat taskHeartbeat = new TaskHeartbeat();
         taskHeartbeat.HeartbeatRun();
+        /*
+         * 开始定时装态查询
+         * */
+        log.info("开始定时装态查询");
+        TaskTcpType taskTcpType = new TaskTcpType();
+        taskTcpType.HeartbeatRun();
 
     }
 }

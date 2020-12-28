@@ -10,7 +10,7 @@ spring:
   application:
     name: ruoyi-system
   profiles: 
-    active: dev
+    active: prod
   devtools:
     restart:
       enabled: true
@@ -31,9 +31,20 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
   
-feign: 
-  hystrix: 
-    enabled: false
+#hystrix的超时时间
+hystrix:
+    command:
+        default:
+            execution:
+              timeout:
+                enabled: true
+              isolation:
+                    thread:
+                        timeoutInMilliseconds: 30000
+#ribbon的超时时间
+ribbon:
+  ReadTimeout: 30000
+  ConnectTimeout: 30000
 
 # 暴露监控端点
 management:

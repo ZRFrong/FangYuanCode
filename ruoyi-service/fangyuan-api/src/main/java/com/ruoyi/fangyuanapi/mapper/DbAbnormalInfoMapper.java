@@ -1,6 +1,7 @@
 package com.ruoyi.fangyuanapi.mapper;
 
 import com.ruoyi.system.domain.DbAbnormalInfo;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -59,4 +60,7 @@ public interface DbAbnormalInfoMapper
      * @return 结果
      */
     public int deleteDbAbnormalInfoByIds(String[] ids);
+
+
+    List<DbAbnormalInfo> selectAbnormalList(DbAbnormalInfo dbAbnormalInfo);
 }

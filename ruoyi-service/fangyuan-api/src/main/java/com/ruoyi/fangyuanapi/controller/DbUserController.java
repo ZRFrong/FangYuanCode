@@ -2,7 +2,6 @@ package com.ruoyi.fangyuanapi.controller;
 
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
-import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.R;
@@ -18,7 +17,6 @@ import com.ruoyi.common.utils.md5.ZhaoMD5Utils;
 import com.ruoyi.common.utils.sms.CategoryType;
 import com.ruoyi.common.utils.sms.PhoneUtils;
 import com.ruoyi.common.utils.sms.ResultEnum;
-import com.ruoyi.fangyuanapi.conf.QiniuConf;
 import com.ruoyi.fangyuanapi.conf.TokenConf;
 import com.ruoyi.fangyuanapi.conf.WxSmallConf;
 import com.ruoyi.fangyuanapi.service.*;
@@ -554,7 +552,20 @@ public class DbUserController extends BaseController {
         return map;
     }
 
-    public static void main(String[] args) {
-        System.out.println("3446DEFDFE916E14E7ACB44CC7D25E70B8A1E005AD64D2703AB1D78C9B8D0B7B2A9D829E9EA2E567740EB56CE1175A96B8C3C46804CE41607C954857B597F0C31ADFBDA85FE5530F7D97601A436586EF".length());
+
+
+    /*
+    *
+    * 用户列表
+    * */
+    @GetMapping("getUserList")
+    @ApiOperation(value = "个人资料接口",notes = "个人资料页面",httpMethod = "GET")
+    public R getUserList() {
+        DbUser dbUser = new DbUser();
+        List<DbUser> dbUsers = dbUserService.selectDbUserList(dbUser);
+        return R.data(dbUsers);
     }
+
+
 }
+

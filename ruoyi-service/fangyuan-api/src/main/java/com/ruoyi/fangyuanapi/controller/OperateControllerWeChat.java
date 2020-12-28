@@ -75,7 +75,7 @@ public class OperateControllerWeChat extends BaseController {
         DbOperationVo dbOperationVo = new DbOperationVo();
         DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(id);
         dbOperationVo.setHeartName(dbEquipment.getHeartbeatText());
-        dbOperationVo.setFacility(dbEquipment.getEquipmentNo());
+        dbOperationVo.setFacility(dbEquipment.getEquipmentNoString());
         dbOperationVo.setOperationText(text);
         //                        操作名称
         dbOperationVo.setOperationName(OperationLogUtils.toOperationText(name,handleName));
@@ -109,7 +109,7 @@ public class OperateControllerWeChat extends BaseController {
 //        心跳名称
                         dbOperationVo.setHeartName(dbEquipment.getHeartbeatText());
 //        设备号
-                        dbOperationVo.setFacility(dbEquipment.getEquipmentNo() + "");
+                        dbOperationVo.setFacility(dbEquipment.getEquipmentNoString());
 //        是否完成
                         dbOperationVo.setIsTrue("1");
 //                        操作名称
@@ -156,7 +156,7 @@ public class OperateControllerWeChat extends BaseController {
                 List<OperatePojo> pojos = JSON.parseArray(dbEquipment.getHandlerText(), OperatePojo.class);
                 dbEquipment.setPojos(pojos);
                 DbTcpType dbTcpType = new DbTcpType();
-                dbTcpType.setHeartName(dbEquipment.getHeartbeatText() + "_" + dbEquipment.getEquipmentNo());
+                dbTcpType.setHeartName(dbEquipment.getHeartbeatText() + "_" + dbEquipment.getEquipmentNoString());
                 List<DbTcpType> list = remoteTcpService.list(dbTcpType);
                 if (list.size() != 0&&list!=null) {
                 DbTcpType dbTcpType1 = list.get(0);

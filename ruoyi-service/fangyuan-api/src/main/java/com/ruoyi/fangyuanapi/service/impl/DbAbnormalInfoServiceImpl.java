@@ -81,6 +81,11 @@ public class DbAbnormalInfoServiceImpl implements IDbAbnormalInfoService
         return dbAbnormalInfoMapper.deleteDbAbnormalInfoByIds(Convert.toStrArray(ids));
     }
 
+    @Override
+    public List<DbAbnormalInfo> selectAbnormalList(DbAbnormalInfo dbAbnormalInfo) {
+        return dbAbnormalInfoMapper.selectAbnormalList(dbAbnormalInfo);
+    }
+
     /**
      * 删除报警信息信息
      * 

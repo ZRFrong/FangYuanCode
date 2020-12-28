@@ -65,7 +65,7 @@ public class SendCodeUtils {
      * */
     public static int querystate03(DbOperationVo tcpOrder) {
         String text = tcpOrder.getFacility() + "," + "03," + tcpOrder.getOperationText();
-        return operateCode(text, tcpOrder);
+        return operateCodeType(text, tcpOrder);
     }
 
 
@@ -175,7 +175,7 @@ public class SendCodeUtils {
     public int sinceOrHand(DbEquipment equipment) {
         DbOperationVo dbOperationVo = new DbOperationVo();
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
-        dbOperationVo.setFacility(equipment.getEquipmentNo().toString());
+        dbOperationVo.setFacility(equipment.getEquipmentNoString());
         dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhand);
         dbOperationVo.setOperationName("手动自动状态查询");
         dbOperationVo.setIsTrue("1");
@@ -190,7 +190,7 @@ public class SendCodeUtils {
     public int sinceOrHandTongFeng(DbEquipment equipment) {
         DbOperationVo dbOperationVo = new DbOperationVo();
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
-        dbOperationVo.setFacility(equipment.getEquipmentNo().toString());
+        dbOperationVo.setFacility(equipment.getEquipmentNoString());
         dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFeng);
         dbOperationVo.setOperationName("查询自动通风是否开启");
         dbOperationVo.setIsTrue("1");
@@ -207,7 +207,7 @@ public class SendCodeUtils {
     public int timingTongFengType(DbEquipment equipment) {
         DbOperationVo dbOperationVo = new DbOperationVo();
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
-        dbOperationVo.setFacility(equipment.getEquipmentNo());
+        dbOperationVo.setFacility(equipment.getEquipmentNoString());
         dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFengType);
         dbOperationVo.setOperationName("查询当前自动通风开始和关闭的温度");
         dbOperationVo.setIsTrue("1");
@@ -222,7 +222,7 @@ public class SendCodeUtils {
     public int operateTongFengHand(DbEquipment equipment, int i) {
         DbOperationVo dbOperationVo = new DbOperationVo();
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
-        dbOperationVo.setFacility(equipment.getEquipmentNo());
+        dbOperationVo.setFacility(equipment.getEquipmentNoString());
         dbOperationVo.setOperationText(i == 0 ? TcpOrderTextConf.operateTongFeng : TcpOrderTextConf.operateTongFengOver);
         dbOperationVo.setOperationName(i == 0 ? "开启自动通风" : "关闭自动通风");
         dbOperationVo.setIsTrue("1");
@@ -238,7 +238,7 @@ public class SendCodeUtils {
         int i2 = Integer.parseInt(type, 16);
         DbOperationVo dbOperationVo = new DbOperationVo();
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
-        dbOperationVo.setFacility(equipment.getEquipmentNo().toString());
+        dbOperationVo.setFacility(equipment.getEquipmentNoString());
         dbOperationVo.setOperationText(i == 0 ? TcpOrderTextConf.operateTongFengType + "," + i2 : TcpOrderTextConf.operateTongFengOverType + "," + i2);
         dbOperationVo.setOperationName(i == 0 ? "更改开启自动通风温度为" + i2 : "更改关闭自动通风温度为" + i2);
         dbOperationVo.setIsTrue("1");
@@ -282,7 +282,7 @@ public class SendCodeUtils {
             channel.flush();
         } catch (Exception e) {
 //            抛出异常
-            throw new FaultExceptions( tcpOrder.getHeartName() , tcpOrder.getOperationName(),tcpOrder.getFacility());
+             throw new FaultExceptions( tcpOrder.getHeartName() , tcpOrder.getOperationName(),tcpOrder.getFacility());
         }
 
             tcpOrder.setCreateTime(new Date());
@@ -305,7 +305,41 @@ public class SendCodeUtils {
 
 
     }
+    public static int operateCodeType(String text, DbOperationVo tcpOrder) {
 
+        String address = tcpOrder.getHeartName();
+        ArrayList<String> strings1 = new ArrayList<>();
+//          text处理
+        String[] split3 = text.split(",");
+        for (String s : split3) {
+            strings1.add(s);
+        }
+        Object[] objects = strings1.toArray();
+        String[] split = new String[objects.length];
+        for (int i = 0; i < split.length; i++) {
+            split[i] = objects[i].toString();
+        }
+        List<String> strings = new ArrayList<>();
+        for (String s : split) {
+            int i = Integer.parseInt(s);
+            //            十六进制转成十进制
+            String tmp = StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 4, '0');
+            strings.add(tmp);
+        }
+        String[] split1 = strings.toArray(new String[strings.size()]);
+        String[] bytes = Crc16Util.to_byte(split1);
+        byte[] data = Crc16Util.getData(bytes);
+        ChannelHandlerContext no1_1 = null;
+        no1_1 = map.get(address);
+        Channel channel = no1_1.channel();
+        channel.write(Unpooled.copiedBuffer(data));
+        channel.flush();
+
+        return 1;
+
+
+
+    }
 
     private static DbTcpOrder getOrder(DbOperationVo dbOperationVo) {
         DbTcpOrder dbTcpOrder = new DbTcpOrder();

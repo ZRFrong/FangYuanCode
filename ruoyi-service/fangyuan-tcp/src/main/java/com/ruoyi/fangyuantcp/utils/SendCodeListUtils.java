@@ -18,7 +18,9 @@ import com.ruoyi.system.feign.RemoteApiService;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import sun.rmi.runtime.Log;
 
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -29,6 +31,7 @@ import java.util.concurrent.Future;
 /*
  *
  * 多线程发送处理类*/
+@Slf4j
 public class SendCodeListUtils {
     /*
      * 多线程依次执行
@@ -54,12 +57,13 @@ public class SendCodeListUtils {
             stringStringHashMap1.putAll(stringStringHashMap);
         }
         executorService.shutdown();
+
         while (!executorService.isTerminated()) {
 //            等待执行完成再返回
         }
         if (stringStringHashMap1.size() > 0) {
 //                有异常信息
-            return R.error(502,JSON.toJSONString(stringStringHashMap1) );
+            return R.error(502, JSON.toJSONString(stringStringHashMap1));
         } else {
             return R.ok("操作成功");
         }
@@ -81,9 +85,12 @@ public class SendCodeListUtils {
                     String query = null;
                     try {
                         query = queryList(dbOperationVos.get(i));
+                        Thread.yield();
+                        log.info("发送成功存进去了redis"+query);
                         /*
                          * 建立监听返回的数据
                          * */
+                        Thread.sleep(1000);
                         HeartbeatRunChildThread(query, dbOperationVos.get(i));
                     } catch (FaultExceptions e) {
                         DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();
@@ -93,8 +100,9 @@ public class SendCodeListUtils {
                         dbAbnormalInfo.setFaultType(BusinessExceptionHandle.FAULT);
                         dbAbnormalInfo.setText(dbOperationVos.get(i).getOperationId());
                         remoteApiService.saveEquimentOperation(dbAbnormalInfo);
-
                         stringStringHashMap.put(dbOperationVos.get(i).getOperationName(), BusinessExceptionHandle.FAULT);
+
+
                     } catch (OperationExceptions e) {
                         DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();
                         dbAbnormalInfo.setAlarmTime(new Date());
@@ -108,18 +116,8 @@ public class SendCodeListUtils {
                         remoteApiService.saveEquimentOperation(dbAbnormalInfo);
                         stringStringHashMap.put(dbOperationVos.get(i).getOperationName(), BusinessExceptionHandle.OPERATIONEXCEPTIONS);
                     }
-
-//                    线程礼让让其他的先执行
-
-                    if (i < dbOperationVos.size()) {
-                        try {
-                            Thread.sleep(500);
-                            Thread.yield();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
                 }
+                //                    等待500
                 return stringStringHashMap;
             }
         });
@@ -168,21 +166,19 @@ public class SendCodeListUtils {
 //            抛出异常
             throw new FaultExceptions(tcpOrder.getHeartName(), tcpOrder.getOperationName(), tcpOrder.getFacility());
         }
-
-        tcpOrder.setCreateTime(new Date());
+            tcpOrder.setCreateTime(new Date());
 //        存储操作信息到redis
-        String operationText = tcpOrder.getOperationText();
-        String facility = tcpOrder.getFacility();
-        String heartName = tcpOrder.getHeartName();
+            String operationText = tcpOrder.getOperationText();
+            String facility = tcpOrder.getFacility();
+            String heartName = tcpOrder.getHeartName();
 
-        DbTcpOrder order = getOrder(tcpOrder);
-        String s = RedisKeyConf.HANDLE + ":" + heartName + "_" + facility + "_" + operationText;
-        String s2 = JSONArray.toJSONString(order);
-        redisUtils.set(s, s2);
+            DbTcpOrder order = getOrder(tcpOrder);
+            String s = RedisKeyConf.HANDLE + ":" + heartName + "_" + facility + "_" + operationText;
+            String s2 = JSONArray.toJSONString(order);
+            redisUtils.set(s, s2);
 
 
-        return s;
-
+            return s;
 
     }
 
@@ -195,23 +191,25 @@ public class SendCodeListUtils {
         return dbTcpOrder;
     }
 
+    /*
+    * 暂时成功
+    * */
     private static void HeartbeatRunChildThread(String text, DbOperationVo dbOperationVo) {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        String s = redisUtils.get(text);
-        if (s.isEmpty()) {
-            throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
-        } else {
-            DbTcpOrder dbTcpOrder = JSON.parseObject(s, DbTcpOrder.class);
-            Integer results = dbTcpOrder.getResults();
-            if (results == 1) {
-                throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
-            }
-        }
 
+            System.out.println("正在等待" + "==============================================" + text);
+            String s = redisUtils.get(text);
+            if (s.isEmpty()) {
+                System.out.println("为空没有响应" + "==============================================" + text);
+                throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
+            } else {
+                DbTcpOrder dbTcpOrder = JSON.parseObject(s, DbTcpOrder.class);
+                Integer results = dbTcpOrder.getResults();
+                if (results == 1) {
+                    System.out.println(results);
+                    System.out.println(new Date()+"状态没有改变" + "==============================================" + text);
+                    throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
+                }
+            }
 
     }
 }

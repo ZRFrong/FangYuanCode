@@ -150,11 +150,6 @@ public class DbOrderController extends BaseController
         return R.error();
 	}
 
-	public static void main(String[] args){
-        AtomicReference<Double> sum = null;
-        Double s = sum.get();
-        long l = s.longValue();
-        System.out.println(l);
-    }
+
 
 }

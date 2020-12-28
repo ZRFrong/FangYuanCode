@@ -107,7 +107,7 @@ public class DbAppVersionController extends BaseController
 			dbAppUpdate.setApk_file_url(dbAppVersion1.getDownloadUrl());
 			dbAppUpdate.setUpdate_log(dbAppVersion1.getUpdateState());
 			dbAppUpdate.setConstraint(dbAppVersion1.getIsConstraint().equals(0)?true :false );
-		if (versions.equals(dbAppVersion1.getAppVersion())){
+		if (Integer.parseInt(versions)<Integer.parseInt(dbAppVersion1.getAppVersion())){
 //			最新版本无需更新
 			dbAppUpdate.setUpdate("No");
 		}else {

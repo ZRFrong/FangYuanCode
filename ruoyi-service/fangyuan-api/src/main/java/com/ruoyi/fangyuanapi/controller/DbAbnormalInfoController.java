@@ -102,15 +102,6 @@ public class DbAbnormalInfoController extends BaseController {
         * 处理名称   蘑菇棚-大棚1   卷帘一卷起-无响应
         * */
 
-
-
-
-
-
-
-
-
-
         int i = dbAbnormalInfoService.insertDbAbnormalInfo(dbAbnormalInfo);
         return toAjax(i);
     }
@@ -155,7 +146,7 @@ public class DbAbnormalInfoController extends BaseController {
                     dbAbnormalInfo.setAlarmExplain(startTime);
                 }
                 dbAbnormalInfo.setDbEquipmentId(Long.valueOf(s));
-                dbAbnormalInfos.addAll(dbAbnormalInfoService.selectDbAbnormalInfoList(dbAbnormalInfo));
+                dbAbnormalInfos.addAll(dbAbnormalInfoService.selectAbnormalList(dbAbnormalInfo));
             }
         }
 

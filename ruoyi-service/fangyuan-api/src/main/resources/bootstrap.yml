@@ -60,6 +60,6 @@ mapper:
 pagehelper:
   helperDialect: mysql
   reasonable: true
-  supportMethodsArguments:
+  supportMethodsArguments: true
   params: count=countSql
 
