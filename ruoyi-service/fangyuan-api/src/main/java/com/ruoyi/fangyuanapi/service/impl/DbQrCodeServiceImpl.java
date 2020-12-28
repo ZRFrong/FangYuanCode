@@ -168,12 +168,15 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
         DbEquipment equipment = new DbEquipment();
         if (StringUtils.isEmpty(ids)){
             dbLand.setEquipmentIds(dbEquipmentId+"");
-            equipment.setCreateTime(new Date());
+
+        }else {
+            dbLand.setEquipmentIds(ids+","+dbEquipmentId);
         }
-        dbLand.setEquipmentIds(ids+","+dbEquipmentId);
         dbLandMapper.updateDbLand(dbLand);
         equipment.setEquipmentId(dbEquipmentId);
-        equipment.setHeartbeatText(handleText);
+        equipment.setUpdateTime(new Date());
+        equipment.setHandlerText(handleText);
+        equipment.setEquipmentNo(1);
         int i = dbEquipmentMapper.updateDbEquipment(equipment);
         return i>0 ? true : false;
     }

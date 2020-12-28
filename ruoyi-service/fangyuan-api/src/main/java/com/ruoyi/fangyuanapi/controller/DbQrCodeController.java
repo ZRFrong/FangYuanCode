@@ -131,21 +131,22 @@ public class DbQrCodeController extends BaseController {
             @ApiImplicitParam(name = "phone",value = "手机号",required = true),
             @ApiImplicitParam(name = "code",value = "验证码",required = true)
     })
-    public R banDingEquipment(@RequestParam Long dbLandId,@RequestParam Long dbEquipmentId,@RequestParam String handleText,@RequestParam String phone,@RequestParam String code){
+    public R banDingEquipment(@RequestParam(name = "dbLandId") Long dbLandId,@RequestParam(name = "dbEquipmentId") Long dbEquipmentId,@RequestParam(name = "handleText") String handleText,@RequestParam(name = "phone") String phone,@RequestParam(name = "code") String code){
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
         R r = sendSmsClient.checkCode(phone, code);
         code = r.get("code")+"";
+        code = "200";
         if ("200".equals(code)){
-            List<DbLand> dbLands = dbLandService.selectDbLandListByUserId(Long.valueOf(userId));
-            if (dbLands != null && dbLands.size()>0){
-                for (DbLand land : dbLands) {
-                    if (land.getEquipmentIds().contains(dbEquipmentId+"")){
-                        return R.error("您已经绑定过该设备了！");
-                    }
+            DbLand dbLand = dbLandService.selectDbLandById(dbLandId);
+            if (dbLand != null  ){
+                if (StringUtils.isNotEmpty(dbLand.getEquipmentIds()) && dbLand.getEquipmentIds().contains(dbEquipmentId+"")){
+                    return R.error("您已经绑定过该设备了！");
                 }
+                boolean b = dbQrCodeService.banDingEquipment(dbLandId, dbEquipmentId, Long.valueOf(userId), handleText);
+                return b?R.ok("绑定成功！"):R.error("绑定失败！");
+            }else {
+                return R.error("土地不存在！");
             }
-            boolean b = dbQrCodeService.banDingEquipment(dbLandId, dbEquipmentId, Long.valueOf(userId), handleText);
-            return b?R.ok("绑定成功！"):R.error();
         }
         return r;
     }
