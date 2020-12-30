@@ -151,6 +151,27 @@ public class SysOssController extends BaseController
             return  R.error();
         }
     }
+//
+//    /**
+//     * 修改保存文件上传
+//     * @throws IOException
+//     */
+//    @PostMapping("upload")
+//    // @HasPermissions("sys:oss:add")
+//    public R editSave(@RequestParam("file") MultipartFile file) throws IOException
+//    {
+//        if (file.isEmpty())
+//        {
+//            throw new OssException("上传文件不能为空");
+//        }
+//        SysOss sysOss =  sysOssService.insertFile(file,null);
+//        if (sysOss != null) {
+//            return  R.ok(sysOss.getUrl());
+//        } else {
+//            return  R.error();
+//        }
+//    }
+
 
     /**
      * 删除文件上传

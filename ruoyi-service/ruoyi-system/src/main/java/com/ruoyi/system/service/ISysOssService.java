@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
 import com.ruoyi.system.domain.SysOss;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 /**
@@ -50,5 +52,6 @@ public interface ISysOssService
      * @return 结果
      */
 	public int deleteSysOssByIds(String ids);
-	
+
+	SysOss insertFile(MultipartFile file,String name);
 }
