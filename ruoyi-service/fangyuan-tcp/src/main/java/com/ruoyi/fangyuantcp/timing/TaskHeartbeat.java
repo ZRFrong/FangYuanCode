@@ -5,10 +5,12 @@ import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuantcp.service.IDbEquipmentService;
+import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.fangyuantcp.utils.DateUtilLong;
+import com.ruoyi.system.domain.DbTcpType;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.*;
@@ -23,6 +25,7 @@ public class TaskHeartbeat {
 
     private IDbTcpClientService dbTcpClientService = SpringUtils.getBean(IDbTcpClientService.class);
     private IDbEquipmentService dbEquipmentService = SpringUtils.getBean(IDbEquipmentService.class);
+    private IDbTcpTypeService dbTcpTypeService = SpringUtils.getBean(IDbTcpTypeService.class);
 
 
     public void HeartbeatRun() {
@@ -32,7 +35,7 @@ public class TaskHeartbeat {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                try {
+//                try {
                     DbTcpClient dbTcpClient = new DbTcpClient();
                     dbTcpClient.setIsOnline(0);
                     List<DbTcpClient> dbTcpClients = dbTcpClientService.selectDbTcpClientList(dbTcpClient);
@@ -55,16 +58,26 @@ public class TaskHeartbeat {
                                         dbEquipment.setIsFault(1);
                                         dbEquipmentService.updateDbEquipment(dbEquipment);
                                     }
+                                    /*
+                                    * 删除对应的状态
+                                    * */
+                                    DbTcpType dbTcpType = new DbTcpType();
+                                    dbTcpType.setHeartName(dbEquipment1.getHeartbeatText());
+                                    List<DbTcpType> list = dbTcpTypeService.selectDbTcpTypeList(dbTcpType);
+                                    if (list.size()>0&&list!=null){
+                                    dbTcpTypeService.deleteByHeartName(dbEquipment1.getHeartbeatText());
+                                    }
 
                                 }
                             }
                         }
 
                     }
-                    log.info("状态定时查询执行===时间："+new Date());
-                } catch (Exception e) {
-                    log.error("心跳定时查询错误===时间："+new Date());
-                }
+                    log.info("心跳定时查询===时间："+new Date());
+//                }
+//                catch (Exception e) {
+//                    log.error("心跳定时查询错误===时间："+new Date());
+//                }
             }
         };
 //       心跳定时执行1分钟

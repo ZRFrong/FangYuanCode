@@ -36,6 +36,16 @@
         order by site_id
     </select>
 
+    <select id="selectDbLandNoSiteList" parameterType="DbLand" resultMap="DbLandResult">
+        <include refid="selectDbLandVo"/>
+        <where>
+            <if test="siteId != null "> and site_id != #{siteId}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
+            <if test="dbUserId != null  and dbUserId != ''"> and db_user_id = #{dbUserId},</if>
+        </where>
+    </select>
+
     <select id="selectDbLandById" parameterType="Long" resultMap="DbLandResult">
         select t.land_id, t.region, t.longitude, t.latitude,t.address, t.product_category, t.product_name, t.note_text, t.create_time, t.db_user_id, t.nick_name, t.site_id, t.equipment_ids, p.nick_name as parent_name
         from db_land t
@@ -43,9 +53,10 @@
         where t.land_id = #{landId}
     </select>
     <select id="selectDbLandByUserId" resultMap="DbLandResult">
-        select * from  db_land where db_user_id = #{dbUserId}
+        select * from  db_land
         <where>
-            <if test="siteId != null ">and site_id = #{siteId}</if>
+            db_user_id = #{dbUserId}
+            <if test="siteId != null "> and site_id = #{siteId}</if>
         </where>
     </select>
     <select id="selectDbLandCountByUserId" resultType="java.lang.Integer">

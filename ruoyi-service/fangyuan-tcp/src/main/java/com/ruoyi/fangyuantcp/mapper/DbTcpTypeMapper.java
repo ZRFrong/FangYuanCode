@@ -58,4 +58,6 @@ public interface DbTcpTypeMapper
      * @return 结果
      */
     public int deleteDbTcpTypeByIds(String[] tcpTypeIds);
+
+    void deleteByHeartName(String heartbeatText);
 }

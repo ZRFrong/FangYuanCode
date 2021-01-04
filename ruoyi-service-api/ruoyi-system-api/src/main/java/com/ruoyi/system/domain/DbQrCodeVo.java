@@ -8,39 +8,53 @@ public class DbQrCodeVo {
 
     /*是否第一次绑定*/
     @ApiModelProperty(value = "是否第一次绑定")
-    public  boolean isFirstBind;
+    public  boolean FirstBind;
 
    /*二维码表*/
    @ApiModelProperty(value = "二维码表")
     public  DbQrCode dbQrCode;
 
    /*操作集类*/
-   @ApiModelProperty(value = "操作集类")
+   @ApiModelProperty(value = "操作集类所有")
    public List<OperatePojo> operatePojo;
-
-    public DbQrCodeVo() {
-    }
+    /*操作集类*/
+    @ApiModelProperty(value = "操作集类选中")
+    public List<OperatePojo> operatePojoSelected;
 
     @Override
     public String toString() {
         return "DbQrCodeVo{" +
-                "isFirstBind=" + isFirstBind +
+                "FirstBind=" + FirstBind +
                 ", dbQrCode=" + dbQrCode +
                 ", operatePojo=" + operatePojo +
+                ", operatePojoSelected=" + operatePojoSelected +
                 '}';
     }
 
     public boolean isFirstBind() {
-        return isFirstBind;
-    }
-
-    public void setFirstBind(boolean firstBind) {
-        isFirstBind = firstBind;
+        return FirstBind;
     }
 
     public DbQrCode getDbQrCode() {
         return dbQrCode;
     }
+
+    public List<OperatePojo> getOperatePojoSelected() {
+        return operatePojoSelected;
+    }
+
+    public void setOperatePojoSelected(List<OperatePojo> operatePojoSelected) {
+        this.operatePojoSelected = operatePojoSelected;
+    }
+
+    public DbQrCodeVo() {
+    }
+
+
+    public void setFirstBind(boolean firstBind) {
+        FirstBind = firstBind;
+    }
+
 
     public void setDbQrCode(DbQrCode dbQrCode) {
         this.dbQrCode = dbQrCode;

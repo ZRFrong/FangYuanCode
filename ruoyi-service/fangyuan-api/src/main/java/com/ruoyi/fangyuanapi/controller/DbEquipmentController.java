@@ -78,6 +78,9 @@ public class DbEquipmentController extends BaseController {
      */
     @PostMapping("save")
     public R addSave(@RequestBody  DbEquipment dbEquipment) {
+        dbEquipment.setCreateTime(new Date());
+        dbEquipment.setIsPause(0);
+        dbEquipment.setIsFault(0);
         return toAjax(dbEquipmentService.insertDbEquipment(dbEquipment));
     }
 

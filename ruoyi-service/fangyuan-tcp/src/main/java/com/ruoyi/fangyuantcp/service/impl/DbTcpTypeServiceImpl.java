@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
 import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
+import com.ruoyi.fangyuantcp.utils.DateUtilLong;
 import com.ruoyi.fangyuantcp.utils.TcpOrderTextConf;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.fangyuantcp.utils.SendCodeUtils;
@@ -156,6 +157,27 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
         }
 
         return 0;
+    }
+
+    @Override
+    public void deleteTimingType() {
+        /*
+        * 查询所有列表检索出需要过期的状态信息
+        * */
+        DbTcpType dbTcpType = new DbTcpType();
+        List<DbTcpType> list = dbTcpTypeMapper.selectDbTcpTypeList(dbTcpType);
+        list.forEach(itm->{
+            Long minuteDiff = DateUtilLong.getMinuteDiff(itm.getUpdateTime(), new Date());
+            if (minuteDiff>10){
+                dbTcpTypeMapper.deleteDbTcpTypeById(itm.getTcpTypeId());
+            }
+        });
+
+    }
+
+    @Override
+    public void deleteByHeartName(String heartbeatText) {
+        dbTcpTypeMapper.deleteByHeartName(heartbeatText);
     }
 
     @Override

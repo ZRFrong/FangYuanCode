@@ -134,7 +134,7 @@ public class DbLandServiceImpl implements IDbLandService
         }
         Integer count = dbLandMapper.selectDbLandCountByUserId(dbLand.getDbUserId());
         if (dbLands.size() == 6 && count == 54){
-            return R.error("土地已經達到上線！");
+            return R.error("土地已经到上线！");
         }
         Integer flag =  dbLands.size() == 0 ? 1 :dbLands.size();
         if (count / flag == 9){
@@ -161,7 +161,13 @@ public class DbLandServiceImpl implements IDbLandService
         return dbLandMapper.groupByUserId();
     }
 
-    private DbLand checkLand(DbLand land,Integer num){
+    @Override
+    public List<DbLand> selectDbLandNoSiteList(DbLand dbLand) {
+
+        return  dbLandMapper.selectDbLandNoSiteList(dbLand);
+    }
+
+    private DbLand checkLand(DbLand land, Integer num){
         DbLand dbLand = null;
         dbLand =land;
         dbLand.setProductName(DbLandUtils.getLnadName(num));

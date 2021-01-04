@@ -26,6 +26,10 @@ public class TaskTcpType {
             public void run() {
                 try {
                     dbTcpTypeService.timingType();
+                    /*
+                    * 删除长期未更新的状态信息
+                    * */
+                    dbTcpTypeService.deleteTimingType();
                     log.info("状态定时查询执行===时间："+new Date());
                 } catch (Exception e) {
 

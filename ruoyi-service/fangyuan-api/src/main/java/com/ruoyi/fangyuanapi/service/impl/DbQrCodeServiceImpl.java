@@ -140,12 +140,17 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
             DbQrCode dbQrCode = dbQrCodeMapper.selectDbQrCodeById(Long.valueOf(qrCodeId));
             dbQrCodeVo.setDbQrCode(dbQrCode);
             if (dbQrCode.getAdminUserId()!=null){
-
             dbQrCodeVo.setFirstBind(dbQrCode.getAdminUserId().equals(id) ? true : false);
             }else {
-            dbQrCodeVo.setFirstBind(false);
+            dbQrCodeVo.setFirstBind(true);
             }
             List<OperatePojo> lists = JSON.parseArray(dbEquipmentMapper.selectDbEquipmentById(dbQrCode.getEquipmentId()).getHandlerText(), OperatePojo.class);
+
+            /*
+            * 添加选中的操作集
+            * */
+
+
             dbQrCodeVo.setOperatePojo(lists);
             return dbQrCodeVo;
         } else {
