@@ -156,12 +156,12 @@ public class DbAppVersionController extends BaseController
             version.setIsConstraint(isConstraint);
             version.setUpdateBy(updateUserName);
             version.setUpdateTime(new Date());
-            //SysOss oss = getSysOss(file);
             R r = ossService.editSave(file);
             Object o = r.get("msg");
             if (o != null){
                 version.setDownloadUrl(o+"");
-                dbAppVersionService.insertDbAppVersion(version);
+                int i = dbAppVersionService.insertDbAppVersion(version);
+                return i>0?R.ok():r.error();
             }else {
                 return R.error("上传失败！");
             }

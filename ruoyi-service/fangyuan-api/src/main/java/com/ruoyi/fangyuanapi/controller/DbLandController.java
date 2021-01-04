@@ -65,7 +65,7 @@ public class DbLandController extends BaseController {
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
         dbLand.setDbUserId(Long.valueOf(userId));
         startPage();
-        return result(dbLandService.selectDbLandList(dbLand));
+        return result(dbLandService.selectDbLandWeChatList(dbLand));
     }
 
     /**

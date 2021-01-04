@@ -163,6 +163,11 @@ public class DbLandServiceImpl implements IDbLandService
         return dbLandMapper.groupByUserId();
     }
 
+    @Override
+    public List<DbLand> selectDbLandWeChatList(DbLand dbLand) {
+        return dbLandMapper.selectDbLandWeChatList(dbLand);
+    }
+
     private DbLand checkLand(DbLand land,Integer num){
         DbLand dbLand = new DbLand();
         dbLand.setProductName(DbLandUtils.getLnadName(num));

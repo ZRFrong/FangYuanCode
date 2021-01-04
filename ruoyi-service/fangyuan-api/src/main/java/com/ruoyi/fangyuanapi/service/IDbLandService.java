@@ -73,4 +73,6 @@ public interface IDbLandService
     List<DbLand> selectDbLandListByUserId(Long aLong);
 
     List<Long> groupByUserId();
+
+    List<DbLand> selectDbLandWeChatList(DbLand dbLand);
 }
