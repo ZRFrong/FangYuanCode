@@ -66,7 +66,7 @@ public class DbLandController extends BaseController {
         dbLand.setDbUserId(Long.valueOf(userId));
         dbLand.setSiteId(0L);
         startPage();
-        return result(dbLandService.selectDbLandNoSiteList(dbLand));
+        return result(dbLandService.selectDbLandList(dbLand));
     }
 
 
@@ -115,7 +115,7 @@ public class DbLandController extends BaseController {
     @PostMapping("save")
     @ApiOperation(value = "新增土地/地块", notes = "土地/地块id")
     public R addSave(@RequestBody DbLand dbLand, HttpServletRequest request) {
-        if (dbLand == null) {
+        if (dbLand == null){
             return R.error();
         }
         String userId = request.getHeader(Constants.CURRENT_ID);
@@ -252,8 +252,8 @@ public class DbLandController extends BaseController {
                 dbLand.setSiteId(landId);
                 int i2 = dbLandService.updateDbLand(dbLand);
             }
-        } else {
-            for (int i1 = i * 6; i1 < dbLands.size(); i1++) {
+        }else {
+            for (int i1 = i*6; i1 <dbLands.size() ; i1++) {
                 DbLand dbLand = dbLands.get(i1);
                 dbLand.setSiteId(landId);
                 int i2 = dbLandService.updateDbLand(dbLand);
