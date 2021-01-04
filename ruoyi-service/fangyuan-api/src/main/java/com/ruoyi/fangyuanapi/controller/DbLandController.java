@@ -71,6 +71,18 @@ public class DbLandController extends BaseController {
     /**
      * 查询土地列表
      */
+    @GetMapping("getLandListApp")
+    @ApiOperation(value = "App查询土地列表", notes = "土地列表")
+    public R getLandListApp(@ApiParam(name = "DbLand", value = "传入json格式", required = true) DbLand dbLand) {
+        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+        dbLand.setDbUserId(Long.valueOf(userId));
+        List<DbLand> lands = dbLandService.selectDbLandWeChatList(dbLand);
+        return R.data(lands);
+    }
+
+    /**
+     * 查询土地列表
+     */
     @GetMapping("listApp")
     @ApiOperation(value = "查询土地列表app", notes = "土地列表")
     public R listApp(@ApiParam(name = "DbLand", value = "传入json格式", required = true) DbLand dbLand) {
