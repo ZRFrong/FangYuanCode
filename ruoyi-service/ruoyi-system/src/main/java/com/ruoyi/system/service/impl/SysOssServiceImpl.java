@@ -1,7 +1,14 @@
 package com.ruoyi.system.service.impl;
 
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.utils.ServletUtils;
+import com.ruoyi.system.feign.RemoteOssService;
+import com.ruoyi.system.oss.CloudStorageService;
+import com.ruoyi.system.oss.OSSFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +17,7 @@ import com.ruoyi.system.domain.SysOss;
 import com.ruoyi.system.mapper.SysOssMapper;
 import com.ruoyi.system.service.ISysOssService;
 
+import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
@@ -98,5 +106,30 @@ public class SysOssServiceImpl implements ISysOssService
 	{
 		return sysOssMapper.deleteByIds(ids);
 	}
-	
+
+
+	@Override
+	public SysOss insertFile(MultipartFile file,String name) {
+		// 上传文件
+		String fileName = file.getOriginalFilename();
+		String suffix = fileName.substring(fileName.lastIndexOf("."));
+		CloudStorageService storage = OSSFactory.build();
+		String url = null;
+		try {
+			url = storage.uploadSuffix(file.getBytes(), suffix);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// 保存文件信息
+		SysOss ossEntity = new SysOss();
+		ossEntity.setUrl(url);
+		ossEntity.setFileSuffix(suffix);
+		ossEntity.setCreateBy(ServletUtils.getRequest().getHeader(Constants.CURRENT_USERNAME));
+		ossEntity.setFileName(fileName);
+		ossEntity.setCreateTime(new Date());
+		ossEntity.setService(storage.getService());
+        int i = sysOssMapper.insertSelective(ossEntity);
+        return i > 0 ? ossEntity : null;
+	}
+
 }

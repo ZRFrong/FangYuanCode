@@ -86,7 +86,7 @@ public class DbUserController extends BaseController {
     public R avatarUpload(@RequestPart("file") MultipartFile file){
         if (file != null && StringUtils.checkFileIsImages(file.getOriginalFilename(),".jpg.png.jpeg.gif")){
             System.out.println(file.getOriginalFilename());
-            R r = remoteOssService.editSave(file);
+             R r = remoteOssService.editSave(file);
             if ("200".equals(r.get("code")+"")){
                 String url = r.get("msg")+"";
                 return R.data(url);

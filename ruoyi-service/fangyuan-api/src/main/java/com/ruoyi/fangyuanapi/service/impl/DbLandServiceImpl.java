@@ -13,6 +13,7 @@ import com.ruoyi.fangyuanapi.mapper.DbLandMapper;
 import com.ruoyi.system.domain.DbLand;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 土地Service业务层处理
@@ -127,14 +128,15 @@ public class DbLandServiceImpl implements IDbLandService
      * @return
      */
     @Override
+    @Transactional
     public R weChatAddSave(DbLand dbLand) {
         List<DbLand> dbLands = dbLandMapper.selectDbLandByUserId(dbLand.getDbUserId(),0L);
-        if (dbLands == null){
+        if (dbLands == null || dbLands.size() == 0 ){
             dbLands.add(checkLand(dbLand,1));
         }
         Integer count = dbLandMapper.selectDbLandCountByUserId(dbLand.getDbUserId());
         if (dbLands.size() == 6 && count == 54){
-            return R.error("土地已经到上线！");
+            return R.error("土地容量已经达到上限！");
         }
         Integer flag =  dbLands.size() == 0 ? 1 :dbLands.size();
         if (count / flag == 9){
@@ -142,7 +144,7 @@ public class DbLandServiceImpl implements IDbLandService
         }
         for (DbLand d : dbLands) {
             List<DbLand> landList = dbLandMapper.selectDbLandByUserId(d.getDbUserId(), d.getLandId());
-            if (landList.size()<9){
+            if (landList == null || landList.size()<9){
                 dbLand.setSiteId(d.getLandId());
                 int j = dbLandMapper.insertDbLand(dbLand);
                 return j>0?R.data(dbLand.getLandId()): R.error();
@@ -167,11 +169,12 @@ public class DbLandServiceImpl implements IDbLandService
         return  dbLandMapper.selectDbLandNoSiteList(dbLand);
     }
 
-    private DbLand checkLand(DbLand land, Integer num){
-        DbLand dbLand = null;
-        dbLand =land;
+
+    private DbLand checkLand(DbLand land,Integer num){
+        DbLand dbLand = new DbLand();
         dbLand.setProductName(DbLandUtils.getLnadName(num));
         dbLand.setSiteId(0L);
+        dbLand.setDbUserId(land.getDbUserId());
         int i = dbLandMapper.insertDbLand(dbLand);
         return dbLand;
     }

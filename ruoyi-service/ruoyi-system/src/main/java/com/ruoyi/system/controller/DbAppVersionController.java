@@ -1,13 +1,19 @@
 package com.ruoyi.system.controller;
 
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.utils.ServletUtils;
+import com.ruoyi.system.config.ApkUploadConfig;
 import com.ruoyi.system.domain.DbAppUpdate;
+import com.ruoyi.system.domain.SysOss;
+import com.ruoyi.system.feign.RemoteOssService;
+import com.ruoyi.system.oss.CloudStorageService;
+import com.ruoyi.system.oss.OSSFactory;
+import com.ruoyi.system.service.ISysOssService;
+import net.dongliu.apk.parser.ApkFile;
+import net.dongliu.apk.parser.bean.ApkMeta;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -16,9 +22,13 @@ import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.system.domain.DbAppVersion;
 import com.ruoyi.system.service.IDbAppVersionService;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,7 +45,12 @@ public class DbAppVersionController extends BaseController
 	
 	@Autowired
 	private IDbAppVersionService dbAppVersionService;
-	
+
+	@Autowired
+	private ApkUploadConfig apkUploadConfig;
+
+
+
 	/**
 	 * 查询${tableComment}
 	 */
@@ -69,6 +84,7 @@ public class DbAppVersionController extends BaseController
 	 * 新增保存app版本更新
 	 */
 	@PostMapping("save")
+    @Transactional
 	public R addSave( @RequestBody DbAppVersion dbAppVersion)
 	{
 
@@ -116,7 +132,66 @@ public class DbAppVersionController extends BaseController
 		}
 		return R.data(dbAppUpdate);
 	}
-	
 
-	
+    @Autowired
+    private RemoteOssService ossService;
+
+	@Autowired SysOssController ossController;
+	@PostMapping("apkUpload")
+	public R apkUpload(@RequestPart("file")MultipartFile file, @RequestParam(name = "updateUserName") String updateUserName,@RequestParam(name = "isConstraint") Integer isConstraint, @RequestParam(name = "updateState")String updateState){
+		if (file.isEmpty()){
+			return R.error();
+		}
+		String fileName = System.currentTimeMillis()+file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4, file.getOriginalFilename().length());
+		String path = apkUploadConfig.getPath();
+		String apkVersion ;
+        try {
+            DbAppVersion version = new DbAppVersion();
+            file.transferTo(new File(path,fileName));
+            ApkFile apkFile = new ApkFile(path+fileName);
+            ApkMeta apkMeta = apkFile.getApkMeta();
+            apkVersion = apkMeta.getVersionCode()+"";
+            version.setAppVersion(apkVersion);
+            version.setUpdateState(updateState);
+            version.setIsConstraint(isConstraint);
+            version.setUpdateBy(updateUserName);
+            version.setUpdateTime(new Date());
+            //SysOss oss = getSysOss(file);
+            R r = ossService.editSave(file);
+            Object o = r.get("msg");
+            if (o != null){
+                version.setDownloadUrl(o+"");
+                dbAppVersionService.insertDbAppVersion(version);
+            }else {
+                return R.error("上传失败！");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return R.error();
+	}
+
+	@Autowired
+    private ISysOssService sysOssService;
+	private SysOss getSysOss(MultipartFile file){
+        String fileName = file.getOriginalFilename();
+        String suffix = fileName.substring(fileName.lastIndexOf("."));
+        CloudStorageService storage = OSSFactory.build();
+        String url = null;
+        try {
+            url = storage.uploadSuffix(file.getBytes(), suffix);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // 保存文件信息
+        SysOss ossEntity = new SysOss();
+        ossEntity.setUrl(url);
+        ossEntity.setFileSuffix(suffix);
+        ossEntity.setCreateBy(ServletUtils.getRequest().getHeader(Constants.CURRENT_USERNAME));
+        ossEntity.setFileName(fileName);
+        ossEntity.setCreateTime(new Date());
+        ossEntity.setService(storage.getService());
+        int i = sysOssService.insertSysOss(ossEntity);
+        return i> 0 ? ossEntity : null;
+    }
 }
