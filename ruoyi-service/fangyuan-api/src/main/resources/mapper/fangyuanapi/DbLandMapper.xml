@@ -44,9 +44,7 @@
     </select>
     <select id="selectDbLandByUserId" resultMap="DbLandResult">
         select * from  db_land where db_user_id = #{dbUserId}
-        <where>
             <if test="siteId != null ">and site_id = #{siteId}</if>
-        </where>
     </select>
     <select id="selectDbLandCountByUserId" resultType="java.lang.Integer">
         select count(*) from  db_land where db_user_id = #{dbUserId} and site_id != 0
