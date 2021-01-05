@@ -7,6 +7,7 @@ import com.ruoyi.system.mapper.DbAppVersionMapper;
 import com.ruoyi.system.domain.DbAppVersion;
 import com.ruoyi.system.service.IDbAppVersionService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * app版本更新Service业务层处理
@@ -51,6 +52,7 @@ public class DbAppVersionServiceImpl implements IDbAppVersionService
      * @return 结果
      */
     @Override
+    @Transactional
     public int insertDbAppVersion(DbAppVersion dbAppVersion)
     {
         return dbAppVersionMapper.insertDbAppVersion(dbAppVersion);

@@ -18,6 +18,12 @@ public class DbLandUtils {
                 return NAME+"五号地";
             case 6:
                 return NAME+"六号地";
+            case 7:
+                return NAME+"七号地";
+            case 8:
+                return NAME+"八号地";
+            case 9:
+                return NAME+"九号地";
         }
         return null;
     }

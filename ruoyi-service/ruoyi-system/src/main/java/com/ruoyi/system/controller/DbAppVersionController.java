@@ -173,6 +173,7 @@ public class DbAppVersionController extends BaseController
 
 	@Autowired
     private ISysOssService sysOssService;
+
 	private SysOss getSysOss(MultipartFile file){
         String fileName = file.getOriginalFilename();
         String suffix = fileName.substring(fileName.lastIndexOf("."));
