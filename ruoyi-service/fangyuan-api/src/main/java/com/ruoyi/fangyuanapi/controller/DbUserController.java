@@ -310,7 +310,7 @@ public class DbUserController extends BaseController {
             if (dbUser.getUserFrom() == 0) {
                 dbUser.setUpdateTime(new Date());//修改时间
                 dbUser.setPassword(s);
-                user.setSalt(uuid);
+                dbUser.setSalt(uuid);
                 int i = dbUserService.updateDbUser(dbUser);
                 return i > 0 ? new R() : R.error(ResultEnum.SERVICE_BUSY.getCode(), ResultEnum.SERVICE_BUSY.getMessage());
             }
@@ -337,13 +337,21 @@ public class DbUserController extends BaseController {
         R r = sendSmsClient.checkCode(phone, code);
         //R r = new R();
         if ("200".equals(r.get("code")+"") ){
-            DbUser dbUser= dbUserService.selectDbUserByPhoneAndOpenId(phone,openId);
-
-            if (dbUser == null){
-                //already
+            DbUser user = new DbUser();
+            user.setPhone(phone);
+            DbUser dbUser= dbUserService.selectDbUserByPhone(user);
+            if (dbUser == null ){
                 dbUser = dbUserService.wxRegister(phone,openId,nickname,avatar);
             }
-            if (dbUser != null){
+            if (dbUser != null && StringUtils.isEmpty(dbUser.getOpenId())){//修改操作
+                dbUser.setOpenId(openId);
+                if (dbUser.getAvatar() == null){
+                    dbUser.setAvatar(avatar);
+                }
+                if (dbUser.getNickname() == null){
+                    dbUser.setNickname(nickname);
+                }
+                dbUserService.updateDbUser(dbUser);
                 return R.data(getToken(dbUser.getId(), tokenConf.getAccessTokenKey(),System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000),0));
             }
             return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
