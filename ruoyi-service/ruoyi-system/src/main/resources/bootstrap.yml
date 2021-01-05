@@ -21,8 +21,8 @@ spring:
     time-zone: GMT+8
   servlet:
     multipart:
-      maxFileSize: 5MB  #单位必须大写MB或不写(即为B)
-      maxRequestSize: 10MB
+      maxFileSize: 100MB  #单位必须大写MB或不写(即为B)
+      maxRequestSize: 100MB
   cloud:
     nacos:
       config:

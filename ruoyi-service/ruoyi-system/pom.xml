@@ -80,7 +80,12 @@
             <version>${ruoyi.version}</version>
         </dependency>
 
-
+        <!--apk-->
+        <dependency>
+            <groupId>net.dongliu</groupId>
+            <artifactId>apk-parser</artifactId>
+            <version>2.5.3</version>
+        </dependency>
 
         <!-- 日志模块 -->
         <dependency>

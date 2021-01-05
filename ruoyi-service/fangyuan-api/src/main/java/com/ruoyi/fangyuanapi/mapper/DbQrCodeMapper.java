@@ -59,4 +59,7 @@ public interface DbQrCodeMapper
      * @return 结果
      */
     public int deleteDbQrCodeByIds(String[] qrCodeIds);
+
+
+
 }

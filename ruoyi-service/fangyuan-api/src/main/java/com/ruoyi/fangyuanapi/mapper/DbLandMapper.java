@@ -74,5 +74,7 @@ public interface DbLandMapper
     @Select("select db_user_id from db_land d where db_user_id!=0   GROUP BY db_user_id")
     List<Long> groupByUserId();
 
+    List<DbLand> selectDbLandNoSiteList(DbLand dbLand);
+
     List<DbLand> selectDbLandWeChatList(DbLand dbLand);
 }

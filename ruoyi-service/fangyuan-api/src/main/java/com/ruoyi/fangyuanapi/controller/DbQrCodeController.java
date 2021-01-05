@@ -1,11 +1,8 @@
 package com.ruoyi.fangyuanapi.controller;
 
-import cn.hutool.db.Db;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
-import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbLand;
 import com.ruoyi.system.domain.DbQrCode;
 import com.ruoyi.system.domain.DbQrCodeVo;
@@ -18,7 +15,6 @@ import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.fangyuanapi.service.IDbQrCodeService;
 
-import java.util.List;
 
 /**
  * 二维码 提供者
@@ -115,6 +111,7 @@ public class DbQrCodeController extends BaseController {
         if (dbQrCodeVo == null) {
             return R.error("token识别错误,用户未找到");
         }
+
         return R.data(dbQrCodeVo);
     }
 
@@ -131,12 +128,19 @@ public class DbQrCodeController extends BaseController {
             @ApiImplicitParam(name = "phone",value = "手机号",required = true),
             @ApiImplicitParam(name = "code",value = "验证码",required = true)
     })
-    public R banDingEquipment(@RequestParam(name = "dbLandId") Long dbLandId,@RequestParam(name = "dbEquipmentId") Long dbEquipmentId,@RequestParam(name = "handleText") String handleText,@RequestParam(name = "phone") String phone,@RequestParam(name = "code") String code){
+    public R banDingEquipment(@RequestParam(name = "dbLandId") Long dbLandId,@RequestParam(name = "dbEquipmentId") Long dbEquipmentId,@RequestParam(name = "handleText") String handleText,@RequestParam(name = "phone") String phone,@RequestParam(name = "code") String code
+    ,@RequestParam(name = "dbQrCodeId") Long dbQrCodeId,@RequestParam(name = "adminAddress") String adminAddress){
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
         R r = sendSmsClient.checkCode(phone, code);
         code = r.get("code")+"";
         code = "200";
         if ("200".equals(code)){
+            /*更改管理员id*/
+            DbQrCode dbQrCode = dbQrCodeService.selectDbQrCodeById(dbQrCodeId);
+            dbQrCode.setAdminUserId(Long.valueOf(userId));
+            dbQrCode.setAdminPhone(phone);
+            dbQrCode.setAdminAddress(adminAddress);
+            dbQrCodeService.updateDbQrCode(dbQrCode);
             DbLand dbLand = dbLandService.selectDbLandById(dbLandId);
             if (dbLand != null  ){
                 if (StringUtils.isNotEmpty(dbLand.getEquipmentIds()) && dbLand.getEquipmentIds().contains(dbEquipmentId+"")){

@@ -1,7 +1,7 @@
+/*
 package com.ruoyi.system.controller;
 
 import com.ruoyi.common.core.domain.R;
-import com.ruoyi.system.domain.ApkInfo;
 import net.dongliu.apk.parser.ApkFile;
 import net.dongliu.apk.parser.bean.ApkMeta;
 import org.apache.commons.io.FileUtils;
@@ -43,8 +43,7 @@ public class APKUploadController {
             file.transferTo(new File(path, fileName));
             ApkFile apkFile = new ApkFile(path+fileName);
             ApkMeta apkMeta = apkFile.getApkMeta();
-            ApkInfo info = new ApkInfo();
-            info.setVersionCode(apkMeta.getVersionCode()+"");
+
             String label = apkMeta.getLabel();
             String version = apkMeta.getMinSdkVersion();
             System.out.println("版本号     :"+version);
@@ -68,3 +67,4 @@ public class APKUploadController {
         return null;
     }
 }
+*/

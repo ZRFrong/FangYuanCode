@@ -69,10 +69,32 @@ public class DbQrCode extends BaseEntity
     @ApiModelProperty(value = "产品型号")
     private String equipmentProductionDate;
 
+    public String getAdminAddress() {
+        return adminAddress;
+    }
+
+    public void setAdminAddress(String adminAddress) {
+        this.adminAddress = adminAddress;
+    }
+
     /** 产品型号 */
     @Excel(name = "产品型号")
     @ApiModelProperty(value = "产品型号")
     private String equipmentModel;
+    /*
+     * 管理员手机号
+
+     * */
+    @ApiModelProperty(value = "管理员手机号")
+    private String adminPhone;
+
+    /*
+     * 管理员地址信息
+
+     * */
+    @ApiModelProperty(value = "管理员地址信息")
+    private String adminAddress;
+
 
     @Override
     public String toString() {
@@ -88,8 +110,22 @@ public class DbQrCode extends BaseEntity
                 ", equipmentProductionBatch='" + equipmentProductionBatch + '\'' +
                 ", equipmentProductionDate='" + equipmentProductionDate + '\'' +
                 ", equipmentModel='" + equipmentModel + '\'' +
+                ", adminPhone='" + adminPhone + '\'' +
+                ", adminAddress='" + adminAddress + '\'' +
                 '}';
     }
+
+    public String getAdminPhone() {
+        return adminPhone;
+    }
+
+    public void setAdminPhone(String adminPhone) {
+        this.adminPhone = adminPhone;
+    }
+
+
+
+
 
     public String getEquipmentProductionSite() {
         return equipmentProductionSite;

@@ -136,7 +136,7 @@ public class DbLandServiceImpl implements IDbLandService
         }
         Integer count = dbLandMapper.selectDbLandCountByUserId(dbLand.getDbUserId());
         if (dbLands.size() == 9 && count == 54){
-            return R.error("土地已經達到上線！");
+            return R.error("土地容量已经达到上限！");
         }
         Integer flag =  dbLands.size() == 0 ? 1 :dbLands.size();
         if (count / flag == 6){
@@ -162,6 +162,13 @@ public class DbLandServiceImpl implements IDbLandService
     public List<Long> groupByUserId() {
         return dbLandMapper.groupByUserId();
     }
+
+    @Override
+    public List<DbLand> selectDbLandNoSiteList(DbLand dbLand) {
+
+        return  dbLandMapper.selectDbLandNoSiteList(dbLand);
+    }
+
 
     @Override
     public List<DbLand> selectDbLandWeChatList(DbLand dbLand) {

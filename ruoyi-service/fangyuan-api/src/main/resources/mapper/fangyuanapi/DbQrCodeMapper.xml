@@ -17,10 +17,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="equipmentProductionBatch"    column="equipment_production_batch"  />
         <result property="equipmentProductionDate"    column="equipment_production_date"  />
         <result property="equipmentModel"    column="equipment_model"  />
+        <result property="adminPhone"    column="admin_phone"  />
+        <result property="adminAddress"    column="admin_address"  />
     </resultMap>
 
     <sql id="selectDbQrCodeVo">
-        select qr_code_id, heartbeat_text, create_time,equipment_production_site,equipment_production_batch,equipment_production_date,equipment_model, first_time_binding, admin_user_id, equipment_id, qr_code_url, qr_code_pic from db_qr_code
+        select qr_code_id, heartbeat_text, create_time,equipment_production_site,equipment_production_batch,equipment_production_date,equipment_model, first_time_binding, admin_user_id, equipment_id, qr_code_url, qr_code_pic,admin_phone,admin_address from db_qr_code
     </sql>
 
     <select id="selectDbQrCodeList" parameterType="DbQrCode" resultMap="DbQrCodeResult">
@@ -48,6 +50,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="equipmentProductionDate != null  and equipmentProductionDate != ''">equipment_production_date,</if>
             <if test="equipmentModel != null  and equipmentModel != ''">equipment_model,</if>
             <if test="qrCodePic != null  and qrCodePic != ''">qr_code_pic,</if>
+            <if test="adminPhone != null  and adminPhone != ''">admin_phone,</if>
+            <if test="adminAddress != null  and adminAddress != ''">admin_address,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="heartbeatText != null  and heartbeatText != ''">#{heartbeatText},</if>
@@ -61,6 +65,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="equipmentProductionBatch != null  and equipmentProductionBatch != ''">#{equipmentProductionBatch},</if>
             <if test="equipmentProductionDate != null  and equipmentProductionDate != ''">#{equipmentProductionDate},</if>
             <if test="equipmentModel != null  and equipmentModel != ''">#{equipmentModel},</if>
+            <if test="adminPhone != null  and adminPhone != ''">#{adminPhone},</if>
+            <if test="adminAddress != null  and adminAddress != ''">#{adminAddress},</if>
          </trim>
     </insert>
 
@@ -78,6 +84,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="equipmentProductionBatch != null  and equipmentProductionBatch != ''">equipment_production_batch = #{equipmentProductionBatch},</if>
             <if test="equipmentProductionDate != null  and equipmentProductionDate != ''">equipment_production_date = #{equipmentProductionDate},</if>
             <if test="equipmentModel != null  and equipmentModel != ''">equipment_model = #{equipmentModel},</if>
+            <if test="adminPhone != null  and adminPhone != ''">admin_phone =#{adminPhone},</if>
+            <if test="adminAddress != null  and adminAddress != ''">admin_address =#{adminAddress},</if>
         </trim>
         where qr_code_id = #{qrCodeId}
     </update>

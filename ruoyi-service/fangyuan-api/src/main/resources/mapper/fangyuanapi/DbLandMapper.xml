@@ -36,6 +36,14 @@
         order by site_id
     </select>
 
+    <select id="selectDbLandNoSiteList" parameterType="DbLand" resultMap="DbLandResult">
+        <include refid="selectDbLandVo"/>
+        <where>
+            <if test="siteId != null "> and site_id != #{siteId}</if>
+            <if test="dbUserId != null  and dbUserId != ''"> and db_user_id = #{dbUserId}</if>
+        </where>
+    </select>
+
     <select id="selectDbLandById" parameterType="Long" resultMap="DbLandResult">
         select t.land_id, t.region, t.longitude, t.latitude,t.address, t.product_category, t.product_name, t.note_text, t.create_time, t.db_user_id, t.nick_name, t.site_id, t.equipment_ids, p.nick_name as parent_name
         from db_land t

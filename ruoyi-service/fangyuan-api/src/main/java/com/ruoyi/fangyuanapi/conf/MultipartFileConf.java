@@ -14,10 +14,10 @@ public class MultipartFileConf {
     public MultipartConfigElement configElement(){
         MultipartConfigFactory factory = new MultipartConfigFactory();
         //最大上传限制 15m
-        factory.setMaxFileSize(DataSize.ofMegabytes(15));
+        factory.setMaxFileSize(DataSize.ofMegabytes(100));
         //factory.setMaxRequestSize(DataSize.ofGigabytes(10L));
         //总上传大小限制
-        factory.setMaxRequestSize(DataSize.ofMegabytes(15));
+        factory.setMaxRequestSize(DataSize.ofMegabytes(100));
 
         return factory.createMultipartConfig();
     }

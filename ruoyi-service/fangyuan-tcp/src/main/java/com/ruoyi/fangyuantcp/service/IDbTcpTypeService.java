@@ -86,4 +86,8 @@ public interface IDbTcpTypeService {
     List<DbStateRecords> intervalState(Date startTime, Date endTime, String iNterval,String hearName);
 
     void timingTypeOnly(DbTcpClient dbTcpClient);
+
+    void deleteByHeartName(String heartbeatText);
+
+    void deleteTimingType();
 }

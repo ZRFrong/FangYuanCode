@@ -27,6 +27,13 @@ public class QrCodeUtils {
     public static final String FORMAT = "JPG";
     // 二维码尺寸
     private static final int QRCODE_SIZE = 300;
+
+    // 用二维码生成新图片，新图片加高多少，比如加的字体大小为24，这里就设置成26
+    private static final int FONT_SIZE_HEIGHT = 30;
+    // 用二维码生成新图片，宽度
+    private static final int BUFFEREDIMAGE_SIZE_WIDTH = QRCODE_SIZE;
+    // 用二维码生成新图片，高度
+    private static final int BUFFEREDIMAGE_SIZE_HEIGHT = QRCODE_SIZE + FONT_SIZE_HEIGHT;
     // LOGO宽度
     private static final int LOGO_WIDTH = 100;
     // LOGO高度
@@ -121,13 +128,14 @@ public class QrCodeUtils {
      * @param content      内容
      * @param logoPath     LOGO地址
      * @param needCompress 是否压缩LOGO
+     * @param note   文字说明
      * @throws String   base64图片
      */
     public static String encode(String content, String logoPath , boolean needCompress)
             throws Exception {
         BufferedImage image = QrCodeUtils.createImage(content, logoPath, needCompress);
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();//io流
+//        BufferedImage bufferedImage = addNote(image, note);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();//io流
             ImageIO.write(image, "png", baos);//写入流中
             byte[] bytes = baos.toByteArray();//转换成字节
             BASE64Encoder encoder = new BASE64Encoder();
@@ -138,6 +146,50 @@ public class QrCodeUtils {
     }
 
     /**
+     * 给二维码下方添加说明文字
+     * @param image 原二维码
+     * @param note 说明文字
+     * @return 带说明文字的二维码
+     */
+    public static BufferedImage addNote(BufferedImage image,String note){
+        Image src = image.getScaledInstance(QRCODE_SIZE, QRCODE_SIZE,Image.SCALE_DEFAULT);
+        BufferedImage tag;
+        if (note.length()<=24){
+            //生成新图片的大小
+            tag = new BufferedImage(BUFFEREDIMAGE_SIZE_WIDTH, BUFFEREDIMAGE_SIZE_HEIGHT,BufferedImage.TYPE_INT_RGB);
+        }else{
+            //这句代码还没调试过，这里表示文字需要折行
+            tag = new BufferedImage(300, 345,BufferedImage.TYPE_INT_RGB);
+        }
+        //设置低栏白边
+        Graphics g1 = tag.getGraphics();
+        //设置文字
+        Graphics2D g2 = tag.createGraphics();
+        Font font = new Font("微软雅黑",Font.BOLD,24);
+        g2.setFont(font);
+        g2.setColor(Color.BLACK);
+        if (note.length()<=24) {
+            //下面这个26要和tag = new BufferedImage(330, 356,BufferedImage.TYPE_INT_RGB);356-330=26对上
+            g1.fillRect(0, QRCODE_SIZE, QRCODE_SIZE, FONT_SIZE_HEIGHT);
+            //文字在图片上的位置
+            g2.drawString(note,/*QRCODE_SIZE/2-note.length()*8-14*/20, QRCODE_SIZE+font.getSize());
+        }else{
+            //这里的代码还没测试过
+            g1.fillRect(0, QRCODE_SIZE, QRCODE_SIZE, 45);
+            //下面两次表示文件需要换行显示
+            g2.drawString(note.substring(0, 24),5, QRCODE_SIZE+font.getSize());
+            g2.drawString(note.substring(24,note.length()), QRCODE_SIZE/2-(note.length()-24)*8-14, QRCODE_SIZE+font.getSize()*2+4);
+        }
+        g1.drawImage(src, 0, 0, null);
+        g1.dispose();
+        g2.dispose();
+        image = tag;
+        image.flush();
+        return image;
+    }
+
+
+    /**
      * 获取指定文件的输入流，获取logo
      *
      * @param logoPath 文件的路径
@@ -145,6 +197,11 @@ public class QrCodeUtils {
      */
     public static InputStream getResourceAsStream(String logoPath) {
         return QrCodeUtils.class.getResourceAsStream(logoPath);
+    }
+
+    public static void main(String[] args) throws Exception {
+//        String encode = QrCodeUtils.encode("https://fangyuancun.cn/shop/build?qrCodeId=160", "http://cdn.fangyuancun.cn/logo9.png", true,"嚣张");
+//        System.out.println(encode);
     }
 
 

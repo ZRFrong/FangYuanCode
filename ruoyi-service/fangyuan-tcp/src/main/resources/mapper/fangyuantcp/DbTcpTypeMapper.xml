@@ -98,4 +98,8 @@
         </foreach>
     </delete>
 
+    <delete id="deleteByHeartName" parameterType="String">
+        delete from db_tcp_type  where heart_name like concat('%', #{heartbeatText}, '%')
+
+    </delete>
 </mapper>

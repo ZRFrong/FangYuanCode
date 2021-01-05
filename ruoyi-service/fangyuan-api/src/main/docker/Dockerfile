@@ -4,11 +4,11 @@ FROM openjdk:8-jdk-alpine
 ADD *.jar api.jar
 # 在容器启动的时候运行命里，来启动我们的项目 （这其实就是一段Linux命令）
 # 这个启动命里根据你的实际情况更改
-ENTRYPOINT ["java","-jar","/api.jar"]
+ENTRYPOINT ["java","-jar","-Xmx256m","/api.jar"]
 # 修改时区
 RUN rm -rf /etc/localtime && ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 #日志中文乱码
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
-LTAI4FqBPzpcNbCX4CbrkKRG
+

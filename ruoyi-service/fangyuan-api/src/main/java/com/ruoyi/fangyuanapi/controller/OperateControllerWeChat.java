@@ -160,7 +160,9 @@ public class OperateControllerWeChat extends BaseController {
                 List<DbTcpType> list = remoteTcpService.list(dbTcpType);
                 if (list.size() != 0&&list!=null) {
                 DbTcpType dbTcpType1 = list.get(0);
+                if (Double.parseDouble(dbTcpType1.getTemperatureAir())<30){
                     dbEquipmentVo.setDbTcpType(dbTcpType1);
+                }
                 }
                 /*
                 * 剩余时长，到期时长计算

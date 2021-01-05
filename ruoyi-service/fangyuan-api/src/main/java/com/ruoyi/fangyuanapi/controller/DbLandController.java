@@ -64,9 +64,11 @@ public class DbLandController extends BaseController {
     public R list(@ApiParam(name = "DbLand", value = "传入json格式", required = true) DbLand dbLand) {
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
         dbLand.setDbUserId(Long.valueOf(userId));
+        dbLand.setSiteId(0L);
         startPage();
-        return result(dbLandService.selectDbLandWeChatList(dbLand));
+        return result(dbLandService.selectDbLandNoSiteList(dbLand));
     }
+
 
     /**
      * 查询土地列表
@@ -140,9 +142,9 @@ public class DbLandController extends BaseController {
      */
     @PostMapping("weChatSave")
     @ApiOperation(value = "新增土地/地块", notes = "小程序新增土地地块")
-    public R weChatAddSave(DbLand dbLand) {
+    public R weChatAddSave(@RequestBody DbLand dbLand) {
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
-        if (dbLand == null){
+        if (dbLand == null) {
             return R.error("添加失败！");
         }
         dbLand.setDbUserId(Long.valueOf(userId));
@@ -188,19 +190,19 @@ public class DbLandController extends BaseController {
      * 根据土地id返回当前的装态
      * */
     @GetMapping("typeNow/{landId}")
-    @ApiOperation(value = " 根据土地id返回当前的装态",notes = " 根据土地id返回当前的装态",httpMethod = "GET")
+    @ApiOperation(value = " 根据土地id返回当前的装态", notes = " 根据土地id返回当前的装态", httpMethod = "GET")
     public R typeNow(@ApiParam(name = "Long", value = "Long格式", required = true) @PathVariable("landId") Long landId) {
         DbLand dbLand = dbLandService.selectDbLandById(landId);
         String equipmentIds = dbLand.getEquipmentIds();
         String[] split = equipmentIds.split(",");
-        String s=null;
-        if (StringUtils.isEmpty(equipmentIds)){
+        String s = null;
+        if (StringUtils.isEmpty(equipmentIds)) {
             return R.data(null);
         }
-        if (split.length==0){
-            s=equipmentIds;
-        }else {
-            s=split[0];
+        if (split.length == 0) {
+            s = equipmentIds;
+        } else {
+            s = split[0];
         }
         DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(Long.valueOf(s));
         String heartbeatText = dbEquipment.getHeartbeatText();
@@ -220,26 +222,26 @@ public class DbLandController extends BaseController {
     public void demo() {
         DbLand dbLand = new DbLand();
         /*
-        * 用户分组
-        * */
-         List<Long> d=  dbLandService.groupByUserId();
+         * 用户分组
+         * */
+        List<Long> d = dbLandService.groupByUserId();
 
         for (Long aLong : d) {
             dbLand.setDbUserId(aLong);
             dbLand.setSiteId(1l);
             List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
 //                添加地块
-            if (dbLands.size()>=6) {
+            if (dbLands.size() >= 6) {
 
-                for (int i = 0; i <=((dbLands.size()/6)) ; i++) {
+                for (int i = 0; i <= ((dbLands.size() / 6)); i++) {
                     DbLand dbLand1 = new DbLand();
                     dbLand1.setSiteId(0l);
-                    dbLand1.setNickName("地块"+(i+1));
+                    dbLand1.setNickName("地块" + (i + 1));
                     dbLand1.setDbUserId(aLong);
                     int i1 = dbLandService.insertDbLand(dbLand1);
-                    separatedList(dbLands,i,dbLand1.getLandId());
+                    separatedList(dbLands, i, dbLand1.getLandId());
                 }
-            }else {
+            } else {
                 DbLand dbLand1 = new DbLand();
                 dbLand1.setSiteId(0l);
                 dbLand1.setNickName("地块1");
@@ -255,9 +257,9 @@ public class DbLandController extends BaseController {
         }
     }
 
-    private void separatedList(List<DbLand> dbLands, int i,Long landId) {
-        if (dbLands.size()<=i*6){
-            for (int i1 = i*6; i1 <i*6 ; i1++) {
+    private void separatedList(List<DbLand> dbLands, int i, Long landId) {
+        if (dbLands.size() <= i * 6) {
+            for (int i1 = i * 6; i1 < i * 6; i1++) {
                 DbLand dbLand = dbLands.get(i1);
                 dbLand.setSiteId(landId);
                 int i2 = dbLandService.updateDbLand(dbLand);
