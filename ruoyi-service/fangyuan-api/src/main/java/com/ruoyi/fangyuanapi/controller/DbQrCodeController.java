@@ -133,7 +133,6 @@ public class DbQrCodeController extends BaseController {
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
         R r = sendSmsClient.checkCode(phone, code);
         code = r.get("code")+"";
-        code = "200";
         if ("200".equals(code)){
             /*更改管理员id*/
             DbQrCode dbQrCode = dbQrCodeService.selectDbQrCodeById(dbQrCodeId);

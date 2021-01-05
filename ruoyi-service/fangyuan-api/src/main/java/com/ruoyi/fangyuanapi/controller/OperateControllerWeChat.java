@@ -180,19 +180,19 @@ public class OperateControllerWeChat extends BaseController {
                     operateWeChatVo.setIsUnusual(3);
                     log.info(dbEquipment.getEquipmentId() + "已经过期");
                     operateWeChatVo.setUnusualText(dbLand.getNickName() + "下的" + dbEquipment.getEquipmentName() + "已经过期");
-                    break;
+                    continue;
                 } else if (dbEquipment.getIsPause() == 1) {
                     //                故障
                     operateWeChatVo.setIsUnusual(1);
                     operateWeChatVo.setUnusualText(dbLand.getNickName() + "下的" + dbEquipment.getEquipmentName() + "发生故障");
                     log.info(dbEquipment.getEquipmentId() + "发生故障");
-                    break;
+                    continue;
                 } else if (dbEquipment.getIsOnline() == 1) {
                     //                切换手动
                     operateWeChatVo.setIsUnusual(2);
                     operateWeChatVo.setUnusualText(dbLand.getNickName() + "下的" + dbEquipment.getEquipmentName() + "已经切换手动");
                     log.info(dbEquipment.getEquipmentId() + "已经切换手动");
-                    break;
+                    continue;
                 } else {
                     operateWeChatVo.setIsUnusual(0);
                 }
