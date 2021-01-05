@@ -138,6 +138,8 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
             String id = map.get("id") + "";
             DbQrCodeVo dbQrCodeVo = new DbQrCodeVo();
             DbQrCode dbQrCode = dbQrCodeMapper.selectDbQrCodeById(Long.valueOf(qrCodeId));
+
+
             dbQrCodeVo.setDbQrCode(dbQrCode);
             if (dbQrCode.getAdminUserId()!=null){
             dbQrCodeVo.setFirstBind(dbQrCode.getAdminUserId().equals(id) ? true : false);
@@ -168,6 +170,7 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
     @Override
     @Transactional
     public boolean banDingEquipment(Long dbLandId, Long dbEquipmentId, Long userId, String handleText) {
+
         DbLand dbLand = dbLandMapper.selectDbLandById(dbLandId);
         String ids = dbLand.getEquipmentIds();
         DbEquipment equipment = new DbEquipment();

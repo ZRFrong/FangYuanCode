@@ -66,7 +66,7 @@ public class DbLandController extends BaseController {
         dbLand.setDbUserId(Long.valueOf(userId));
         dbLand.setSiteId(0L);
         startPage();
-        return result(dbLandService.selectDbLandList(dbLand));
+        return result(dbLandService.selectDbLandNoSiteList(dbLand));
     }
 
 

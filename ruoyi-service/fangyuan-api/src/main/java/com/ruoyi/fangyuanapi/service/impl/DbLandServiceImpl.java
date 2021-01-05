@@ -135,16 +135,16 @@ public class DbLandServiceImpl implements IDbLandService
             dbLands.add(checkLand(dbLand,1));
         }
         Integer count = dbLandMapper.selectDbLandCountByUserId(dbLand.getDbUserId());
-        if (dbLands.size() == 6 && count == 54){
+        if (dbLands.size() == 9 && count == 54){
             return R.error("土地容量已经达到上限！");
         }
         Integer flag =  dbLands.size() == 0 ? 1 :dbLands.size();
-        if (count / flag == 9){
+        if (count / flag == 6){
             dbLands.add(checkLand(dbLand,dbLands.size()+1));
         }
         for (DbLand d : dbLands) {
             List<DbLand> landList = dbLandMapper.selectDbLandByUserId(d.getDbUserId(), d.getLandId());
-            if (landList == null || landList.size()<9){
+            if (landList == null || landList.size()<6){
                 dbLand.setSiteId(d.getLandId());
                 int j = dbLandMapper.insertDbLand(dbLand);
                 return j>0?R.data(dbLand.getLandId()): R.error();
@@ -177,7 +177,7 @@ public class DbLandServiceImpl implements IDbLandService
 
     private DbLand checkLand(DbLand land,Integer num){
         DbLand dbLand = new DbLand();
-        dbLand.setProductName(DbLandUtils.getLnadName(num));
+        dbLand.setNickName(DbLandUtils.getLnadName(num));
         dbLand.setSiteId(0L);
         dbLand.setDbUserId(land.getDbUserId());
         int i = dbLandMapper.insertDbLand(dbLand);
