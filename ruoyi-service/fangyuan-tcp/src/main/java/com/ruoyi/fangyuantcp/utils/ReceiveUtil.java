@@ -29,7 +29,7 @@ import java.util.*;
 public class ReceiveUtil {
     private IDbTcpClientService tcpClientService = SpringUtils.getBean(IDbTcpClientService.class);
     private IDbEquipmentService iDbEquipmentService = SpringUtils.getBean(IDbEquipmentService.class);
-    private static IDbTcpTypeService tcpTypeService = SpringUtils.getBean(IDbTcpTypeService.class);
+    private  IDbTcpTypeService tcpTypeService = SpringUtils.getBean(IDbTcpTypeService.class);
 
     /*
      * 心跳添加或者更改状态处理
@@ -40,7 +40,15 @@ public class ReceiveUtil {
         NettyServer.map.put(dbTcpClient.getHeartName(), ctx);
         if (i == 1) {
 //            发送心跳查询指令
-            SendCodeUtils.querystate03Ctx(ctx);
+            String text = "01" + "," + "03," + TcpOrderTextConf.stateSave;
+            SendCodeUtils.querystate03Ctx(ctx,text);
+            //            发送心跳查询指令
+            String text3 = "01" + "," + "01," + TcpOrderTextConf.SinceOrhandTongFeng;
+            SendCodeUtils.querystate03Ctx(ctx,text3);
+
+            String text2 = "01" + "," + "03," + TcpOrderTextConf.SinceOrhandTongFengType;
+            SendCodeUtils.querystate03Ctx(ctx,text2);
+
         }
 
 
@@ -225,6 +233,10 @@ public class ReceiveUtil {
     private RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
 
 
+    public static void main(String[] args) {
+        String temp = getTemp("0000");
+        System.out.println(temp);
+    }
     /*
      * 操作响应
      * */
@@ -282,18 +294,11 @@ public class ReceiveUtil {
     }
 
 
-    public static void main(String[] args) {
-        AutoVo autoVo = new AutoVo();
-        autoVo.setAutoDown(11.5);
-        autoVo.setAutoUp(12.0);
-
-        System.out.println(autoVo);
-    }
 
     /*
      *传感器状态接收处理
      * */
-    public static void stateRead(String type) {
+    public  void stateRead(String type) {
         /*
             状态码 01 03   0A代码后边有10位
          *01 03 0A 00 FD 01 09 01 06 00 01 00 C1 39 6F
@@ -346,6 +351,22 @@ public class ReceiveUtil {
 
 
     }
+
+    public void returnautocontrolType(ChannelHandlerContext ctx, String string) {
+        DbTcpType dbTcpType = new DbTcpType();
+        List<String> arr = getCharToArr(string);
+        String getname = getname(ctx);
+        dbTcpType.setHeartName(getname + "_" + arr.get(0));
+        List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType);
+        DbTcpType dbTcpType1 = list.get(0);
+        dbTcpType1.setAutocontrolType(getTemp(arr.get(3) + arr.get(4)));
+        dbTcpType1.setAutocontrolTypeEnd(getTemp(arr.get(5) + arr.get(6)));
+        int i = tcpTypeService.updateDbTcpType(dbTcpType1);
+
+
+    }
+
+
 }
 
 

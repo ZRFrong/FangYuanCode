@@ -73,9 +73,9 @@ public interface IDbTcpTypeService {
 
     void timingType();
 
-    int timingTongFengHand();
+    void timingTongFengHand();
 
-    int timingTongFengType();
+    void timingTongFengType();
 
 
 

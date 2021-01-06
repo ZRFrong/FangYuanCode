@@ -64,4 +64,9 @@ public interface RemoteTcpService {
     @GetMapping(value="client/listOnly")
     List<DbTcpClient> tcpClients();
 
+    @GetMapping("type/timingTongFengHand")
+    R timingTongFengHand();
+
+    @GetMapping("type/saveTongFengType")
+    R saveTongFengType();
 }

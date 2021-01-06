@@ -72,8 +72,8 @@ public class SendCodeUtils {
     /*
      * 状态查询指令发送03
      * */
-    public static int querystate03Ctx(ChannelHandlerContext ctx) {
-        String text = "01" + "," + "03," + TcpOrderTextConf.stateSave;
+    public static int querystate03Ctx(ChannelHandlerContext ctx,String text) {
+
         try {
 //        text处理
             ArrayList<String> strings1 = new ArrayList<>();
@@ -107,6 +107,7 @@ public class SendCodeUtils {
             return 0;
         }
     }
+
 
     /*
      *状态操作指令发送01
@@ -168,6 +169,11 @@ public class SendCodeUtils {
 
     }
 
+    public static int timingTongFengHand(List<DbOperationVo> list) {
+        list.forEach(ite -> querystate01(ite));
+        return 1;
+    }
+
 
     /*
      * 手动自动状态查询
@@ -187,10 +193,10 @@ public class SendCodeUtils {
     /*
      *通风手自状态查询
      * */
-    public int sinceOrHandTongFeng(DbEquipment equipment) {
+    public int sinceOrHandTongFeng(String equipment) {
         DbOperationVo dbOperationVo = new DbOperationVo();
-        dbOperationVo.setHeartName(equipment.getHeartbeatText());
-        dbOperationVo.setFacility(equipment.getEquipmentNoString());
+        dbOperationVo.setHeartName(equipment.split("_")[0]);
+        dbOperationVo.setFacility(equipment.split("_")[1]);
         dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFeng);
         dbOperationVo.setOperationName("查询自动通风是否开启");
         dbOperationVo.setIsTrue("1");
@@ -204,17 +210,19 @@ public class SendCodeUtils {
     /*
      *通风手自  开启关闭温度状态查询
      * */
-    public int timingTongFengType(DbEquipment equipment) {
+    public int timingTongFengType(String equipment) {
         DbOperationVo dbOperationVo = new DbOperationVo();
-        dbOperationVo.setHeartName(equipment.getHeartbeatText());
-        dbOperationVo.setFacility(equipment.getEquipmentNoString());
+        dbOperationVo.setHeartName(equipment.split("_")[0]);
+        dbOperationVo.setFacility(equipment.split("_")[1]);
         dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFengType);
         dbOperationVo.setOperationName("查询当前自动通风开始和关闭的温度");
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
-        int querystate = querystate01(dbOperationVo);
+        int querystate = querystate03(dbOperationVo);
         return querystate;
     }
+
+
 
     /*
      *通风手自  装态更改

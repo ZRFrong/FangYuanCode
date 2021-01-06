@@ -78,7 +78,7 @@
             <if test="co2 != null  and co2 != ''">co2 = #{co2},</if>
             <if test="idAuto != null ">id_auto = #{idAuto},</if>
             <if test="autocontrolType != null  and autocontrolType != ''">autocontrol_type = #{autocontrolType},</if>
-            <if test="autocontrolTypeEnd != null  and autocontrolTypeEnd != ''">autocontrol_type = #{autocontrolTypeEnd},</if>
+            <if test="autocontrolTypeEnd != null  and autocontrolTypeEnd != ''">autocontrol_type_end = #{autocontrolTypeEnd},</if>
             <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="temperatureAir != null  and temperatureAir != ''">temperature_air = #{temperatureAir},</if>
             <if test="humidityAir != null  and humidityAir != ''">humidity_air = #{humidityAir},</if>

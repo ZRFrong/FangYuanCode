@@ -18,7 +18,8 @@ public class TcpOrderTextConf {
     /*
      * 查询当前自动通风开始和关闭的温度
      * */
-    public static final String SinceOrhandTongFengType = "01,244,00,01";
+    public static final String SinceOrhandTongFengType = "00,200,00,02";
+
 
 
     /*

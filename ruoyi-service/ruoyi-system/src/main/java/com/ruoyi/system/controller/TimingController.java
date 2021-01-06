@@ -41,7 +41,23 @@ public class TimingController {
         return remoteTcpService.startSaveTiming();
     }
 
+    /*
+     * 状态留跟定时调用
+     * */
+    @GetMapping("timingTongFengHand")
+    public R timingTongFengHand() {
 
+        return remoteTcpService.timingTongFengHand();
+    }
+
+    /*
+     * 状态留跟定时调用
+     * */
+    @GetMapping("saveTongFengType")
+    public R saveTongFengType() {
+
+        return remoteTcpService.saveTongFengType();
+    }
 
 
     /*
