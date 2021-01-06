@@ -1,14 +1,8 @@
 package com.ruoyi.system.controller;
 
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.sms.ResultEnum;
-import com.ruoyi.system.config.ApkUploadConfig;
 import com.ruoyi.system.domain.DbAppUpdate;
 import com.ruoyi.system.domain.SysOss;
-import com.ruoyi.system.feign.RemoteOssService;
-import com.ruoyi.system.oss.CloudStorageService;
-import com.ruoyi.system.oss.OSSFactory;
 import com.ruoyi.system.service.ISysOssService;
 import io.swagger.annotations.*;
 import net.dongliu.apk.parser.ApkFile;
@@ -28,9 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
-import java.util.List;
 
 /**
  * app版本更新 提供者
@@ -177,27 +169,4 @@ public class DbAppVersionController extends BaseController
         }
         return R.error();
 	}
-
-
-	private SysOss getSysOss(MultipartFile file){
-        String fileName = file.getOriginalFilename();
-        String suffix = fileName.substring(fileName.lastIndexOf("."));
-        CloudStorageService storage = OSSFactory.build();
-        String url = null;
-        try {
-            url = storage.uploadSuffix(file.getBytes(), suffix);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // 保存文件信息
-        SysOss ossEntity = new SysOss();
-        ossEntity.setUrl(url);
-        ossEntity.setFileSuffix(suffix);
-        ossEntity.setCreateBy(ServletUtils.getRequest().getHeader(Constants.CURRENT_USERNAME));
-        ossEntity.setFileName(fileName);
-        ossEntity.setCreateTime(new Date());
-        ossEntity.setService(storage.getService());
-        int i = sysOssService.insertSysOss(ossEntity);
-        return i> 0 ? ossEntity : null;
-    }
 }
