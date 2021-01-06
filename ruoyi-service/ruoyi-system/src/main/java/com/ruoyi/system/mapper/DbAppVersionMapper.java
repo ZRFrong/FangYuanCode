@@ -58,4 +58,6 @@ public interface DbAppVersionMapper
      * @return 结果
      */
     public int deleteDbAppVersionByIds(String[] ids);
+
+    DbAppVersion selectDbAppVersionByAppVersion(String apkVersion);
 }

@@ -118,59 +118,59 @@ public class SysOssController extends BaseController
     {
         return toAjax(sysOssService.updateSysOss(sysOss));
     }
-
-    /**
-     * 修改保存文件上传
-     * @throws IOException
-     */
-    @PostMapping("upload")
-   // @HasPermissions("sys:oss:add")
-    public R editSave(@RequestParam("file") MultipartFile file) throws IOException
-    {
-        if (file.isEmpty())
-        {
-            throw new OssException("上传文件不能为空");
-        }
-        // 上传文件
-        String fileName = file.getOriginalFilename();
-        String suffix = fileName.substring(fileName.lastIndexOf("."));
-        CloudStorageService storage = OSSFactory.build();
-        String url = storage.uploadSuffix(file.getBytes(), suffix);
-        // 保存文件信息
-        SysOss ossEntity = new SysOss();
-        ossEntity.setUrl(url);
-        ossEntity.setFileSuffix(suffix);
-        ossEntity.setCreateBy(getLoginName());
-        ossEntity.setFileName(fileName);
-        ossEntity.setCreateTime(new Date());
-        ossEntity.setService(storage.getService());
-        int i = sysOssService.insertSysOss(ossEntity);
-        if (i > 0) {
-            return  R.ok(url);
-        } else {
-            return  R.error();
-        }
-    }
 //
 //    /**
 //     * 修改保存文件上传
 //     * @throws IOException
 //     */
 //    @PostMapping("upload")
-//    // @HasPermissions("sys:oss:add")
+//   // @HasPermissions("sys:oss:add")
 //    public R editSave(@RequestParam("file") MultipartFile file) throws IOException
 //    {
 //        if (file.isEmpty())
 //        {
 //            throw new OssException("上传文件不能为空");
 //        }
-//        SysOss sysOss =  sysOssService.insertFile(file,null);
-//        if (sysOss != null) {
-//            return  R.ok(sysOss.getUrl());
+//        // 上传文件
+//        String fileName = file.getOriginalFilename();
+//        String suffix = fileName.substring(fileName.lastIndexOf("."));
+//        CloudStorageService storage = OSSFactory.build();
+//        String url = storage.uploadSuffix(file.getBytes(), suffix);
+//        // 保存文件信息
+//        SysOss ossEntity = new SysOss();
+//        ossEntity.setUrl(url);
+//        ossEntity.setFileSuffix(suffix);
+//        ossEntity.setCreateBy(getLoginName());
+//        ossEntity.setFileName(fileName);
+//        ossEntity.setCreateTime(new Date());
+//        ossEntity.setService(storage.getService());
+//        int i = sysOssService.insertSysOss(ossEntity);
+//        if (i > 0) {
+//            return  R.ok(url);
 //        } else {
 //            return  R.error();
 //        }
 //    }
+
+    /**
+     * 修改保存文件上传
+     * @throws IOException
+     */
+    @PostMapping("upload")
+    // @HasPermissions("sys:oss:add")
+    public R editSave(@RequestParam("file") MultipartFile file) throws IOException
+    {
+        if (file.isEmpty())
+        {
+            throw new OssException("上传文件不能为空");
+        }
+        SysOss sysOss =  sysOssService.insertFile(file,null);
+        if (sysOss != null) {
+            return  R.ok(sysOss.getUrl());
+        } else {
+            return  R.error();
+        }
+    }
 
 
     /**

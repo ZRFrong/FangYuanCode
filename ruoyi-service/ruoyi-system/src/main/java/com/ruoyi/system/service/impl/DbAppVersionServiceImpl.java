@@ -92,4 +92,9 @@ public class DbAppVersionServiceImpl implements IDbAppVersionService
     {
         return dbAppVersionMapper.deleteDbAppVersionById(id);
     }
+
+    @Override
+    public DbAppVersion selectDbAppVersionByAppVersion(String apkVersion) {
+        return dbAppVersionMapper.selectDbAppVersionByAppVersion(apkVersion);
+    }
 }

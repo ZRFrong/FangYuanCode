@@ -109,7 +109,7 @@ public class SysOssServiceImpl implements ISysOssService
 
 
 	@Override
-	public SysOss insertFile(MultipartFile file,String name) {
+	public SysOss insertFile(MultipartFile file,String createBy) {
 		// 上传文件
 		String fileName = file.getOriginalFilename();
 		String suffix = fileName.substring(fileName.lastIndexOf("."));
@@ -128,7 +128,13 @@ public class SysOssServiceImpl implements ISysOssService
 		ossEntity.setFileName(fileName);
 		ossEntity.setCreateTime(new Date());
 		ossEntity.setService(storage.getService());
-        int i = sysOssMapper.insertSelective(ossEntity);
+		if (com.ruoyi.common.utils.StringUtils.isEmpty(createBy)){
+            ossEntity.setCreateBy("admin");
+        }
+        ossEntity.setCreateBy(createBy);
+        System.out.println(ossEntity);
+        //int i = sysOssMapper.insertSelective(ossEntity);
+        int i = sysOssMapper.insert(ossEntity);
         return i > 0 ? ossEntity : null;
 	}
 

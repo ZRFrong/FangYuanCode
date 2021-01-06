@@ -58,4 +58,6 @@ public interface IDbAppVersionService
      * @return 结果
      */
     public int deleteDbAppVersionById(Long id);
+
+    DbAppVersion selectDbAppVersionByAppVersion(String apkVersion);
 }

@@ -118,7 +118,11 @@ public enum ResultEnum {
     /**
      *
      */
-    REFRESH_TOKEN_LOSE(401,"")
+    REFRESH_TOKEN_LOSE(401,""),
+    /**
+     *
+     */
+    APK_EXIST(430,"改版本的APK已存在")
     ;
     /**
      * 返回状态码

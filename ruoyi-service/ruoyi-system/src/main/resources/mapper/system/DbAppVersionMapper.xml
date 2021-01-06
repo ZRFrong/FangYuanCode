@@ -29,7 +29,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectDbAppVersionVo"/>
         where id = #{id}
     </select>
-        
+    <select id="selectDbAppVersionByAppVersion" resultMap="DbAppVersionResult">
+        select * from db_app_version where app_version = #{apkVersion} limit 1
+    </select>
+
     <insert id="insertDbAppVersion" parameterType="DbAppVersion" useGeneratedKeys="true" keyProperty="id">
         insert into db_app_version
         <trim prefix="(" suffix=")" suffixOverrides=",">

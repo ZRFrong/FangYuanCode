@@ -2,6 +2,7 @@ package com.ruoyi.system.controller;
 
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.ServletUtils;
+import com.ruoyi.common.utils.sms.ResultEnum;
 import com.ruoyi.system.config.ApkUploadConfig;
 import com.ruoyi.system.domain.DbAppUpdate;
 import com.ruoyi.system.domain.SysOss;
@@ -9,14 +10,13 @@ import com.ruoyi.system.feign.RemoteOssService;
 import com.ruoyi.system.oss.CloudStorageService;
 import com.ruoyi.system.oss.OSSFactory;
 import com.ruoyi.system.service.ISysOssService;
+import io.swagger.annotations.*;
 import net.dongliu.apk.parser.ApkFile;
 import net.dongliu.apk.parser.bean.ApkMeta;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -46,9 +47,8 @@ public class DbAppVersionController extends BaseController
 	@Autowired
 	private IDbAppVersionService dbAppVersionService;
 
-	@Autowired
-	private ApkUploadConfig apkUploadConfig;
-
+    @Autowired
+    private ISysOssService sysOssService;
 
 
 	/**
@@ -133,35 +133,42 @@ public class DbAppVersionController extends BaseController
 		return R.data(dbAppUpdate);
 	}
 
-    @Autowired
-    private RemoteOssService ossService;
 
-	@Autowired SysOssController ossController;
 	@PostMapping("apkUpload")
-	public R apkUpload(@RequestPart("file")MultipartFile file, @RequestParam(name = "updateUserName") String updateUserName,@RequestParam(name = "isConstraint") Integer isConstraint, @RequestParam(name = "updateState")String updateState){
+    @ApiOperation(value = "上传APK",notes = "上传APK，同一版本号禁止重复上传！",httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "file",value = "APK文件：",required = true),
+            @ApiImplicitParam(name = "updateUserName",value = "版本更新人名字：",required = true),
+            @ApiImplicitParam(name = "isConstraint",value = "是否强制更新：0:否 1:是",required = true),
+            @ApiImplicitParam(name = "updateState",value = "版本更新特性说明!",required = true),
+    })
+	public R apkUpload(@RequestPart("file")MultipartFile file, @RequestParam(name = "updateUserName") String updateUserName,@RequestParam(name = "isConstraint") Integer isConstraint, @RequestParam(name = "updateState")String updateState) {
 		if (file.isEmpty()){
 			return R.error();
 		}
-		String fileName = System.currentTimeMillis()+file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4, file.getOriginalFilename().length());
-		String path = apkUploadConfig.getPath();
 		String apkVersion ;
         try {
+            File fileTmp = new File(file.getOriginalFilename());
+            FileUtils.copyInputStreamToFile(file.getInputStream(),fileTmp);
             DbAppVersion version = new DbAppVersion();
-            file.transferTo(new File(path,fileName));
-            ApkFile apkFile = new ApkFile(path+fileName);
+            ApkFile apkFile = new ApkFile(fileTmp);
             ApkMeta apkMeta = apkFile.getApkMeta();
             apkVersion = apkMeta.getVersionCode()+"";
+            DbAppVersion dbAppVersion = dbAppVersionService.selectDbAppVersionByAppVersion(apkVersion);
+            if (dbAppVersion != null){
+                return R.error(ResultEnum.APK_EXIST.getCode(),ResultEnum.APK_EXIST.getMessage());
+            }
             version.setAppVersion(apkVersion);
             version.setUpdateState(updateState);
             version.setIsConstraint(isConstraint);
             version.setUpdateBy(updateUserName);
             version.setUpdateTime(new Date());
-            R r = ossService.editSave(file);
-            Object o = r.get("msg");
-            if (o != null){
-                version.setDownloadUrl(o+"");
+            SysOss sysOss = sysOssService.insertFile(file, updateUserName);
+            String url = sysOss.getUrl();
+            if (url != null){
+                version.setDownloadUrl(url+"");
                 int i = dbAppVersionService.insertDbAppVersion(version);
-                return i>0?R.ok():r.error();
+                return i>0?R.ok():R.error();
             }else {
                 return R.error("上传失败！");
             }
@@ -171,8 +178,6 @@ public class DbAppVersionController extends BaseController
         return R.error();
 	}
 
-	@Autowired
-    private ISysOssService sysOssService;
 
 	private SysOss getSysOss(MultipartFile file){
         String fileName = file.getOriginalFilename();
