@@ -207,7 +207,7 @@ public class DbUserController extends BaseController {
                     redisUtils.delete(RedisKeyConf.APP_ACCESS_TOKEN_.name() + dbUser.getId());
                 }
                 //登录成功
-                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 365*3),1);
+                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + 1000L*60L*60L*24L*365L*3L,1);
                 /* 返回token 并且记录 */
                 redisUtils.set(RedisKeyConf.APP_ACCESS_TOKEN_.name() + dbUser.getId(), token,60 * 60 * 24 * 365*3);
                 return R.data(token);
@@ -223,7 +223,7 @@ public class DbUserController extends BaseController {
                 if (StringUtils.isNotEmpty(token)){
                     redisUtils.delete(RedisKeyConf.APP_ACCESS_TOKEN_.name() + dbUser.getId());
                 }
-                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(),  System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 365*3),1);
+                token = getToken(dbUser.getId(), tokenConf.getAccessTokenKey(),  System.currentTimeMillis() + 1000L*60L*60L*24L*365L*3L,1);
                 redisUtils.set(RedisKeyConf.APP_ACCESS_TOKEN_.name() + dbUser.getId(),token,60 * 60 * 24 * 365*3);
                 return R.data(token);
             } else {
@@ -352,7 +352,7 @@ public class DbUserController extends BaseController {
                     dbUser.setNickname(nickname);
                 }
                 dbUserService.updateDbUser(dbUser);
-                return R.data(getToken(dbUser.getId(), tokenConf.getAccessTokenKey(),System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000),0));
+                return R.data(getToken(dbUser.getId(), tokenConf.getAccessTokenKey(),System.currentTimeMillis() + 1000L*60L*60L*24L*365L*3L,0));
             }
             return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
         }else {
@@ -392,7 +392,7 @@ public class DbUserController extends BaseController {
             if (StringUtils.isNotEmpty(openid)){
                 DbUser user = dbUserService.selectDbUserByOpenId(openid);
                 if (user != null){
-                    stringMap.put("token",getToken(user.getId(), tokenConf.getAccessTokenKey(),System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 1000),0));
+                    stringMap.put("token",getToken(user.getId(), tokenConf.getAccessTokenKey(),System.currentTimeMillis() + 1000L*60L*60L*24L*365L*3L,0));
                     return  R.data(stringMap) ;
                 }
                 stringMap.put("openId",openid);
