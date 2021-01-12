@@ -26,7 +26,6 @@ public class TaskTongFeng {
                 try {
                      dbTcpTypeService.timingTongFengType();
 
-                     Thread.sleep(1000);
                      dbTcpTypeService.timingTongFengHand();
 
                     log.info("通风定时查询执行===时间："+new Date());

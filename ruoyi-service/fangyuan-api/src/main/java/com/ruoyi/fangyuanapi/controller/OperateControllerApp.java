@@ -155,7 +155,7 @@ public class OperateControllerApp extends BaseController {
         DbOperationVo dbOperationVo = new DbOperationVo();
 //        心跳名称
         dbOperationVo.setHeartName(dbEquipment.getHeartbeatText());
-        //                        操作名称
+//                        操作名称
         dbOperationVo.setOperationName(OperationLogUtils.toOperationText(type, handleName));
 //        设备号
         dbOperationVo.setFacility(dbEquipment.getEquipmentNoString());

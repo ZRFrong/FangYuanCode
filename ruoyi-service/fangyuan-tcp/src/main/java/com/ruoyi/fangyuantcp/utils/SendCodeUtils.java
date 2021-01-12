@@ -113,7 +113,7 @@ public class SendCodeUtils {
      *状态操作指令发送01
      * */
     public static int querystate01(DbOperationVo tcpOrder) {
-        String text = tcpOrder.getFacility() + "," + "01," + tcpOrder.getOperationText();
+        String text = tcpOrder.getFacility() + "," +"01" + tcpOrder.getOperationText();
         return operateCode(text, tcpOrder);
     }
 
@@ -247,7 +247,7 @@ public class SendCodeUtils {
         DbOperationVo dbOperationVo = new DbOperationVo();
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
         dbOperationVo.setFacility(equipment.getEquipmentNoString());
-        dbOperationVo.setOperationText(i == 0 ? TcpOrderTextConf.operateTongFengType + "," + i2 : TcpOrderTextConf.operateTongFengOverType + "," + i2);
+        dbOperationVo.setOperationText(i == 0 ? TcpOrderTextConf.operateTongFengType + "," + i2 : TcpOrderTextConf.operateTongFengOverType + "," +"00,"+ i2);
         dbOperationVo.setOperationName(i == 0 ? "更改开启自动通风温度为" + i2 : "更改关闭自动通风温度为" + i2);
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());

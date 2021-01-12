@@ -12,7 +12,7 @@ public class TcpOrderTextConf {
     /*
      * 查询自动通风是否开启
      * */
-    public static final String SinceOrhandTongFeng = "01,244,00,01";
+    public static final String SinceOrhandTongFeng = "01,500,00,01";
 
 
     /*
@@ -25,21 +25,21 @@ public class TcpOrderTextConf {
     /*
      * 更改自动手动通风操作 开
      * */
-    public static final String operateTongFeng = "01,244,255,00";
+    public static final String operateTongFeng = "01,500,255,00";
 
 
     /*更改自动手动通风操作 关*/
-    public static String operateTongFengOver = "01,244,00,00";
+    public static String operateTongFengOver = "01,500,00,00";
 
 
     /*
      * 更改自动手动通风温度操作 开
      * */
-    public static final String operateTongFengType = "00,76";
+    public static final String operateTongFengType = "00,200";
 
 
     /*更改自动手动通风温度操作 关*/
-    public static String operateTongFengOverType = "00,77";
+    public static String operateTongFengOverType = "00,201";
 
 
 

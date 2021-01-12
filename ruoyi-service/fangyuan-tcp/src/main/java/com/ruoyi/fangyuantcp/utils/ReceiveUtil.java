@@ -43,7 +43,7 @@ public class ReceiveUtil {
             String text = "01" + "," + "03," + TcpOrderTextConf.stateSave;
             SendCodeUtils.querystate03Ctx(ctx,text);
             //            发送心跳查询指令
-            String text3 = "01" + "," + "01," + TcpOrderTextConf.SinceOrhandTongFeng;
+            String text3 = "01" + "," +  TcpOrderTextConf.SinceOrhandTongFeng;
             SendCodeUtils.querystate03Ctx(ctx,text3);
 
             String text2 = "01" + "," + "03," + TcpOrderTextConf.SinceOrhandTongFengType;
@@ -288,6 +288,7 @@ public class ReceiveUtil {
         dbTcpType.setHeartName(getname + "_" + arr.get(0));
         List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType);
         DbTcpType dbTcpType1 = list.get(0);
+//        01 01 01 00 51 88
         dbTcpType1.setIdAuto(arr.get(3).equals("00") ? 0 : 1);
         int i = tcpTypeService.updateDbTcpType(dbTcpType1);
 
