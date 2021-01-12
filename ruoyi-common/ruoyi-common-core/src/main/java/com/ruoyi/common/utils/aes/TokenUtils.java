@@ -1,14 +1,20 @@
 package com.ruoyi.common.utils.aes;
 import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.utils.DateUtils;
+import lombok.extern.java.Log;
+
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Log
 public class TokenUtils {
 
     private Cipher cipher;
@@ -30,9 +36,11 @@ public class TokenUtils {
             Map<String,Object> map = JSON.parseObject(s, Map.class);
             String time = map.get("expireTime").toString();
             long l = System.currentTimeMillis();
+            System.out.println(time);
             if (l < Long.valueOf(time)){
                 return map;
             }else {
+                log.info("token验证失败: "+map.get("id"));
                 return null;
             }
         }catch (Exception e){
@@ -166,7 +174,13 @@ public class TokenUtils {
 //        String s = decrypt(encrypt, key);
 //        System.out.println(s);
 //        System.out.println(encrypt("54254", "4545215431321543213").length());
-        Map<String, Object> map = TokenUtils.verifyToken("3446DEFDFE916E14E7ACB44CC7D25E703B251849363FB1016660DBD8576394563723496624DE30415EE93ABF403EF10E512B63BF28E5F21CD4E43BBDC5B76FB6", "196B0F14EBA66E10FBA74DBF9E99C22F");
+        System.out.println(System.currentTimeMillis());
+        Map<String, Object> map = TokenUtils.verifyToken("3446DEFDFE916E14E7ACB44CC7D25E70D8F3097727EE8168846B77A512A88719E10E9184DDE0795B8219910CEF356F04E57DDC4411099D4063CF36638D0ADE31", "196B0F14EBA66E10FBA74DBF9E99C22F");
         System.out.println(map);
+        Date date = new Date();
+        date.setTime(1000*60*60*365+System.currentTimeMillis());
+        System.out.println(DateUtils.parseDateToStr("yyyy-MM-dd kk:mm:ss", date));
+        System.out.println(new SimpleDateFormat().format(date));
+        System.out.println(System.currentTimeMillis()+(1000L*60L*60L*365L*3L));
     }
 }

@@ -2,6 +2,7 @@ package com.ruoyi.fangyuanapi.controller;
 
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.sms.ResultEnum;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.feign.RemoteTcpService;
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 土地 提供者
@@ -43,13 +46,38 @@ public class DbLandController extends BaseController {
     @Autowired
     private RemoteTcpService remoteTcpService;
 
+    @PostMapping("sendOperation")
+    @ApiOperation(value = "对土地下的设备批量操作",notes = "批量操作",httpMethod = "POST")
+    public R sendOperation(List<DbOperationVo> dbOperationVos) {
+
+        if (dbOperationVos == null || dbOperationVos.size() <= 0){
+            return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
+        }
+        R r = remoteTcpService.operationList(dbOperationVos);
+        return r;
+    }
+
     /**
      * 查询${tableComment}
      */
     @GetMapping("get/{landId}")
     public DbLand get(@PathVariable("landId") Long landId) {
         return dbLandService.selectDbLandById(landId);
+    }
 
+    /**
+     * 查询 土地下对应所有设备的操作集
+     */
+    @GetMapping("getLandOperation/{landId}")
+    @ApiOperation(value = "土地下对应所有设备的操作集", notes = "查询操作" ,httpMethod = "POST")
+    @ApiImplicitParam(name = "landId",value = "土地Id",required = true)
+    public R getLandOperation(@PathVariable("landId") Long landId) {
+        if (landId < 0) {
+            return null;
+        }
+        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+        List<Map<String, Object>> result = dbLandService.selectLandOperationByLandId(landId);
+        return result == null || result.size() <= 0 ? R.error("该土地下暂未绑定设备！") : R.data(result);
     }
 
     /**
@@ -123,7 +151,7 @@ public class DbLandController extends BaseController {
     @PostMapping("save")
     @ApiOperation(value = "新增土地/地块", notes = "土地/地块id")
     public R addSave(@RequestBody DbLand dbLand, HttpServletRequest request) {
-        if (dbLand == null){
+        if (dbLand == null) {
             return R.error();
         }
         String userId = request.getHeader(Constants.CURRENT_ID);
@@ -153,8 +181,9 @@ public class DbLandController extends BaseController {
      * 修改保存土地
      */
     @PostMapping("update")
-    public R editSave(@RequestBody DbLand dbLand, HttpServletRequest request) {
-        String userId = request.getHeader(Constants.CURRENT_ID);
+    @ApiOperation(value = "修改土地/地块", notes = "修改土地", httpMethod = "POST")
+    public R editSave(@RequestBody DbLand dbLand) {
+        String userId = getRequest().getHeader(Constants.CURRENT_ID);
         dbLand.setDbUserId(Long.valueOf(userId));
         return toAjax(dbLandService.updateDbLand(dbLand));
     }
@@ -260,8 +289,8 @@ public class DbLandController extends BaseController {
                 dbLand.setSiteId(landId);
                 int i2 = dbLandService.updateDbLand(dbLand);
             }
-        }else {
-            for (int i1 = i*6; i1 <dbLands.size() ; i1++) {
+        } else {
+            for (int i1 = i * 6; i1 < dbLands.size(); i1++) {
                 DbLand dbLand = dbLands.get(i1);
                 dbLand.setSiteId(landId);
                 int i2 = dbLandService.updateDbLand(dbLand);

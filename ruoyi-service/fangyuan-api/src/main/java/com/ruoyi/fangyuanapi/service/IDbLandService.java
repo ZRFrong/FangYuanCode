@@ -3,6 +3,8 @@ package com.ruoyi.fangyuanapi.service;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.system.domain.DbLand;
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.common.core.domain.Ztree;
 
 /**
@@ -77,4 +79,7 @@ public interface IDbLandService
     List<DbLand> selectDbLandNoSiteList(DbLand dbLand);
 
     List<DbLand> selectDbLandWeChatList(DbLand dbLand);
+
+    List<Map<String,Object>> selectLandOperationByLandId(Long landId);
+
 }

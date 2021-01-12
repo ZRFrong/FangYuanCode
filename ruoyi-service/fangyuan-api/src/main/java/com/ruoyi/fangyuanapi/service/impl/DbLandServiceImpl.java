@@ -1,12 +1,19 @@
 package com.ruoyi.fangyuanapi.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.domain.Ztree;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.fangyuanapi.mapper.DbEquipmentMapper;
+import com.ruoyi.fangyuanapi.mapper.DbEquipmentTempMapper;
 import com.ruoyi.fangyuanapi.utils.DbLandUtils;
+import com.ruoyi.system.domain.DbEquipment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.mapper.DbLandMapper;
@@ -26,6 +33,9 @@ public class DbLandServiceImpl implements IDbLandService
 {
     @Autowired
     private DbLandMapper dbLandMapper;
+
+    @Autowired
+    private DbEquipmentMapper dbEquipmentMapper;
 
     /**
      * 查询土地
@@ -173,6 +183,28 @@ public class DbLandServiceImpl implements IDbLandService
     @Override
     public List<DbLand> selectDbLandWeChatList(DbLand dbLand) {
         return dbLandMapper.selectDbLandWeChatList(dbLand);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectLandOperationByLandId(Long landId) {
+        DbLand dbLand = dbLandMapper.selectDbLandById(landId);
+        String ids = dbLand.getEquipmentIds();
+        if (StringUtils.isEmpty(ids)){
+            return null;
+        }
+        String[] split = ids.split(",");
+        ArrayList<Map<String, Object>> list = new ArrayList<>();
+        for (String s : split) {
+            DbEquipment equipment = dbEquipmentMapper.selectDbEquipmentById(Long.valueOf(s));
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("equipmentId",equipment.getEquipmentId());
+            map.put("heartbeatText",equipment.getHeartbeatText());
+            map.put("handlerText",JSON.parse(equipment.getHandlerText()));
+            map.put("equipmentName",equipment.getEquipmentName());
+            map.put("equipmentNo",equipment.getEquipmentNo());
+            list.add(map);
+        }
+        return list;
     }
 
     private DbLand checkLand(DbLand land,Integer num){
