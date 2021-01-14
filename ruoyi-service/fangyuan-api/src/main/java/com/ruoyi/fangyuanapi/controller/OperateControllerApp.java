@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.*;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.fangyuanapi.aspect.OperationLog;
 import com.ruoyi.fangyuanapi.aspect.OperationLogType;
 import com.ruoyi.fangyuanapi.aspect.OperationLogUtils;
@@ -91,8 +92,10 @@ public class OperateControllerApp extends BaseController {
             }
         } else {
             String text1=dbLand.getNickName()+text;
-            Arrays.asList(dbLand.getEquipmentIds().split(",")).forEach(
-                    ite -> sendTcp(equipmentService.selectDbEquipmentById(Long.valueOf(ite)), type, handleName,text1));
+            if (StringUtils.isNotEmpty(dbLand.getEquipmentIds())) {
+                Arrays.asList(dbLand.getEquipmentIds().split(",")).forEach(
+                        ite -> sendTcp(equipmentService.selectDbEquipmentById(Long.valueOf(ite)), type, handleName, text1));
+            }
         }
 
 

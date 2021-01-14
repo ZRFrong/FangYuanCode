@@ -342,6 +342,7 @@ public class DbUserController extends BaseController {
             DbUser dbUser= dbUserService.selectDbUserByPhone(user);
             if (dbUser == null ){
                 dbUser = dbUserService.wxRegister(phone,openId,nickname,avatar);
+                return R.ok();
             }
             if (dbUser != null && StringUtils.isEmpty(dbUser.getOpenId())){//修改操作
                 dbUser.setOpenId(openId);
