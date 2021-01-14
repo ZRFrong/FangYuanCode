@@ -113,7 +113,7 @@ public class SendCodeUtils {
      *状态操作指令发送01
      * */
     public static int querystate01(DbOperationVo tcpOrder) {
-        String text = tcpOrder.getFacility() + "," +"01" + tcpOrder.getOperationText();
+        String text = tcpOrder.getFacility() + "," +"01," +"01,"+ tcpOrder.getOperationText();
         return operateCode(text, tcpOrder);
     }
 

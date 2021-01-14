@@ -24,10 +24,11 @@ public class TaskTongFeng {
             @Override
             public void run() {
                 try {
-                     dbTcpTypeService.timingTongFengType();
-
                      dbTcpTypeService.timingTongFengHand();
 
+                     Thread.sleep(100);
+
+                     dbTcpTypeService.timingTongFengType();
                     log.info("通风定时查询执行===时间："+new Date());
                 } catch (Exception e) {
 

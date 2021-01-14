@@ -85,11 +85,11 @@ public class SendCodeListUtils {
                     String query = null;
                     try {
                         query = queryList(dbOperationVos.get(i));
-                        Thread.yield();
                         log.info("发送成功存进去了redis"+query);
                         /*
                          * 建立监听返回的数据
                          * */
+                        Thread.yield();
                         Thread.sleep(1000);
                         HeartbeatRunChildThread(query, dbOperationVos.get(i));
                     } catch (FaultExceptions e) {

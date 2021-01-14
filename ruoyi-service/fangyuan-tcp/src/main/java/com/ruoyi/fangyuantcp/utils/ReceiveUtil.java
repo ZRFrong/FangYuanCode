@@ -40,14 +40,31 @@ public class ReceiveUtil {
         NettyServer.map.put(dbTcpClient.getHeartName(), ctx);
         if (i == 1) {
 //            发送心跳查询指令
-            String text = "01" + "," + "03," + TcpOrderTextConf.stateSave;
-            SendCodeUtils.querystate03Ctx(ctx,text);
-            //            发送心跳查询指令
-            String text3 = "01" + "," +  TcpOrderTextConf.SinceOrhandTongFeng;
-            SendCodeUtils.querystate03Ctx(ctx,text3);
+             new Thread(new Runnable() {
+                 @Override
+                 public void run() {
+                     String text = "01" + "," + "03," + TcpOrderTextConf.stateSave;
+                     SendCodeUtils.querystate03Ctx(ctx,text);
+                     try {
+                         Thread.sleep(100);
+                         //            发送心跳查询指令
+                         String text3 = "01" + "," + "01,"+ TcpOrderTextConf.SinceOrhandTongFeng;
+                         SendCodeUtils.querystate03Ctx(ctx,text3);
+                         Thread.sleep(100);
+                         String text2 = "01" + "," + "03," + TcpOrderTextConf.SinceOrhandTongFengType;
+                         SendCodeUtils.querystate03Ctx(ctx,text2);
+                     } catch (InterruptedException e) {
+                         e.printStackTrace();
+                     }
 
-            String text2 = "01" + "," + "03," + TcpOrderTextConf.SinceOrhandTongFengType;
-            SendCodeUtils.querystate03Ctx(ctx,text2);
+                 }
+             });
+
+
+
+
+
+
 
         }
 

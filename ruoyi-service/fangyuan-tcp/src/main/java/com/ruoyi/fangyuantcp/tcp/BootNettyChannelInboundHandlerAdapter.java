@@ -75,7 +75,7 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
 
             }else if (s.contains("0304")){
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "开分风口温度：" + msg);
-//                更改设备自动手动状态
+//                更改设备自动手动开关温度
                 receiveUtil.returnautocontrolType(ctx, msg.toString());
             }
 
