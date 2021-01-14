@@ -1,5 +1,6 @@
 package com.ruoyi.fangyuanapi.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.sms.ResultEnum;
@@ -8,12 +9,7 @@ import com.ruoyi.system.domain.*;
 import com.ruoyi.system.feign.RemoteTcpService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
@@ -46,9 +42,47 @@ public class DbLandController extends BaseController {
     @Autowired
     private RemoteTcpService remoteTcpService;
 
+    @PostMapping("sendStopOperation")
+    @ApiOperation(value = "批量暂停",notes = "批量对土地下的设备暂停： 粒度为单个操作：1卷帘 2 通风/卷膜 3补光 4浇水 5打药 6 施肥  7 锄草 8滴灌",httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "landId",value = "土地id",required = true),
+            @ApiImplicitParam(name = "type",value = "操作类型",required = true)
+    })
+    public R sendStopOperation(@RequestParam Long landId, @RequestParam String type){
+        DbLand land = dbLandService.selectDbLandById(landId);
+        String ids = land.getEquipmentIds();
+        if (StringUtils.isEmpty(ids)){
+            return R.error("该土地尚未绑定设备！");
+        }
+        String[] split = ids.split(",");
+        ArrayList<DbOperationVo> list = new ArrayList<>();
+        for (String id : split) {
+            DbEquipment equipment = equipmentService.selectDbEquipmentById(Long.valueOf(id));
+            List<OperatePojo> pojos = JSON.parseArray(equipment.getHandlerText(), OperatePojo.class);
+            pojos.forEach(e ->{
+                if (type.equals(e.getCheckCode())){
+                    e.getSpList().forEach(d ->{
+                        if ("start_stop".equals(d.getHandleName()) || "down_stop".equals(d.getHandleName())) {
+                            DbOperationVo vo = new DbOperationVo();
+                            vo.setHeartName(equipment.getHeartbeatText());
+                            vo.setFacility(equipment.getEquipmentNo()+"");
+                            vo.setOperationId(equipment.getEquipmentId()+"");
+                            vo.setOperationName(equipment.getEquipmentName() + " " + e.getCheckName() + " " + d.getHandleName());
+                            vo.setOperationText(d.getHandleCode());
+                            list.add(vo);
+                        }
+                    });
+                }
+            });
+        }
+        R r = remoteTcpService.operationList(list);
+        return r;
+    }
+
     @PostMapping("sendOperation")
     @ApiOperation(value = "对土地下的设备批量操作",notes = "批量操作",httpMethod = "POST")
-    public R sendOperation(List<DbOperationVo> dbOperationVos) {
+    @ApiParam(name = "dbOperationVos", value = "传入json格式", required = true)
+    public R sendOperation(@RequestBody List<DbOperationVo> dbOperationVos) {
 
         if (dbOperationVos == null || dbOperationVos.size() <= 0){
             return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
@@ -219,7 +253,7 @@ public class DbLandController extends BaseController {
     public R typeNow(@ApiParam(name = "Long", value = "Long格式", required = true) @PathVariable("landId") Long landId) {
         DbLand dbLand = dbLandService.selectDbLandById(landId);
         String equipmentIds = dbLand.getEquipmentIds();
-        String[] split = equipmentIds.split(",");
+        String[] split = StringUtils.isEmpty(equipmentIds)? new String[]{} :equipmentIds.split(",");
         String s = null;
         if (StringUtils.isEmpty(equipmentIds)) {
             return R.data(null);
