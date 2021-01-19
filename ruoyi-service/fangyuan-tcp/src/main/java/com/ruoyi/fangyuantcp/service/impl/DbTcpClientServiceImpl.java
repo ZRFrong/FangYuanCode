@@ -1,9 +1,6 @@
 package com.ruoyi.fangyuantcp.service.impl;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -15,16 +12,14 @@ import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.fangyuantcp.utils.SendCodeListUtils;
-import com.ruoyi.system.domain.DbEquipment;
-import com.ruoyi.system.domain.DbOperationVo;
-import com.ruoyi.system.domain.DbTcpOrder;
+import com.ruoyi.fangyuantcp.utils.TcpOrderTextConf;
+import com.ruoyi.system.domain.*;
 import com.ruoyi.fangyuantcp.utils.SendCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
-import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.common.core.text.Convert;
 
@@ -130,6 +125,34 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     }
 
 
+    /*
+    * 远程，本地检测
+    * */
+    @Override
+    public void TaskOnline(DbTcpClient tcpClient) {
+        String heartName = tcpClient.getHeartName();
+       List<String>  integers= dbEquipmentMapper.selectByHeartNameToEqumentNo(heartName);
+
+       if (integers.isEmpty()){
+          List<DbOperationVo> list = new ArrayList<>();
+           for (String integer : integers) {
+               DbOperationVo dbOperationVo = new DbOperationVo();
+                   dbOperationVo.setHeartName(tcpClient.getHeartName());
+                   if (Integer.parseInt(integer)<10){
+
+                   dbOperationVo.setFacility("0"+integer);
+                   }else {
+                       dbOperationVo.setFacility(integer);
+                   }
+                   dbOperationVo.setOperationText(TcpOrderTextConf.TaskOnline);
+                   list.add(dbOperationVo);
+               int i = SendCodeUtils.TaskOnline(list);
+
+           }
+       }
+
+    }
+
     @Override
     public void deleteDbtcpHeartbeatName(String heartbeatName) {
         /*
@@ -146,29 +169,7 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
         dbTcpClientMapper.deleteDbtcpHeartbeatName(heartbeatName);
     }
 
-    /*
-     *在线设备手动  自动查询
-     *
-     * */
-    @Override
-    public int sinceOrHand() {
 
-        DbTcpClient dbTcpClient = new DbTcpClient();
-        dbTcpClient.setIsOnline(0);
-        List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
-        int i = 0;
-        for (DbTcpClient tcpClient : dbTcpClients) {
-            DbEquipment dbEquipment = new DbEquipment();
-            dbEquipment.setHeartbeatText(tcpClient.getHeartName());
-            for (DbEquipment equipment : dbEquipmentMapper.selectDbEquipmentList(dbEquipment)) {
-                int i1 = sendCodeUtils.sinceOrHand(equipment);
-                if (i1 != 0) {
-                    i = 1;
-                }
-            }
-        }
-        return i;
-    }
 
     /*
      *
@@ -211,7 +212,7 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
                 dbTcpClients.get(0).setHeartbeatTime(new Date());
                 dbTcpClients.get(0).setIsOnline(0);
                 int i1 = dbTcpClientMapper.updateDbTcpClient(dbTcpClients.get(0));
-
+                dbTcpTypeService.updateByHeartbeatOpen(dbTcpClient.getHeartName());
             } else {
 //            不存在新建
                 dbTcpClient.setHeartbeatTime(new Date());

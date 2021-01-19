@@ -3,6 +3,8 @@ package com.ruoyi.fangyuantcp.timing;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
+import com.ruoyi.fangyuantcp.utils.SendCodeUtils;
+import com.ruoyi.fangyuantcp.utils.TcpOrderTextConf;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.Date;
@@ -24,9 +26,14 @@ public class TaskTongFeng {
             @Override
             public void run() {
                 try {
+
+//                    String text3 = "01" + "," + "01,"+ TcpOrderTextConf.SinceOrhandTongFeng;
+//                    SendCodeUtils.querystate03Ctx(ctx,text3);
+//                    String text2 = "01" + "," + "03," + TcpOrderTextConf.SinceOrhandTongFengType;
+//                    SendCodeUtils.querystate03Ctx(ctx,text2);
                      dbTcpTypeService.timingTongFengHand();
 
-                     Thread.sleep(100);
+                     Thread.sleep(500);
 
                      dbTcpTypeService.timingTongFengType();
                     log.info("通风定时查询执行===时间："+new Date());

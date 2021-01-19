@@ -148,9 +148,21 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
                 dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFengType);
                 list.add(dbOperationVo);
             }
-            int i = SendCodeUtils.timingTongFengHand(list);
+            int i = SendCodeUtils.timingTongFengTypeList(list);
         }
 
+    }
+
+    @Override
+    public void updateByHeartbeatOpen(String heartName) {
+        heartName="%"+heartName+"%";
+        dbTcpTypeMapper.updateByHeartbeatOpen(heartName);
+    }
+
+    @Override
+    public void updateByHeartbeat(String heartbeatText) {
+        heartbeatText="%"+heartbeatText+"%";
+        dbTcpTypeMapper.updateByHeartbeat(heartbeatText);
     }
 
     @Override
@@ -163,7 +175,8 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
         list.forEach(itm -> {
             Long minuteDiff = DateUtilLong.getMinuteDiff(itm.getUpdateTime(), new Date());
             if (minuteDiff > 10) {
-                dbTcpTypeMapper.deleteDbTcpTypeById(itm.getTcpTypeId());
+                itm.setIsShow(1);
+                dbTcpTypeMapper.updateDbTcpType(itm);
             }
         });
 

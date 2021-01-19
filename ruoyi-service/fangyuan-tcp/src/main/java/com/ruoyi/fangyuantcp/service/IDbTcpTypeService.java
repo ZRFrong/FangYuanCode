@@ -90,4 +90,8 @@ public interface IDbTcpTypeService {
     void deleteByHeartName(String heartbeatText);
 
     void deleteTimingType();
+
+    void updateByHeartbeat(String heartbeatText);
+
+    void updateByHeartbeatOpen(String heartName);
 }

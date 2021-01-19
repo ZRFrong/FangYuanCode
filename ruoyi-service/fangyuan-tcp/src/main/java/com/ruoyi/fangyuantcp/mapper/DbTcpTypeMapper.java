@@ -1,6 +1,8 @@
 package com.ruoyi.fangyuantcp.mapper;
 
 import com.ruoyi.system.domain.DbTcpType;
+import org.apache.ibatis.annotations.Update;
+
 import java.util.List;
 
 /**
@@ -60,4 +62,11 @@ public interface DbTcpTypeMapper
     public int deleteDbTcpTypeByIds(String[] tcpTypeIds);
 
     void deleteByHeartName(String heartbeatText);
+
+
+    @Update("UPDATE  db_tcp_type set is_show =1 where heart_name like #{heartbeatText}  ")
+    void updateByHeartbeat(String heartbeatText);
+
+    @Update("UPDATE  db_tcp_type set is_show =0 where heart_name like #{heartbeatText}  ")
+    void updateByHeartbeatOpen(String heartName);
 }

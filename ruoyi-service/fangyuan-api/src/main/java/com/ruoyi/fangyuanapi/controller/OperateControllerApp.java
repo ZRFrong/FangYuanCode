@@ -61,7 +61,6 @@ public class OperateControllerApp extends BaseController {
             value = "卷帘:1，通风:2，补光:3,浇水:4", required = true) String type, @ApiParam(name = "handleName",
             value = "开始 ：start，开始暂停：start_stop，结束暂停down_stop，结束down", required = true) String handleName, Integer time) {
 
-
         List<String> strings = Arrays.asList(ids.split(","));
         String text = "";
 
@@ -71,9 +70,8 @@ public class OperateControllerApp extends BaseController {
 
 //        int i = OperateSendUtils.operationList(lists);
         R r = remoteTcpService.operationList(lists);
-        lists.clear();
-
-
+        lists=null;
+        lists=new ArrayList<>();
         return r;
     }
 
@@ -112,9 +110,16 @@ public class OperateControllerApp extends BaseController {
 
         for (OperatePojo object : objects) {
             if (type.equals(object.getCheckCode())) {
+               if (object.getSpList().size()==3){
+                    if (handleName.equals("down_stop")){
+                        handleName="start_stop";
+                    }
+                }
                 for (OperatePojo.OperateSp operateSp : object.getSpList()) {
                     String handleName1 = operateSp.getHandleName();
+
                     if (handleName.equals(handleName1)) {
+
                         DbOperationVo dbOperationVo = new DbOperationVo();
 //        心跳名称
                         dbOperationVo.setHeartName(equipment.getHeartbeatText());
@@ -133,6 +138,7 @@ public class OperateControllerApp extends BaseController {
                         lists.add(dbOperationVo);
                     }
                 }
+
             }
         }
 

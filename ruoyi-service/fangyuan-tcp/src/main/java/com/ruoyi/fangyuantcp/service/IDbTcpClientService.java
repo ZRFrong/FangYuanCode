@@ -73,7 +73,8 @@ public interface IDbTcpClientService
 
     R operationList(List<DbOperationVo> dbOperationVo) throws ExecutionException, InterruptedException;
 
-    int sinceOrHand();
 
     void deleteDbtcpHeartbeatName(String heartbeatName);
+
+    void TaskOnline(DbTcpClient tcpClient);
 }

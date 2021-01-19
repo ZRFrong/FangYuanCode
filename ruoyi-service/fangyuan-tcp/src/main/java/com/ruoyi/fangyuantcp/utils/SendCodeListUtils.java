@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.redis.config.RedisKeyConf;
+import com.ruoyi.common.redis.util.RedisLockUtil;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuantcp.abnormal.BusinessExceptionHandle;
@@ -18,10 +19,12 @@ import com.ruoyi.system.feign.RemoteApiService;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import jdk.nashorn.internal.objects.annotations.Where;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import sun.rmi.runtime.Log;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -43,6 +46,7 @@ public class SendCodeListUtils {
     private static Map<String, ChannelHandlerContext> map = NettyServer.map;
 
     private static RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
+//    private static RedisLockUtil redisLockUtil = SpringUtils.getBean(RedisLockUtil.class);
 
 
     public static R queryIoList(Map<String, List<DbOperationVo>> mps) throws ExecutionException, InterruptedException {
@@ -53,8 +57,10 @@ public class SendCodeListUtils {
 
         for (String string : strings) {
             Future<HashMap<String, String>> send = send(mps.get(string));
+            if (send.get()!=null){
             HashMap<String, String> stringStringHashMap = send.get();
             stringStringHashMap1.putAll(stringStringHashMap);
+            }
         }
         executorService.shutdown();
 
@@ -85,7 +91,8 @@ public class SendCodeListUtils {
                     String query = null;
                     try {
                         query = queryList(dbOperationVos.get(i));
-                        log.info("发送成功存进去了redis"+query);
+
+                        log.info( "发送成功存进去了："+  query + "当前的时间毫秒值是："+new Date().getTime());
                         /*
                          * 建立监听返回的数据
                          * */
@@ -153,10 +160,11 @@ public class SendCodeListUtils {
             String tmp = StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 4, '0');
             strings.add(tmp);
         }
+        byte[] data=null;
         try {
             String[] split1 = strings.toArray(new String[strings.size()]);
             String[] bytes = Crc16Util.to_byte(split1);
-            byte[] data = Crc16Util.getData(bytes);
+            data = Crc16Util.getData(bytes);
             ChannelHandlerContext no1_1 = null;
             no1_1 = map.get(address);
             Channel channel = no1_1.channel();
@@ -166,19 +174,22 @@ public class SendCodeListUtils {
 //            抛出异常
             throw new FaultExceptions(tcpOrder.getHeartName(), tcpOrder.getOperationName(), tcpOrder.getFacility());
         }
-            tcpOrder.setCreateTime(new Date());
+        tcpOrder.setCreateTime(new Date());
 //        存储操作信息到redis
-            String operationText = tcpOrder.getOperationText();
-            String facility = tcpOrder.getFacility();
-            String heartName = tcpOrder.getHeartName();
 
-            DbTcpOrder order = getOrder(tcpOrder);
-            String s = RedisKeyConf.HANDLE + ":" + heartName + "_" + facility + "_" + operationText;
-            String s2 = JSONArray.toJSONString(order);
-            redisUtils.set(s, s2);
+        String operationText = tcpOrder.getOperationText();
+        String facility = tcpOrder.getFacility();
+        String heartName = tcpOrder.getHeartName();
+
+        DbTcpOrder order = getOrder(tcpOrder);
+        String str = Crc16Util.byteTo16String(data).toUpperCase();
+        String str2 = str.replaceAll("\\s*", "");
+        String s = RedisKeyConf.HANDLE + ":" + heartName + "_" + facility + "_" + str2;
+        String s2 = JSONArray.toJSONString(order);
+        redisUtils.set(s, s2);
 
 
-            return s;
+        return s;
 
     }
 
@@ -192,24 +203,27 @@ public class SendCodeListUtils {
     }
 
     /*
-    * 暂时成功
-    * */
-    private static void HeartbeatRunChildThread(String text, DbOperationVo dbOperationVo) {
+     * 暂时成功
+     * */
+    private static void HeartbeatRunChildThread(String text, DbOperationVo dbOperationVo) throws InterruptedException {
 
-            System.out.println("正在等待" + "==============================================" + text);
-            String s = redisUtils.get(text);
-            if (s.isEmpty()) {
-                System.out.println("为空没有响应" + "==============================================" + text);
+        String s1 = String.valueOf(Thread.currentThread().getId());
+        try {
+//            redisLockUtil.lock(text,s1,100);
+        } catch (Exception e) {
+            throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
+        }
+        String s = redisUtils.get(text);
+        if (s.isEmpty()) {
+            throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
+        } else {
+            DbTcpOrder dbTcpOrder = JSON.parseObject(s, DbTcpOrder.class);
+            Integer results = dbTcpOrder.getResults();
+            if (results == 0) {
                 throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
-            } else {
-                DbTcpOrder dbTcpOrder = JSON.parseObject(s, DbTcpOrder.class);
-                Integer results = dbTcpOrder.getResults();
-                if (results == 1) {
-                    System.out.println(results);
-                    System.out.println(new Date()+"状态没有改变" + "==============================================" + text);
-                    throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
-                }
             }
+        }
+//        redisLockUtil.unLock(text,s1);
 
     }
 }

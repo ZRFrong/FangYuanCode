@@ -18,6 +18,7 @@ import com.alibaba.fastjson.parser.ParserConfig;
 public class RedisConfig
 {
     /**
+     * redis连接工厂
      * 注入 RedisConnectionFactory
      */
     @Autowired
