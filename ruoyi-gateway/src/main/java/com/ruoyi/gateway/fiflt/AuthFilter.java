@@ -33,6 +33,7 @@ import reactor.core.publisher.Mono;
  */
 @Slf4j
 @Component
+
 public class AuthFilter implements GlobalFilter, Ordered {
     // 排除过滤的 uri 地址
     // swagger排除自行添加
@@ -50,7 +51,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/appLogin","fangyuanapi/wxUser/appRegister","fangyuanapi/dynamic1","fangyuanapi/category","fangyuanapi/wx/v3",
             "/fangyuanapi/order/insertOrder","fangyuanapi/giveLike","fangyuanapi/wxUser/getOpenId","fangyuanapi/wxUser/smallRegister",
             "/fangyuanapi/banner/getBannerList","fangyuanapi/wxUser/appUpdatePassword","/fangyuanapi/qrcode/qrCodeGenerate",
-            "qrCodeGenerate","weather","system/apk/upload"
+            "qrCodeGenerate","weather","system/apk/upload","/fangyuanapi/wxUser/avatarUpload","problem","questions","type"
     );
 
     @Autowired

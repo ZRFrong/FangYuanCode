@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbProblemMapper">
+    
+    <resultMap type="DbProblem" id="DbProblemResult">
+        <result property="id"    column="id"    />
+        <result property="problemText"    column="problem_text"    />
+        <result property="images"    column="images"    />
+        <result property="answerText"    column="answer_text"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="isDel"    column="is_del"    />
+        <result property="problemType"    column="problem_type"    />
+        <result property="problemHot"    column="problem_hot"    />
+    </resultMap>
+
+    <sql id="selectDbProblemVo">
+        select id, problem_text, images, answer_text, create_time, is_del, problem_type, problem_hot from db_problem
+    </sql>
+
+    <select id="selectDbProblemList" parameterType="DbProblem" resultMap="DbProblemResult">
+        <include refid="selectDbProblemVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbProblemById" parameterType="Long" resultMap="DbProblemResult">
+        <include refid="selectDbProblemVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="getProblemListByType" resultType="java.util.Map">
+          select id,problem_text from db_problem
+          where is_del = 0
+          <if test="problemType != null  and problemType != ''">and problem_type_id = #{problemType} </if>
+          order by problem_hot desc limit #{currPage},#{pageSize}
+    </select>
+    <select id="selectDbProblemAnswerTextById" resultType="java.util.Map">
+        select id, problem_text,answer_text from db_problem where id = #{id} limit 1
+    </select>
+
+    <insert id="insertDbProblem" parameterType="DbProblem" useGeneratedKeys="true" keyProperty="id">
+        insert into db_problem
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="problemText != null  and problemText != ''">problem_text,</if>
+            <if test="images != null  and images != ''">images,</if>
+            <if test="answerText != null  and answerText != ''">answer_text,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="isDel != null ">is_del,</if>
+            <if test="problemType != null ">problem_type,</if>
+            <if test="problemHot != null ">problem_hot,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="problemText != null  and problemText != ''">#{problemText},</if>
+            <if test="images != null  and images != ''">#{images},</if>
+            <if test="answerText != null  and answerText != ''">#{answerText},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="isDel != null ">#{isDel},</if>
+            <if test="problemType != null ">#{problemType},</if>
+            <if test="problemHot != null ">#{problemHot},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbProblem" parameterType="DbProblem">
+        update db_problem
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="problemText != null  and problemText != ''">problem_text = #{problemText},</if>
+            <if test="images != null  and images != ''">images = #{images},</if>
+            <if test="answerText != null  and answerText != ''">answer_text = #{answerText},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="isDel != null ">is_del = #{isDel},</if>
+            <if test="problemType != null ">problem_type = #{problemType},</if>
+            <if test="problemHot != null ">problem_hot = #{problemHot},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <update id="updateProblemHot">
+        UPDATE db_problem set problem_hot = problem_hot+1 where id=#{id}
+    </update>
+
+    <delete id="deleteDbProblemById" parameterType="Long">
+        delete from db_problem where id = #{id}
+    </delete>
+
+    <delete id="deleteDbProblemByIds" parameterType="String">
+        delete from db_problem where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

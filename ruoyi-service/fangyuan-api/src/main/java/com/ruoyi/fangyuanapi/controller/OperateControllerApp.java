@@ -5,7 +5,6 @@ package com.ruoyi.fangyuanapi.controller;
  * */
 
 import com.alibaba.fastjson.JSON;
-import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.*;
 import com.ruoyi.common.utils.StringUtils;

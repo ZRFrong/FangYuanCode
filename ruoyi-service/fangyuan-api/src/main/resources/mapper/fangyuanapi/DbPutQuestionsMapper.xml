@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbPutQuestionsMapper">
+    
+    <resultMap type="DbPutQuestions" id="DbPutQuestionsResult">
+        <result property="id"    column="id"    />
+        <result property="phone"    column="phone"    />
+        <result property="questionsText"    column="questions_text"    />
+        <result property="landText"    column="land_text"    />
+        <result property="nickname"    column="nickname"    />
+        <result property="isAnswer"    column="is_answer"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="isDel"    column="is_del"    />
+        <result property="dbUserId"    column="db_user_id"    />
+        <result property="problemTypeId"    column="problem_type_id"    />
+        <result property="images"    column="images"    />
+    </resultMap>
+
+    <sql id="selectDbPutQuestionsVo">
+        select id, phone, questions_text, land_text, nickname, is_answer, create_time, is_del, db_user_id,images,problemTypeId from db_put_questions
+    </sql>
+
+    <select id="selectDbPutQuestionsList" parameterType="DbPutQuestions" resultMap="DbPutQuestionsResult">
+        <include refid="selectDbPutQuestionsVo"/>
+        <where>  
+            <if test="nickname != null  and nickname != ''"> and nickname like concat('%', #{nickname}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectDbPutQuestionsById" parameterType="Long" resultMap="DbPutQuestionsResult">
+        <include refid="selectDbPutQuestionsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbPutQuestions" parameterType="DbPutQuestions">
+        insert into db_put_questions
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="phone != null  and phone != ''">phone,</if>
+            <if test="questionsText != null  and questionsText != ''">questions_text,</if>
+            <if test="landText != null  and landText != ''">land_text,</if>
+            <if test="nickname != null  and nickname != ''">nickname,</if>
+            <if test="isAnswer != null ">is_answer,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="isDel != null ">is_del,</if>
+            <if test="dbUserId != null ">db_user_id,</if>
+            <if test="problemTypeId != null ">problem_type_id,</if>
+            <if test="images != null ">images,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="phone != null  and phone != ''">#{phone},</if>
+            <if test="questionsText != null  and questionsText != ''">#{questionsText},</if>
+            <if test="landText != null  and landText != ''">#{landText},</if>
+            <if test="nickname != null  and nickname != ''">#{nickname},</if>
+            <if test="isAnswer != null ">#{isAnswer},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="isDel != null ">#{isDel},</if>
+            <if test="problemTypeId != null ">#{problemTypeId},</if>
+            <if test="images != null ">#{images},</if>
+
+        </trim>
+    </insert>
+
+    <update id="updateDbPutQuestions" parameterType="DbPutQuestions">
+        update db_put_questions
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="phone != null  and phone != ''">phone = #{phone},</if>
+            <if test="questionsText != null  and questionsText != ''">questions_text = #{questionsText},</if>
+            <if test="landText != null  and landText != ''">land_text = #{landText},</if>
+            <if test="nickname != null  and nickname != ''">nickname = #{nickname},</if>
+            <if test="isAnswer != null ">is_answer = #{isAnswer},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="isDel != null ">is_del = #{isDel},</if>
+            <if test="dbUserId != null ">db_user_id = #{dbUserId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbPutQuestionsById" parameterType="Long">
+        delete from db_put_questions where id = #{id}
+    </delete>
+
+    <delete id="deleteDbPutQuestionsByIds" parameterType="String">
+        delete from db_put_questions where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
