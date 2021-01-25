@@ -92,7 +92,7 @@ public class OperateControllerWeChat extends BaseController {
     @OperationLog(OperationLogType=true,OperationLogNmae=OperationLogType.EQUIPMENT,OperationLogSource = OperationLogType.WEchat)
     public R oprateEqment(@ApiParam(name = "id", value = "设备id", required = true) Long id, @ApiParam(name = "type"
             , value = "操作单位名称:例如卷帘1", required = true) String type,
-                          @ApiParam(name = "handleName", value = "具体操作名称开始 ：start，开始暂停：start_stop，结束暂停down_stop，结束down", required = true) String handleName)
+                          @ApiParam(name = "handleName", value = "具体操作名称开始 ：start，开始暂停：start_stop，结束down,结束暂停down_stop", required = true) String handleName)
             throws Exception {
         DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(id);
         DbLandEquipment dbLandEquipment = new DbLandEquipment();
@@ -158,11 +158,11 @@ public class OperateControllerWeChat extends BaseController {
                 DbTcpType dbTcpType = new DbTcpType();
                 dbTcpType.setHeartName(dbEquipment.getHeartbeatText() + "_" + dbEquipment.getEquipmentNoString());
                 List<DbTcpType> list = remoteTcpService.list(dbTcpType);
+
                 if (list.size() != 0&&list!=null) {
                 DbTcpType dbTcpType1 = list.get(0);
-                if (Double.parseDouble(dbTcpType1.getTemperatureAir())<30){
+
                     dbEquipmentVo.setDbTcpType(dbTcpType1);
-                }
                 }
                 /*
                 * 剩余时长，到期时长计算

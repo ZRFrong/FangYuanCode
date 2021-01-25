@@ -1,6 +1,7 @@
 package com.ruoyi.fangyuantcp.mapper;
 
 import com.ruoyi.system.domain.DbEquipment;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -59,4 +60,7 @@ public interface DbEquipmentMapper1
      * @return 结果
      */
     public int deleteDbEquipmentByIds(String[] equipmentIds);
+
+    @Select("SELECT equipment_no from db_equipment where heartbeat_text=#{heartName} GROUP BY equipment_no;")
+    List<String> selectByHeartNameToEqumentNo(String heartName);
 }

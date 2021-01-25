@@ -1,21 +1,19 @@
 package com.ruoyi.fangyuantcp.utils;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.ruoyi.common.redis.config.RedisKeyConf;
+import com.ruoyi.common.redis.util.RedisLockUtil;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuantcp.abnormal.DropsExceptions;
 import com.ruoyi.fangyuantcp.service.IDbEquipmentService;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
-import com.ruoyi.fangyuantcp.service.IDbTcpOrderService;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -29,7 +27,7 @@ import java.util.*;
 public class ReceiveUtil {
     private IDbTcpClientService tcpClientService = SpringUtils.getBean(IDbTcpClientService.class);
     private IDbEquipmentService iDbEquipmentService = SpringUtils.getBean(IDbEquipmentService.class);
-    private static IDbTcpTypeService tcpTypeService = SpringUtils.getBean(IDbTcpTypeService.class);
+    private  IDbTcpTypeService tcpTypeService = SpringUtils.getBean(IDbTcpTypeService.class);
 
     /*
      * 心跳添加或者更改状态处理
@@ -40,7 +38,35 @@ public class ReceiveUtil {
         NettyServer.map.put(dbTcpClient.getHeartName(), ctx);
         if (i == 1) {
 //            发送心跳查询指令
-            SendCodeUtils.querystate03Ctx(ctx);
+             new Thread(new Runnable() {
+                 @Override
+                 public void run() {
+                     String text = "01" + "," + "03," + TcpOrderTextConf.stateSave;
+                     SendCodeUtils.querystate03Ctx(ctx,text);
+                     try {
+                         Thread.sleep(500);
+                         //            发送心跳查询指令
+                         String text3 = "01" + "," + "01,"+ TcpOrderTextConf.SinceOrhandTongFeng;
+                         SendCodeUtils.querystate03Ctx(ctx,text3);
+                         Thread.sleep(500);
+                         String text2 = "01" + "," + "03," + TcpOrderTextConf.SinceOrhandTongFengType;
+                         SendCodeUtils.querystate03Ctx(ctx,text2);
+                         Thread.sleep(500);
+                         String text4 = "01" + "," + "03,"+ TcpOrderTextConf.TaskOnline;
+                         SendCodeUtils.querystate03Ctx(ctx,text4);
+                     } catch (InterruptedException e) {
+                         e.printStackTrace();
+                     }
+
+                 }
+             }).start();
+
+
+
+
+
+
+
         }
 
 
@@ -104,9 +130,7 @@ public class ReceiveUtil {
         if (null == list || list.size() == 0) {
             int i = tcpTypeService.insertDbTcpType(dbTcpType);
         } else {
-            DbTcpType dbTcpType2 = list.get(0);
-            dbTcpType2.setIsShow(0);
-            int i = tcpTypeService.updateOrInstart(dbTcpType2);
+            int i = tcpTypeService.updateOrInstart(dbTcpType);
         }
 
     }
@@ -130,7 +154,7 @@ public class ReceiveUtil {
         DbEquipment dbEquipment = dbEquipments.get(0);
 
 
-        if (i < 600) {
+        if (i < 450) {
 //            手动
             dbEquipment.setIsOnline(1);
 //            提醒
@@ -223,8 +247,13 @@ public class ReceiveUtil {
 
 
     private RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
+    private RedisLockUtil redisLockUtil = SpringUtils.getBean(RedisLockUtil.class);
 
 
+    public static void main(String[] args) {
+        String temp = getTemp("0000");
+        System.out.println(temp);
+    }
     /*
      * 操作响应
      * */
@@ -235,7 +264,11 @@ public class ReceiveUtil {
          * */
         String key = getRedisKey(string, getname);
 
-        log.info(new Date() + key + "进来了正在更改状态");
+        log.info( "收到操作指令："+  key + "当前的时间毫秒值是："+new Date().getTime());
+
+//        加锁
+        String s = String.valueOf(Thread.currentThread().getId());
+        redisLockUtil.lock(key,s,100);
 //        从redis中拿到指定的数据
         DbTcpOrder dbTcpClient = redisUtils.get(key, DbTcpOrder.class);
         dbTcpClient.setResults(1);
@@ -243,11 +276,13 @@ public class ReceiveUtil {
         dbTcpClient.setWhenTime(i);
 //       改变状态存储进去
         redisUtils.set(key, JSONArray.toJSONString(dbTcpClient));
-        log.info(new Date() + key + "改变了");
+
+        //        解锁
+        redisLockUtil.unLock(key,s);
     }
 
     private String getRedisKey(String string, String getname) {
-        String charStic = getname.substring(0, 2);
+        String charStic = string.substring(0, 2);
 
         return RedisKeyConf.HANDLE + ":" + getname + "_" + charStic + "_" + string;
     }
@@ -276,24 +311,18 @@ public class ReceiveUtil {
         dbTcpType.setHeartName(getname + "_" + arr.get(0));
         List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType);
         DbTcpType dbTcpType1 = list.get(0);
-        dbTcpType1.setIdAuto(arr.get(3).equals("00") ? 0 : 1);
+//        01 01 01 00 51 88
+        dbTcpType1.setIdAuto(arr.get(3).equals("00") ? 1 : 0);
         int i = tcpTypeService.updateDbTcpType(dbTcpType1);
 
     }
 
 
-    public static void main(String[] args) {
-        AutoVo autoVo = new AutoVo();
-        autoVo.setAutoDown(11.5);
-        autoVo.setAutoUp(12.0);
-
-        System.out.println(autoVo);
-    }
 
     /*
      *传感器状态接收处理
      * */
-    public static void stateRead(String type) {
+    public  void stateRead(String type) {
         /*
             状态码 01 03   0A代码后边有10位
          *01 03 0A 00 FD 01 09 01 06 00 01 00 C1 39 6F
@@ -346,6 +375,22 @@ public class ReceiveUtil {
 
 
     }
+
+    public void returnautocontrolType(ChannelHandlerContext ctx, String string) {
+        DbTcpType dbTcpType = new DbTcpType();
+        List<String> arr = getCharToArr(string);
+        String getname = getname(ctx);
+        dbTcpType.setHeartName(getname + "_" + arr.get(0));
+        List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType);
+        DbTcpType dbTcpType1 = list.get(0);
+        dbTcpType1.setAutocontrolType(getTemp(arr.get(3) + arr.get(4)));
+        dbTcpType1.setAutocontrolTypeEnd(getTemp(arr.get(5) + arr.get(6)));
+        int i = tcpTypeService.updateDbTcpType(dbTcpType1);
+
+
+    }
+
+
 }
 
 

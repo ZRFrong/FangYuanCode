@@ -1,5 +1,6 @@
 package com.ruoyi.fangyuantcp.utils;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 
@@ -72,8 +73,8 @@ public class SendCodeUtils {
     /*
      * 状态查询指令发送03
      * */
-    public static int querystate03Ctx(ChannelHandlerContext ctx) {
-        String text = "01" + "," + "03," + TcpOrderTextConf.stateSave;
+    public static int querystate03Ctx(ChannelHandlerContext ctx, String text) {
+
         try {
 //        text处理
             ArrayList<String> strings1 = new ArrayList<>();
@@ -107,6 +108,7 @@ public class SendCodeUtils {
             return 0;
         }
     }
+
 
     /*
      *状态操作指令发送01
@@ -168,29 +170,29 @@ public class SendCodeUtils {
 
     }
 
-
-    /*
-     * 手动自动状态查询
-     * */
-    public int sinceOrHand(DbEquipment equipment) {
-        DbOperationVo dbOperationVo = new DbOperationVo();
-        dbOperationVo.setHeartName(equipment.getHeartbeatText());
-        dbOperationVo.setFacility(equipment.getEquipmentNoString());
-        dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhand);
-        dbOperationVo.setOperationName("手动自动状态查询");
-        dbOperationVo.setIsTrue("1");
-        dbOperationVo.setCreateTime(new Date());
-        int querystate = querystate03(dbOperationVo);
-        return querystate;
+    public static int timingTongFengHand(List<DbOperationVo> list) {
+        list.forEach(ite -> querystate01(ite));
+        return 1;
     }
+
+    public static int TaskOnline(List<DbOperationVo> list) {
+        list.forEach(ite -> querystate03(ite));
+        return 1;
+    }
+
+    public static int timingTongFengTypeList(List<DbOperationVo> list) {
+        list.forEach(ite -> querystate03(ite));
+        return 1;
+    }
+
 
     /*
      *通风手自状态查询
      * */
-    public int sinceOrHandTongFeng(DbEquipment equipment) {
+    public int sinceOrHandTongFeng(String equipment) {
         DbOperationVo dbOperationVo = new DbOperationVo();
-        dbOperationVo.setHeartName(equipment.getHeartbeatText());
-        dbOperationVo.setFacility(equipment.getEquipmentNoString());
+        dbOperationVo.setHeartName(equipment.split("_")[0]);
+        dbOperationVo.setFacility(equipment.split("_")[1]);
         dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFeng);
         dbOperationVo.setOperationName("查询自动通风是否开启");
         dbOperationVo.setIsTrue("1");
@@ -204,17 +206,18 @@ public class SendCodeUtils {
     /*
      *通风手自  开启关闭温度状态查询
      * */
-    public int timingTongFengType(DbEquipment equipment) {
+    public int timingTongFengType(String equipment) {
         DbOperationVo dbOperationVo = new DbOperationVo();
-        dbOperationVo.setHeartName(equipment.getHeartbeatText());
-        dbOperationVo.setFacility(equipment.getEquipmentNoString());
+        dbOperationVo.setHeartName(equipment.split("_")[0]);
+        dbOperationVo.setFacility(equipment.split("_")[1]);
         dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFengType);
         dbOperationVo.setOperationName("查询当前自动通风开始和关闭的温度");
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
-        int querystate = querystate01(dbOperationVo);
+        int querystate = querystate03(dbOperationVo);
         return querystate;
     }
+
 
     /*
      *通风手自  装态更改
@@ -239,7 +242,7 @@ public class SendCodeUtils {
         DbOperationVo dbOperationVo = new DbOperationVo();
         dbOperationVo.setHeartName(equipment.getHeartbeatText());
         dbOperationVo.setFacility(equipment.getEquipmentNoString());
-        dbOperationVo.setOperationText(i == 0 ? TcpOrderTextConf.operateTongFengType + "," + i2 : TcpOrderTextConf.operateTongFengOverType + "," + i2);
+        dbOperationVo.setOperationText(i == 0 ? TcpOrderTextConf.operateTongFengType + "," + "00," + i2 : TcpOrderTextConf.operateTongFengOverType + "," + "00," + i2);
         dbOperationVo.setOperationName(i == 0 ? "更改开启自动通风温度为" + i2 : "更改关闭自动通风温度为" + i2);
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
@@ -252,29 +255,30 @@ public class SendCodeUtils {
 
     public static int operateCode(String text, DbOperationVo tcpOrder) {
 
-            String address = tcpOrder.getHeartName();
-            ArrayList<String> strings1 = new ArrayList<>();
+        String address = tcpOrder.getHeartName();
+        ArrayList<String> strings1 = new ArrayList<>();
 //          text处理
-            String[] split3 = text.split(",");
-            for (String s : split3) {
-                strings1.add(s);
-            }
-            Object[] objects = strings1.toArray();
-            String[] split = new String[objects.length];
-            for (int i = 0; i < split.length; i++) {
-                split[i] = objects[i].toString();
-            }
-            List<String> strings = new ArrayList<>();
-            for (String s : split) {
-                int i = Integer.parseInt(s);
-                //            十六进制转成十进制
-                String tmp = StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 4, '0');
-                strings.add(tmp);
-            }
+        String[] split3 = text.split(",");
+        for (String s : split3) {
+            strings1.add(s);
+        }
+        Object[] objects = strings1.toArray();
+        String[] split = new String[objects.length];
+        for (int i = 0; i < split.length; i++) {
+            split[i] = objects[i].toString();
+        }
+        List<String> strings = new ArrayList<>();
+        for (String s : split) {
+            int i = Integer.parseInt(s);
+            //            十六进制转成十进制
+            String tmp = StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 4, '0');
+            strings.add(tmp);
+        }
+        byte[] data = null;
         try {
             String[] split1 = strings.toArray(new String[strings.size()]);
             String[] bytes = Crc16Util.to_byte(split1);
-            byte[] data = Crc16Util.getData(bytes);
+            data = Crc16Util.getData(bytes);
             ChannelHandlerContext no1_1 = null;
             no1_1 = map.get(address);
             Channel channel = no1_1.channel();
@@ -282,29 +286,31 @@ public class SendCodeUtils {
             channel.flush();
         } catch (Exception e) {
 //            抛出异常
-             throw new FaultExceptions( tcpOrder.getHeartName() , tcpOrder.getOperationName(),tcpOrder.getFacility());
+            throw new FaultExceptions(tcpOrder.getHeartName(), tcpOrder.getOperationName(), tcpOrder.getFacility());
         }
 
-            tcpOrder.setCreateTime(new Date());
+        tcpOrder.setCreateTime(new Date());
 //        存储操作信息到redis
-            String operationText = tcpOrder.getOperationText();
-            String facility = tcpOrder.getFacility();
-            String heartName = tcpOrder.getHeartName();
+        String operationText = tcpOrder.getOperationText();
+        String facility = tcpOrder.getFacility();
+        String heartName = tcpOrder.getHeartName();
 
-            DbTcpOrder order = getOrder(tcpOrder);
-            String s = RedisKeyConf.HANDLE + ":" + heartName + "_" + facility + "_" + operationText;
-            String s2 = JSONArray.toJSONString(order);
-            redisUtils.set(s, s2);
-            /*
-             * 建立监听返回的数据
-             * */
-            HeartbeatRun(s,tcpOrder);
+        DbTcpOrder order = getOrder(tcpOrder);
+        String str = Crc16Util.byteTo16String(data).toUpperCase();
+        String str2 = str.replaceAll("\\s*", "");
+        String s = RedisKeyConf.HANDLE + ":" + heartName + "_" + facility + "_" + str2;
+        String s2 = JSONArray.toJSONString(order);
+        redisUtils.set(s, s2);
+        /*
+         * 建立监听返回的数据
+         * */
+        HeartbeatRun(s, tcpOrder);
 
-            return 1;
-
+        return 1;
 
 
     }
+
     public static int operateCodeType(String text, DbOperationVo tcpOrder) {
 
         String address = tcpOrder.getHeartName();
@@ -338,7 +344,6 @@ public class SendCodeUtils {
         return 1;
 
 
-
     }
 
     private static DbTcpOrder getOrder(DbOperationVo dbOperationVo) {
@@ -350,21 +355,21 @@ public class SendCodeUtils {
         return dbTcpOrder;
     }
 
-    private  static  void HeartbeatRun(String text, DbOperationVo dbOperationVo)  {
+    private static void HeartbeatRun(String text, DbOperationVo dbOperationVo) {
         try {
-        Thread.sleep(1000);
+            Thread.sleep(1000);
             String s = redisUtils.get(text);
-            if (s.isEmpty()){
-                throw  new OperationExceptions(dbOperationVo.getHeartName(),dbOperationVo.getOperationName(),dbOperationVo.getFacility());
-            }else {
+            if (s.isEmpty()) {
+                throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
+            } else {
                 DbTcpOrder dbTcpOrder = JSON.parseObject(s, DbTcpOrder.class);
                 Integer results = dbTcpOrder.getResults();
-                if (results==1){
-                    throw  new OperationExceptions(dbOperationVo.getHeartName(),dbOperationVo.getOperationName(),dbOperationVo.getFacility());
+                if (results == 0) {
+                    throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
                 }
             }
         } catch (OperationExceptions operationExceptions) {
-            throw  new OperationExceptions(dbOperationVo.getHeartName(),dbOperationVo.getOperationName(),dbOperationVo.getFacility());
+            throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
 
         } catch (InterruptedException e) {
             e.printStackTrace();

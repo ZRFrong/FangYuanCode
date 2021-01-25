@@ -18,13 +18,16 @@ public class TcpOrderTextConf {
     /*
      * 查询当前自动通风开始和关闭的温度
      * */
-    public static final String SinceOrhandTongFengType = "01,244,00,01";
+    public static final String SinceOrhandTongFengType = "00,200,00,02";
+
 
 
     /*
      * 更改自动手动通风操作 开
      * */
     public static final String operateTongFeng = "01,244,255,00";
+
+    public static final String TaskOnline = "00,00,00,01";
 
 
     /*更改自动手动通风操作 关*/
@@ -34,11 +37,11 @@ public class TcpOrderTextConf {
     /*
      * 更改自动手动通风温度操作 开
      * */
-    public static final String operateTongFengType = "00,76";
+    public static final String operateTongFengType = "00,200";
 
 
     /*更改自动手动通风温度操作 关*/
-    public static String operateTongFengOverType = "00,77";
+    public static String operateTongFengOverType = "00,201";
 
 
 

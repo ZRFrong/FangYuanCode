@@ -105,27 +105,13 @@ public class DbTcpClientController extends BaseController {
      * */
     @PostMapping("operationList")
     @ApiOperation(value = "批量操作设备", notes = "批量操作设备")
-    public R operationList(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) @RequestBody List<DbOperationVo> dbOperationVo) {
+    public R operationList(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) @RequestBody List<DbOperationVo> dbOperationVo) throws ExecutionException, InterruptedException {
 
-        try {
             return dbTcpClientService.operationList(dbOperationVo);
-        } catch (Exception e) {
 
-            return R.error();
-        }
     }
 
-    /*
-     * 手动 自动查询      手动自动状态更新
-     *    01 03 00 00 00 01 84 0A
-     * */
-    @GetMapping("sinceOrHand")
-    @ApiOperation(value = "手动，自动查询", notes = "手动，自动查询")
-    public R sinceOrHand() {
-        int operation = dbTcpClientService.sinceOrHand();
 
-        return toAjax(operation);
-    }
 
 
 }

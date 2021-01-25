@@ -65,7 +65,8 @@ public class TaskHeartbeat {
                                     dbTcpType.setHeartName(dbEquipment1.getHeartbeatText());
                                     List<DbTcpType> list = dbTcpTypeService.selectDbTcpTypeList(dbTcpType);
                                     if (list.size()>0&&list!=null){
-                                    dbTcpTypeService.deleteByHeartName(dbEquipment1.getHeartbeatText());
+                                    dbTcpTypeService.updateByHeartbeat(dbEquipment1.getHeartbeatText());
+
                                     }
 
                                 }

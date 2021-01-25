@@ -2,6 +2,8 @@ package com.ruoyi.fangyuantcp.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.fangyuantcp.utils.Crc16Util;
+import com.ruoyi.fangyuantcp.utils.SendCodeUtils;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbLand;
 import com.ruoyi.system.domain.DbStateRecords;
@@ -35,6 +37,9 @@ public class DbTcpTypeController extends BaseController {
 
     @Autowired
     private IDbTcpTypeService dbTcpTypeService;
+
+
+    private SendCodeUtils sendCodeUtils = new SendCodeUtils();
 
     /**
      * 查询${tableComment}
@@ -128,9 +133,9 @@ public class DbTcpTypeController extends BaseController {
      * */
     @GetMapping("timingTongFengHand")
     public R timingTongFengHand() {
-        int operation = dbTcpTypeService.timingTongFengHand();
+         dbTcpTypeService.timingTongFengHand();
 
-        return toAjax(operation);
+        return toAjax(1);
 
     }
 
@@ -140,9 +145,8 @@ public class DbTcpTypeController extends BaseController {
      * */
     @GetMapping("saveTongFengType")
     public R timingTongFengType() {
-        int operation = dbTcpTypeService.timingTongFengType();
-
-        return toAjax(operation);
+        dbTcpTypeService.timingTongFengType();
+        return toAjax(1);
 
     }
 
@@ -155,6 +159,9 @@ public class DbTcpTypeController extends BaseController {
                                  @ApiParam(name = "i", value = "inter", required = true) @PathVariable("i") Integer i) {
         int operation = dbTcpTypeService.operateTongFengHand(heartbeatText, equipmentNo, i);
 
+        if (operation!=0){
+            i = sendCodeUtils.sinceOrHandTongFeng(heartbeatText+"_"+equipmentNo);
+        }
         return toAjax(operation);
 
     }
@@ -167,7 +174,14 @@ public class DbTcpTypeController extends BaseController {
                                  @ApiParam(name = "equipmentNo", value = "string", required = true) @PathVariable("equipmentNo") String equipmentNo,
                                  @ApiParam(name = "i", value = "inter", required = true) @PathVariable("i") Integer i,
                                  @ApiParam(name = "temp", value = "温度") @PathVariable("temp") String temp) {
-        int operation = dbTcpTypeService.operateTongFengType(heartbeatText, equipmentNo, i, temp);
+        String hex= Integer.toHexString(Integer.parseInt(temp));
+        int operation = dbTcpTypeService.operateTongFengType(heartbeatText, equipmentNo, i, hex);
+        /*
+         * 查询状态
+         * */
+        if (operation!=0){
+            i = sendCodeUtils.timingTongFengType(heartbeatText+"_"+equipmentNo);
+        }
 
         return toAjax(operation);
 

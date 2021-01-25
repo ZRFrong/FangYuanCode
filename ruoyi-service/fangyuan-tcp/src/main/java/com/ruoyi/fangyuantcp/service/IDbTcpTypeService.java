@@ -73,9 +73,9 @@ public interface IDbTcpTypeService {
 
     void timingType();
 
-    int timingTongFengHand();
+    void timingTongFengHand();
 
-    int timingTongFengType();
+    void timingTongFengType();
 
 
 
@@ -90,4 +90,8 @@ public interface IDbTcpTypeService {
     void deleteByHeartName(String heartbeatText);
 
     void deleteTimingType();
+
+    void updateByHeartbeat(String heartbeatText);
+
+    void updateByHeartbeatOpen(String heartName);
 }

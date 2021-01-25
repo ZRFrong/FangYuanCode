@@ -5,6 +5,7 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuantcp.service.IDbEquipmentService;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
+import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
 import com.ruoyi.system.domain.DbEquipment;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,6 +26,7 @@ public class DisConnectUtils {
 
     private IDbTcpClientService tcpClientService= SpringUtils.getBean(IDbTcpClientService.class);
     private IDbEquipmentService equipmentService= SpringUtils.getBean(IDbEquipmentService.class);
+    private IDbTcpTypeService tcpTypeService= SpringUtils.getBean(IDbTcpTypeService.class);
 
     /*
      *正常断开连接
@@ -82,6 +84,8 @@ public class DisConnectUtils {
         DbEquipment dbEquipment1 = equipmentService.selectDbEquipmentList(dbEquipment).get(0);
         dbEquipment1.setIsFault(1);
         int i = equipmentService.updateDbEquipment(dbEquipment1);
+
+        tcpTypeService.updateByHeartbeat(heartbeatName);
 
     }
 
