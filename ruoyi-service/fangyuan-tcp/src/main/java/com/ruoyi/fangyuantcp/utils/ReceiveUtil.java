@@ -12,10 +12,8 @@ import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
 import io.netty.channel.ChannelHandlerContext;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 
-import java.text.DecimalFormat;
 import java.util.*;
 
 /*
@@ -130,6 +128,9 @@ public class ReceiveUtil {
         if (null == list || list.size() == 0) {
             int i = tcpTypeService.insertDbTcpType(dbTcpType);
         } else {
+            log.error("修改装态进来了"+new Date());
+            DbTcpType dbTcpType2 = list.get(0);
+            dbTcpType.setTcpTypeId(dbTcpType2.getTcpTypeId());
             int i = tcpTypeService.updateOrInstart(dbTcpType);
         }
 
@@ -391,6 +392,10 @@ public class ReceiveUtil {
     }
 
 
+    public void heartbeatUpdate(DbTcpClient dbTcpClient ) {
+
+        int i = tcpClientService.heartbeatUpdate(dbTcpClient);
+    }
 }
 
 

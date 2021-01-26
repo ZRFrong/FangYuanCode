@@ -21,6 +21,7 @@ import com.ruoyi.system.domain.DbTcpOrder;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,6 +31,7 @@ import java.util.concurrent.ExecutorService;
 /*
  * 硬件端发送指令工具类
  * */
+@Log4j2
 public class SendCodeUtils {
     //    在线设备map
     private static Map<String, ChannelHandlerContext> map = NettyServer.map;
@@ -279,8 +281,7 @@ public class SendCodeUtils {
             String[] split1 = strings.toArray(new String[strings.size()]);
             String[] bytes = Crc16Util.to_byte(split1);
             data = Crc16Util.getData(bytes);
-            ChannelHandlerContext no1_1 = null;
-            no1_1 = map.get(address);
+            ChannelHandlerContext no1_1 = map.get(address);
             Channel channel = no1_1.channel();
             channel.write(Unpooled.copiedBuffer(data));
             channel.flush();
@@ -332,14 +333,18 @@ public class SendCodeUtils {
             String tmp = StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 4, '0');
             strings.add(tmp);
         }
-        String[] split1 = strings.toArray(new String[strings.size()]);
-        String[] bytes = Crc16Util.to_byte(split1);
-        byte[] data = Crc16Util.getData(bytes);
-        ChannelHandlerContext no1_1 = null;
-        no1_1 = map.get(address);
-        Channel channel = no1_1.channel();
-        channel.write(Unpooled.copiedBuffer(data));
-        channel.flush();
+        try {
+            String[] split1 = strings.toArray(new String[strings.size()]);
+            String[] bytes = Crc16Util.to_byte(split1);
+            byte[] data = Crc16Util.getData(bytes);
+            ChannelHandlerContext no1_1 = map.get(address);
+            Channel channel = no1_1.channel();
+            channel.write(Unpooled.copiedBuffer(data));
+            channel.flush();
+        } catch (Exception e) {
+            log.error(address+"发送出问题了");
+//            System.out.println(address+"发送出问题了");
+        }
 
         return 1;
 

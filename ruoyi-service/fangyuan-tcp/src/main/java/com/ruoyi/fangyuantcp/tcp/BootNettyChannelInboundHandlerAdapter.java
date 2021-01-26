@@ -1,9 +1,9 @@
 package com.ruoyi.fangyuantcp.tcp;
 
 
-import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.fangyuantcp.utils.DisConnectUtils;
 import com.ruoyi.fangyuantcp.utils.ReceiveUtil;
+import com.ruoyi.system.domain.DbTcpClient;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +51,9 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
             //       前两位是设备号   然后是标识符 03状态返回  05操作响应
 
             log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "收到信息" + msg);
+            DbTcpClient dbTcpClient = getIp(ctx);
+            dbTcpClient.setHeartName(msg.toString());
+            receiveUtil.heartbeatUpdate(dbTcpClient);
             if (s.contains("0302")) {
 
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "手动自动返回：" + msg);
@@ -73,17 +76,16 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
 //                更改设备自动手动状态
                 receiveUtil.returnHand(ctx, msg.toString());
 
-            }else if (s.contains("0304")){
+            } else if (s.contains("0304")) {
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "开分风口温度：" + msg);
 //                更改设备自动手动开关温度
                 receiveUtil.returnautocontrolType(ctx, msg.toString());
-            }
-
-            else if (s.contains("0106")) {
+            } else if (s.contains("0106")) {
 
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "写入自动控制通风" + msg);
 
-            } else {
+            }
+            else {
 
                 log.error("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "乱码:" + msg);
             }
