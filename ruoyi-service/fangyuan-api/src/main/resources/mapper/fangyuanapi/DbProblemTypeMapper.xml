@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbProblemTypeMapper">
+    
+    <resultMap type="DbProblemType" id="DbProblemTypeResult">
+        <result property="id"    column="id"    />
+        <result property="problemType"    column="problem_type"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="isDel"    column="is_del"    />
+        <result property="isShow"    column="is_show"    />
+        <result property="clickNum"    column="clieck_num"    />
+        <result property="type"    column="type"    />
+    </resultMap>
+
+    <sql id="selectDbProblemTypeVo">
+        select id, problem_type, create_time, is_del, is_show, clieck_num, type from db_problem_type
+    </sql>
+
+    <select id="selectDbProblemTypeList" parameterType="DbProblemType" resultMap="DbProblemTypeResult">
+        <include refid="selectDbProblemTypeVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbProblemTypeById" parameterType="Long" resultMap="DbProblemTypeResult">
+        <include refid="selectDbProblemTypeVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDbProblemList" resultType="java.util.Map">
+        select id,problem_type from db_problem_type where  type = #{param1} and is_del = 0 and is_show = 0 limit #{param2},#{param3}
+    </select>
+
+    <insert id="insertDbProblemType" parameterType="DbProblemType" useGeneratedKeys="true" keyProperty="id">
+        insert into db_problem_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="problemType != null  and problemType != ''">problem_type,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="isDel != null ">is_del,</if>
+            <if test="isShow != null ">is_show,</if>
+            <if test="clieckNum != null ">clieck_num,</if>
+            <if test="type != null ">type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="problemType != null  and problemType != ''">#{problemType},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="isDel != null ">#{isDel},</if>
+            <if test="isShow != null ">#{isShow},</if>
+            <if test="clieckNum != null ">#{clieckNum},</if>
+            <if test="type != null ">#{type},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbProblemType" parameterType="DbProblemType">
+        update db_problem_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="problemType != null  and problemType != ''">problem_type = #{problemType},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="isDel != null ">is_del = #{isDel},</if>
+            <if test="isShow != null ">is_show = #{isShow},</if>
+            <if test="clieckNum != null ">clieck_num = #{clieckNum},</if>
+            <if test="type != null ">type = #{type},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbProblemTypeById" parameterType="Long">
+        delete from db_problem_type where id = #{id}
+    </delete>
+
+    <delete id="deleteDbProblemTypeByIds" parameterType="String">
+        delete from db_problem_type where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

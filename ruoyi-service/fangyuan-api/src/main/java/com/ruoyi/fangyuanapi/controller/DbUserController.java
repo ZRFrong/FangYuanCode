@@ -28,20 +28,22 @@ import com.ruoyi.system.feign.SendSmsClient;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import jdk.nashorn.internal.runtime.logging.Logger;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.hibernate.validator.internal.util.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
+
 @RestController
 @RequestMapping("wxUser")
+@Logger
 public class DbUserController extends BaseController {
 
 //
@@ -78,22 +80,38 @@ public class DbUserController extends BaseController {
     @Autowired
     private RemoteOssService remoteOssService;
 
-    @ApiOperation(value = "图片上传接口",notes = "头像上传接口 被允许的格式： .jpg.png.jpeg.gif",httpMethod = "POST")
+    @ApiOperation(value = "多个图片上传接口",notes = "多个图片上传接口 被允许的格式： .jpg.png.jpeg.gif",httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "file",value = "头像图片",required = true)
+            @ApiImplicitParam(name = "file",value = "图片数组",required = true)
     })
     @PostMapping("avatarUpload")
-    public R avatarUpload(@RequestPart("file") MultipartFile file){
-        if (file != null && StringUtils.checkFileIsImages(file.getOriginalFilename(),".jpg.png.jpeg.gif")){
-            System.out.println(file.getOriginalFilename());
-             R r = remoteOssService.editSave(file);
-            if ("200".equals(r.get("code")+"")){
-                String url = r.get("msg")+"";
-                return R.data(url);
-            }
-            return R.error("上传错误,或者图片文件名字过长！");
+    @CrossOrigin
+    public R avatarUpload(@RequestPart("files") MultipartFile[] files){
+        if (files == null || files.length <= 0){
+            return R.error("图片不能为空，或者图片格式不正确！");
         }
-        return R.error("图片不能为空，或者图片格式不正确！");
+        ArrayList<String> list = new ArrayList<>();
+        for (MultipartFile file : files) {
+            long size = file.getSize();
+            if (size > 1024*1024*2){
+                logger.info(file.getOriginalFilename()+"文件大小超出限制！");
+                return R.error("不能上传大于2M的文件!");
+            }
+        }
+
+        for (MultipartFile file : files) {
+            if (file != null && StringUtils.checkFileIsImages(file.getOriginalFilename(),".jpg.png.jpeg.gif")){
+                System.out.println(file.getOriginalFilename());
+                R r = remoteOssService.editSave(file);
+                if ("200".equals(r.get("code")+"")){
+                    list.add(r.get("msg")+"");
+                }
+            }else {
+                return R.error("上传错误,或者图片文件名字过长！");
+            }
+        }
+        return R.data(list);
+
     }
 
     /**
@@ -342,7 +360,7 @@ public class DbUserController extends BaseController {
             DbUser dbUser= dbUserService.selectDbUserByPhone(user);
             if (dbUser == null ){
                 dbUser = dbUserService.wxRegister(phone,openId,nickname,avatar);
-                return R.ok();
+                return R.data(getToken(dbUser.getId(), tokenConf.getAccessTokenKey(),System.currentTimeMillis() + 1000L*60L*60L*24L*365L*3L,0));
             }
             if (dbUser != null && StringUtils.isEmpty(dbUser.getOpenId())){//修改操作
                 dbUser.setOpenId(openId);

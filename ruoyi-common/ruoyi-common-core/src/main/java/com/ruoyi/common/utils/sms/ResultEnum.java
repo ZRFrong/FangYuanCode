@@ -122,7 +122,16 @@ public enum ResultEnum {
     /**
      *
      */
-    APK_EXIST(430,"改版本的APK已存在")
+    APK_EXIST(430,"改版本的APK已存在"),
+    /**
+     *
+     */
+    SUBMIT_ERROR(100,"提交失败，请重新提交！"),
+    /**
+     *
+     */
+    PHONE_ERROR_OR_NULL(102,"手机号为空，或者手机号格式不正确！"),
+
     ;
     /**
      * 返回状态码
