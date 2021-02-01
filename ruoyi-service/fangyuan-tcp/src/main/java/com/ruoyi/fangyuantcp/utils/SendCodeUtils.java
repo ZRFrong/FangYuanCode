@@ -47,6 +47,15 @@ public class SendCodeUtils {
         return operateCode(text, tcpOrder);
     }
 
+
+    /*
+     * 普通操作指令发送装态
+     * */
+    public static int queryTongFeng(DbOperationVo tcpOrder) {
+        String text = tcpOrder.getFacility() + "," + "05," + tcpOrder.getOperationText();
+        return operateCodeTongFeng(text, tcpOrder);
+    }
+
     /*
      * 普通操作指令发送  06  自动状态设置更改
      * */
@@ -117,60 +126,12 @@ public class SendCodeUtils {
      * */
     public static int querystate01(DbOperationVo tcpOrder) {
         String text = tcpOrder.getFacility() + "," + "01," + tcpOrder.getOperationText();
-        return operateCode(text, tcpOrder);
+        return operateCodeTongFeng(text, tcpOrder);
     }
 
 
     private static ExecutorService executorService = null;
 
-    /*
-     * 多线程依次执行
-     * */
-    public static int queryIoList(Map<String, List<DbOperationVo>> mps) {
-        Set<String> strings = mps.keySet();
-//    新建几条线程
-        executorService = ThreadUtil.newExecutor(strings.size());
-        try {
-            strings.forEach(ite -> send(mps.get(ite)));
-            executorService.shutdown();
-            while (!executorService.isTerminated()) {
-//            等待执行完成再返回
-
-            }
-            return 1;
-        } catch (Exception e) {
-            executorService.shutdown();
-            e.printStackTrace();
-            return 0;
-        }
-
-    }
-
-
-    private static void send(List<DbOperationVo> dbOperationVos) {
-
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-//                    循环list
-//                    int query = query(dbOperationVo);
-                for (int i = 0; i < dbOperationVos.size(); i++) {
-                    int query = query(dbOperationVos.get(i));
-//                    线程礼让让其他的先执行
-                    if (i < dbOperationVos.size()) {
-                        try {
-                            Thread.sleep(500);
-                            Thread.yield();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        });
-
-
-    }
 
     public static int timingTongFengHand(List<DbOperationVo> list) {
         list.forEach(ite -> querystate01(ite));
@@ -232,7 +193,7 @@ public class SendCodeUtils {
         dbOperationVo.setOperationName(i == 0 ? "开启自动通风" : "关闭自动通风");
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
-        int querystate = query(dbOperationVo);
+        int querystate = queryTongFeng(dbOperationVo);
         return querystate;
     }
 
@@ -305,7 +266,48 @@ public class SendCodeUtils {
         /*
          * 建立监听返回的数据
          * */
-        HeartbeatRun(s, tcpOrder);
+       HeartbeatRun(s, tcpOrder);
+        return 1;
+
+
+
+
+    }
+    public static int operateCodeTongFeng(String text, DbOperationVo tcpOrder) {
+
+        String address = tcpOrder.getHeartName();
+        ArrayList<String> strings1 = new ArrayList<>();
+//          text处理
+        String[] split3 = text.split(",");
+        for (String s : split3) {
+            strings1.add(s);
+        }
+        Object[] objects = strings1.toArray();
+        String[] split = new String[objects.length];
+        for (int i = 0; i < split.length; i++) {
+            split[i] = objects[i].toString();
+        }
+        List<String> strings = new ArrayList<>();
+        for (String s : split) {
+            int i = Integer.parseInt(s);
+            //            十六进制转成十进制
+            String tmp = StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 4, '0');
+            strings.add(tmp);
+        }
+        byte[] data = null;
+
+        String[] split1 = new String[0];
+        try {
+            split1 = strings.toArray(new String[strings.size()]);
+        } catch (Exception e) {
+            log.error("装态修改失败");
+        }
+        String[] bytes = Crc16Util.to_byte(split1);
+            data = Crc16Util.getData(bytes);
+            ChannelHandlerContext no1_1 = map.get(address);
+            Channel channel = no1_1.channel();
+            channel.write(Unpooled.copiedBuffer(data));
+            channel.flush();
 
         return 1;
 
@@ -362,7 +364,7 @@ public class SendCodeUtils {
 
     private static void HeartbeatRun(String text, DbOperationVo dbOperationVo) {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1500);
             String s = redisUtils.get(text);
             if (s.isEmpty()) {
                 throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());

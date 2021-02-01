@@ -259,8 +259,6 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
 
     }
 
-
-
     /*
      * 更新状态
      * */

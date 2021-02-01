@@ -125,13 +125,13 @@ public class ReceiveUtil {
         DbTcpType dbTcpType1 = new DbTcpType();
         dbTcpType1.setHeartName(dbTcpType.getHeartName());
         List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType1);
-        if (null == list || list.size() == 0) {
-            int i = tcpTypeService.insertDbTcpType(dbTcpType);
-        } else {
-            log.error("修改装态进来了"+new Date());
+        if (null != list && list.size() != 0) {
             DbTcpType dbTcpType2 = list.get(0);
             dbTcpType.setTcpTypeId(dbTcpType2.getTcpTypeId());
             int i = tcpTypeService.updateOrInstart(dbTcpType);
+        } else {
+            int i = tcpTypeService.insertDbTcpType(dbTcpType);
+
         }
 
     }
@@ -165,6 +165,8 @@ public class ReceiveUtil {
             dbEquipment.setIsOnline(0);
         }
         iDbEquipmentService.updateDbEquipment(dbEquipment);
+
+
 //        完事  END
 
     }
@@ -251,10 +253,7 @@ public class ReceiveUtil {
     private RedisLockUtil redisLockUtil = SpringUtils.getBean(RedisLockUtil.class);
 
 
-    public static void main(String[] args) {
-        String temp = getTemp("0000");
-        System.out.println(temp);
-    }
+
     /*
      * 操作响应
      * */
@@ -311,10 +310,18 @@ public class ReceiveUtil {
         String getname = getname(ctx);
         dbTcpType.setHeartName(getname + "_" + arr.get(0));
         List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType);
-        DbTcpType dbTcpType1 = list.get(0);
+        if (list!=null&&list.size()>0){
+            DbTcpType dbTcpType1 = list.get(0);
 //        01 01 01 00 51 88
-        dbTcpType1.setIdAuto(arr.get(3).equals("00") ? 1 : 0);
-        int i = tcpTypeService.updateDbTcpType(dbTcpType1);
+            dbTcpType1.setIdAuto(arr.get(3).equals("00") ? 1 : 0);
+            int i = tcpTypeService.updateDbTcpType(dbTcpType1);
+        }else {
+
+//        01 01 01 00 51 88
+            dbTcpType.setIdAuto(arr.get(3).equals("00") ? 1 : 0);
+            int i = tcpTypeService.insertDbTcpType(dbTcpType);
+        }
+
 
     }
 
@@ -382,11 +389,20 @@ public class ReceiveUtil {
         List<String> arr = getCharToArr(string);
         String getname = getname(ctx);
         dbTcpType.setHeartName(getname + "_" + arr.get(0));
+
         List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType);
-        DbTcpType dbTcpType1 = list.get(0);
-        dbTcpType1.setAutocontrolType(getTemp(arr.get(3) + arr.get(4)));
-        dbTcpType1.setAutocontrolTypeEnd(getTemp(arr.get(5) + arr.get(6)));
-        int i = tcpTypeService.updateDbTcpType(dbTcpType1);
+        dbTcpType.setAutocontrolType(getTemp(arr.get(3) + arr.get(4)));
+        dbTcpType.setAutocontrolTypeEnd(getTemp(arr.get(5) + arr.get(6)));
+        if (list!=null&&list.size()>0){
+            DbTcpType dbTcpType1 = list.get(0);
+
+            dbTcpType.setTcpTypeId(dbTcpType1.getTcpTypeId());
+            int i = tcpTypeService.updateDbTcpType(dbTcpType);
+        }else {
+
+            int i = tcpTypeService.insertDbTcpType(dbTcpType);
+        }
+
 
 
     }

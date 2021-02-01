@@ -156,9 +156,10 @@ public class DbTcpTypeController extends BaseController {
     @GetMapping("operateTongFengHand/{heartbeatText}/{equipmentNo}/{i}")
     public R operateTongFengHand(@ApiParam(name = "heartbeatText", value = "string") @PathVariable String heartbeatText,
                                  @ApiParam(name = "equipmentNo", value = "string", required = true) @PathVariable("equipmentNo") String equipmentNo,
-                                 @ApiParam(name = "i", value = "inter", required = true) @PathVariable("i") Integer i) {
+                                 @ApiParam(name = "i", value = "inter", required = true) @PathVariable("i") Integer i) throws InterruptedException {
         int operation = dbTcpTypeService.operateTongFengHand(heartbeatText, equipmentNo, i);
 
+        Thread.sleep(1000);
         if (operation!=0){
             i = sendCodeUtils.sinceOrHandTongFeng(heartbeatText+"_"+equipmentNo);
         }
@@ -173,12 +174,13 @@ public class DbTcpTypeController extends BaseController {
     public R operateTongFengType(@ApiParam(name = "heartbeatText", value = "string") @PathVariable("heartbeatText") String heartbeatText,
                                  @ApiParam(name = "equipmentNo", value = "string", required = true) @PathVariable("equipmentNo") String equipmentNo,
                                  @ApiParam(name = "i", value = "inter", required = true) @PathVariable("i") Integer i,
-                                 @ApiParam(name = "temp", value = "温度") @PathVariable("temp") String temp) {
+                                 @ApiParam(name = "temp", value = "温度") @PathVariable("temp") String temp) throws InterruptedException {
         String hex= Integer.toHexString(Integer.parseInt(temp));
         int operation = dbTcpTypeService.operateTongFengType(heartbeatText, equipmentNo, i, hex);
         /*
          * 查询状态
          * */
+        Thread.sleep(1000);
         if (operation!=0){
             i = sendCodeUtils.timingTongFengType(heartbeatText+"_"+equipmentNo);
         }
