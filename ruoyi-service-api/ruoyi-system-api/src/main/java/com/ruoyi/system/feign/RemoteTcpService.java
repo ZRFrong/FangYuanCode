@@ -10,6 +10,8 @@ import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.system.feign.factory.RemoteTcpFallbackFactory;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +36,11 @@ public interface RemoteTcpService {
     * */
     @PostMapping(value="type/listonly")
     public List<DbTcpType> list(@RequestBody DbTcpType dbTcpType);
+
+
+    @GetMapping("type/list")
+    @ApiOperation(value = "查询设备状态列表", notes = "设备状态列表")
+    public R TCPTypelist(@ApiParam(name = "DbTcpType", value = "传入json格式", required = true) @RequestBody DbTcpType dbTcpType);
 
 
     @GetMapping(value="client/sinceOrHand")
