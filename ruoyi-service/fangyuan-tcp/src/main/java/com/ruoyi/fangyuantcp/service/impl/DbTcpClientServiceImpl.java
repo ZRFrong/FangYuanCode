@@ -110,6 +110,13 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
         dbTcpClientMapper.updateByHeartbeatName(heartbeatName);
     }
 
+    @Override
+    public int heartbeatUpdate(DbTcpClient dbTcpClient) {
+        dbTcpClient.setHeartbeatTime(new Date());
+        dbTcpClientMapper.updateDbTcpClient(dbTcpClient);
+        return 0;
+    }
+
     /*
      * 循环执行请求
      * */

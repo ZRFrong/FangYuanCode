@@ -77,4 +77,6 @@ public interface IDbTcpClientService
     void deleteDbtcpHeartbeatName(String heartbeatName);
 
     void TaskOnline(DbTcpClient tcpClient);
+
+    int heartbeatUpdate(DbTcpClient dbTcpClient);
 }

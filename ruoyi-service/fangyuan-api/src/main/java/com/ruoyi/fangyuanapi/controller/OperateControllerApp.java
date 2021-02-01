@@ -58,10 +58,15 @@ public class OperateControllerApp extends BaseController {
     @ApiOperation(value = "土地页面操作", notes = "土地页面操作")
     public R oprateLand(@ApiParam(name = "ids", value = "土地的子串，分隔", required = true) String ids, @ApiParam(name = "type",
             value = "卷帘:1，通风:2，补光:3,浇水:4", required = true) String type, @ApiParam(name = "handleName",
-            value = "开始 ：start，开始暂停：start_stop，结束暂停down_stop，结束down", required = true) String handleName, Integer time) {
+            value = "开始 ：start，暂停：start_stop，暂停down_stop，结束down", required = true) String handleName, Integer time) {
 
         List<String> strings = Arrays.asList(ids.split(","));
         String text = "";
+
+        if (time!=null){
+//            添加定时任务
+
+        }
 
         strings.forEach(ite -> send(landService.selectDbLandById(Long.valueOf(ite)), type, handleName,text));
 
@@ -153,7 +158,7 @@ public class OperateControllerApp extends BaseController {
     @OperationLog(OperationLogType = true, OperationLogNmae = OperationLogType.EQUIPMENT, OperationLogSource = OperationLogType.APP)
     public R oprateEqment(@ApiParam(name = "id", value = "设备id", required = true) Long id, @ApiParam(name = "type"
             , value = "操作单位名称:例如卷帘1", required = true) String type,
-                          @ApiParam(name = "handleName", value = "具体操作名称开始 ：start，开始暂停：start_stop，结束暂停down_stop，结束down", required = true) String handleName)
+                          @ApiParam(name = "handleName", value = "具体操作名称开始 ：start，暂停：start_stop，暂停down_stop，结束down", required = true) String handleName)
             throws Exception {
         DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(id);
         DbLandEquipment dbLandEquipment = new DbLandEquipment();

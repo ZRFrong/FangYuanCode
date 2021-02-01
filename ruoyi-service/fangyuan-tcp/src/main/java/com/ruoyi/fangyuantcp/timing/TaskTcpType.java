@@ -33,7 +33,7 @@ public class TaskTcpType {
                     log.info("状态定时查询执行===时间："+new Date());
                 } catch (Exception e) {
 
-                    log.error("状态定时查询执行错误===时间："+new Date());
+                   log.error("状态定时查询执行错误===时间："+new Date()+e);
                 }
 
             }

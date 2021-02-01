@@ -30,6 +30,7 @@ import com.ruoyi.common.core.text.Convert;
 @Service
 @Log4j2
 public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
+
     @Autowired
     private DbTcpTypeMapper dbTcpTypeMapper;
 
@@ -243,10 +244,11 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
     public void timingType() {
         DbTcpClient dbTcpClient = new DbTcpClient();
         List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
-        DbOperationVo dbOperationVo = new DbOperationVo();
+
         List<DbOperationVo> list = new ArrayList<>();
-        if (!dbTcpClients.isEmpty()) {
+        if (dbTcpClients.size()>0&&dbTcpClients!=null) {
             for (DbTcpClient tcpClient : dbTcpClients) {
+                DbOperationVo dbOperationVo = new DbOperationVo();
                 dbOperationVo.setHeartName(tcpClient.getHeartName());
                 dbOperationVo.setFacility("01");
                 dbOperationVo.setOperationText(TcpOrderTextConf.stateSave);
@@ -257,15 +259,12 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
 
     }
 
-
-
     /*
      * 更新状态
      * */
     @Override
     public int updateOrInstart(DbTcpType dbTcpType) {
 //            新增
-        dbTcpType.setUpdateTime(new Date());
         return updateDbTcpType(dbTcpType);
     }
 
