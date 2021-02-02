@@ -1,12 +1,10 @@
 package com.ruoyi.fangyuantcp.service.impl;
 
 import com.ruoyi.fangyuantcp.service.OperateSewageService;
-import com.ruoyi.fangyuantcp.utils.SendCodeUtils;
-import com.ruoyi.fangyuantcp.utils.TcpOrderTextConf;
+import com.ruoyi.fangyuantcp.processingCode.SendCodeUtils;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.system.domain.DbSewage;
-import com.ruoyi.system.domain.OperatePojo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

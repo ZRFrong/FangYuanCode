@@ -90,26 +90,6 @@ public class DbTcpClientController extends BaseController {
     }
 
 
-    /*
-     * 操作设备
-     * */
-    @PostMapping("operation")
-    @ApiOperation(value = "操作设备", notes = "操作设备")
-    public R operation(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) @RequestBody DbOperationVo dbOperationVo) {
-        int operation = dbTcpClientService.operation(dbOperationVo);
-        return toAjax(operation);
-    }
-
-    /*
-     * 批量操作设备
-     * */
-    @PostMapping("operationList")
-    @ApiOperation(value = "批量操作设备", notes = "批量操作设备")
-    public R operationList(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) @RequestBody List<DbOperationVo> dbOperationVo) throws ExecutionException, InterruptedException {
-
-            return dbTcpClientService.operationList(dbOperationVo);
-
-    }
 
 
 

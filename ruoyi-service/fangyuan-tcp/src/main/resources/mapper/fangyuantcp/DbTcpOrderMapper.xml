@@ -13,10 +13,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateTime"    column="update_time"    />
         <result property="whenTime"    column="when_time"    />
+        <result property="resultsText"    column="results_text"    />
     </resultMap>
 
     <sql id="selectDbTcpOrderVo">
-        select tcp_order_id, heart_name, code, text, results, create_time, update_time, when_time from db_tcp_order
+        select tcp_order_id, heart_name, code, text, results, create_time, update_time, when_time,results_text from db_tcp_order
     </sql>
 
     <select id="selectDbTcpOrderList" parameterType="DbTcpOrder" resultMap="DbTcpOrderResult">
@@ -41,6 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null ">create_time,</if>
             <if test="updateTime != null ">update_time,</if>
             <if test="whenTime != null ">when_time,</if>
+            <if test="resultsText != null ">results_text,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="heartName != null  and heartName != ''">#{heartName},</if>
@@ -50,6 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null ">#{createTime},</if>
             <if test="updateTime != null ">#{updateTime},</if>
             <if test="whenTime != null ">#{whenTime},</if>
+            <if test="resultsText != null ">#{resultsText},</if>
          </trim>
     </insert>
 
@@ -63,6 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="whenTime != null ">when_time = #{whenTime},</if>
+            <if test="resultsText != null ">results_text = #{resultsText},</if>
         </trim>
         where tcp_order_id = #{tcpOrderId}
     </update>

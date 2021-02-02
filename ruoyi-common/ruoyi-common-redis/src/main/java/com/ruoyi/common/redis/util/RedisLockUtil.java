@@ -52,8 +52,6 @@ public class RedisLockUtil {
             // ----- 最多循环10次，当尝试了10次都没有获取到锁，抛出异常
             if (0 == (cycles--)) {
                 log.error("redis try lock fail. key: {}, value: {}", key, value);
-
-                throw new RuntimeException("redis try lock fail.");
             }
             try {
                 TimeUnit.MILLISECONDS.sleep(SLEEP_TIME);

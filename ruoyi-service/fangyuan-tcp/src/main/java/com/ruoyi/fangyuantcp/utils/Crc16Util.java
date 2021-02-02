@@ -1,6 +1,5 @@
 package com.ruoyi.fangyuantcp.utils;
 
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 基于Modbus CRC16的校验算法工具类

@@ -69,6 +69,11 @@ public class RemoteTcpFallbackFactory implements FallbackFactory<RemoteTcpServic
             }
 
             @Override
+            public R stateAllQuery(List<DbOperationVo> dbOperationVo) {
+                return null;
+            }
+
+            @Override
             public R timingTongFengHand() {
                 return null;
             }

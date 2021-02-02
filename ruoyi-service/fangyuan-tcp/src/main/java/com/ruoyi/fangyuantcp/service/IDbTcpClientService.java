@@ -64,19 +64,12 @@ public interface IDbTcpClientService
 
     int heartbeatChoose(DbTcpClient dbTcpClient);
 
-    int operation(DbOperationVo dbTcpClient);
 
-
-    int query(DbOperationVo dbTcpClient);
-
-    void updateByHeartbeatName(String heartbeatName);
-
-    R operationList(List<DbOperationVo> dbOperationVo) throws ExecutionException, InterruptedException;
 
 
     void deleteDbtcpHeartbeatName(String heartbeatName);
 
-    void TaskOnline(DbTcpClient tcpClient);
+    void TaskOnline(DbTcpClient tcpClient) throws ExecutionException, InterruptedException;
 
     int heartbeatUpdate(DbTcpClient dbTcpClient);
 }

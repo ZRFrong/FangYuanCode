@@ -4,6 +4,7 @@ import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.system.domain.DbTcpClient;
+import lombok.SneakyThrows;
 
 import java.util.List;
 import java.util.Timer;
@@ -21,6 +22,7 @@ public class TaskOnline {
         Timer timer = new Timer();
 
         TimerTask timerTask = new TimerTask() {
+            @SneakyThrows
             @Override
             public void run() {
                 /*

@@ -54,23 +54,51 @@ public class OperateControllerWeChat extends BaseController {
      * */
     @GetMapping("getList")
     @ApiOperation(value = "查询当前用户下的操作列表", notes = "查询当前用户下的操作列表")
-    public AjaxResult getList() {
+    public R getList() {
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
         DbLand dbLand = new DbLand();
         dbLand.setDbUserId(Long.valueOf(userId));
         List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
-        return AjaxResult.success(getOperateWeChatVos(dbLands));
+        /*
+         * 状态查询
+         * */
+        R r = stateAllQuery(dbLands);
+        return r.put("data",getOperateWeChatVos(dbLands));
+
     }
 
+    private R stateAllQuery(List<DbLand> dbLands) {
+        List<DbOperationVo> operateWeChatVos = new ArrayList<>();
+        for (DbLand dbLand : dbLands) {
+            String equipmentIds = dbLand.getEquipmentIds();
+            if (StringUtils.isEmpty(equipmentIds)) {
+
+                continue;
+            }
+            for (String s : equipmentIds.split(",")) {
+                DbOperationVo dbOperationVo = new DbOperationVo();
+                DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(Long.valueOf(s));
+                dbOperationVo.setHeartName(dbEquipment.getHeartbeatText());
+                dbOperationVo.setFacility(dbEquipment.getEquipmentNoString());
+                dbOperationVo.setOperationName(dbEquipment.getEquipmentName());
+                dbOperationVo.setCreateTime(new Date());
+                dbOperationVo.setOperationId(s);
+                operateWeChatVos.add(dbOperationVo);
+            }
+
+    }
+        return remoteTcpService.stateAllQuery(operateWeChatVos);
+}
+
     /*
-    *页面操作（单项）
-    * */
+     *页面操作（单项）
+     * */
     @GetMapping("operate")
     @ApiOperation(value = "页面操作（单项）", notes = "页面操作（单项）")
-    @OperationLog(OperationLogNmae=OperationLogType.EQUIPMENT,OperationLogSource = OperationLogType.WEchat)
-    public R operate(@ApiParam(name = "id", value = "设备id", required = true)Long id, @ApiParam(name = "text", value = "操作指令", required = true)String text,
-                     @ApiParam(name = "name", value = "操作对象", required = true)String name,
-                     @ApiParam(name = "type", value = "操作对象类型", required = true)String type,
+    @OperationLog(OperationLogNmae = OperationLogType.EQUIPMENT, OperationLogSource = OperationLogType.WEchat)
+    public R operate(@ApiParam(name = "id", value = "设备id", required = true) Long id, @ApiParam(name = "text", value = "操作指令", required = true) String text,
+                     @ApiParam(name = "name", value = "操作对象", required = true) String name,
+                     @ApiParam(name = "type", value = "操作对象类型", required = true) String type,
                      @ApiParam(name = "handleName", value = "开始 ：start，开始暂停：start_stop，结束暂停down_stop，结束down", required = true) String handleName) {
         DbOperationVo dbOperationVo = new DbOperationVo();
         DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(id);
@@ -78,7 +106,7 @@ public class OperateControllerWeChat extends BaseController {
         dbOperationVo.setFacility(dbEquipment.getEquipmentNoString());
         dbOperationVo.setOperationText(text);
         //                        操作名称
-        dbOperationVo.setOperationName(OperationLogUtils.toOperationText(name,handleName));
+        dbOperationVo.setOperationName(OperationLogUtils.toOperationText(name, handleName));
         R operation = remoteTcpService.operation(dbOperationVo);
         return operation;
     }
@@ -89,7 +117,7 @@ public class OperateControllerWeChat extends BaseController {
      * */
     @GetMapping("oprateEqment")
     @ApiOperation(value = "设备页面操作", notes = "设备页面操作")
-    @OperationLog(OperationLogType=true,OperationLogNmae=OperationLogType.EQUIPMENT,OperationLogSource = OperationLogType.WEchat)
+    @OperationLog(OperationLogType = true, OperationLogNmae = OperationLogType.EQUIPMENT, OperationLogSource = OperationLogType.WEchat)
     public R oprateEqment(@ApiParam(name = "id", value = "设备id", required = true) Long id, @ApiParam(name = "type"
             , value = "操作单位名称:例如卷帘1", required = true) String type,
                           @ApiParam(name = "handleName", value = "具体操作名称开始 ：start，开始暂停：start_stop，结束down,结束暂停down_stop", required = true) String handleName)
@@ -113,7 +141,7 @@ public class OperateControllerWeChat extends BaseController {
 //        是否完成
                         dbOperationVo.setIsTrue("1");
 //                        操作名称
-                        dbOperationVo.setOperationName(OperationLogUtils.toOperationText(pojo.getCheckCode(),operateSp.getHandleName()));
+                        dbOperationVo.setOperationName(OperationLogUtils.toOperationText(pojo.getCheckCode(), operateSp.getHandleName()));
 //        创建时间
                         dbOperationVo.setCreateTime(new Date());
                         dbOperationVo.setOperationText(operateSp.getHandleCode());
@@ -135,21 +163,25 @@ public class OperateControllerWeChat extends BaseController {
     }
 
 
-
-    private  ArrayList<OperateWeChatVo> getOperateWeChatVos(List<DbLand> dbLands) {
+    private ArrayList<OperateWeChatVo> getOperateWeChatVos(List<DbLand> dbLands) {
         ArrayList<OperateWeChatVo> operateWeChatVos = new ArrayList<>();
         for (DbLand dbLand : dbLands) {
             OperateWeChatVo operateWeChatVo = new OperateWeChatVo();
             operateWeChatVo.setDbLandId(dbLand.getLandId());
             operateWeChatVo.setNickName(dbLand.getNickName());
-            if (StringUtils.isEmpty(dbLand.getEquipmentIds()) ) {
+            if (StringUtils.isEmpty(dbLand.getEquipmentIds())) {
                 operateWeChatVo.setIsBound(0);
                 continue;
             }
             ArrayList<DbEquipmentVo> dbEquipmentVos = new ArrayList<>();
 
+            /*
+             * 更新设备状态
+             * */
+
+
             for (String s : dbLand.getEquipmentIds().split(",")) {
-            DbEquipmentVo dbEquipmentVo = new DbEquipmentVo();
+                DbEquipmentVo dbEquipmentVo = new DbEquipmentVo();
 
                 DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(Long.valueOf(s));
                 dbEquipmentVo.setEquipment(dbEquipment);
@@ -159,19 +191,18 @@ public class OperateControllerWeChat extends BaseController {
                 dbTcpType.setHeartName(dbEquipment.getHeartbeatText() + "_" + dbEquipment.getEquipmentNoString());
                 List<DbTcpType> list = remoteTcpService.list(dbTcpType);
 
-                if (list.size() != 0&&list!=null) {
-                DbTcpType dbTcpType1 = list.get(0);
+                if (list.size() != 0 && list != null) {
+                    DbTcpType dbTcpType1 = list.get(0);
 
                     dbEquipmentVo.setDbTcpType(dbTcpType1);
                 }
                 /*
-                * 剩余时长，到期时长计算
-                * */
+                 * 剩余时长，到期时长计算
+                 * */
 //                运行时长
-                dbEquipmentVo.setRemaining(DateUtils.getDatePoorDay(dbEquipment.getAllottedTime(),new Date()));
+                dbEquipmentVo.setRemaining(DateUtils.getDatePoorDay(dbEquipment.getAllottedTime(), new Date()));
 //              剩余时长
-                dbEquipmentVo.setRuntime(DateUtils.getDatePoorDay(new Date(),dbEquipment.getCreateTime()));
-
+                dbEquipmentVo.setRuntime(DateUtils.getDatePoorDay(new Date(), dbEquipment.getCreateTime()));
 
 
                 dbEquipmentVos.add(dbEquipmentVo);

@@ -1,4 +1,4 @@
-package com.ruoyi.fangyuantcp.utils;
+package com.ruoyi.fangyuantcp.processingCode;
 
 import com.alibaba.fastjson.JSONArray;
 import com.ruoyi.common.redis.config.RedisKeyConf;
@@ -40,18 +40,18 @@ public class ReceiveUtil {
                  @Override
                  public void run() {
                      String text = "01" + "," + "03," + TcpOrderTextConf.stateSave;
-                     SendCodeUtils.querystate03Ctx(ctx,text);
+                     SendBasisUtils.operateCodeCtx(ctx,text);
                      try {
                          Thread.sleep(500);
                          //            发送心跳查询指令
                          String text3 = "01" + "," + "01,"+ TcpOrderTextConf.SinceOrhandTongFeng;
-                         SendCodeUtils.querystate03Ctx(ctx,text3);
+                         SendBasisUtils.operateCodeCtx(ctx,text3);
                          Thread.sleep(500);
                          String text2 = "01" + "," + "03," + TcpOrderTextConf.SinceOrhandTongFengType;
-                         SendCodeUtils.querystate03Ctx(ctx,text2);
+                         SendBasisUtils.operateCodeCtx(ctx,text2);
                          Thread.sleep(500);
                          String text4 = "01" + "," + "03,"+ TcpOrderTextConf.TaskOnline;
-                         SendCodeUtils.querystate03Ctx(ctx,text4);
+                         SendBasisUtils.operateCodeCtx(ctx,text4);
                      } catch (InterruptedException e) {
                          e.printStackTrace();
                      }
@@ -241,6 +241,7 @@ public class ReceiveUtil {
     }
 
 
+
     public static float getfloat(long sor) {
 
         int i = Integer.parseInt(String.valueOf(sor));
@@ -249,43 +250,12 @@ public class ReceiveUtil {
     }
 
 
-    private RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
-    private RedisLockUtil redisLockUtil = SpringUtils.getBean(RedisLockUtil.class);
 
 
 
-    /*
-     * 操作响应
-     * */
-    public void stateRespond(ChannelHandlerContext ctx, String string) {
-        String getname = getname(ctx);
-        /*
-         * 处理收到信息
-         * */
-        String key = getRedisKey(string, getname);
 
-        log.info( "收到操作指令："+  key + "当前的时间毫秒值是："+new Date().getTime());
 
-//        加锁
-        String s = String.valueOf(Thread.currentThread().getId());
-        redisLockUtil.lock(key,s,100);
-//        从redis中拿到指定的数据
-        DbTcpOrder dbTcpClient = redisUtils.get(key, DbTcpOrder.class);
-        dbTcpClient.setResults(1);
-        Long i = new Date().getTime() - dbTcpClient.getCreateTime().getTime();
-        dbTcpClient.setWhenTime(i);
-//       改变状态存储进去
-        redisUtils.set(key, JSONArray.toJSONString(dbTcpClient));
 
-        //        解锁
-        redisLockUtil.unLock(key,s);
-    }
-
-    private String getRedisKey(String string, String getname) {
-        String charStic = string.substring(0, 2);
-
-        return RedisKeyConf.HANDLE + ":" + getname + "_" + charStic + "_" + string;
-    }
 
     /*
      * 通过通道找到心跳名称
@@ -327,62 +297,6 @@ public class ReceiveUtil {
 
 
 
-    /*
-     *传感器状态接收处理
-     * */
-    public  void stateRead(String type) {
-        /*
-            状态码 01 03   0A代码后边有10位
-         *01 03 0A 00 FD 01 09 01 06 00 01 00 C1 39 6F
-         *5组   空气温度 湿度   土壤温度 湿度   光照  二氧化碳
-         * */
-        List<String> arr = getCharToArr(type);
-        DbTcpType dbTcpType = new DbTcpType();
-//        设备号
-
-//        设备号
-        String s3 = intToString(Integer.parseInt(Long.toString(Long.parseLong(arr.get(0), 16))));
-        dbTcpType.setHeartName("01" + "_" + s3);
-
-//      几位返回
-        int i1 = Integer.parseInt(Long.toString(Long.parseLong(arr.get(2), 16)));
-        for (int i = 0; i < (i1 / 2); i++) {
-            switch (i) {
-                case 0:
-//                      空气  温度
-                    dbTcpType.setTemperatureAir(getTemp(arr.get(2 + i + 1) + arr.get(2 + i + 2)));
-
-                case 1:
-//                    空气     湿度
-                    dbTcpType.setHumidityAir(getHum(arr.get(2 + i + 1 + 1) + arr.get(2 + i + 2 + 1)));
-
-                case 2:
-//                土壤   温度
-                    dbTcpType.setTemperatureSoil(getHum(arr.get(2 + i + 1 + 2) + arr.get(2 + i + 2 + 2)));
-                case 3:
-                    //                土壤   湿度
-                    dbTcpType.setHumiditySoil(getTemp(arr.get(2 + i + 1 + 3) + arr.get(2 + i + 2 + 3)));
-                case 4:
-                    //                光照
-                    dbTcpType.setLight(getLight(arr.get(2 + i + 1 + 4) + arr.get(2 + i + 2 + 4)));
-                case 5:
-//                    二氧化碳
-                    dbTcpType.setCo2(getLight(arr.get(2 + i + 1 + 5) + arr.get(2 + i + 2 + 5)));
-                    ;
-            }
-//            目前5个
-        }
-//        存储或者添加
-        List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType);
-        if (list.size() == 0 || list == null) {
-
-            int i = tcpTypeService.insertDbTcpType(dbTcpType);
-        } else {
-            int i = tcpTypeService.updateOrInstart(dbTcpType);
-        }
-
-
-    }
 
     public void returnautocontrolType(ChannelHandlerContext ctx, String string) {
         DbTcpType dbTcpType = new DbTcpType();
@@ -412,6 +326,7 @@ public class ReceiveUtil {
 
         int i = tcpClientService.heartbeatUpdate(dbTcpClient);
     }
+
 }
 
 

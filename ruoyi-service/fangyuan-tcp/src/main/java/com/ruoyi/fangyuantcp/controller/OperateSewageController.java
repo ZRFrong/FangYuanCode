@@ -3,7 +3,7 @@ package com.ruoyi.fangyuantcp.controller;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.fangyuantcp.service.OperateSewageService;
-import com.ruoyi.fangyuantcp.utils.TcpOrderTextConf;
+import com.ruoyi.fangyuantcp.processingCode.TcpOrderTextConf;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbSewage;
 import io.swagger.annotations.Api;
@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 @Api("OperateSewage")
 @RequestMapping("OperateSewage")
-public class OperateSewage extends BaseController {
+public class OperateSewageController extends BaseController {
 
 
     @Autowired

@@ -1,12 +1,11 @@
 package com.ruoyi.fangyuantcp.service;
 
-import com.ruoyi.system.domain.DbEquipment;
-import com.ruoyi.system.domain.DbStateRecords;
-import com.ruoyi.system.domain.DbTcpClient;
-import com.ruoyi.system.domain.DbTcpType;
+import com.ruoyi.common.core.domain.R;
+import com.ruoyi.system.domain.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 设备状态Service接口
@@ -71,21 +70,19 @@ public interface IDbTcpTypeService {
 
     int updateOrInstart(DbTcpType dbTcpType);
 
-    void timingType();
+    void timingType() throws ExecutionException, InterruptedException;
 
-    void timingTongFengHand();
+    void timingTongFengHand() throws ExecutionException, InterruptedException;
 
-    void timingTongFengType();
+    void timingTongFengType() throws ExecutionException, InterruptedException;
 
 
 
-    int operateTongFengHand(String heartbeatText, String equipmentNo, Integer i);
 
-    int operateTongFengType(String heartbeatText, String equipmentNo, Integer i, String temp);
 
     List<DbStateRecords> intervalState(Date startTime, Date endTime, String iNterval,String hearName);
 
-    void timingTypeOnly(DbTcpClient dbTcpClient);
+    void timingTypeOnly(DbTcpClient dbTcpClient) throws ExecutionException, InterruptedException;
 
     void deleteByHeartName(String heartbeatText);
 
@@ -94,4 +91,6 @@ public interface IDbTcpTypeService {
     void updateByHeartbeat(String heartbeatText);
 
     void updateByHeartbeatOpen(String heartName);
+
+    R stateAllQuery(List<DbOperationVo> dbOperationVo) throws ExecutionException, InterruptedException;
 }
