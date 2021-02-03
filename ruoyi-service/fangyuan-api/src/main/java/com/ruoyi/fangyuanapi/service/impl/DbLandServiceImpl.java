@@ -96,6 +96,7 @@ public class DbLandServiceImpl implements IDbLandService
     @Override
     public int deleteDbLandByIds(String ids)
     {
+
         return dbLandMapper.deleteDbLandByIds(Convert.toStrArray(ids));
     }
 
@@ -105,8 +106,13 @@ public class DbLandServiceImpl implements IDbLandService
      * @param landId 土地ID
      * @return 结果
      */
+    @Transactional
     public int deleteDbLandById(Long landId)
     {
+        Integer i = dbLandMapper.selectDbLandBySiteId(landId);
+        if (i >0){
+            return 0;
+        }
         return dbLandMapper.deleteDbLandById(landId);
     }
 

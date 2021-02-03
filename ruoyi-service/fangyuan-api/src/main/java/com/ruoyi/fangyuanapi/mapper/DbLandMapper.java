@@ -77,4 +77,6 @@ public interface DbLandMapper
     List<DbLand> selectDbLandNoSiteList(DbLand dbLand);
 
     List<DbLand> selectDbLandWeChatList(DbLand dbLand);
+
+    Integer selectDbLandBySiteId(Long landId);
 }

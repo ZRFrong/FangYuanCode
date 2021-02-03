@@ -48,6 +48,8 @@ public class OperateControllerWeChat extends BaseController {
     @Autowired
     private IDbEquipmentService equipmentService;
 
+    @Autowired
+    private OperationLogUtils operationLogUtils;
 
     /*
      *列表回写    当前用户下边所有土地
@@ -78,7 +80,7 @@ public class OperateControllerWeChat extends BaseController {
         dbOperationVo.setFacility(dbEquipment.getEquipmentNoString());
         dbOperationVo.setOperationText(text);
         //                        操作名称
-        dbOperationVo.setOperationName(OperationLogUtils.toOperationText(name,handleName));
+        dbOperationVo.setOperationName(operationLogUtils.toOperationText(name,handleName));
         R operation = remoteTcpService.operation(dbOperationVo);
         return operation;
     }
@@ -113,7 +115,7 @@ public class OperateControllerWeChat extends BaseController {
 //        是否完成
                         dbOperationVo.setIsTrue("1");
 //                        操作名称
-                        dbOperationVo.setOperationName(OperationLogUtils.toOperationText(pojo.getCheckCode(),operateSp.getHandleName()));
+                        dbOperationVo.setOperationName(operationLogUtils.toOperationText(pojo.getCheckCode(),operateSp.getHandleName()));
 //        创建时间
                         dbOperationVo.setCreateTime(new Date());
                         dbOperationVo.setOperationText(operateSp.getHandleCode());

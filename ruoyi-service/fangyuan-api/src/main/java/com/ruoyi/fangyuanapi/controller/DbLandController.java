@@ -228,7 +228,8 @@ public class DbLandController extends BaseController {
      */
     @GetMapping("remove")
     public R remove(String landId) {
-        return toAjax(dbLandService.deleteDbLandByIds(landId));
+        int i = dbLandService.deleteDbLandById(Long.valueOf(landId));
+        return i>0 ? R.ok() : R.error("删除失败或者检查选中的地块下是否存在土地！");
     }
 
     /*

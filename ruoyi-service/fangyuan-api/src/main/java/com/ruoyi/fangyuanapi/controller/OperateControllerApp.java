@@ -44,6 +44,9 @@ public class OperateControllerApp extends BaseController {
     @Autowired
     private RemoteTcpService remoteTcpService;
 
+    @Autowired
+    private OperationLogUtils operationLogUtils;
+
 
     private List<DbOperationVo> lists = new ArrayList<>();
 
@@ -130,7 +133,7 @@ public class OperateControllerApp extends BaseController {
 //        设备号
                         dbOperationVo.setFacility(equipment.getEquipmentNoString());
 //                        操作名称
-                        dbOperationVo.setOperationName(text+"-"+object.getCheckName()+"-"+OperationLogUtils.toOperationText(object.getCheckCode(), operateSp.getHandleName()));
+                        dbOperationVo.setOperationName(text+"-"+object.getCheckName()+"-"+operationLogUtils.toOperationText(object.getCheckCode(), operateSp.getHandleName()));
 //        是否完成
                         dbOperationVo.setIsTrue("1");
 
@@ -169,7 +172,7 @@ public class OperateControllerApp extends BaseController {
 //        心跳名称
         dbOperationVo.setHeartName(dbEquipment.getHeartbeatText());
 //                        操作名称
-        dbOperationVo.setOperationName(OperationLogUtils.toOperationText(type, handleName));
+        dbOperationVo.setOperationName(operationLogUtils.toOperationText(type, handleName));
 //        设备号
         dbOperationVo.setFacility(dbEquipment.getEquipmentNoString());
 //        是否完成
