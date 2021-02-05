@@ -182,6 +182,8 @@ public class SendBasisUtils {
         try {
             Thread.sleep(1000);
             //        加锁
+//            String s1 = String.valueOf(Thread.currentThread().getId());
+//            redisLockUtil.lock(text,s1,100);
             String s = redisUtils.get(text);
             if (StringUtils.isEmpty(s)) {
                 throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
@@ -191,7 +193,8 @@ public class SendBasisUtils {
 
                 //                    存储进入数据库
                 tcpOrderService.insertDbTcpOrder(dbTcpOrder);
-
+                redisUtils.delete(text);
+//                redisLockUtil.unLock(text,s1);
                 if (results == 0) {
                     throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
                 }

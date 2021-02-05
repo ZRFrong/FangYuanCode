@@ -28,10 +28,7 @@ public class RemoteTcpFallbackFactory implements FallbackFactory<RemoteTcpServic
                 return null;
             }
 
-            @Override
-            public R TCPTypelist(DbTcpType dbTcpType) {
-                return null;
-            }
+
 
             @Override
             public R sinceOrHand() {

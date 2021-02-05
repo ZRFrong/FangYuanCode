@@ -144,6 +144,8 @@ public class ReceiveUtil {
         String substring = type.substring(0, 2);
 //        心跳
         String getname = getname(ctx);
+//        01 03 02 00 F9 78 06
+//        01 03 02 03 E8 B8 FA
 //      手自判断
         List<String> arr = getCharToArr(type);
         int i = Integer.parseInt(arr.get(3) + arr.get(4), 16);
@@ -159,12 +161,16 @@ public class ReceiveUtil {
 //            手动
             dbEquipment.setIsOnline(1);
 //            提醒
-            throw new DropsExceptions(dbEquipment.getEquipmentName(), "已经切换手动状态", dbEquipment.getEquipmentId().toString());
+            try {
+                throw new DropsExceptions(dbEquipment.getEquipmentName(), "已经切换手动状态", dbEquipment.getEquipmentId().toString());
+            } finally {
+                iDbEquipmentService.updateDbEquipment(dbEquipment);
+            }
         } else {
 //            自动
             dbEquipment.setIsOnline(0);
         }
-        iDbEquipmentService.updateDbEquipment(dbEquipment);
+
 
 
 //        完事  END
@@ -277,6 +283,7 @@ public class ReceiveUtil {
     public void returnHand(ChannelHandlerContext ctx, String string) {
         DbTcpType dbTcpType = new DbTcpType();
         List<String> arr = getCharToArr(string);
+
         String getname = getname(ctx);
         dbTcpType.setHeartName(getname + "_" + arr.get(0));
         List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType);

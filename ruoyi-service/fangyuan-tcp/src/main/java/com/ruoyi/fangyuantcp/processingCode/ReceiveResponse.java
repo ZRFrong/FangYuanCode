@@ -36,8 +36,7 @@ public class ReceiveResponse {
         log.info("收到操作指令：" + key + "当前的时间毫秒值是：" + new Date().getTime());
 
 //        加锁
-        String s = String.valueOf(Thread.currentThread().getId());
-        redisLockUtil.lock(key, s, 100);
+
 //        从redis中拿到指定的数据
 
         DbTcpOrder dbTcpClient = redisUtils.get(key, DbTcpOrder.class);
@@ -51,7 +50,7 @@ public class ReceiveResponse {
         redisUtils.set(key, JSONArray.toJSONString(dbTcpClient));
 
         //        解锁
-        redisLockUtil.unLock(key, s);
+//        redisLockUtil.unLock(key, s);
     }
 
 
