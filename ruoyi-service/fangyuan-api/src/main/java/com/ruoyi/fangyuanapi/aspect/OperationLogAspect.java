@@ -18,6 +18,7 @@ import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
@@ -36,6 +37,8 @@ public class OperationLogAspect {
     private  static IDbLandService landService=SpringUtils.getBean(IDbLandService.class);
     private  static IDbEquipmentService dbEquipmentService=SpringUtils.getBean(IDbEquipmentService.class);
 
+    @Autowired
+    private OperationLogUtils operationLogUtils;
 
 //    //切入点
 //    @Pointcut(value = "@annotation(com.ruoyi.fangyuanapi.abnormal.OperationLog)")
@@ -114,12 +117,12 @@ public class OperationLogAspect {
         dbOperationRecord.setOperationObject(id.getEquipmentName());
         if (type) {
             //   是批量
-            String text = OperationLogUtils.toOperationText(maps.get("type").toString(), maps.get("handleName").toString());
+            String text = operationLogUtils.toOperationText(maps.get("type").toString(), maps.get("handleName").toString());
             dbOperationRecord.setOperationText(text);
 
         } else {
 //            单独
-            dbOperationRecord.setOperationText(maps.get("name").toString()+OperationLogUtils.toOperationText(maps.get("type").toString(), maps.get("handleName").toString()));
+            dbOperationRecord.setOperationText(maps.get("name").toString()+operationLogUtils.toOperationText(maps.get("type").toString(), maps.get("handleName").toString()));
         }
         return dbOperationRecord;
 
@@ -137,7 +140,7 @@ public class OperationLogAspect {
         dbOperationRecord.setOperationObject(stringBuilder.toString());
         if (type) {
             //   是批量
-            String text = OperationLogUtils.toOperationText(maps.get("type").toString(), maps.get("handleName").toString());
+            String text = operationLogUtils.toOperationText(maps.get("type").toString(), maps.get("handleName").toString());
             dbOperationRecord.setOperationText(text);
 
         } else {

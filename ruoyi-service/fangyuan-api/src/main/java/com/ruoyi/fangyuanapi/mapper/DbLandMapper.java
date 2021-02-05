@@ -8,15 +8,15 @@ import java.util.List;
 
 /**
  * 土地Mapper接口
- * 
+ *
  * @author zheng
  * @date 2020-09-24
  */
-public interface DbLandMapper 
+public interface DbLandMapper
 {
     /**
      * 查询土地
-     * 
+     *
      * @param landId 土地ID
      * @return 土地
      */
@@ -24,7 +24,7 @@ public interface DbLandMapper
 
     /**
      * 查询土地列表
-     * 
+     *
      * @param dbLand 土地
      * @return 土地集合
      */
@@ -32,7 +32,7 @@ public interface DbLandMapper
 
     /**
      * 新增土地
-     * 
+     *
      * @param dbLand 土地
      * @return 结果
      */
@@ -40,7 +40,7 @@ public interface DbLandMapper
 
     /**
      * 修改土地
-     * 
+     *
      * @param dbLand 土地
      * @return 结果
      */
@@ -48,7 +48,7 @@ public interface DbLandMapper
 
     /**
      * 删除土地
-     * 
+     *
      * @param landId 土地ID
      * @return 结果
      */
@@ -56,7 +56,7 @@ public interface DbLandMapper
 
     /**
      * 批量删除土地
-     * 
+     *
      * @param landIds 需要删除的数据ID
      * @return 结果
      */
@@ -77,4 +77,6 @@ public interface DbLandMapper
     List<DbLand> selectDbLandNoSiteList(DbLand dbLand);
 
     List<DbLand> selectDbLandWeChatList(DbLand dbLand);
+
+    Integer selectDbLandBySiteId(Long landId);
 }

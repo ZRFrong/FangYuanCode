@@ -52,14 +52,17 @@
     </select>
     <select id="selectDbLandByUserId" resultMap="DbLandResult">
         select * from  db_land where db_user_id = #{dbUserId}
-            <if test="siteId != null ">and site_id = #{siteId}</if>
+        <if test="siteId != null ">and site_id = #{siteId}</if>
     </select>
     <select id="selectDbLandCountByUserId" resultType="java.lang.Integer">
         select count(*) from  db_land where db_user_id = #{dbUserId} and site_id != 0
     </select>
     <select id="selectDbLandWeChatList" resultMap="DbLandResult">
             select land_id, region, longitude, latitude, product_category, product_name,address, note_text, create_time, nick_name, site_id, equipment_ids from db_land
-            where db_user_id = #{dbUserId} and site_id != 0
+            where db_user_id = #{dbUserId}
+    </select>
+    <select id="selectDbLandBySiteId" resultType="java.lang.Integer">
+        select COUNT(land_id) count FROM db_land WHERE site_id = #{landId} LIMIT 1
     </select>
 
     <insert id="insertDbLand" parameterType="DbLand" useGeneratedKeys="true" keyProperty="landId" keyColumn="landId">

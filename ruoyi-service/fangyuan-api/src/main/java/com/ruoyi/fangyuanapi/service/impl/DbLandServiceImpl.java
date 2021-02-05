@@ -24,12 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 土地Service业务层处理
- * 
+ *
  * @author zheng
  * @date 2020-09-24
  */
 @Service
-public class DbLandServiceImpl implements IDbLandService 
+public class DbLandServiceImpl implements IDbLandService
 {
     @Autowired
     private DbLandMapper dbLandMapper;
@@ -39,7 +39,7 @@ public class DbLandServiceImpl implements IDbLandService
 
     /**
      * 查询土地
-     * 
+     *
      * @param landId 土地ID
      * @return 土地
      */
@@ -51,7 +51,7 @@ public class DbLandServiceImpl implements IDbLandService
 
     /**
      * 查询土地列表
-     * 
+     *
      * @param dbLand 土地
      * @return 土地
      */
@@ -76,7 +76,7 @@ public class DbLandServiceImpl implements IDbLandService
 
     /**
      * 修改土地
-     * 
+     *
      * @param dbLand 土地
      * @return 结果
      */
@@ -89,30 +89,36 @@ public class DbLandServiceImpl implements IDbLandService
 
     /**
      * 删除土地对象
-     * 
+     *
      * @param ids 需要删除的数据ID
      * @return 结果
      */
     @Override
     public int deleteDbLandByIds(String ids)
     {
+
         return dbLandMapper.deleteDbLandByIds(Convert.toStrArray(ids));
     }
 
     /**
      * 删除土地信息
-     * 
+     *
      * @param landId 土地ID
      * @return 结果
      */
+    @Transactional
     public int deleteDbLandById(Long landId)
     {
+        Integer i = dbLandMapper.selectDbLandBySiteId(landId);
+        if (i >0){
+            return 0;
+        }
         return dbLandMapper.deleteDbLandById(landId);
     }
 
     /**
      * 查询土地树列表
-     * 
+     *
      * @return 所有土地信息
      */
     @Override

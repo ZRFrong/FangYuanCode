@@ -72,4 +72,6 @@ public interface IDbTcpClientService
     void TaskOnline(DbTcpClient tcpClient) throws ExecutionException, InterruptedException;
 
     int heartbeatUpdate(DbTcpClient dbTcpClient);
+
+    List<String> heartBeatDFuzzy(String heartBeat);
 }

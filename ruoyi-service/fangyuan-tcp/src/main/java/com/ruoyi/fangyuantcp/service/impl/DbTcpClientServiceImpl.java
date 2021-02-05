@@ -86,6 +86,12 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
         return dbTcpClientMapper.updateDbTcpClient(dbTcpClient);
     }
 
+    @Override
+    public List<String> heartBeatDFuzzy(String heartBeat) {
+       String heartBeat1="%"+heartBeat+"%";
+        return dbTcpClientMapper.heartBeatDFuzzy(heartBeat1);
+    }
+
     /**
      * 删除tcp在线设备对象
      *
