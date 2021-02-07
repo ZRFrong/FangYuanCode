@@ -213,6 +213,19 @@ public class DbLandServiceImpl implements IDbLandService
         return list;
     }
 
+    @Override
+    public List<Map<String,Object>> selectDbLandByUserIdAndSideId(Long userId) {
+        List<Map<String,Object>> list = dbLandMapper.selectDbLandByUserIdAndSideId(userId,0L);
+        if (list == null || list.size() <= 0){
+            return null;
+        }
+        for (Map<String, Object> map : list) {
+            List<Map<String, Object>> lands = dbLandMapper.selectDbLandByUserIdAndSideId(userId, Long.valueOf(map.get("land_id").toString()));
+            map.put("lands",lands);
+        }
+        return list;
+    }
+
     private DbLand checkLand(DbLand land,Integer num){
         DbLand dbLand = new DbLand();
         dbLand.setNickName(DbLandUtils.getLnadName(num));

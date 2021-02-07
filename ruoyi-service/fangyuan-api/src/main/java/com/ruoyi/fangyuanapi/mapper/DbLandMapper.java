@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 土地Mapper接口
@@ -79,4 +80,6 @@ public interface DbLandMapper
     List<DbLand> selectDbLandWeChatList(DbLand dbLand);
 
     Integer selectDbLandBySiteId(Long landId);
+
+    List<Map<String,Object>> selectDbLandByUserIdAndSideId(@Param("userId") Long userId,@Param("sideId") Long sideId);
 }
