@@ -59,25 +59,8 @@ private   static SendBasisUtils basisUtils=new SendBasisUtils();
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public void queryNoWait(DbOperationVo tcpOrder,int type) {
+        String text = tcpOrder.getFacility() + ",0" + type+"," + tcpOrder.getOperationText();
+         basisUtils.operateCodeNoWait(text, tcpOrder);
+    }
 }

@@ -23,10 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /*
  * 单设备多指令
@@ -51,21 +48,25 @@ public class SendCodeListUtils {
         Set<String> strings = mps.keySet();
         HashMap<String, String> stringStringHashMap1 = new HashMap<>();
 //    新建几条线程
-        executorService = ThreadUtil.newExecutor(strings.size());
+
+        executorService = ThreadUtil.newExecutor(strings.size()*2);
 
         for (String string : strings) {
-
-            Future<HashMap<String, String>> send = send(mps.get(string), type);
-            if (send.get() != null) {
-                HashMap<String, String> stringStringHashMap = send.get();
-                stringStringHashMap1.putAll(stringStringHashMap);
-            }
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    HashMap<String, String> send = send(mps.get(string), type);
+                        if (send != null) {
+                            stringStringHashMap1.putAll(send);
+                        }
+                }
+            });
         }
         executorService.shutdown();
-
         while (!executorService.isTerminated()) {
 //            等待执行完成再返回
         }
+
         if (stringStringHashMap1.size() > 0) {
 //                有异常信息
             return R.error(502, JSON.toJSONString(stringStringHashMap1));
@@ -75,13 +76,10 @@ public class SendCodeListUtils {
     }
 
 
-    private static Future<HashMap<String, String>> send(List<DbOperationVo> dbOperationVos, int type) {
+    private static HashMap<String, String> send(List<DbOperationVo> dbOperationVos, int type) {
 
 
-        Future<HashMap<String, String>> submit = executorService.submit(new Callable<HashMap<String, String>>() {
 
-            @Override
-            public HashMap<String, String> call() throws Exception {
                 HashMap<String, String> stringStringHashMap = new HashMap<>();
                 //                    循环list
 //                    int query = query(dbOperationVo);
@@ -89,8 +87,6 @@ public class SendCodeListUtils {
 
                     String query = null;
                     try {
-
-
                         switch (type) {
                             case 1:
                                 sendCodeUtils.query01(dbOperationVos.get(i));
@@ -108,13 +104,11 @@ public class SendCodeListUtils {
                                 sendCodeUtils.query(dbOperationVos.get(i));
                                 break;
                         }
-
-
                         log.info("发送成功存进去了：" + query + "当前的时间毫秒值是：" + new Date().getTime());
                         /*
                          * 建立监听返回的数据
                          * */
-                        Thread.yield();
+                        stringStringHashMap.put(dbOperationVos.get(i).getOperationName(), "响应成功");
                     } catch (FaultExceptions e) {
                         DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();
                         dbAbnormalInfo.setAlarmTime(new Date());
@@ -124,8 +118,6 @@ public class SendCodeListUtils {
                         dbAbnormalInfo.setText(dbOperationVos.get(i).getOperationId());
                         remoteApiService.saveEquimentOperation(dbAbnormalInfo);
                         stringStringHashMap.put(dbOperationVos.get(i).getOperationName(), BusinessExceptionHandle.FAULT);
-
-
                     } catch (OperationExceptions e) {
                         DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();
                         dbAbnormalInfo.setAlarmTime(new Date());
@@ -134,19 +126,23 @@ public class SendCodeListUtils {
                         dbAbnormalInfo.setAlarmExplain(dbOperationVos.get(i).getHeartName());
                         dbAbnormalInfo.setText(dbOperationVos.get(i).getOperationId());
                         dbAbnormalInfo.setFaultType(BusinessExceptionHandle.OPERATIONEXCEPTIONS);
-
-
                         remoteApiService.saveEquimentOperation(dbAbnormalInfo);
                         stringStringHashMap.put(dbOperationVos.get(i).getOperationName(), BusinessExceptionHandle.OPERATIONEXCEPTIONS);
                     }
                 }
                 //                    等待500
                 return stringStringHashMap;
-            }
-        });
-        return submit;
+
     }
 
 
 
+
+    public static void queryIoListNoWait(List<DbOperationVo> lists, int type) throws ExecutionException, InterruptedException {
+        for (DbOperationVo list : lists) {
+            sendCodeUtils.queryNoWait(list,type);
+        }
+
+
+    }
 }

@@ -128,9 +128,9 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
                 dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFeng);
                 list.add(dbOperationVo);
             }
+            SendCodeListUtils.queryIoListNoWait(list,OpcodeTextConf.OPCODE01);
         }
-        Map<String, List<DbOperationVo>> mps = list.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
-        SendCodeListUtils.queryIoList(mps,OpcodeTextConf.OPCODE01);
+
     }
 
     @Override
@@ -146,9 +146,9 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
                 dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFengType);
                 list.add(dbOperationVo);
             }
+            SendCodeListUtils.queryIoListNoWait(list,OpcodeTextConf.OPCODE03);
         }
-        Map<String, List<DbOperationVo>> mps = list.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
-        SendCodeListUtils.queryIoList(mps,OpcodeTextConf.OPCODE03);
+
     }
 
     @Override
@@ -269,10 +269,10 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
                 dbOperationVo.setOperationText(TcpOrderTextConf.stateSave);
                 list.add(dbOperationVo);
             }
+            //       根据心跳分组
+            SendCodeListUtils.queryIoListNoWait(list,OpcodeTextConf.OPCODE03);
         }
-        //       根据心跳分组
-        Map<String, List<DbOperationVo>> mps = list.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
-        SendCodeListUtils.queryIoList(mps,OpcodeTextConf.OPCODE03);
+
 
 
     }

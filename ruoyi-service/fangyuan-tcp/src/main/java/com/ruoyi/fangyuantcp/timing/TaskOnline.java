@@ -30,10 +30,13 @@ public class TaskOnline {
                 * */
                 DbTcpClient dbTcpClient = new DbTcpClient();
                 List<DbTcpClient> dbTcpClients = dbTcpClientService.selectDbTcpClientList(dbTcpClient);
-                for (DbTcpClient tcpClient : dbTcpClients) {
-                    dbTcpClientService.TaskOnline(tcpClient);
+                if (dbTcpClients.size()>0&&dbTcpClients!=null){
+                    for (DbTcpClient tcpClient : dbTcpClients) {
+                        dbTcpClientService.TaskOnline(tcpClient);
 
+                    }
                 }
+
 
             }
         };

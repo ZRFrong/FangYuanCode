@@ -139,8 +139,7 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
 
            }
            //       根据心跳分组
-           Map<String, List<DbOperationVo>> mps = list.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
-               SendCodeListUtils.queryIoList(mps,OpcodeTextConf.OPCODE03);
+               SendCodeListUtils.queryIoListNoWait(list,OpcodeTextConf.OPCODE03);
        }
 
     }

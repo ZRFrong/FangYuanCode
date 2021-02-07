@@ -161,18 +161,14 @@ public class ReceiveUtil {
 //            手动
             dbEquipment.setIsOnline(1);
 //            提醒
-            try {
-                throw new DropsExceptions(dbEquipment.getEquipmentName(), "已经切换手动状态", dbEquipment.getEquipmentId().toString());
-            } finally {
-                iDbEquipmentService.updateDbEquipment(dbEquipment);
-            }
+//                throw new DropsExceptions(dbEquipment.getEquipmentName(), "已经切换手动状态", dbEquipment.getEquipmentId().toString());
+                log.info(dbEquipment.getEquipmentName() +"已经切换手动状态"+dbEquipment.getEquipmentId().toString());
+
         } else {
 //            自动
             dbEquipment.setIsOnline(0);
         }
-
-
-
+        iDbEquipmentService.updateDbEquipment(dbEquipment);
 //        完事  END
 
     }
