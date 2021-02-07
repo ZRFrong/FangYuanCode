@@ -82,4 +82,6 @@ public interface IDbLandService
 
     List<Map<String,Object>> selectLandOperationByLandId(Long landId);
 
+    List<Map<String,Object>> selectDbLandByUserIdAndSideId(Long aLong);
+
 }
