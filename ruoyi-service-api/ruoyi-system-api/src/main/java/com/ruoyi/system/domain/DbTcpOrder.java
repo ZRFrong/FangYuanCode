@@ -36,6 +36,32 @@ public class DbTcpOrder extends BaseEntity
     @ApiModelProperty(value = "发送内容")
     private String text;
 
+    /** 发送内容 */
+    @Excel(name = "发送内容")
+    @ApiModelProperty(value = "发送内容")
+    private String resultsText;
+
+    @Override
+    public String toString() {
+        return "DbTcpOrder{" +
+                "tcpOrderId=" + tcpOrderId +
+                ", heartName='" + heartName + '\'' +
+                ", code='" + code + '\'' +
+                ", text='" + text + '\'' +
+                ", resultsText='" + resultsText + '\'' +
+                ", results=" + results +
+                ", whenTime=" + whenTime +
+                '}';
+    }
+
+    public String getResultsText() {
+        return resultsText;
+    }
+
+    public void setResultsText(String resultsText) {
+        this.resultsText = resultsText;
+    }
+
     /** 是否返回 */
     @Excel(name = "是否返回")
     @ApiModelProperty(value = "是否返回")
@@ -101,17 +127,4 @@ public class DbTcpOrder extends BaseEntity
         return whenTime;
     }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-                .append("tcpOrderId", getTcpOrderId())
-                .append("heartName", getHeartName())
-                .append("code", getCode())
-                .append("text", getText())
-                .append("results", getResults())
-                .append("createTime", getCreateTime())
-                .append("updateTime", getUpdateTime())
-                .append("whenTime", getWhenTime())
-                .toString();
-    }
 }

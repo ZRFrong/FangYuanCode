@@ -8,10 +8,32 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
 
-@RefreshScope
 @Configuration
-@Data
 public class ControlSystemConf {
     @Value("#{${com.fangyuan.control.system.map}}")
     private Map<Integer,String> map;
+
+    public ControlSystemConf() {
+    }
+
+    @Override
+    public String toString() {
+        return "ControlSystemConf{" +
+                "map=" + map +
+                '}';
+    }
+
+    public ControlSystemConf(Map<Integer, String> map) {
+
+        this.map = map;
+    }
+
+    public Map<Integer, String> getMap() {
+
+        return map;
+    }
+
+    public void setMap(Map<Integer, String> map) {
+        this.map = map;
+    }
 }

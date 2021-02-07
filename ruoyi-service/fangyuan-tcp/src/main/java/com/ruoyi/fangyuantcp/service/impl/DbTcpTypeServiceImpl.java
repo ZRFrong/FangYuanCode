@@ -1,20 +1,21 @@
 package com.ruoyi.fangyuantcp.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
-import com.alibaba.fastjson.JSON;
-import com.ruoyi.common.redis.util.RedisUtils;
-import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
+import com.ruoyi.common.core.domain.R;
 import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
-import com.ruoyi.fangyuantcp.utils.DateUtilLong;
-import com.ruoyi.fangyuantcp.utils.TcpOrderTextConf;
+import com.ruoyi.fangyuantcp.processingCode.OpcodeTextConf;
+import com.ruoyi.fangyuantcp.processingCode.SendCodeListUtils;
+import com.ruoyi.fangyuantcp.processingCode.SendCodeUtils;
+import com.ruoyi.fangyuantcp.processingCode.TcpOrderTextConf;
+import com.ruoyi.fangyuantcp.utils.*;
 import com.ruoyi.system.domain.*;
-import com.ruoyi.fangyuantcp.utils.SendCodeUtils;
 import com.ruoyi.fangyuantcp.mapper.DbStateRecordsMapper;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuantcp.mapper.DbTcpTypeMapper;
@@ -38,14 +39,9 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
     private DbStateRecordsMapper dbStateRecordsMapper;
 
 
-    @Autowired
-    private DbEquipmentMapper1 dbEquipmentMapper;
-
-    @Autowired
-    private RedisUtils redisUtils;
 
 
-    private SendCodeUtils sendCodeUtils = new SendCodeUtils();
+
 
     @Autowired
     private DbTcpClientMapper dbTcpClientMapper;
@@ -120,7 +116,7 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
      * 通风手动自动监测
      * */
     @Override
-    public void timingTongFengHand() {
+    public void timingTongFengHand() throws ExecutionException, InterruptedException {
         DbTcpClient dbTcpClient = new DbTcpClient();
         List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
         DbOperationVo dbOperationVo = new DbOperationVo();
@@ -132,12 +128,13 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
                 dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFeng);
                 list.add(dbOperationVo);
             }
-            int i = SendCodeUtils.timingTongFengHand(list);
         }
+        Map<String, List<DbOperationVo>> mps = list.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
+        SendCodeListUtils.queryIoList(mps,OpcodeTextConf.OPCODE01);
     }
 
     @Override
-    public void timingTongFengType() {
+    public void timingTongFengType() throws ExecutionException, InterruptedException {
         DbTcpClient dbTcpClient = new DbTcpClient();
         List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
         DbOperationVo dbOperationVo = new DbOperationVo();
@@ -149,20 +146,54 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
                 dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFengType);
                 list.add(dbOperationVo);
             }
-            int i = SendCodeUtils.timingTongFengTypeList(list);
         }
-
+        Map<String, List<DbOperationVo>> mps = list.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
+        SendCodeListUtils.queryIoList(mps,OpcodeTextConf.OPCODE03);
     }
 
     @Override
+    public R stateAllQuery(List<DbOperationVo> dbOperationVo) throws ExecutionException, InterruptedException {
+//      添加操作集
+        List<DbOperationVo> dbOperationVoList = stateAll(dbOperationVo);
+
+
+        //       根据心跳分组
+        Map<String, List<DbOperationVo>> mps = dbOperationVoList.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
+//         多个map依次执行（多线程）
+        R r = SendCodeListUtils.queryIoList(mps, OpcodeTextConf.OPCODEEMPTY);
+
+
+        return r;
+    }
+
+    private List<DbOperationVo> stateAll(List<DbOperationVo> dbOperationVo) {
+        List<DbOperationVo> dbOperationVoList = new ArrayList<>();
+        List<String> stateAllText = new ArrayList<>();
+        stateAllText.add("01" + "," + "03," + TcpOrderTextConf.stateSave);
+        stateAllText.add("01" + "," + "01," + TcpOrderTextConf.SinceOrhandTongFeng);
+        stateAllText.add("01" + "," + "03," + TcpOrderTextConf.SinceOrhandTongFengType);
+        stateAllText.add("01" + "," + "03," + TcpOrderTextConf.TaskOnline);
+        for (String s : stateAllText) {
+            for (DbOperationVo operationVo : dbOperationVo) {
+                DbOperationVo dbOperationVo1 = new DbOperationVo();
+                BeanUtils.copyProperties(operationVo, dbOperationVo1);
+                dbOperationVo1.setOperationText(s);
+                dbOperationVoList.add(dbOperationVo1);
+            }
+        }
+        return dbOperationVoList;
+    }
+
+
+    @Override
     public void updateByHeartbeatOpen(String heartName) {
-        heartName="%"+heartName+"%";
+        heartName = "%" + heartName + "%";
         dbTcpTypeMapper.updateByHeartbeatOpen(heartName);
     }
 
     @Override
     public void updateByHeartbeat(String heartbeatText) {
-        heartbeatText="%"+heartbeatText+"%";
+        heartbeatText = "%" + heartbeatText + "%";
         dbTcpTypeMapper.updateByHeartbeat(heartbeatText);
     }
 
@@ -188,34 +219,18 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
         dbTcpTypeMapper.deleteByHeartName(heartbeatText);
     }
 
-    @Override
-    public int operateTongFengHand(String heartbeatText, String equipmentNo, Integer i) {
-        DbEquipment dbEquipment = new DbEquipment();
-        dbEquipment.setHeartbeatText(heartbeatText);
-        dbEquipment.setEquipmentNo(Integer.parseInt(equipmentNo));
-        int i1 = sendCodeUtils.operateTongFengHand(dbEquipment, i);
-        return i1;
-    }
 
     @Override
-    public int operateTongFengType(String heartbeatText, String equipmentNo, Integer i, String temp) {
-        DbEquipment dbEquipment = new DbEquipment();
-        dbEquipment.setHeartbeatText(heartbeatText);
-        dbEquipment.setEquipmentNo(Integer.parseInt(equipmentNo));
-        int i1 = sendCodeUtils.operateTongFengType(dbEquipment, i, temp);
-        return i1;
-    }
-
-
-    @Override
-    public void timingTypeOnly(DbTcpClient dbTcpClient) {
+    public void timingTypeOnly(DbTcpClient dbTcpClient) throws ExecutionException, InterruptedException {
         DbOperationVo dbOperationVo = new DbOperationVo();
         List<DbOperationVo> list = new ArrayList<>();
         dbOperationVo.setHeartName(dbTcpClient.getHeartName());
         dbOperationVo.setFacility("01");
         dbOperationVo.setOperationText(TcpOrderTextConf.stateSave);
         list.add(dbOperationVo);
-        SendCodeUtils.timingState(list);
+        //       根据心跳分组
+        Map<String, List<DbOperationVo>> mps = list.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
+        SendCodeListUtils.queryIoList(mps,OpcodeTextConf.OPCODE03);
     }
 
     /*
@@ -241,12 +256,12 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
     }
 
     @Override
-    public void timingType() {
+    public void timingType() throws ExecutionException, InterruptedException {
         DbTcpClient dbTcpClient = new DbTcpClient();
         List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
 
         List<DbOperationVo> list = new ArrayList<>();
-        if (dbTcpClients.size()>0&&dbTcpClients!=null) {
+        if (dbTcpClients.size() > 0 && dbTcpClients != null) {
             for (DbTcpClient tcpClient : dbTcpClients) {
                 DbOperationVo dbOperationVo = new DbOperationVo();
                 dbOperationVo.setHeartName(tcpClient.getHeartName());
@@ -254,8 +269,11 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
                 dbOperationVo.setOperationText(TcpOrderTextConf.stateSave);
                 list.add(dbOperationVo);
             }
-            int i = SendCodeUtils.timingState(list);
         }
+        //       根据心跳分组
+        Map<String, List<DbOperationVo>> mps = list.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
+        SendCodeListUtils.queryIoList(mps,OpcodeTextConf.OPCODE03);
+
 
     }
 

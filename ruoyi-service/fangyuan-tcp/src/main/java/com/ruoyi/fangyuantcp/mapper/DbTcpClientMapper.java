@@ -2,6 +2,7 @@ package com.ruoyi.fangyuantcp.mapper;
 
 import com.ruoyi.system.domain.DbTcpClient;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
@@ -66,4 +67,7 @@ public interface DbTcpClientMapper
 
     @Delete("delete from db_tcp_client where  heart_name=#{heartbeatName}")
     void deleteDbtcpHeartbeatName(String heartbeatName);
+
+    @Select("SELECT heart_name from db_tcp_client h where heart_name  like #{heartBeat}")
+    List<String> heartBeatDFuzzy(String heartBeat);
 }

@@ -4,26 +4,20 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.ruoyi.common.core.domain.R;
-import com.ruoyi.common.redis.config.RedisKeyConf;
-import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
+import com.ruoyi.fangyuantcp.processingCode.SendCodeListUtils;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
-import com.ruoyi.fangyuantcp.utils.SendCodeListUtils;
-import com.ruoyi.fangyuantcp.utils.TcpOrderTextConf;
+import com.ruoyi.fangyuantcp.processingCode.OpcodeTextConf;
+import com.ruoyi.fangyuantcp.processingCode.TcpOrderTextConf;
 import com.ruoyi.system.domain.*;
-import com.ruoyi.fangyuantcp.utils.SendCodeUtils;
+import com.ruoyi.fangyuantcp.processingCode.SendCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.common.core.text.Convert;
 
-import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 
 /**
  * tcp在线设备Service业务层处理
@@ -39,8 +33,6 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     @Autowired
     private DbEquipmentMapper1 dbEquipmentMapper;
 
-
-    private SendCodeUtils sendCodeUtils = new SendCodeUtils();
 
 
     @Autowired
@@ -94,6 +86,12 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
         return dbTcpClientMapper.updateDbTcpClient(dbTcpClient);
     }
 
+    @Override
+    public List<String> heartBeatDFuzzy(String heartBeat) {
+       String heartBeat1="%"+heartBeat+"%";
+        return dbTcpClientMapper.heartBeatDFuzzy(heartBeat1);
+    }
+
     /**
      * 删除tcp在线设备对象
      *
@@ -105,10 +103,7 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
         return dbTcpClientMapper.deleteDbTcpClientByIds(Convert.toStrArray(ids));
     }
 
-    @Override
-    public void updateByHeartbeatName(String heartbeatName) {
-        dbTcpClientMapper.updateByHeartbeatName(heartbeatName);
-    }
+
 
     @Override
     public int heartbeatUpdate(DbTcpClient dbTcpClient) {
@@ -117,26 +112,13 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
         return 0;
     }
 
-    /*
-     * 循环执行请求
-     * */
-    @Override
-    public R operationList(List<DbOperationVo> dbOperationVo) throws ExecutionException, InterruptedException {
-//       根据心跳分组
-        Map<String, List<DbOperationVo>> mps = dbOperationVo.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
-//         多个map依次执行（多线程）
-        R r = SendCodeListUtils.queryIoList(mps);
-
-
-        return r;
-    }
 
 
     /*
     * 远程，本地检测
     * */
     @Override
-    public void TaskOnline(DbTcpClient tcpClient) {
+    public void TaskOnline(DbTcpClient tcpClient)throws ExecutionException, InterruptedException {
         String heartName = tcpClient.getHeartName();
        List<String>  integers= dbEquipmentMapper.selectByHeartNameToEqumentNo(heartName);
 
@@ -153,9 +135,12 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
                    }
                    dbOperationVo.setOperationText(TcpOrderTextConf.TaskOnline);
                    list.add(dbOperationVo);
-               int i = SendCodeUtils.TaskOnline(list);
+
 
            }
+           //       根据心跳分组
+           Map<String, List<DbOperationVo>> mps = list.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
+               SendCodeListUtils.queryIoList(mps,OpcodeTextConf.OPCODE03);
        }
 
     }
@@ -178,27 +163,6 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
 
 
 
-    /*
-     *
-     * 查询状态
-     * */
-    @Override
-    public int query(DbOperationVo dbTcpClient) {
-        //查询状态
-        int querystate = sendCodeUtils.querystate03(dbTcpClient);
-        return querystate;
-    }
-
-    /*
-     * 操作设备
-     * */
-    @Override
-    public int operation(DbOperationVo dbTcpClient) {
-//        发送指令
-        int query = sendCodeUtils.query(dbTcpClient);
-
-        return query;
-    }
 
 
     @Override

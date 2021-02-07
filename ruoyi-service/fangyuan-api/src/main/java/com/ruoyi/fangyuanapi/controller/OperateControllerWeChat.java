@@ -65,8 +65,8 @@ public class OperateControllerWeChat extends BaseController {
     }
 
     /*
-    *页面操作（单项）
-    * */
+     *页面操作（单项）
+     * */
     @GetMapping("operate")
     @ApiOperation(value = "页面操作（单项）", notes = "页面操作（单项）")
     @OperationLog(OperationLogNmae=OperationLogType.EQUIPMENT,OperationLogSource = OperationLogType.WEchat)
@@ -151,7 +151,7 @@ public class OperateControllerWeChat extends BaseController {
             ArrayList<DbEquipmentVo> dbEquipmentVos = new ArrayList<>();
 
             for (String s : dbLand.getEquipmentIds().split(",")) {
-            DbEquipmentVo dbEquipmentVo = new DbEquipmentVo();
+                DbEquipmentVo dbEquipmentVo = new DbEquipmentVo();
 
                 DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(Long.valueOf(s));
                 dbEquipmentVo.setEquipment(dbEquipment);
@@ -162,13 +162,13 @@ public class OperateControllerWeChat extends BaseController {
                 List<DbTcpType> list = remoteTcpService.list(dbTcpType);
 
                 if (list.size() != 0&&list!=null) {
-                DbTcpType dbTcpType1 = list.get(0);
+                    DbTcpType dbTcpType1 = list.get(0);
 
                     dbEquipmentVo.setDbTcpType(dbTcpType1);
                 }
                 /*
-                * 剩余时长，到期时长计算
-                * */
+                 * 剩余时长，到期时长计算
+                 * */
 //                运行时长
                 dbEquipmentVo.setRemaining(DateUtils.getDatePoorDay(dbEquipment.getAllottedTime(),new Date()));
 //              剩余时长

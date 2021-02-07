@@ -91,7 +91,7 @@ public class OperateControllerApp extends BaseController {
             dbLand1.setSiteId(dbLand.getLandId());
             List<DbLand> dbLands = landService.selectDbLandList(dbLand1);
             for (DbLand land : dbLands) {
-            String text1=land.getNickName()+text;
+                String text1=land.getNickName()+text;
                 Arrays.asList(land.getEquipmentIds().split(",")).forEach(
                         ite -> sendTcp(equipmentService.selectDbEquipmentById(Long.valueOf(ite)), type, handleName,text1));
             }
@@ -117,7 +117,7 @@ public class OperateControllerApp extends BaseController {
 
         for (OperatePojo object : objects) {
             if (type.equals(object.getCheckCode())) {
-               if (object.getSpList().size()==3){
+                if (object.getSpList().size()==3){
                     if (handleName.equals("down_stop")){
                         handleName="start_stop";
                     }

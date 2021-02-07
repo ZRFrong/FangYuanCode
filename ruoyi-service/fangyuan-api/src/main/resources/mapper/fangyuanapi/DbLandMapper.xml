@@ -53,7 +53,7 @@
 
     <select id="selectDbLandByUserId" resultMap="DbLandResult">
         select * from  db_land where db_user_id = #{dbUserId}
-            <if test="siteId != null ">and site_id = #{siteId}</if>
+        <if test="siteId != null ">and site_id = #{siteId}</if>
     </select>
 
     <select id="selectDbLandCountByUserId" resultType="java.lang.Integer">

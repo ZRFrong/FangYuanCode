@@ -1,8 +1,9 @@
 package com.ruoyi.fangyuantcp.tcp;
 
 
-import com.ruoyi.fangyuantcp.utils.DisConnectUtils;
-import com.ruoyi.fangyuantcp.utils.ReceiveUtil;
+import com.ruoyi.fangyuantcp.processingCode.DisConnectUtils;
+import com.ruoyi.fangyuantcp.processingCode.ReceiveResponse;
+import com.ruoyi.fangyuantcp.processingCode.ReceiveUtil;
 import com.ruoyi.system.domain.DbTcpClient;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -34,6 +35,7 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws InterruptedException {
 
         ReceiveUtil receiveUtil = new ReceiveUtil();
+        ReceiveResponse receiveResponse = new ReceiveResponse();
         /*
          *心跳查询
          * */
@@ -54,36 +56,41 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
             DbTcpClient dbTcpClient = getIp(ctx);
             dbTcpClient.setHeartName(msg.toString());
             receiveUtil.heartbeatUpdate(dbTcpClient);
+
             if (s.contains("0302")) {
 
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "手动自动返回：" + msg);
 //                状态处理  返回几位处理
 
                 //手动自动返回    01 03 02  05 06
+                receiveResponse.stateRespond(ctx, msg.toString());
                 receiveUtil.sinceOrHandRead(s, ctx);
             } else if (s.contains("030C")) {
 
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "状态返回：" + msg);
 //                        状态查询返回
+                receiveResponse.stateRespond(ctx, msg.toString());
                 receiveUtil.stateRead(s, ctx);
 
             } else if (s.contains("0105")) {
                 //               操作响应
-                receiveUtil.stateRespond(ctx, msg.toString());
+                receiveResponse.stateRespond(ctx, msg.toString());
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "操作响应返回：" + msg);
             } else if (s.contains("0101")) {
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "通风口自动控制设置：" + msg);
 //                更改设备自动手动状态
+                receiveResponse.stateRespond(ctx, msg.toString());
                 receiveUtil.returnHand(ctx, msg.toString());
 
             } else if (s.contains("0304")) {
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "开分风口温度：" + msg);
 //                更改设备自动手动开关温度
+                receiveResponse.stateRespond(ctx, msg.toString());
                 receiveUtil.returnautocontrolType(ctx, msg.toString());
             } else if (s.contains("0106")) {
 
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "写入自动控制通风" + msg);
-
+                receiveResponse.stateRespond(ctx, msg.toString());
             }
             else {
 
@@ -112,8 +119,8 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-//        cause.printStackTrace();
-//        disConnectUtils.errorClose(ctx);
+        cause.printStackTrace();
+        disConnectUtils.errorClose(ctx);
     }
 
     /**

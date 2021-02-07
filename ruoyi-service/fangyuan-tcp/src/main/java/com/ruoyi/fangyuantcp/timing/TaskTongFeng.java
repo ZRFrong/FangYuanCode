@@ -3,8 +3,6 @@ package com.ruoyi.fangyuantcp.timing;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
-import com.ruoyi.fangyuantcp.utils.SendCodeUtils;
-import com.ruoyi.fangyuantcp.utils.TcpOrderTextConf;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.Date;

@@ -2,11 +2,9 @@ package com.ruoyi.fangyuantcp.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.fangyuantcp.utils.Crc16Util;
-import com.ruoyi.fangyuantcp.utils.SendCodeUtils;
-import com.ruoyi.system.domain.DbEquipment;
-import com.ruoyi.system.domain.DbLand;
-import com.ruoyi.system.domain.DbStateRecords;
+import com.ruoyi.fangyuantcp.processingCode.SendCodeUtils;
+import com.ruoyi.system.domain.*;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
@@ -15,14 +13,11 @@ import io.swagger.annotations.ApiParam;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 
-import javax.naming.Name;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 设备状态 提供者     4g模块在线否
@@ -118,6 +113,7 @@ public class DbTcpTypeController extends BaseController {
     @GetMapping("timingType")
     public R timingType() {
         new Thread(new Runnable() {
+            @SneakyThrows
             @Override
             public void run() {
                 dbTcpTypeService.timingType();
@@ -132,8 +128,8 @@ public class DbTcpTypeController extends BaseController {
      *通风 自动手动监测
      * */
     @GetMapping("timingTongFengHand")
-    public R timingTongFengHand() {
-         dbTcpTypeService.timingTongFengHand();
+    public R timingTongFengHand() throws ExecutionException, InterruptedException {
+        dbTcpTypeService.timingTongFengHand();
 
         return toAjax(1);
 
@@ -144,48 +140,9 @@ public class DbTcpTypeController extends BaseController {
      * 通风当前的开风口，关风口温度查询
      * */
     @GetMapping("saveTongFengType")
-    public R timingTongFengType() {
+    public R timingTongFengType() throws ExecutionException, InterruptedException {
         dbTcpTypeService.timingTongFengType();
         return toAjax(1);
-
-    }
-
-    /*
-     * 通风 自动手动状态更改
-     * */
-    @GetMapping("operateTongFengHand/{heartbeatText}/{equipmentNo}/{i}")
-    public R operateTongFengHand(@ApiParam(name = "heartbeatText", value = "string") @PathVariable String heartbeatText,
-                                 @ApiParam(name = "equipmentNo", value = "string", required = true) @PathVariable("equipmentNo") String equipmentNo,
-                                 @ApiParam(name = "i", value = "inter", required = true) @PathVariable("i") Integer i) throws InterruptedException {
-        int operation = dbTcpTypeService.operateTongFengHand(heartbeatText, equipmentNo, i);
-
-        Thread.sleep(1000);
-        if (operation!=0){
-            i = sendCodeUtils.sinceOrHandTongFeng(heartbeatText+"_"+equipmentNo);
-        }
-        return toAjax(operation);
-
-    }
-
-    /*
-     * 自动通风  开启关闭温度修改
-     * */
-    @GetMapping("operateTongFengType/{heartbeatText}/{equipmentNo}/{i}/{temp}")
-    public R operateTongFengType(@ApiParam(name = "heartbeatText", value = "string") @PathVariable("heartbeatText") String heartbeatText,
-                                 @ApiParam(name = "equipmentNo", value = "string", required = true) @PathVariable("equipmentNo") String equipmentNo,
-                                 @ApiParam(name = "i", value = "inter", required = true) @PathVariable("i") Integer i,
-                                 @ApiParam(name = "temp", value = "温度") @PathVariable("temp") String temp) throws InterruptedException {
-        String hex= Integer.toHexString(Integer.parseInt(temp));
-        int operation = dbTcpTypeService.operateTongFengType(heartbeatText, equipmentNo, i, hex);
-        /*
-         * 查询状态
-         * */
-        Thread.sleep(1000);
-        if (operation!=0){
-            i = sendCodeUtils.timingTongFengType(heartbeatText+"_"+equipmentNo);
-        }
-
-        return toAjax(operation);
 
     }
 
@@ -211,6 +168,16 @@ public class DbTcpTypeController extends BaseController {
         }
 
         return R.data(dbStateRecords1);
+    }
+
+    /*
+     *所有状态更新
+     * */
+    @PostMapping("stateAllQuery")
+    public R stateAllQuery(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) @RequestBody List<DbOperationVo> dbOperationVo) throws ExecutionException, InterruptedException {
+
+        return dbTcpTypeService.stateAllQuery(dbOperationVo);
+
     }
 
 

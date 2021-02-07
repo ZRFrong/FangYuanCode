@@ -1,4 +1,4 @@
-package com.ruoyi.fangyuantcp.utils;
+package com.ruoyi.fangyuantcp.processingCode;
 
 
 import com.ruoyi.common.utils.DateUtils;
@@ -32,8 +32,8 @@ public class DisConnectUtils {
      *正常断开连接
      * */
     public void normalClose(ChannelHandlerContext ctx) {
-        String s = deleteCtx(ctx);
-        log.error(DateUtils.getDate()+s+"断开连接");
+//        String s = deleteCtx(ctx);
+//        log.error(DateUtils.getDate()+s+"断开连接");
 
     }
 
