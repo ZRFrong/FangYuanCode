@@ -80,11 +80,8 @@ public class DbUserController extends BaseController {
     @Autowired
     private RemoteOssService remoteOssService;
 
-    @ApiOperation(value = "多个图片上传接口",notes = "多个图片上传接口 被允许的格式： .jpg.png.jpeg.gif",httpMethod = "POST")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "file",value = "图片数组",required = true)
-    })
-    @PostMapping("avatarUpload")
+
+    @PostMapping("filesUpload")
     @CrossOrigin
     public R avatarUpload(@RequestPart("files") MultipartFile[] files){
         if (files == null || files.length <= 0){
@@ -111,7 +108,23 @@ public class DbUserController extends BaseController {
             }
         }
         return R.data(list);
+    }
 
+    @PostMapping("avatarUpload")
+    @CrossOrigin
+    public R avatarUpload(@RequestPart("file") MultipartFile file){
+        if (file == null){
+            return R.error("图片不能为空，或者图片格式不正确！");
+        }
+
+        if (StringUtils.checkFileIsImages(file.getOriginalFilename(),".jpg.png.jpeg.gif")){
+            System.out.println(file.getOriginalFilename());
+            R r = remoteOssService.editSave(file);
+            if ("200".equals(r.get("code")+"")){
+                return R.data(r.get("msg")+"");
+            }
+        }
+        return R.error("上传错误,或者图片文件名字过长！");
     }
 
     /**
