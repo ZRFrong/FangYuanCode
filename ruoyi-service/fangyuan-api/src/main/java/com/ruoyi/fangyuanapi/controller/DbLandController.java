@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.sms.ResultEnum;
+import com.ruoyi.fangyuanapi.conf.OperationConf;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.feign.RemoteTcpService;
@@ -41,6 +42,15 @@ public class DbLandController extends BaseController {
 
     @Autowired
     private RemoteTcpService remoteTcpService;
+
+    @Autowired
+    private OperationConf operationConf;
+
+    @RequestMapping("getOperationConf")
+    public R getOperationConf(){
+        return R.data(operationConf.getTyps());
+    }
+
 
     @PostMapping("sendStopOperation")
     @ApiOperation(value = "批量暂停",notes = "批量对土地下的设备暂停： 粒度为单个操作：1卷帘 2 通风/卷膜 3补光 4浇水 5打药 6 施肥  7 锄草 8滴灌",httpMethod = "POST")
@@ -95,8 +105,10 @@ public class DbLandController extends BaseController {
      * 查询${tableComment}
      */
     @GetMapping("get/{landId}")
-    public DbLand get(@PathVariable("landId") Long landId) {
-        return dbLandService.selectDbLandById(landId);
+    @ApiOperation(value = "根据土地id获取详细信息",notes = "根据土地id查询",httpMethod = "GET")
+    public R get(@PathVariable("landId") Long landId) {
+
+        return R.data(dbLandService.selectDbLandById(landId));
     }
 
     /**
@@ -127,17 +139,30 @@ public class DbLandController extends BaseController {
         return result(dbLandService.selectDbLandNoSiteList(dbLand));
     }
 
+//    /**
+//     * APP查询土地列表
+//     *
+//     */
+//    @GetMapping("getLandListApp")
+//    @ApiOperation(value = "App查询土地列表", notes = "土地列表")
+//    public R getLandListApp(@ApiParam(name = "DbLand", value = "传入json格式", required = true) DbLand dbLand) {
+//        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+//        dbLand.setDbUserId(Long.valueOf(userId));
+//        List<DbLand> lands = dbLandService.selectDbLandWeChatList(dbLand);
+//        return R.data(lands);
+//    }
 
     /**
-     * 查询土地列表
+     * APP查询土地列表
      */
     @GetMapping("getLandListApp")
     @ApiOperation(value = "App查询土地列表", notes = "土地列表")
     public R getLandListApp(@ApiParam(name = "DbLand", value = "传入json格式", required = true) DbLand dbLand) {
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
         dbLand.setDbUserId(Long.valueOf(userId));
-        List<DbLand> lands = dbLandService.selectDbLandWeChatList(dbLand);
-        return R.data(lands);
+        List<Map<String, Object>> result = dbLandService.selectDbLandByUserIdAndSideId(Long.valueOf(userId));
+        return R.data(result);
+
     }
 
     /**
@@ -292,7 +317,6 @@ public class DbLandController extends BaseController {
             List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
 //                添加地块
             if (dbLands.size() >= 6) {
-
                 for (int i = 0; i <= ((dbLands.size() / 6)); i++) {
                     DbLand dbLand1 = new DbLand();
                     dbLand1.setSiteId(0l);
@@ -312,8 +336,6 @@ public class DbLandController extends BaseController {
                     int i2 = dbLandService.updateDbLand(land);
                 }
             }
-
-
         }
     }
 
@@ -331,8 +353,5 @@ public class DbLandController extends BaseController {
                 int i2 = dbLandService.updateDbLand(dbLand);
             }
         }
-
     }
-
-
 }
