@@ -32,7 +32,7 @@ public class TaskTcpType {
                     dbTcpTypeService.deleteTimingType();
                     log.info("状态定时查询执行===时间："+new Date());
                 } catch (Exception e) {
-
+                    System.out.println(e);
                    log.error("状态定时查询执行错误===时间："+new Date()+e);
                 }
 

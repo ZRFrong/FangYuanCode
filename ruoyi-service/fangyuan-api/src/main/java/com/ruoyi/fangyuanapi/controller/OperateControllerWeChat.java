@@ -56,13 +56,58 @@ public class OperateControllerWeChat extends BaseController {
      * */
     @GetMapping("getList")
     @ApiOperation(value = "查询当前用户下的操作列表", notes = "查询当前用户下的操作列表")
-    public AjaxResult getList() {
+    public R getList() {
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
         DbLand dbLand = new DbLand();
         dbLand.setDbUserId(Long.valueOf(userId));
         List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
-        return AjaxResult.success(getOperateWeChatVos(dbLands));
+        /*
+         * 状态查询
+         * */
+        R r = stateAllQuery(dbLands);
+        return r.put("data",getOperateWeChatVos(dbLands));
+
     }
+
+    /*
+     *组件切换    当前用户下边所有土地
+     * */
+    @GetMapping("getListSwitch")
+    @ApiOperation(value = "查询当前用户下的操作列表", notes = "查询当前用户下的操作列表")
+    public R getListSwitch() {
+        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+        DbLand dbLand = new DbLand();
+        dbLand.setDbUserId(Long.valueOf(userId));
+        List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
+        /*
+         * 状态查询
+         * */
+        return R.data(getOperateWeChatVos(dbLands));
+
+    }
+
+    private R stateAllQuery(List<DbLand> dbLands) {
+        List<DbOperationVo> operateWeChatVos = new ArrayList<>();
+        for (DbLand dbLand : dbLands) {
+            String equipmentIds = dbLand.getEquipmentIds();
+            if (StringUtils.isEmpty(equipmentIds)) {
+
+                continue;
+            }
+            for (String s : equipmentIds.split(",")) {
+                DbOperationVo dbOperationVo = new DbOperationVo();
+                DbEquipment dbEquipment = equipmentService.selectDbEquipmentById(Long.valueOf(s));
+                dbOperationVo.setHeartName(dbEquipment.getHeartbeatText());
+                dbOperationVo.setFacility(dbEquipment.getEquipmentNoString());
+                dbOperationVo.setOperationName(dbEquipment.getEquipmentName());
+                dbOperationVo.setCreateTime(new Date());
+                dbOperationVo.setOperationId(s);
+                operateWeChatVos.add(dbOperationVo);
+            }
+
+    }
+        return remoteTcpService.stateAllQuery(operateWeChatVos);
+}
 
     /*
      *页面操作（单项）

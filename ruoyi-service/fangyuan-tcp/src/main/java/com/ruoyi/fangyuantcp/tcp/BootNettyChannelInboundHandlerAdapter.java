@@ -63,14 +63,14 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
 //                状态处理  返回几位处理
 
                 //手动自动返回    01 03 02  05 06
-                receiveResponse.stateRespond(ctx, msg.toString());
                 receiveUtil.sinceOrHandRead(s, ctx);
+                receiveResponse.stateRespond(ctx, msg.toString());
             } else if (s.contains("030C")) {
 
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "状态返回：" + msg);
 //                        状态查询返回
-                receiveResponse.stateRespond(ctx, msg.toString());
                 receiveUtil.stateRead(s, ctx);
+                receiveResponse.stateRespond(ctx, msg.toString());
 
             } else if (s.contains("0105")) {
                 //               操作响应
@@ -79,14 +79,14 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
             } else if (s.contains("0101")) {
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "通风口自动控制设置：" + msg);
 //                更改设备自动手动状态
-                receiveResponse.stateRespond(ctx, msg.toString());
                 receiveUtil.returnHand(ctx, msg.toString());
+                receiveResponse.stateRespond(ctx, msg.toString());
 
             } else if (s.contains("0304")) {
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "开分风口温度：" + msg);
 //                更改设备自动手动开关温度
-                receiveResponse.stateRespond(ctx, msg.toString());
                 receiveUtil.returnautocontrolType(ctx, msg.toString());
+                receiveResponse.stateRespond(ctx, msg.toString());
             } else if (s.contains("0106")) {
 
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "写入自动控制通风" + msg);

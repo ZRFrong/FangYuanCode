@@ -31,7 +31,7 @@ public class ReceiveResponse {
         /*
          * 处理收到信息
          * */
-        String key = getRedisKey(string,getname);
+        String key = getRedisKey(string, getname);
 
         log.info("收到操作指令：" + key + "当前的时间毫秒值是：" + new Date().getTime());
 
@@ -39,15 +39,20 @@ public class ReceiveResponse {
 
 //        从redis中拿到指定的数据
 
-        DbTcpOrder dbTcpClient = redisUtils.get(key, DbTcpOrder.class);
-
-        dbTcpClient.setResults(1);
-        Long i = new Date().getTime() - dbTcpClient.getCreateTime().getTime();
-        dbTcpClient.setWhenTime(i);
-        dbTcpClient.setUpdateTime(new Date());
-        dbTcpClient.setResultsText(string);
+        DbTcpOrder dbTcpClient = null;
+        try {
+            dbTcpClient = redisUtils.get(key, DbTcpOrder.class);
+            dbTcpClient.setResults(1);
+            Long i = new Date().getTime() - dbTcpClient.getCreateTime().getTime();
+            dbTcpClient.setWhenTime(i);
+            dbTcpClient.setUpdateTime(new Date());
+            dbTcpClient.setResultsText(string);
 //       改变状态存储进去
-        redisUtils.set(key, JSONArray.toJSONString(dbTcpClient));
+            redisUtils.set(key, JSONArray.toJSONString(dbTcpClient));
+        } catch (Exception e) {
+            log.info("无反馈接收：" + key + "当前的时间毫秒值是：" + new Date().getTime());
+        }
+
 
         //        解锁
 //        redisLockUtil.unLock(key, s);
@@ -58,10 +63,10 @@ public class ReceiveResponse {
         String charStic2 = "";
         switch (string.substring(2, 4)) {
             case "01":
-                charStic2 = string.substring(2, 6);
+                charStic2 = string.substring(0, 6);
                 break;
             case "03":
-                charStic2 = string.substring(2, 6);
+                charStic2 = string.substring(0, 6);
                 break;
             case "05":
                 charStic2 = string;

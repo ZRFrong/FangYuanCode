@@ -21,6 +21,7 @@ import com.ruoyi.system.domain.DbTcpOrder;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+@Log4j2
 public class SendBasisUtils {
 
     private static RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
@@ -106,13 +108,13 @@ public class SendBasisUtils {
         switch (str2.substring(2, 4)) {
             case "01":
                 //        010300C8000245F5
-                substring = str2.substring(2, 4) + str2.substring(10, 12);
+                substring = facility+str2.substring(2, 4) + str2.substring(10, 12);
                 break;
             case "03":
 //                01 03 0C 00 00 00 00 00 00 00 00 00 00 00 00 93 70
                String index= str2.substring(10, 12);
               int i= Integer.parseInt(index)*2;
-                substring = str2.substring(2, 4) +  StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 2, '0');
+                substring = facility+str2.substring(2, 4) +  StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 2, '0');
                 break;
             case "05":
                 substring = str2 ;
@@ -124,7 +126,7 @@ public class SendBasisUtils {
 
         String s = RedisKeyConf.HANDLE + ":" + heartName + "_" + facility + "_" + substring;
         String s2 = JSONArray.toJSONString(order);
-        redisUtils.set(s, s2,3000);
+        redisUtils.set(s, s2);
         return s;
 
     }
@@ -180,7 +182,7 @@ public class SendBasisUtils {
 
     private static void HeartbeatRun(String text, DbOperationVo dbOperationVo) {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1500);
             //        加锁
 //            String s1 = String.valueOf(Thread.currentThread().getId());
 //            redisLockUtil.lock(text,s1,100);
@@ -192,7 +194,13 @@ public class SendBasisUtils {
                 Integer results = dbTcpOrder.getResults();
 
                 //                    存储进入数据库
-                tcpOrderService.insertDbTcpOrder(dbTcpOrder);
+//
+                if (text.split("_")[2].substring(2,4).equals("03")||text.split("_")[2].substring(2,2).equals("01")){
+                    log.info("没有存储进来了");
+                }else {
+                    int i = tcpOrderService.insertDbTcpOrder(dbTcpOrder);
+                    log.info("存储进来了");
+                }
                 redisUtils.delete(text);
 //                redisLockUtil.unLock(text,s1);
                 if (results == 0) {
@@ -208,4 +216,43 @@ public class SendBasisUtils {
         }
 
     }
+
+    public void operateCodeNoWait(String text, DbOperationVo tcpOrder) {
+
+        String address = tcpOrder.getHeartName();
+        ArrayList<String> strings1 = new ArrayList<>();
+//          text处理
+        String[] split3 = text.split(",");
+        for (String s : split3) {
+            strings1.add(s);
+        }
+        Object[] objects = strings1.toArray();
+        String[] split = new String[objects.length];
+        for (int i = 0; i < split.length; i++) {
+            split[i] = objects[i].toString();
+        }
+        List<String> strings = new ArrayList<>();
+        for (String s : split) {
+            int i = Integer.parseInt(s);
+            //            十六进制转成十进制
+            String tmp = StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 4, '0');
+            strings.add(tmp);
+        }
+        byte[] data = null;
+        try {
+            String[] split1 = strings.toArray(new String[strings.size()]);
+            String[] bytes = Crc16Util.to_byte(split1);
+            data = Crc16Util.getData(bytes);
+            ChannelHandlerContext no1_1 = map.get(address);
+            Channel channel = no1_1.channel();
+            channel.write(Unpooled.copiedBuffer(data));
+            channel.flush();
+        } catch (Exception e) {
+//            抛出异常
+            throw new FaultExceptions(tcpOrder.getHeartName(), tcpOrder.getOperationName(), tcpOrder.getFacility());
+        }
+    }
+
+
+
 }
