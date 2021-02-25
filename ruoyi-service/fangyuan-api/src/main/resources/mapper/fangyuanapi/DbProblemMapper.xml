@@ -32,12 +32,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="getProblemListByType" resultType="java.util.Map">
           select id,problem_text from db_problem
-          where is_del = 0
+          where is_del = 0 AND answer_text IS NOT NULL
           <if test="problemType != null  and problemType != ''">and problem_type_id = #{problemType} </if>
           order by problem_hot desc limit #{currPage},#{pageSize}
     </select>
     <select id="selectDbProblemAnswerTextById" resultType="java.util.Map">
         select id, problem_text,answer_text from db_problem where id = #{id} limit 1
+    </select>
+
+    <select id="selectDbProblem" resultMap="DbProblemResult">
+        select * from db_problem order by create_time limit #{currPage},#{pageSize}
     </select>
 
     <insert id="insertDbProblem" parameterType="DbProblem" useGeneratedKeys="true" keyProperty="id">

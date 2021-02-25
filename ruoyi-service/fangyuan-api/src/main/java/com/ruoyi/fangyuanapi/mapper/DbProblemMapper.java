@@ -67,4 +67,7 @@ public interface DbProblemMapper
     Map<String,Object> selectDbProblemAnswerTextById(Long id);
 
     void updateProblemHot(Long id);
+
+    List<DbProblem> selectDbProblem(@Param("currPage") Integer currPage, @Param("pageSize") Integer pageSize);
+
 }

@@ -61,7 +61,6 @@ public class DbProblemServiceImpl implements IDbProblemService
     @Override
     public int insertDbProblem(DbProblem dbProblem)
     {
-        dbProblem.setCreateTime(DateUtils.getNowDate());
         return dbProblemMapper.insertDbProblem(dbProblem);
     }
 
@@ -74,7 +73,6 @@ public class DbProblemServiceImpl implements IDbProblemService
     @Override
     public int updateDbProblem(DbProblem dbProblem)
     {
-        dbProblem.setUpdateTime(DateUtils.getNowDate());
         return dbProblemMapper.updateDbProblem(dbProblem);
     }
 
@@ -103,6 +101,12 @@ public class DbProblemServiceImpl implements IDbProblemService
     @Override
     public List<Map<String, Object>> getProblemListByType(Integer problemType, Integer currPage,Integer pageSize) {
         return dbProblemMapper.getProblemListByType(problemType,currPage,pageSize);
+    }
+
+    @Override
+    public List<DbProblem> selectDbProblem(Integer currPage, Integer pageSize) {
+
+        return dbProblemMapper.selectDbProblem(currPage,pageSize);
     }
 
 

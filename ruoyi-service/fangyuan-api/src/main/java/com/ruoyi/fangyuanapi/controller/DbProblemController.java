@@ -5,12 +5,7 @@ import com.ruoyi.common.core.page.PageConf;
 import com.ruoyi.common.utils.StringUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
@@ -49,11 +44,20 @@ public class DbProblemController extends BaseController
 	 * 查询问题列表
 	 */
 	@GetMapping("list")
-    @ApiOperation(value = "查询问题列表" , notes = "问题列表",httpMethod = "POST")
-	public R list(@ApiParam(name="DbProblem",value="传入json格式",required=true) DbProblem dbProblem)
+    @ApiOperation(value = "查询问题列表" , notes = "问题列表",httpMethod = "GET")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "pageNum",value = "页码" ,required = true),
+			@ApiImplicitParam(name = "pageSize",value = "条数" ,required = true)
+	})
+	public R list(@RequestParam(name = "pageNum") Integer currPage, @RequestParam(name = "pageSize") Integer pageSize)
 	{
-		startPage();
-        return result(dbProblemService.selectDbProblemList(dbProblem));
+		//时间
+		if (pageSize == null || pageSize > 10 || pageSize <= 0){
+			pageSize = PageConf.pageSize;
+		}
+		currPage = currPage == null || currPage <= 0  ? 0 :(currPage -1) * pageSize;
+		List<DbProblem> list = dbProblemService.selectDbProblem(currPage,pageSize);
+		return R.rows(list);
 	}
 	
 	
