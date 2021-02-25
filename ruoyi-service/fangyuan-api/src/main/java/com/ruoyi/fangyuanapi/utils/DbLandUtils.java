@@ -2,8 +2,10 @@ package com.ruoyi.fangyuanapi.utils;
 
 import javax.naming.Name;
 
+
 public class DbLandUtils {
     private static final String NAME = "方圆村";
+
     public static String getLnadName(Integer num){
         switch (num){
             case 1:
@@ -27,6 +29,8 @@ public class DbLandUtils {
         }
         return null;
     }
+
+
     public static void main(String[] args){
         String name = getLnadName(7);
         System.out.println(name);

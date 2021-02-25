@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
 import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
 import com.ruoyi.fangyuantcp.processingCode.OpcodeTextConf;
 import com.ruoyi.fangyuantcp.processingCode.SendCodeListUtils;
@@ -38,10 +39,14 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
     @Autowired
     private DbStateRecordsMapper dbStateRecordsMapper;
 
+    @Autowired
+    private DbStateRecordsMapper dbStateRecordsMapper1;
 
+    @Autowired
+    private DbStateRecordsMapper dbStateRecordsMapper2;
 
-
-
+    @Autowired
+    private DbEquipmentMapper1 dbEquipmentMapper1;
 
     @Autowired
     private DbTcpClientMapper dbTcpClientMapper;
@@ -128,7 +133,7 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
                 dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFeng);
                 list.add(dbOperationVo);
             }
-            SendCodeListUtils.queryIoListNoWait(list,OpcodeTextConf.OPCODE01);
+            SendCodeListUtils.queryIoListNoWait(list, OpcodeTextConf.OPCODE01);
         }
 
     }
@@ -146,7 +151,7 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
                 dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFengType);
                 list.add(dbOperationVo);
             }
-            SendCodeListUtils.queryIoListNoWait(list,OpcodeTextConf.OPCODE03);
+            SendCodeListUtils.queryIoListNoWait(list, OpcodeTextConf.OPCODE03);
         }
 
     }
@@ -230,7 +235,7 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
         list.add(dbOperationVo);
         //       根据心跳分组
         Map<String, List<DbOperationVo>> mps = list.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
-        SendCodeListUtils.queryIoList(mps,OpcodeTextConf.OPCODE03);
+        SendCodeListUtils.queryIoList(mps, OpcodeTextConf.OPCODE03);
     }
 
     /*
@@ -270,9 +275,8 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
                 list.add(dbOperationVo);
             }
             //       根据心跳分组
-            SendCodeListUtils.queryIoListNoWait(list,OpcodeTextConf.OPCODE03);
+            SendCodeListUtils.queryIoListNoWait(list, OpcodeTextConf.OPCODE03);
         }
-
 
 
     }
@@ -291,7 +295,23 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
         dbStateRecords.setCodeOnly(item.getHeartName());
         dbStateRecords.setDemandTime(new Date());
         dbStateRecords.setStateJson(com.alibaba.fastjson.JSON.toJSONString(item));
-        int i = dbStateRecordsMapper.insertDbStateRecords(dbStateRecords);
+//        判断是否设备绑定
+        String[] split = item.getHeartName().split("_");
+        DbEquipment dbEquipment = new DbEquipment();
+        dbEquipment.setHeartbeatText(split[0]);
+        dbEquipment.setEquipmentNo(Integer.valueOf(split[1]));
+        List<DbEquipment> dbEquipments = dbEquipmentMapper1.selectDbEquipmentList(dbEquipment);
+        if (!dbEquipments.isEmpty()) {
+            dbStateRecords.setEquipmentId(dbEquipments.get(0).getEquipmentId());
+            if (dbEquipments.get(0).getEquipmentId() % 3 == 0) {
+                int i = dbStateRecordsMapper.insertDbStateRecords(dbStateRecords);
+            } else if (dbEquipments.get(0).getEquipmentId() % 3 == 1) {
+                int i = dbStateRecordsMapper1.insertDbStateRecords(dbStateRecords);
+            } else if (dbEquipments.get(0).getEquipmentId() % 3 == 2) {
+                int i = dbStateRecordsMapper2.insertDbStateRecords(dbStateRecords);
+
+            }
+        }
     }
 
 

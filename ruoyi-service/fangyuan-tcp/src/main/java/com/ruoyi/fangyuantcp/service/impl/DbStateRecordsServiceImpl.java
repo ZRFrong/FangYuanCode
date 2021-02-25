@@ -54,6 +54,7 @@ public class DbStateRecordsServiceImpl implements IDbStateRecordsService
     @Override
     public int insertDbStateRecords(DbStateRecords dbStateRecords)
     {
+
         return dbStateRecordsMapper.insertDbStateRecords(dbStateRecords);
     }
 

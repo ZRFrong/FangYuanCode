@@ -23,6 +23,11 @@ public class OperationConf {
     private List<String> arrs;
 
 
+    public Map<String,String> getTypsMap() {
+        return typs;
+    }
+
+
     public String[] getTyps() {
         return typs.keySet().toArray(new String[typs.size()]);
     }

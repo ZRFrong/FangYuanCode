@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuantcp.mapper.DbStateRecordsMapper2">
+    
+    <resultMap type="DbStateRecords" id="DbStateRecordsResult">
+        <result property="stateRecordsId"    column="state_records_id"    />
+        <result property="codeOnly"    column="code_only"    />
+        <result property="demandTime"    column="demand_time"    />
+        <result property="stateJson"    column="state_json"    />
+    </resultMap>
+
+    <sql id="selectDbStateRecordsVo">
+        select state_records_id, code_only, demand_time, state_json from db_state_records2
+    </sql>
+
+    <select id="selectDbStateRecordsList" parameterType="DbStateRecords" resultMap="DbStateRecordsResult">
+        <include refid="selectDbStateRecordsVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbStateRecordsById" parameterType="Long" resultMap="DbStateRecordsResult">
+        <include refid="selectDbStateRecordsVo"/>
+        where state_records_id = #{stateRecordsId}
+    </select>
+        
+    <insert id="insertDbStateRecords" parameterType="DbStateRecords" useGeneratedKeys="true" keyProperty="stateRecordsId">
+        insert into db_state_records2
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="codeOnly != null  and codeOnly != ''">code_only,</if>
+            <if test="demandTime != null ">demand_time,</if>
+            <if test="stateJson != null  and stateJson != ''">state_json,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="codeOnly != null  and codeOnly != ''">#{codeOnly},</if>
+            <if test="demandTime != null ">#{demandTime},</if>
+            <if test="stateJson != null  and stateJson != ''">#{stateJson},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbStateRecords" parameterType="DbStateRecords">
+        update db_state_records2
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="codeOnly != null  and codeOnly != ''">code_only = #{codeOnly},</if>
+            <if test="demandTime != null ">demand_time = #{demandTime},</if>
+            <if test="stateJson != null  and stateJson != ''">state_json = #{stateJson},</if>
+        </trim>
+        where state_records_id = #{stateRecordsId}
+    </update>
+
+    <delete id="deleteDbStateRecordsById" parameterType="Long">
+        delete from db_state_records2 where state_records_id = #{stateRecordsId}
+    </delete>
+
+    <delete id="deleteDbStateRecordsByIds" parameterType="String">
+        delete from db_state_records2 where state_records_id in 
+        <foreach item="stateRecordsId" collection="array" open="(" separator="," close=")">
+            #{stateRecordsId}
+        </foreach>
+    </delete>
+    <!--  @Select("select * from db_state_records2 s WHERE s.demand_time >= #{startTime} and s.demand_time<=#{endTime} ORDER BY s.demand_time ")-->
+    <select id="intervalState" parameterType="String" resultMap="DbStateRecordsResult">
+        <include refid="selectDbStateRecordsVo"/>
+        <where>
+            demand_time &gt;= #{startTime} and demand_time &lt;=#{endTime}and code_only=#{hearName}
+        </where>
+        order by demand_time
+    </select>
+
+    
+</mapper>

@@ -49,6 +49,32 @@ public class DbStateRecords extends BaseEntity
     @ApiModelProperty(value = "时间")
     private Date demandTime;
 
+
+    @Override
+    public String toString() {
+        return "DbStateRecords{" +
+                "stateRecordsId=" + stateRecordsId +
+                ", codeOnly='" + codeOnly + '\'' +
+                ", type=" + type +
+                ", demandTime=" + demandTime +
+                ", equipmentId=" + equipmentId +
+                ", stateJson='" + stateJson + '\'' +
+                '}';
+    }
+
+    public Long getEquipmentId() {
+        return equipmentId;
+    }
+
+    public void setEquipmentId(Long equipmentId) {
+        this.equipmentId = equipmentId;
+    }
+
+    /** 时间 */
+
+
+    private Long equipmentId;
+
     /** 状态表typejson字串 */
     @Excel(name = "状态表typejson字串")
     @ApiModelProperty(value = "状态表typejson字串")
@@ -89,16 +115,6 @@ public class DbStateRecords extends BaseEntity
     public String getStateJson()
     {
         return stateJson;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-                .append("stateRecordsId", getStateRecordsId())
-                .append("codeOnly", getCodeOnly())
-                .append("demandTime", getDemandTime())
-                .append("stateJson", getStateJson())
-                .toString();
     }
 
 

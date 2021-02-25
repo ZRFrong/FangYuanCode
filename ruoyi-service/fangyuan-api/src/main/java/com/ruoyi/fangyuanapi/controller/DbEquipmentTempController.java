@@ -1,5 +1,7 @@
 package com.ruoyi.fangyuanapi.controller;
 
+import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.fangyuanapi.conf.OperationConf;
 import com.ruoyi.system.domain.DbEquipmentTemp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,6 +53,18 @@ public class DbEquipmentTempController extends BaseController
 	{
 		startPage();
         return result(dbEquipmentTempService.selectDbEquipmentTempList(dbEquipmentTemp));
+	}
+
+
+	 private  OperationConf operationConf=SpringUtils.getBean(OperationConf.class);
+	/**
+	 * 查询设备模板种类列表
+	 */
+	@GetMapping("speciesList")
+    @ApiOperation(value = "查询设备模板种类列表", notes = "查询设备模板种类列表")
+	public R speciesList(  )
+	{
+        return R.data(operationConf.getTypsMap());
 	}
 	/**
 	 * 查询设备模板列表

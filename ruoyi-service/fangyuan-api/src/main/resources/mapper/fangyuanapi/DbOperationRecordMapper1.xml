@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbOperationRecordMapper1">
+    
+    <resultMap type="DbOperationRecord" id="DbOperationRecordResult">
+        <result property="id"    column="id"    />
+        <result property="dbUserId"    column="db_user_id"    />
+        <result property="isComplete"    column="is_complete"    />
+        <result property="operationTime"    column="operation_time"    />
+        <result property="operationText"    column="operation_text"    />
+        <result property="operationObject"    column="operation_object"    />
+        <result property="operationObjectId"    column="operation_object_id"    />
+        <result property="operationObjectType"    column="operation_object_type"    />
+        <result property="operationSource"    column="operation_source"    />
+    </resultMap>
+
+    <sql id="selectDbOperationRecordVo">
+        select id, db_user_id, is_complete, operation_time, operation_text, operation_object, operation_object_type, operation_source from db_operation_record1
+    </sql>
+
+    <select id="selectDbOperationRecordList" parameterType="DbOperationRecord" resultMap="DbOperationRecordResult">
+        <include refid="selectDbOperationRecordVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbOperationRecordById" parameterType="Long" resultMap="DbOperationRecordResult">
+        <include refid="selectDbOperationRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbOperationRecord" parameterType="DbOperationRecord">
+        insert into db_operation_record1
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="dbUserId != null ">db_user_id,</if>
+            <if test="isComplete != null ">is_complete,</if>
+            <if test="operationTime != null ">operation_time,</if>
+            <if test="operationText != null  and operationText != ''">operation_text,</if>
+            <if test="operationObject != null  and operationObject != ''">operation_object,</if>
+            <if test="operationObjectType != null ">operation_object_type,</if>
+            <if test="operationSource != null ">operation_source,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="dbUserId != null ">#{dbUserId},</if>
+            <if test="isComplete != null ">#{isComplete},</if>
+            <if test="operationTime != null ">#{operationTime},</if>
+            <if test="operationText != null  and operationText != ''">#{operationText},</if>
+            <if test="operationObject != null  and operationObject != ''">#{operationObject},</if>
+            <if test="operationObjectType != null ">#{operationObjectType},</if>
+            <if test="operationSource != null ">#{operationSource},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbOperationRecord" parameterType="DbOperationRecord">
+        update db_operation_record1
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dbUserId != null ">db_user_id = #{dbUserId},</if>
+            <if test="isComplete != null ">is_complete = #{isComplete},</if>
+            <if test="operationTime != null ">operation_time = #{operationTime},</if>
+            <if test="operationText != null  and operationText != ''">operation_text = #{operationText},</if>
+            <if test="operationObject != null  and operationObject != ''">operation_object = #{operationObject},</if>
+            <if test="operationObjectType != null ">operation_object_type = #{operationObjectType},</if>
+            <if test="operationSource != null ">operation_source = #{operationSource},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbOperationRecordById" parameterType="Long">
+        delete from db_operation_record1 where id = #{id}
+    </delete>
+
+    <delete id="deleteDbOperationRecordByIds" parameterType="String">
+        delete from db_operation_record1 where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="listGroupDay" parameterType="String" resultMap="DbOperationRecordResult">
+        <include refid="selectDbOperationRecordVo"/>
+        <!--<if test="param.queryForm != null and param.queryForm.size()>0">-->
+            where  1=1
+            <if test="operationTime != null  and operationTime != ''"> and  date( operation_time) between #{operationTime} and #{operationTime}</if>
+            <if test="operationText != null  and operationText != ''"> and operation_text = #{operationText}or operation_object like concat('%', #{operationText}, '%') </if>
+            <if test="dbUserId != null  "> and db_user_id = #{dbUserId}</if>
+             order by operation_time  desc
+            limit #{currPage},#{pageSize}
+        <!--</if>-->
+    </select>
+
+</mapper>
