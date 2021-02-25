@@ -3,16 +3,16 @@ package com.ruoyi.fangyuanapi.mapper;
 import com.ruoyi.system.domain.DbOperationRecord;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Date;
 import java.util.List;
 
 /**
  * 用户操作记录Mapper接口
- *
+ * 
  * @author zheng
  * @date 2020-10-16
  */
-public interface DbOperationRecordMapper {
+public interface DbOperationRecordMapper1
+{
     /**
      * 查询用户操作记录
      *

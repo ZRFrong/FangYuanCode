@@ -1,6 +1,7 @@
 package com.ruoyi.fangyuanapi.conf;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Configuration
-
+@RefreshScope
 public class OperationConf {
 
     @Value("#{${com.fangyuan.operation.typs}}")
@@ -20,6 +21,11 @@ public class OperationConf {
 
     @Value("#{'${com.fangyuan.operation.arrs}'.split(',')}")
     private List<String> arrs;
+
+
+    public Map<String,String> getTypsMap() {
+        return typs;
+    }
 
 
     public String[] getTyps() {
