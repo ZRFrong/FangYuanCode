@@ -9,12 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.system.domain.DbProblemType;
 import com.ruoyi.fangyuanapi.service.IDbProblemTypeService;
-
 import java.util.List;
 import java.util.Map;
 
@@ -59,8 +57,16 @@ public class DbProblemTypeController extends BaseController
 		List<Map<String,Object>> dbProblemList = dbProblemTypeService.selectDbProblemList(type,currPage);
         return R.data(dbProblemList);
 	}
-	
-	
+
+	/**
+	 *
+	 */
+	@GetMapping("getAllProblemType")
+	public  R getAllProblemType(){
+		List<Map<String,Object>> result = dbProblemTypeService.getAllProblemType();
+		return R.data(result);
+	}
+
 	/**
 	 * 新增保存问题类型
 	 */

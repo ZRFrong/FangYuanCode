@@ -33,6 +33,12 @@ public class R extends HashMap<String, Object> {
         return r;
     }
 
+    public static R rows(Object obj) {
+        R r = new R();
+        r.put("rows", obj);
+        return r;
+    }
+
     public static R data(Object obj) {
         R r = new R();
         r.put("data", obj);

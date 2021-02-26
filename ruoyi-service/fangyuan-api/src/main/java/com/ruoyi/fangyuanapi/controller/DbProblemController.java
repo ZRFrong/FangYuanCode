@@ -1,17 +1,17 @@
 package com.ruoyi.fangyuanapi.controller;
 
-import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.page.PageConf;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.fangyuanapi.service.IDbProblemTypeService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.system.domain.DbProblem;
 import com.ruoyi.fangyuanapi.service.IDbProblemService;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +29,9 @@ public class DbProblemController extends BaseController
 	
 	@Autowired
 	private IDbProblemService dbProblemService;
+
+	@Autowired
+    private IDbProblemTypeService dbProblemTypeService;
 	
 	/**
 	 * 查询${tableComment}
@@ -67,7 +70,13 @@ public class DbProblemController extends BaseController
 	@PostMapping("save")
     @ApiOperation(value = "新增保存问题" , notes = "新增保存问题" ,httpMethod = "POST")
 	public R addSave(@ApiParam(name="DbProblem",value="传入json格式",required=true) @RequestBody DbProblem dbProblem)
-	{		
+	{
+		if(StringUtils.isEmpty(dbProblem.getAnswerText())){
+			dbProblem.setProblemFrom(0);
+		}else {
+			dbProblem.setProblemFrom(1);
+		}
+		dbProblem.setCreateTime(new Date());
 		return toAjax(dbProblemService.insertDbProblem(dbProblem));
 	}
 
@@ -105,6 +114,12 @@ public class DbProblemController extends BaseController
 		currPage = currPage == null || currPage <= 0  ? 0 :(currPage -1) * pageSize;
 		List<Map<String,Object>> result = dbProblemService.getProblemListByType(problemType,currPage,pageSize);
 		return R.data(result);
+    }
+
+    @GetMapping("getAllProblemType")
+    public  R getAllProblemType(){
+        List<Map<String,Object>> result = dbProblemTypeService.getAllProblemType();
+        return R.data(result);
     }
 
 }

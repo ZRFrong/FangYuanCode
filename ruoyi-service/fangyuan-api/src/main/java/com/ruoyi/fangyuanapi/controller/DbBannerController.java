@@ -38,7 +38,7 @@ public class DbBannerController extends BaseController
 	public DbBanner get(  @PathVariable("id") Long id)
 	{
 		return dbBannerService.selectDbBannerById(id);
-		
+
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public class DbBannerController extends BaseController
 		startPage();
         return result(dbBannerService.selectDbBannerList(dbBanner));
 	}
-	
+
 	
 	/**
 	 * 新增保存轮播图

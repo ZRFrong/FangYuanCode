@@ -32,6 +32,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDbProblemList" resultType="java.util.Map">
         select id,problem_type from db_problem_type where  type = #{param1} and is_del = 0 and is_show = 0 limit #{param2},#{param3}
     </select>
+    <select id="getAllProblemType" resultType="java.util.Map">
+        select * from db_problem_type
+    </select>
 
     <insert id="insertDbProblemType" parameterType="DbProblemType" useGeneratedKeys="true" keyProperty="id">
         insert into db_problem_type
