@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import java.util.Date;
+
 /**
  * 【请填写功能名称】对象 db_problem
  * 
@@ -14,7 +16,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @date 2021-01-18
  */
 @ApiModel
-public class DbProblem extends BaseEntity
+public class DbProblem
 {
     private static final long serialVersionUID = 1L;
 
@@ -44,14 +46,58 @@ public class DbProblem extends BaseEntity
     /** 保留字 */
     @Excel(name = "保留字")
     @ApiModelProperty(value = "保留字")
-    private Integer problemType;
+    private Integer problemTypeId;
 
     /** 问题热度：此为排序规则 */
     @Excel(name = "问题热度：此为排序规则")
     @ApiModelProperty(value = "问题热度：此为排序规则")
     private Long problemHot;
 
-    public void setId(Long id) 
+    @Excel(name = "问题来源：0用户 1为客服")
+    @ApiModelProperty(value = "问题来源：0用户 1为客服")
+    private Integer problemFrom;
+
+    @Excel(name = "手机号")
+    @ApiModelProperty(value = "手机号")
+    private String phone;
+
+    private String address;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    private Date createTime;
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Integer getProblemFrom() {
+        return problemFrom;
+    }
+
+    public void setProblemFrom(Integer problemFrom) {
+        this.problemFrom = problemFrom;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }
@@ -92,20 +138,20 @@ public class DbProblem extends BaseEntity
         this.isDel = isDel;
     }
 
-    public Integer getIsDel() 
+    public Integer getProblemTypeId() {
+        return problemTypeId;
+    }
+
+    public void setProblemTypeId(Integer problemTypeId) {
+        this.problemTypeId = problemTypeId;
+    }
+
+    public Integer getIsDel()
     {
         return isDel;
     }
-    public void setProblemType(Integer problemType) 
-    {
-        this.problemType = problemType;
-    }
 
-    public Integer getProblemType() 
-    {
-        return problemType;
-    }
-    public void setProblemHot(Long problemHot) 
+    public void setProblemHot(Long problemHot)
     {
         this.problemHot = problemHot;
     }
@@ -124,8 +170,11 @@ public class DbProblem extends BaseEntity
             .append("answerText", getAnswerText())
             .append("createTime", getCreateTime())
             .append("isDel", getIsDel())
-            .append("problemType", getProblemType())
+            .append("problemTypeId", getProblemTypeId())
             .append("problemHot", getProblemHot())
+            .append("problemFrom",getProblemFrom())
+            .append("phone",getPhone())
+            .append("address",getAddress())
             .toString();
     }
 }

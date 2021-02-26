@@ -61,4 +61,6 @@ public interface IDbProblemTypeService
     public int deleteDbProblemTypeById(Long id);
 
     List<Map<String,Object>> selectDbProblemList(Integer type, Integer currPage);
+
+    List<Map<String,Object>> getAllProblemType();
 }

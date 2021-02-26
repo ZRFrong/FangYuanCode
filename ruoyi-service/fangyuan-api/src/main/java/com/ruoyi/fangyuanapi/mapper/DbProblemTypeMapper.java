@@ -61,4 +61,7 @@ public interface DbProblemTypeMapper
     public int deleteDbProblemTypeByIds(String[] ids);
 
     List<Map<String,Object>> selectDbProblemList(Integer type, Integer currPage,Integer pageSize);
+
+    List<Map<String,Object>> getAllProblemType();
+
 }

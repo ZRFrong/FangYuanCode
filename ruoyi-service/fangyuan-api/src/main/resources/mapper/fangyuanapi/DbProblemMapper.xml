@@ -11,12 +11,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="answerText"    column="answer_text"    />
         <result property="createTime"    column="create_time"    />
         <result property="isDel"    column="is_del"    />
-        <result property="problemType"    column="problem_type"    />
+        <result property="problemTypeId"    column="problem_type_id"    />
         <result property="problemHot"    column="problem_hot"    />
+        <result property="problemFrom"    column="problem_from"    />
+        <result property="phone"    column="phone"    />
+        <result property="address"    column="address"    />
     </resultMap>
 
     <sql id="selectDbProblemVo">
-        select id, problem_text, images, answer_text, create_time, is_del, problem_type, problem_hot from db_problem
+        select * from db_problem
     </sql>
 
     <select id="selectDbProblemList" parameterType="DbProblem" resultMap="DbProblemResult">
@@ -52,18 +55,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="answerText != null  and answerText != ''">answer_text,</if>
             <if test="createTime != null ">create_time,</if>
             <if test="isDel != null ">is_del,</if>
-            <if test="problemType != null ">problem_type,</if>
+            <if test="problemTypeId != null ">problem_type_id,</if>
             <if test="problemHot != null ">problem_hot,</if>
-         </trim>
+            <if test="problemFrom != null ">problem_from,</if>
+            <if test="phone != null ">phone,</if>
+            <if test="address != null ">address,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="problemText != null  and problemText != ''">#{problemText},</if>
             <if test="images != null  and images != ''">#{images},</if>
             <if test="answerText != null  and answerText != ''">#{answerText},</if>
             <if test="createTime != null ">#{createTime},</if>
             <if test="isDel != null ">#{isDel},</if>
-            <if test="problemType != null ">#{problemType},</if>
+            <if test="problemTypeId != null ">#{problemTypeId},</if>
             <if test="problemHot != null ">#{problemHot},</if>
-         </trim>
+            <if test="problemFrom != null ">#{problemFrom},</if>
+            <if test="phone != null ">#{phone},</if>
+            <if test="address != null ">#{address},</if>
+
+        </trim>
     </insert>
 
     <update id="updateDbProblem" parameterType="DbProblem">
@@ -74,11 +84,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="answerText != null  and answerText != ''">answer_text = #{answerText},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="isDel != null ">is_del = #{isDel},</if>
-            <if test="problemType != null ">problem_type = #{problemType},</if>
+            <if test="problemTypeId != null ">problem_type_id = #{problemTypeId},</if>
             <if test="problemHot != null ">problem_hot = #{problemHot},</if>
+            <if test="problemFrom != null ">problem_from = #{problemFrom},</if>
+            <if test="phone != null ">phone = #{phone},</if>
+            <if test="address != null ">address = #{address},</if>
         </trim>
         where id = #{id}
     </update>
+
     <update id="updateProblemHot">
         UPDATE db_problem set problem_hot = problem_hot+1 where id=#{id}
     </update>

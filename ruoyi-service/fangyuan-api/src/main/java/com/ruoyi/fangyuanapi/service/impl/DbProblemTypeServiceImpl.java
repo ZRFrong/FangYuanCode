@@ -100,4 +100,9 @@ public class DbProblemTypeServiceImpl implements IDbProblemTypeService
     public List<Map<String,Object>> selectDbProblemList(Integer type, Integer currPage) {
         return dbProblemTypeMapper.selectDbProblemList(type,currPage,PageConf.pageSize);
     }
+
+    @Override
+    public List<Map<String, Object>> getAllProblemType() {
+        return dbProblemTypeMapper.getAllProblemType();
+    }
 }
