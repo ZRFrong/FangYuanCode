@@ -1,6 +1,7 @@
 package com.ruoyi.common.core.domain;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class R extends HashMap<String, Object> {
@@ -48,6 +49,9 @@ public class R extends HashMap<String, Object> {
     public static R ok() {
         return new R();
     }
+
+
+
 
     @Override
     public R put(String key, Object value) {

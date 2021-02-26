@@ -184,28 +184,33 @@ public class SendBasisUtils {
         try {
             Thread.sleep(1500);
             //        加锁
-//            String s1 = String.valueOf(Thread.currentThread().getId());
-//            redisLockUtil.lock(text,s1,100);
-            String s = redisUtils.get(text);
-            if (StringUtils.isEmpty(s)) {
-                throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
-            } else {
-                DbTcpOrder dbTcpOrder = JSON.parseObject(s, DbTcpOrder.class);
-                Integer results = dbTcpOrder.getResults();
-
-                //                    存储进入数据库
-//
-                if (text.split("_")[2].substring(2,4).equals("03")||text.split("_")[2].substring(2,2).equals("01")){
-                    log.info("没有存储进来了");
-                }else {
-                    int i = tcpOrderService.insertDbTcpOrder(dbTcpOrder);
-                    log.info("存储进来了");
-                }
-                redisUtils.delete(text);
-//                redisLockUtil.unLock(text,s1);
-                if (results == 0) {
+            for (int i = 0; i <10 ; i++) {
+                String s1 = String.valueOf(Thread.currentThread().getId());
+                redisLockUtil.lock(text,s1,100);
+                String s = redisUtils.get(text);
+                if (StringUtils.isEmpty(s)) {
                     throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
-                }
+                } else {
+                    DbTcpOrder dbTcpOrder = JSON.parseObject(s, DbTcpOrder.class);
+                    Integer results = dbTcpOrder.getResults();
+
+                    //                    存储进入数据库
+//
+                    if (text.split("_")[2].substring(2,4).equals("03")||text.split("_")[2].substring(2,2).equals("01")){
+                        log.info("没有存储进来了");
+                    }else {
+                        int i2 = tcpOrderService.insertDbTcpOrder(dbTcpOrder);
+                        log.info("存储进来了");
+                        redisUtils.delete(text);
+                        break;
+                    }
+                redisLockUtil.unLock(text,s1);
+                    if (results == 0) {
+                        throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
+                    }
+
+            }
+
 
             }
         } catch (OperationExceptions operationExceptions) {

@@ -77,16 +77,13 @@ public class SendCodeListUtils {
 
 
     private static HashMap<String, String> send(List<DbOperationVo> dbOperationVos, int type) {
-
-
-
                 HashMap<String, String> stringStringHashMap = new HashMap<>();
                 //                    循环list
 //                    int query = query(dbOperationVo);
                 for (int i = 0; i < dbOperationVos.size(); i++) {
-
                     String query = null;
                     try {
+
                         switch (type) {
                             case 1:
                                 sendCodeUtils.query01(dbOperationVos.get(i));
