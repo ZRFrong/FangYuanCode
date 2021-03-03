@@ -131,9 +131,10 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
                 dbOperationVo.setHeartName(tcpClient.getHeartName());
                 dbOperationVo.setFacility("01");
                 dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFeng);
+                dbOperationVo.setOperationTextType(OpcodeTextConf.OPCODE01);
                 list.add(dbOperationVo);
             }
-            SendCodeListUtils.queryIoListNoWait(list, OpcodeTextConf.OPCODE01);
+            SendCodeListUtils.queryIoListNoWait(list);
         }
 
     }
@@ -149,9 +150,10 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
                 dbOperationVo.setHeartName(tcpClient.getHeartName());
                 dbOperationVo.setFacility("01");
                 dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFengType);
+                dbOperationVo.setOperationTextType(OpcodeTextConf.OPCODE03);
                 list.add(dbOperationVo);
             }
-            SendCodeListUtils.queryIoListNoWait(list, OpcodeTextConf.OPCODE03);
+            SendCodeListUtils.queryIoListNoWait(list);
         }
 
     }
@@ -165,7 +167,7 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
         //       根据心跳分组
         Map<String, List<DbOperationVo>> mps = dbOperationVoList.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
 //         多个map依次执行（多线程）
-        R r = SendCodeListUtils.queryIoList(mps, OpcodeTextConf.OPCODEEMPTY);
+        R r = SendCodeListUtils.queryIoList(mps);
 
 
         return r;
@@ -183,6 +185,7 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
                 DbOperationVo dbOperationVo1 = new DbOperationVo();
                 BeanUtils.copyProperties(operationVo, dbOperationVo1);
                 dbOperationVo1.setOperationText(s);
+                dbOperationVo1.setOperationTextType(OpcodeTextConf.OPCODEEMPTY);
                 dbOperationVoList.add(dbOperationVo1);
             }
         }
@@ -226,16 +229,14 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
 
 
     @Override
-    public void timingTypeOnly(DbTcpClient dbTcpClient) throws ExecutionException, InterruptedException {
+    public void timingTypeOnly(DbTcpClient dbTcpClient)  {
         DbOperationVo dbOperationVo = new DbOperationVo();
-        List<DbOperationVo> list = new ArrayList<>();
         dbOperationVo.setHeartName(dbTcpClient.getHeartName());
         dbOperationVo.setFacility("01");
         dbOperationVo.setOperationText(TcpOrderTextConf.stateSave);
-        list.add(dbOperationVo);
+        dbOperationVo.setOperationTextType(OpcodeTextConf.OPCODE03);
         //       根据心跳分组
-        Map<String, List<DbOperationVo>> mps = list.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
-        SendCodeListUtils.queryIoList(mps, OpcodeTextConf.OPCODE03);
+        SendCodeUtils.queryNoWait(dbOperationVo);
     }
 
     /*
@@ -272,10 +273,11 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
                 dbOperationVo.setHeartName(tcpClient.getHeartName());
                 dbOperationVo.setFacility("01");
                 dbOperationVo.setOperationText(TcpOrderTextConf.stateSave);
+                dbOperationVo.setOperationTextType(OpcodeTextConf.OPCODE03);
                 list.add(dbOperationVo);
             }
             //       根据心跳分组
-            SendCodeListUtils.queryIoListNoWait(list, OpcodeTextConf.OPCODE03);
+            SendCodeListUtils.queryIoListNoWait(list );
         }
 
 

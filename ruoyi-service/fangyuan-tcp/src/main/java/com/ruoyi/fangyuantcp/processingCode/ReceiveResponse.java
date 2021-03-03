@@ -5,12 +5,15 @@ import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.util.RedisLockUtil;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
+import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.system.domain.DbTcpOrder;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /*
@@ -21,13 +24,22 @@ public class ReceiveResponse {
 
     private RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
     private RedisLockUtil redisLockUtil = SpringUtils.getBean(RedisLockUtil.class);
-
+    private IDbTcpClientService tcpClientService = SpringUtils.getBean(IDbTcpClientService.class);
 
     /*
      * 操作响应
      * */
     public void stateRespond(ChannelHandlerContext ctx, String string) {
         String getname = getname(ctx);
+        DbTcpClient dbTcpClient1 = new DbTcpClient();
+        dbTcpClient1.setHeartName(getname);
+        List<DbTcpClient> dbTcpClients = tcpClientService.selectDbTcpClientList(dbTcpClient1);
+        if (null != dbTcpClients && dbTcpClients.size() != 0) {
+            DbTcpClient dbTcpClient = dbTcpClients.get(0);
+            dbTcpClient.setHeartbeatTime(new Date());
+            tcpClientService.updateDbTcpClient(dbTcpClient);
+        }
+
         /*
          * 处理收到信息
          * */
@@ -38,6 +50,9 @@ public class ReceiveResponse {
 //        加锁
         String s1 = String.valueOf(Thread.currentThread().getId());
         redisLockUtil.lock(key,s1,100);
+//        更新心跳时间
+
+
 //        从redis中拿到指定的数据
 
         DbTcpOrder dbTcpClient = null;

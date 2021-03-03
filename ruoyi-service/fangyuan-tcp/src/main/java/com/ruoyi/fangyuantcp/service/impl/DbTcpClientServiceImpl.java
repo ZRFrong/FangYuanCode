@@ -34,7 +34,6 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     private DbEquipmentMapper1 dbEquipmentMapper;
 
 
-
     @Autowired
     private DbTcpClientMapper dbTcpClientMapper;
 
@@ -88,7 +87,7 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
 
     @Override
     public List<String> heartBeatDFuzzy(String heartBeat) {
-       String heartBeat1="%"+heartBeat+"%";
+        String heartBeat1 = "%" + heartBeat + "%";
         return dbTcpClientMapper.heartBeatDFuzzy(heartBeat1);
     }
 
@@ -104,7 +103,6 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     }
 
 
-
     @Override
     public int heartbeatUpdate(DbTcpClient dbTcpClient) {
         dbTcpClient.setHeartbeatTime(new Date());
@@ -113,34 +111,32 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     }
 
 
-
     /*
-    * 远程，本地检测
-    * */
+     * 远程，本地检测
+     * */
     @Override
-    public void TaskOnline(DbTcpClient tcpClient)throws ExecutionException, InterruptedException {
+    public void TaskOnline(DbTcpClient tcpClient) throws ExecutionException, InterruptedException {
         String heartName = tcpClient.getHeartName();
-       List<String>  integers= dbEquipmentMapper.selectByHeartNameToEqumentNo(heartName);
+        List<String> integers = dbEquipmentMapper.selectByHeartNameToEqumentNo(heartName);
 
-       if (integers.isEmpty()){
-          List<DbOperationVo> list = new ArrayList<>();
-           for (String integer : integers) {
-               DbOperationVo dbOperationVo = new DbOperationVo();
-                   dbOperationVo.setHeartName(tcpClient.getHeartName());
-                   if (Integer.parseInt(integer)<10){
+        if (integers.isEmpty()) {
+            List<DbOperationVo> list = new ArrayList<>();
+            for (String integer : integers) {
+                DbOperationVo dbOperationVo = new DbOperationVo();
+                dbOperationVo.setHeartName(tcpClient.getHeartName());
+                if (Integer.parseInt(integer) < 10) {
 
-                   dbOperationVo.setFacility("0"+integer);
-                   }else {
-                       dbOperationVo.setFacility(integer);
-                   }
-                   dbOperationVo.setOperationText(TcpOrderTextConf.TaskOnline);
-                   list.add(dbOperationVo);
-
-
-           }
-           //       根据心跳分组
-               SendCodeListUtils.queryIoListNoWait(list,OpcodeTextConf.OPCODE03);
-       }
+                    dbOperationVo.setFacility("0" + integer);
+                    dbOperationVo.setOperationTextType(OpcodeTextConf.OPCODE03);
+                } else {
+                    dbOperationVo.setFacility(integer);
+                }
+                dbOperationVo.setOperationText(TcpOrderTextConf.TaskOnline);
+                list.add(dbOperationVo);
+            }
+            //       根据心跳分组
+            SendCodeListUtils.queryIoListNoWait(list);
+        }
 
     }
 
@@ -161,48 +157,44 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     }
 
 
-
-
-
     @Override
     public int heartbeatChoose(DbTcpClient dbTcpClient) {
 
-            int i = 0;
-        try {
-            List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
-            /*
-             * 设备在线
-             * */
-            DbEquipment dbEquipment = new DbEquipment();
-            dbEquipment.setHeartbeatText(dbTcpClient.getHeartName());
+        int i = 0;
+
+        List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
+        /*
+         * 设备在线
+         * */
+        DbEquipment dbEquipment = new DbEquipment();
+        dbEquipment.setHeartbeatText(dbTcpClient.getHeartName());
 
 
-            if (dbTcpClients.size() > 0 && dbTcpClients != null) {
+        if (dbTcpClients.size() > 0 && dbTcpClients != null) {
 //            存在更新
-                dbTcpClients.get(0).setHeartbeatTime(new Date());
-                dbTcpClients.get(0).setIsOnline(0);
-                int i1 = dbTcpClientMapper.updateDbTcpClient(dbTcpClients.get(0));
-                dbTcpTypeService.updateByHeartbeatOpen(dbTcpClient.getHeartName());
-            } else {
+            dbTcpClients.get(0).setHeartbeatTime(new Date());
+            dbTcpClients.get(0).setIsOnline(0);
+            int i1 = dbTcpClientMapper.updateDbTcpClient(dbTcpClients.get(0));
+            dbTcpTypeService.updateByHeartbeatOpen(dbTcpClient.getHeartName());
+        } else {
 //            不存在新建
-                dbTcpClient.setHeartbeatTime(new Date());
-                dbTcpClient.setIsOnline(0);
-                int i3 = dbTcpClientMapper.insertDbTcpClient(dbTcpClient);
-                i = 1;
-//                查询温度
-                dbTcpTypeService.timingTypeOnly(dbTcpClient);
+            dbTcpClient.setHeartbeatTime(new Date());
+            dbTcpClient.setIsOnline(0);
+            int i3 = dbTcpClientMapper.insertDbTcpClient(dbTcpClient);
+            i = 1;
 
-            }
-
-            List<DbEquipment>   dbEquipments = dbEquipmentMapper.selectDbEquipmentList(dbEquipment);
+        }
+        if (dbEquipment != null) {
+            List<DbEquipment> dbEquipments = dbEquipmentMapper.selectDbEquipmentList(dbEquipment);
             for (DbEquipment equipment : dbEquipments) {
                 equipment.setIsFault(0);
-                equipment.setIsOnline(0);
+
                 int i2 = dbEquipmentMapper.updateDbEquipment(equipment);
             }
-        } catch (Exception e) {
-            log.error(dbTcpClient.getHeartName()+":设备未绑定");
+        }else{
+            log.warn(dbTcpClient.getHeartName()+":设备未绑定");
         }
+
 
         return i;
     }

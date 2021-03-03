@@ -1,11 +1,11 @@
 package com.ruoyi.fangyuantcp.service;
 
-import org.springframework.stereotype.Service;
+import com.ruoyi.common.core.domain.R;
 
 public interface OperateVentilateService {
 
-    int operateTongFengHand(String heartbeatText, String equipmentNo, Integer i);
+    R operateTongFengHand(String heartbeatText, String equipmentNo, Integer i);
 
-    int operateTongFengType(String heartbeatText, String equipmentNo, Integer i, String hex);
+    R operateTongFengType(String heartbeatText, String equipmentNo, Integer i, String hex);
 
 }

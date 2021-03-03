@@ -63,14 +63,15 @@ public class DbOperationRecordServiceImpl implements IDbOperationRecordService {
      */
     @Override
     public int insertDbOperationRecord(DbOperationRecord dbOperationRecord) {
-        if (dbOperationRecord.getDbUserId() % 3 == 0) {
+//        if (dbOperationRecord.getDbUserId() % 3 == 0) {
+//            return dbOperationRecordMapper.insertDbOperationRecord(dbOperationRecord);
+//        } else if (dbOperationRecord.getDbUserId() % 3 == 1) {
+//            return dbOperationRecordMapper1.insertDbOperationRecord(dbOperationRecord);
+//        } else if (dbOperationRecord.getDbUserId() % 3 == 2) {
+//            return dbOperationRecordMapper2.insertDbOperationRecord(dbOperationRecord);
+//        }
+//        return 0;
             return dbOperationRecordMapper.insertDbOperationRecord(dbOperationRecord);
-        } else if (dbOperationRecord.getDbUserId() % 3 == 1) {
-            return dbOperationRecordMapper1.insertDbOperationRecord(dbOperationRecord);
-        } else if (dbOperationRecord.getDbUserId() % 3 == 2) {
-            return dbOperationRecordMapper2.insertDbOperationRecord(dbOperationRecord);
-        }
-        return 0;
     }
 
     /**

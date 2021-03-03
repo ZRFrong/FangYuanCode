@@ -108,19 +108,19 @@ public class SendBasisUtils {
         switch (str2.substring(2, 4)) {
             case "01":
                 //        010300C8000245F5
-                substring = facility+str2.substring(2, 4) + str2.substring(10, 12);
+                substring = facility + str2.substring(2, 4) + str2.substring(10, 12);
                 break;
             case "03":
 //                01 03 0C 00 00 00 00 00 00 00 00 00 00 00 00 93 70
-               String index= str2.substring(10, 12);
-              int i= Integer.parseInt(index)*2;
-                substring = facility+str2.substring(2, 4) +  StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 2, '0');
+                String index = str2.substring(10, 12);
+                int i = Integer.parseInt(index) * 2;
+                substring = facility + str2.substring(2, 4) + StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 2, '0');
                 break;
             case "05":
-                substring = str2 ;
+                substring = str2;
                 break;
             case "06":
-                substring = str2 ;
+                substring = str2;
                 break;
         }
 
@@ -183,43 +183,49 @@ public class SendBasisUtils {
     private static void HeartbeatRun(String text, DbOperationVo dbOperationVo) {
         try {
             Thread.sleep(1500);
+            int tag = 0;
             //        加锁
-            for (int i = 0; i <10 ; i++) {
+            for (int i = 0; i < 15; i++) {
+
                 String s1 = String.valueOf(Thread.currentThread().getId());
-                redisLockUtil.lock(text,s1,100);
+                log.error(s1 + "轮训了" + i);
+                redisLockUtil.lock(text, s1, 100);
                 String s = redisUtils.get(text);
+
                 if (StringUtils.isEmpty(s)) {
-                    throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
+                    redisLockUtil.unLock(text, s1);
+                    tag = 1;
                 } else {
                     DbTcpOrder dbTcpOrder = JSON.parseObject(s, DbTcpOrder.class);
                     Integer results = dbTcpOrder.getResults();
 
                     //                    存储进入数据库
 //
-                    if (text.split("_")[2].substring(2,4).equals("03")||text.split("_")[2].substring(2,2).equals("01")){
-                        log.info("没有存储进来了");
-                    }else {
-                        int i2 = tcpOrderService.insertDbTcpOrder(dbTcpOrder);
+                    if (results == 0) {
+                        redisLockUtil.unLock(text, s1);
+                        tag = 1;
+                    } else if (results == 1) {
+                        tag = 0;
+                        if (text.split("_")[2].substring(2, 4).equals("03") || text.split("_")[2].substring(2, 2).equals("01")) {
+                            log.info("查询指令返回，不记录数据库");
+                        } else {
+                            int i2 = tcpOrderService.insertDbTcpOrder(dbTcpOrder);
+                            log.info("指令响应，记录数据库");
+                        }
                         log.info("存储进来了");
+                        redisLockUtil.unLock(text, s1);
                         redisUtils.delete(text);
                         break;
                     }
-                redisLockUtil.unLock(text,s1);
-                    if (results == 0) {
-                        throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
-                    }
-
+                }
+                Thread.sleep(100);
             }
-
-
+            if (tag == 1) {
+                throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
             }
-        } catch (OperationExceptions operationExceptions) {
-            throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
-
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
     public void operateCodeNoWait(String text, DbOperationVo tcpOrder) {
@@ -257,7 +263,6 @@ public class SendBasisUtils {
             throw new FaultExceptions(tcpOrder.getHeartName(), tcpOrder.getOperationName(), tcpOrder.getFacility());
         }
     }
-
 
 
 }

@@ -66,7 +66,7 @@ public class OperationLogAspect {
 
         IDbOperationRecordService bean = SpringUtils.getBean(IDbOperationRecordService.class);
 //        用户id
-        dbOperationRecord.setDbUserId(Long.valueOf(ServletUtils.getRequest().getHeader(Constants.CURRENT_ID)));
+//        dbOperationRecord.setDbUserId(Long.valueOf(ServletUtils.getRequest().getHeader(Constants.CURRENT_ID)));
 
 
         //调用目标方法
