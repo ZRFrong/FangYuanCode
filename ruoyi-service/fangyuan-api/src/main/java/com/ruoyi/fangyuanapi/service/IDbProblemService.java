@@ -63,4 +63,7 @@ public interface IDbProblemService
     List<Map<String,Object>> getProblemListByType(Integer problemType, Integer currPage,Integer pageSize);
 
     List<DbProblem> selectDbProblem(Integer currPage, Integer pageSize);
+
+    Long selectDbProblemCount();
+
 }

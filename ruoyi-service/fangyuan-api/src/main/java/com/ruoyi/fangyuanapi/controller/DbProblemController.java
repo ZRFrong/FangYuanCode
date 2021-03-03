@@ -10,7 +10,6 @@ import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.system.domain.DbProblem;
 import com.ruoyi.fangyuanapi.service.IDbProblemService;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -55,12 +54,17 @@ public class DbProblemController extends BaseController
 	public R list(@RequestParam(name = "pageNum") Integer currPage, @RequestParam(name = "pageSize") Integer pageSize)
 	{
 		//时间
+        Integer flag = currPage;
 		if (pageSize == null || pageSize > 10 || pageSize <= 0){
 			pageSize = PageConf.pageSize;
 		}
 		currPage = currPage == null || currPage <= 0  ? 0 :(currPage -1) * pageSize;
 		List<DbProblem> list = dbProblemService.selectDbProblem(currPage,pageSize);
-		return R.rows(list);
+        R r = R.rows(list);
+        Long total = dbProblemService.selectDbProblemCount();
+        r.put("total",total);
+        r.put("pageNum",flag);
+        return r;
 	}
 	
 	
