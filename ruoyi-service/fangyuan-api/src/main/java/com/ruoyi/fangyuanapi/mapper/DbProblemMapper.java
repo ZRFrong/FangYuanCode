@@ -70,4 +70,6 @@ public interface DbProblemMapper
 
     List<DbProblem> selectDbProblem(@Param("currPage") Integer currPage, @Param("pageSize") Integer pageSize);
 
+    Long selectDbProblemCount();
+
 }

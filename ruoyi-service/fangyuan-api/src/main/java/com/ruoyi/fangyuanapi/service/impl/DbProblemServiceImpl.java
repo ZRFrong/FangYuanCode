@@ -109,5 +109,10 @@ public class DbProblemServiceImpl implements IDbProblemService
         return dbProblemMapper.selectDbProblem(currPage,pageSize);
     }
 
+    @Override
+    public Long selectDbProblemCount() {
+        return dbProblemMapper.selectDbProblemCount();
+    }
+
 
 }
