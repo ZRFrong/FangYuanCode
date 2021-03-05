@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbUserRecordMapper">
+    
+    <resultMap type="DbUserRecord" id="DbUserRecordResult">
+        <result property="id"    column="id"    />
+        <result property="operate"    column="operate"    />
+        <result property="networkState"    column="network_state"    />
+        <result property="ip"    column="ip"    />
+        <result property="ipAddress"    column="ip_address"    />
+        <result property="phoneModel"    column="phone_model"    />
+        <result property="operator"    column="operator"    />
+        <result property="dbUserId"    column="db_user_id"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectDbUserRecordVo">
+        select id, operate, network_state, ip, ip_address, phone_model, operator, db_user_id, create_time from db_user_record
+    </sql>
+
+    <select id="selectDbUserRecordList" parameterType="DbUserRecord" resultMap="DbUserRecordResult">
+        <include refid="selectDbUserRecordVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbUserRecordById" parameterType="Long" resultMap="DbUserRecordResult">
+        <include refid="selectDbUserRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbUserRecord" parameterType="DbUserRecord">
+        insert into db_user_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="operate != null  and operate != ''">operate,</if>
+            <if test="networkState != null  and networkState != ''">network_state,</if>
+            <if test="ip != null  and ip != ''">ip,</if>
+            <if test="ipAddress != null  and ipAddress != ''">ip_address,</if>
+            <if test="phoneModel != null  and phoneModel != ''">phone_model,</if>
+            <if test="operator != null  and operator != ''">operator,</if>
+            <if test="dbUserId != null ">db_user_id,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="operate != null  and operate != ''">#{operate},</if>
+            <if test="networkState != null  and networkState != ''">#{networkState},</if>
+            <if test="ip != null  and ip != ''">#{ip},</if>
+            <if test="ipAddress != null  and ipAddress != ''">#{ipAddress},</if>
+            <if test="phoneModel != null  and phoneModel != ''">#{phoneModel},</if>
+            <if test="operator != null  and operator != ''">#{operator},</if>
+            <if test="dbUserId != null ">#{dbUserId},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbUserRecord" parameterType="DbUserRecord">
+        update db_user_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="operate != null  and operate != ''">operate = #{operate},</if>
+            <if test="networkState != null  and networkState != ''">network_state = #{networkState},</if>
+            <if test="ip != null  and ip != ''">ip = #{ip},</if>
+            <if test="ipAddress != null  and ipAddress != ''">ip_address = #{ipAddress},</if>
+            <if test="phoneModel != null  and phoneModel != ''">phone_model = #{phoneModel},</if>
+            <if test="operator != null  and operator != ''">operator = #{operator},</if>
+            <if test="dbUserId != null ">db_user_id = #{dbUserId},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbUserRecordById" parameterType="Long">
+        delete from db_user_record where id = #{id}
+    </delete>
+
+    <delete id="deleteDbUserRecordByIds" parameterType="String">
+        delete from db_user_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

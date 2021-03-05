@@ -150,7 +150,7 @@ public class OperationLogAspect {
         return dbOperationRecord;
     }
 
-    private Map<String, Object> getMap(ProceedingJoinPoint point) {
+    protected static Map<String, Object> getMap(ProceedingJoinPoint point) {
         Signature signature = point.getSignature();
         MethodSignature methodSignature = (MethodSignature) signature;
         //参数名称
@@ -166,5 +166,8 @@ public class OperationLogAspect {
         return stringObjectHashMap;
     }
 
+    private void insertUserRecord(){
+
+    }
 
 }
