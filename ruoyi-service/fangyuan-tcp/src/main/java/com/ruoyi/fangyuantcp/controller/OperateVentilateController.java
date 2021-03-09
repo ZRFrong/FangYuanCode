@@ -52,8 +52,19 @@ public class OperateVentilateController extends BaseController {
                                  @ApiParam(name = "equipmentNo", value = "string", required = true) @PathVariable("equipmentNo") String equipmentNo,
                                  @ApiParam(name = "i", value = "inter", required = true) @PathVariable("i") Integer i,
                                  @ApiParam(name = "temp", value = "温度") @PathVariable("temp") String temp) throws InterruptedException {
-        String hex = Integer.toHexString(Integer.parseInt(temp));
-        return OperateVentilateService.operateTongFengType(heartbeatText, equipmentNo, i, hex);
+        int i1 = Integer.parseInt(temp);
+        int i2=i1/256;
+        int i3=i1%256;
+        String hex = Integer.toHexString(i2);
+        String hex2 = Integer.toHexString(i3);
+        String hex1="";
+        if (i2<10){
+
+            hex1 ="0"+i2+","+i3+"";
+        }else {
+            hex1 =i2+","+i3+"";
+        }
+        return OperateVentilateService.operateTongFengType(heartbeatText, equipmentNo, i, hex1);
 
 
     }

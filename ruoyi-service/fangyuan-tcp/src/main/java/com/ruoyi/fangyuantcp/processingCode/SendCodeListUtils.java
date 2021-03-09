@@ -50,7 +50,7 @@ public class SendCodeListUtils {
 //    新建几条线程
 
         executorService = ThreadUtil.newExecutor(strings.size() * 2);
-
+        EXECUTOR_SERVICE = ThreadUtil.newExecutor();
         for (String string : strings) {
             executorService.execute(new Runnable() {
                 @Override
@@ -82,7 +82,7 @@ public class SendCodeListUtils {
         HashMap<String, String> stringStringHashMap = new HashMap<>();
         //                    循环list
 //                    int query = query(dbOperationVo);
-        EXECUTOR_SERVICE = ThreadUtil.newExecutor(dbOperationVos.size());
+
         for (int i = 0; i < dbOperationVos.size(); i++) {
             int finalI = i;
             EXECUTOR_SERVICE.execute(new Runnable() {
@@ -99,10 +99,7 @@ public class SendCodeListUtils {
 
 
                         log.info("发送成功存进去了：" + query + "当前的时间毫秒值是：" + new Date().getTime());
-                        /*
-                         * 建立监听返回的数据
-                         * */
-//                        stringStringHashMap.put(dbOperationVos.get(finalI).getOperationName(), "响应成功");
+
                     } catch (FaultExceptions e) {
                         DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();
                         dbAbnormalInfo.setAlarmTime(new Date());
@@ -125,10 +122,15 @@ public class SendCodeListUtils {
                     }
                 }
             });
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            long t1 = System.currentTimeMillis();
+            while(true){
+//                获取当前毫秒
+                long t2 = System.currentTimeMillis();
+                if(t2-t1 >500){
+                    break;
+                }else{
+
+                }
             }
 
         }

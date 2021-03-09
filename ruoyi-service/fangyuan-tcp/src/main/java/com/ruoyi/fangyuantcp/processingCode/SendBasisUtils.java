@@ -185,7 +185,7 @@ public class SendBasisUtils {
             Thread.sleep(1500);
             int tag = 0;
             //        加锁
-            for (int i = 0; i < 15; i++) {
+            for (int i = 0; i < 35; i++) {
 
                 String s1 = String.valueOf(Thread.currentThread().getId());
                 log.error(s1 + "轮训了" + i);
@@ -206,12 +206,12 @@ public class SendBasisUtils {
                         tag = 1;
                     } else if (results == 1) {
                         tag = 0;
-                        if (text.split("_")[2].substring(2, 4).equals("03") || text.split("_")[2].substring(2, 2).equals("01")) {
-                            log.info("查询指令返回，不记录数据库");
-                        } else {
+//                        if (text.split("_")[2].substring(2, 4).equals("03") || text.split("_")[2].substring(2, 2).equals("01")) {
+//                        } else {
+//                            log.info("查询指令返回，不记录数据库");
                             int i2 = tcpOrderService.insertDbTcpOrder(dbTcpOrder);
                             log.info("指令响应，记录数据库");
-                        }
+//                        }
                         log.info("存储进来了");
                         redisLockUtil.unLock(text, s1);
                         redisUtils.delete(text);

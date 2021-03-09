@@ -51,14 +51,13 @@ public class OperateVentilateServiceImpl implements OperateVentilateService {
 
     @Override
     public R operateTongFengType(String heartbeatText, String equipmentNo, Integer i, String temp) {
-        int i2 = Integer.parseInt(temp, 16);
         ArrayList<DbOperationVo> dbOperationVos = new ArrayList<>();
         DbOperationVo dbOperationVo = new DbOperationVo();
         dbOperationVo.setHeartName(heartbeatText);
         dbOperationVo.setFacility(equipmentNo);
-        dbOperationVo.setOperationText(i == 0 ? TcpOrderTextConf.operateTongFengType + "," + "00," + i2 : TcpOrderTextConf.operateTongFengOverType + "," + "00," + i2);
+        dbOperationVo.setOperationText(i == 0 ? TcpOrderTextConf.operateTongFengType + "," +  temp : TcpOrderTextConf.operateTongFengOverType + "," + temp);
         dbOperationVo.setOperationTextType(OpcodeTextConf.OPCODE06);
-        dbOperationVo.setOperationName(i == 0 ? "更改开启自动通风温度为" + i2 : "更改关闭自动通风温度为" + i2);
+        dbOperationVo.setOperationName(i == 0 ? "更改开启自动通风温度为" + temp : "更改关闭自动通风温度为" + temp);
         dbOperationVo.setIsTrue("1");
         dbOperationVo.setCreateTime(new Date());
         dbOperationVos.add(dbOperationVo);
