@@ -134,6 +134,7 @@ public class SysOssServiceImpl implements ISysOssService
         ossEntity.setCreateBy(createBy);
         System.out.println(ossEntity);
         //int i = sysOssMapper.insertSelective(ossEntity);
+		ossEntity.setCreateBy("zhao");
         int i = sysOssMapper.insert(ossEntity);
         return i > 0 ? ossEntity : null;
 	}

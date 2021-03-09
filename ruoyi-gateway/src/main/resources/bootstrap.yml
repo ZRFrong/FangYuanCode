@@ -5,7 +5,7 @@ logging:
   level:
     com.alibaba.nacos.client.naming: error
 #    org.springframework.cloud.gateway: debug
- 
+
 spring: 
   application:
     name: ruoyi-gateway
@@ -17,10 +17,10 @@ spring:
   cloud:
     nacos:
       config:
-        server-addr: 127.0.0.1:8848
+        server-addr: 39.107.243.168:8848
         file-extension: yml
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: 39.107.243.168:8848
     gateway:
       discovery:
         locator:
@@ -101,6 +101,7 @@ spring:
                 key-resolver: '#{@remoteAddrKeyResolver}'
                 redis-rate-limiter.replenishRate: 10
                 redis-rate-limiter.burstCapacity: 20
+
               # 降级配置
             - name: Hystrix
               args:
@@ -124,6 +125,24 @@ spring:
               args:
                 name: fallbackcmd
                 fallbackUri: 'forward:/fallback'
+        - id: fangyuan-new-api
+          uri: lb://fangyuan-new-api
+          predicates:
+            - Path=/newapi/**
+          filters:
+            - StripPrefix=1
+             # 限流配置
+            - name: RequestRateLimiter
+              args:
+                key-resolver: '#{@remoteAddrKeyResolver}'
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+              # 降级配置
+            - name: Hystrix
+              args:
+                name: fallbackcmd
+                fallbackUri: 'forward:/fallback'
+
 hystrix:
   command:
     default:  #default全局有效，service id指定应用有效
