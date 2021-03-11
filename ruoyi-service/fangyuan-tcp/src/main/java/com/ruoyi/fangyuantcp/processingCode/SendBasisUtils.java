@@ -188,7 +188,6 @@ public class SendBasisUtils {
             for (int i = 0; i < 35; i++) {
 
                 String s1 = String.valueOf(Thread.currentThread().getId());
-                log.error(s1 + "轮训了" + i);
                 redisLockUtil.lock(text, s1, 100);
                 String s = redisUtils.get(text);
 
@@ -210,9 +209,7 @@ public class SendBasisUtils {
 //                        } else {
 //                            log.info("查询指令返回，不记录数据库");
                             int i2 = tcpOrderService.insertDbTcpOrder(dbTcpOrder);
-                            log.info("指令响应，记录数据库");
 //                        }
-                        log.info("存储进来了");
                         redisLockUtil.unLock(text, s1);
                         redisUtils.delete(text);
                         break;
@@ -263,6 +260,96 @@ public class SendBasisUtils {
             throw new FaultExceptions(tcpOrder.getHeartName(), tcpOrder.getOperationName(), tcpOrder.getFacility());
         }
     }
+    private static void HeartbeatRuntest(String text, DbOperationVo dbOperationVo) {
+        try {
+            Thread.sleep(1500);
+            int tag = 0;
+            //        加锁
+            for (int i = 0; i < 35; i++) {
 
+                String s1 = String.valueOf(Thread.currentThread().getId());
+                redisLockUtil.lock(text, s1, 100);
+                String s = redisUtils.get(text);
 
+                if (StringUtils.isEmpty(s)) {
+                    redisLockUtil.unLock(text, s1);
+                    tag = 1;
+                } else {
+                    DbTcpOrder dbTcpOrder = JSON.parseObject(s, DbTcpOrder.class);
+                    Integer results = dbTcpOrder.getResults();
+
+                    //                    存储进入数据库
+//
+                    if (results == 0) {
+                        redisLockUtil.unLock(text, s1);
+                        tag = 1;
+                    } else if (results == 1) {
+                        tag = 0;
+//                        if (text.split("_")[2].substring(2, 4).equals("03") || text.split("_")[2].substring(2, 2).equals("01")) {
+//                        } else {
+//                            log.info("查询指令返回，不记录数据库");
+                        int i2 = tcpOrderService.insertDbTcpOrder(dbTcpOrder);
+//                        }
+                        redisLockUtil.unLock(text, s1);
+                        redisUtils.delete(text);
+                        break;
+                    }
+                }
+                Thread.sleep(100);
+            }
+            if (tag == 1) {
+                throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    /*
+     * 操作指令发送
+     * */
+    public static int operateCodetest(String text, DbOperationVo tcpOrder) {
+
+        String address = tcpOrder.getHeartName();
+        ArrayList<String> strings1 = new ArrayList<>();
+//          text处理
+        String[] split3 = text.split(",");
+        for (String s : split3) {
+            strings1.add(s);
+        }
+        Object[] objects = strings1.toArray();
+        String[] split = new String[objects.length];
+        for (int i = 0; i < split.length; i++) {
+            split[i] = objects[i].toString();
+        }
+        List<String> strings = new ArrayList<>();
+        for (String s : split) {
+            int i = Integer.parseInt(s);
+            //            十六进制转成十进制
+            String tmp = StringUtils.leftPad(Integer.toHexString(i).toUpperCase(), 4, '0');
+            strings.add(tmp);
+        }
+        byte[] data = null;
+        try {
+            String[] split1 = strings.toArray(new String[strings.size()]);
+            String[] bytes = Crc16Util.to_byte(split1);
+            data = Crc16Util.getData(bytes);
+            ChannelHandlerContext no1_1 = map.get(address);
+            Channel channel = no1_1.channel();
+            channel.write(Unpooled.copiedBuffer(data));
+            channel.flush();
+        } catch (Exception e) {
+//            抛出异常
+            throw new FaultExceptions(tcpOrder.getHeartName(), tcpOrder.getOperationName(), tcpOrder.getFacility());
+        }
+//        "010300C80002 45 F5"
+
+        tcpOrder.setCreateTime(new Date());
+        String storage = storage(tcpOrder, data);
+        /*
+
+         * 建立监听返回的数据
+         * */
+        HeartbeatRuntest(storage, tcpOrder);
+        return 1;
+    }
 }

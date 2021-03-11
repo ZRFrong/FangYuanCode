@@ -22,6 +22,13 @@ private   static SendBasisUtils basisUtils=new SendBasisUtils();
         return basisUtils.operateCode(text, tcpOrder);
     }
     /*
+     * 普通操作指令发送子线程   不指定操作类型
+     * */
+    public static int queryText(DbOperationVo tcpOrder) {
+        String text = tcpOrder.getOperationText();
+        return basisUtils.operateCodetest(text, tcpOrder);
+    }
+    /*
      * 普通操作指令发送子线程   指定操作类型
      * */
     public static int queryType(DbOperationVo tcpOrder) {

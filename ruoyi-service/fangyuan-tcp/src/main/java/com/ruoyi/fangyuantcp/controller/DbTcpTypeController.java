@@ -175,10 +175,11 @@ public class DbTcpTypeController extends BaseController {
      * */
     @PostMapping("stateAllQuery")
     public R stateAllQuery(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) @RequestBody List<DbOperationVo> dbOperationVo) throws ExecutionException, InterruptedException {
-
         return dbTcpTypeService.stateAllQuery(dbOperationVo);
 
     }
+
+
 
 
 }

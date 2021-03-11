@@ -92,5 +92,9 @@ public interface IDbTcpTypeService {
 
     void updateByHeartbeatOpen(String heartName);
 
-    R stateAllQuery(List<DbOperationVo> dbOperationVo) throws ExecutionException, InterruptedException;
+    R stateAllQuery(List<DbOperationVo> dbOperationVo);
+
+
+
+    R querySync(List<DbOperationVo> dbOperationVoList);
 }

@@ -159,18 +159,28 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
     }
 
     @Override
-    public R stateAllQuery(List<DbOperationVo> dbOperationVo) throws ExecutionException, InterruptedException {
+    public R stateAllQuery(List<DbOperationVo> dbOperationVo) {
 //      添加操作集
         List<DbOperationVo> dbOperationVoList = stateAll(dbOperationVo);
-
 
         //       根据心跳分组
         Map<String, List<DbOperationVo>> mps = dbOperationVoList.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
 //         多个map依次执行（多线程）
         R r = SendCodeListUtils.queryIoList(mps);
 
-
         return r;
+    }
+
+    /**/
+
+    @Override
+    public R querySync(List<DbOperationVo> dbOperationVoList) {
+        //      添加操作集
+        List<DbOperationVo> dbOperationVoList1 = stateAll(dbOperationVoList);
+        HashMap<String, String> send = SendCodeListUtils.send(dbOperationVoList1);
+//        回写每条消息响应时间
+
+        return R.data(send.size());
     }
 
     private List<DbOperationVo> stateAll(List<DbOperationVo> dbOperationVo) {

@@ -50,7 +50,7 @@ public class SendCodeListUtils {
 //    新建几条线程
 
         executorService = ThreadUtil.newExecutor(strings.size() * 2);
-        EXECUTOR_SERVICE = ThreadUtil.newExecutor();
+
         for (String string : strings) {
             executorService.execute(new Runnable() {
                 @Override
@@ -82,7 +82,7 @@ public class SendCodeListUtils {
         HashMap<String, String> stringStringHashMap = new HashMap<>();
         //                    循环list
 //                    int query = query(dbOperationVo);
-
+        EXECUTOR_SERVICE = ThreadUtil.newExecutor();
         for (int i = 0; i < dbOperationVos.size(); i++) {
             int finalI = i;
             EXECUTOR_SERVICE.execute(new Runnable() {
@@ -93,7 +93,10 @@ public class SendCodeListUtils {
 
                         if (dbOperationVos.get(finalI).getOperationTextType().equals("0") ) {
                             sendCodeUtils.query(dbOperationVos.get(finalI));
-                        } else {
+                        }else if (dbOperationVos.get(finalI).getOperationTextType().equals("9")){
+                            sendCodeUtils.queryText(dbOperationVos.get(finalI));
+                        }
+                        else {
                             sendCodeUtils.queryType(dbOperationVos.get(finalI));
                         }
 
@@ -144,7 +147,7 @@ public class SendCodeListUtils {
     }
 
 
-    public static void queryIoListNoWait(List<DbOperationVo> lists) throws ExecutionException, InterruptedException {
+    public static void queryIoListNoWait(List<DbOperationVo> lists){
         for (DbOperationVo list : lists) {
             sendCodeUtils.queryNoWait(list);
         }
