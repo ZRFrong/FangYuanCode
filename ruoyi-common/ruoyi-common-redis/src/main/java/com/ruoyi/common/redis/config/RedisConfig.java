@@ -10,9 +10,14 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import com.alibaba.fastjson.parser.ParserConfig;
+
+import java.util.concurrent.CountDownLatch;
 
 @Configuration
 public class RedisConfig
@@ -43,6 +48,10 @@ public class RedisConfig
         ParserConfig.getGlobalInstance().addAccept("com.ruoyi");
         return redisTemplate;
     }
+
+
+
+
 
     /**
      * 实例化 HashOperations 对象,可以使用 Hash 类型操作
@@ -103,4 +112,6 @@ public class RedisConfig
     {
         return redisTemplate.opsForZSet();
     }
+
+
 }

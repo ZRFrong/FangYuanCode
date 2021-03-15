@@ -70,6 +70,14 @@ spring:
             - Path=/act/**
           filters:
             - StripPrefix=1
+        # websocket
+        - id: fangyuan-websocket
+          uri: lb:ws://fangyuan-websocket
+          predicates:
+            - Path=/websocket/**
+          filters:
+            - StripPrefix=1
+
         #system 模块
         - id: ruoyi-system
           uri: lb://ruoyi-system
