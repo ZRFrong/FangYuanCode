@@ -10,7 +10,7 @@ spring:
   application:
     name: ruoyi-system
   profiles: 
-    active: prod
+    active: dev
   devtools:
     restart:
       enabled: true
@@ -40,7 +40,7 @@ hystrix:
                 enabled: true
               isolation:
                     thread:
-                        timeoutInMilliseconds: 30000
+                        timeoutInMilliseconds: 10000
 #ribbon的超时时间
 ribbon:
   ReadTimeout: 30000

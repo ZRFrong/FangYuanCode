@@ -10,6 +10,19 @@
     <artifactId>ruoyi-system-api</artifactId>
 
     <dependencies>
+        <!--&lt;!&ndash; https://mvnrepository.com/artifact/ca.mcgill.sable/axmlprinter2 &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>ca.mcgill.sable</groupId>-->
+            <!--<artifactId>axmlprinter2</artifactId>-->
+            <!--<version>2016-07-27</version>-->
+        <!--</dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.jdom/jdom -->
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>2.0.2</version>
+        </dependency>
+
         <!-- 通用工具 -->
         <dependency>
             <groupId>com.ruoyi.cloud</groupId>
