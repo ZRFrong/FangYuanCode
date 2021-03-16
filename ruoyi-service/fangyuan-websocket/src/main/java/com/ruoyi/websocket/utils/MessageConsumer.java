@@ -12,7 +12,7 @@ public class MessageConsumer{
     public void receiveMessage(String message) throws IOException {
         System.out.println(message);
         SocketMsg socketMsg = JSON.parseObject(JSON.parse(message).toString(), SocketMsg.class);
-        WebSocketServer.sendInfo(socketMsg,"100");
+        WebSocketServer.sendInfo(socketMsg,socketMsg.getUserId());
         System.out.println(message+"--------------------------------------------------");
     }
 

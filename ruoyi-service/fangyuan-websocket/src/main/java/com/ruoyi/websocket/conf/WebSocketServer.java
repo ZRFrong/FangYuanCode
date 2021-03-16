@@ -1,18 +1,24 @@
 package com.ruoyi.websocket.conf;
 
-import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.redis.wsmsg.SocketMsg;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-@ServerEndpoint("/fangyuan/{sid}")
+@ServerEndpoint("/open/{sid}")
 @Slf4j
 @Component
 public class WebSocketServer {
@@ -32,11 +38,12 @@ public class WebSocketServer {
 	 */
 	private String sid="";
 
+
 	/**
 	 * 连接建立成功调用的方法
 	 * */
 	@OnOpen
-	public void onOpen(Session session, @PathParam("sid") String sid) throws IOException {
+	public void onOpen(Session session, @PathParam("sid") String sid ) throws IOException {
 		this.session = session;
 		//如果存在就先删除一个，防止重复推送消息
 		for (WebSocketServer webSocket:webSocketSet) {
@@ -44,8 +51,8 @@ public class WebSocketServer {
 				webSocketSet.remove(webSocket);
 			}
 		}
+		this.sid = sid;
 		webSocketSet.add(this);
-		this.sid=sid;
 	}
 
 	/**
