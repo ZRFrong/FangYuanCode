@@ -1,10 +1,11 @@
 package com.ruoyi.gateway.fiflt;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
-
 import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.utils.aes.TokenUtils;
 import com.ruoyi.gateway.config.TokenConf;
@@ -27,6 +28,9 @@ import com.ruoyi.common.core.domain.R;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_ORIGINAL_REQUEST_URL_ATTR;
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
 
 /**
  * 网关鉴权
@@ -51,7 +55,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/appLogin","fangyuanapi/wxUser/appRegister","fangyuanapi/dynamic1","fangyuanapi/category","fangyuanapi/wx/v3",
             "/fangyuanapi/order/insertOrder","fangyuanapi/giveLike","fangyuanapi/wxUser/getOpenId","fangyuanapi/wxUser/smallRegister",
             "/fangyuanapi/banner/getBannerList","fangyuanapi/wxUser/appUpdatePassword","/fangyuanapi/qrcode/qrCodeGenerate",
-            "qrCodeGenerate","weather","system/apk/upload","/fangyuanapi/wxUser/filesUpload","problem","questions","type","/control/getControlSystem/","websocket"
+            "qrCodeGenerate","weather","system/apk/upload","/fangyuanapi/wxUser/filesUpload","problem","questions","type","/control/getControlSystem/"
     );
 
     @Autowired
@@ -81,11 +85,22 @@ public class AuthFilter implements GlobalFilter, Ordered {
             return setUnauthorizedResponse(exchange, "token can't null or empty string","401");
         }
         //        请求来自客户端api 转化token为userHomeId
-        if (url.contains("fangyuanapi")) {
+        if (url.contains("fangyuanapi") || url.contains("websocket")) {
             Map<String, Object> map = TokenUtils.verifyToken(token, tokenConf.getAccessTokenKey());
             if (map != null){
                 /* id == null token被篡改 解密失败 */
                 String id = map.get("id")+"";
+                //此处对ws开头的url就进行重写 将userid加到后面
+                if (url.contains("websocket")){
+                    addOriginalRequestUrl(exchange,exchange.getRequest().getURI());
+                    String newPath =url+"/"+id;
+                    ServerHttpRequest newRequest = exchange.getRequest().mutate()
+                            .path(newPath)
+                            .build();
+                    exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR, newRequest.getURI());
+                    return chain.filter(exchange.mutate()
+                            .request(newRequest).build());
+                }
                 if ("1".equals(map.get("type")+"") ) {
                     String redisToken = ops.get(RedisKeyConf.APP_ACCESS_TOKEN_.name() + id);
                     if (!token.equals(redisToken)) {
@@ -132,7 +147,13 @@ public class AuthFilter implements GlobalFilter, Ordered {
         DataBuffer buffer = originalResponse.bufferFactory().wrap(response);
         return originalResponse.writeWith(Flux.just(buffer));
     }
-
+    public static void addOriginalRequestUrl(ServerWebExchange exchange, URI url) {
+        exchange.getAttributes().computeIfAbsent(GATEWAY_ORIGINAL_REQUEST_URL_ATTR,
+                s -> new LinkedHashSet<>());
+        LinkedHashSet<URI> uris = exchange
+                .getRequiredAttribute(GATEWAY_ORIGINAL_REQUEST_URL_ATTR);
+        uris.add(url);
+    }
     @Override
     public int getOrder() {
         return -200;
