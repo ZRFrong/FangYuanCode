@@ -117,7 +117,7 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
         dbQrCode.setCreateTime(new Date());
         String argument = "?qrCodeId=" + dbQrCode.getQrCodeId();
         String text = url + argument;
-        String encode = QrCodeUtils.encode(text, "http://cdn.fangyuancun.cn/logo9.png", true);
+        String encode = QrCodeUtils.encode(text, "http://cdn.fangyuancun.cn/logo9.png", true,dbQrCode.getHeartbeatText());
         dbQrCode.setQrCodePic(encode);
         int i = dbQrCodeMapper.updateDbQrCode(dbQrCode);
         if (i > 0) {

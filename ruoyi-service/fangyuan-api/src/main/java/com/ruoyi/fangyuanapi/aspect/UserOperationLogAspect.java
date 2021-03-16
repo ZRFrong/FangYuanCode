@@ -38,7 +38,6 @@ public class UserOperationLogAspect {
     @Around("@annotation(UserOperationLog)")
     public Object processAuthority (ProceedingJoinPoint point)throws Throwable{
         HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
-
         IDbUserRecordService bean = SpringUtils.getBean(IDbUserRecordService.class);
         Map<String, Object> map = OperationLogAspect.getMap(point);
         System.out.println(map.toString());
@@ -57,12 +56,13 @@ public class UserOperationLogAspect {
         userRecord.setPhoneModel(data.get("phoneModel"));
         userRecord.setOperator(data.get("operator"));
         userRecord.setIpAddress(data.get("ipAddress"));
-        if ("200".equals(r.get("code"))){
+        if ("200".equals(r.get("code")+"")){
             operate = operate+"成功";
             userRecord.setOperate(operate);
-        }
-        operate = operate+"失败";
+        }else  if ("500".equals(r.get("code")+"")){
+            operate = operate+"失败";
         userRecord.setOperate(operate);
+        }
         bean.insertDbUserRecord(userRecord);
         return r;
     }

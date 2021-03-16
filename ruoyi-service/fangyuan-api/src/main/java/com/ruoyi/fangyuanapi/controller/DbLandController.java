@@ -106,9 +106,8 @@ public class DbLandController extends BaseController {
      */
     @GetMapping("get/{landId}")
     @ApiOperation(value = "根据土地id获取详细信息",notes = "根据土地id查询",httpMethod = "GET")
-    public R get(@PathVariable("landId") Long landId) {
-
-        return R.data(dbLandService.selectDbLandById(landId));
+    public DbLand get(@PathVariable("landId") Long landId) {
+        return dbLandService.selectDbLandById(landId);
     }
 
     /**

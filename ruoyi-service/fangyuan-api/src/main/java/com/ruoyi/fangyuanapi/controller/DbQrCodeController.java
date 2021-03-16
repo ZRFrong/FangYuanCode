@@ -89,7 +89,8 @@ public class DbQrCodeController extends BaseController {
         /*
          * 指定网址     拼接一个参数（设备id）
          * */
-        String s = dbQrCodeService.qrCodeGenerate(dbQrCode);
+        DbQrCode dbQrCode1 = dbQrCodeService.selectDbQrCodeById(dbQrCode.getQrCodeId());
+        String s = dbQrCodeService.qrCodeGenerate(dbQrCode1);
         if (StringUtils.isEmpty(s)) {
             return R.error("生成失败");
         } else {

@@ -8,13 +8,13 @@ package com.ruoyi.fangyuanapi.controller;
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.fangyuanapi.aspect.OperationLog;
 import com.ruoyi.fangyuanapi.aspect.OperationLogType;
 import com.ruoyi.fangyuanapi.aspect.OperationLogUtils;
+import com.ruoyi.fangyuanapi.aspect.UserOperationLog;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
 import com.ruoyi.system.domain.*;
@@ -115,6 +115,7 @@ public class OperateControllerWeChat extends BaseController {
     @GetMapping("operate")
     @ApiOperation(value = "页面操作（单项）", notes = "页面操作（单项）")
     @OperationLog(OperationLogNmae=OperationLogType.EQUIPMENT,OperationLogSource = OperationLogType.WEchat)
+    @UserOperationLog()
     public R operate(@ApiParam(name = "id", value = "设备id", required = true)Long id, @ApiParam(name = "text", value = "操作指令", required = true)String text,
                      @ApiParam(name = "name", value = "操作对象", required = true)String name,
                      @ApiParam(name = "type", value = "操作对象类型", required = true)String type,
