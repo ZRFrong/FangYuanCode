@@ -147,8 +147,27 @@ public class DbEquipmentController extends BaseController {
         return r;
     }
 
-
-
+    /**
+     * 批量生成设备接口  完成心跳例子： pisitai-00032-dapeng
+     * @param prefix  心跳前缀 例; pisitai-
+     * @param suffix  心跳后缀 例: -dapeng
+     * @param openInterval 心跳中间数字开区间：00032
+     * @param closedInterval 心跳中间数字闭区间: 00050
+     * @return R
+     */
+    @PostMapping("batchEquipment")
+    public R batchEquipment(String prefix,String suffix,String openInterval,String closedInterval){
+        if (StringUtils.isEmpty(prefix) || StringUtils.isEmpty(suffix) || StringUtils.isEmpty(openInterval) || StringUtils.isEmpty(closedInterval)){
+            return R.error();
+        }
+        Integer rows = 0;
+        try {
+            rows = dbEquipmentService.batchInsertEquipment(prefix,suffix,openInterval,closedInterval);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rows > 0 ? R.ok(rows+"") : R.error(500,"该区间所有的设备已存在！");
+    }
 
 
 
