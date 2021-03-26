@@ -74,6 +74,21 @@ public class DbOperationVo {
     @ApiModelProperty(value = "设备唯一编号")
     private String facility;
 
+    public String getOperationTextType() {
+        return operationTextType;
+    }
+
+    public void setOperationTextType(String operationTextType) {
+        this.operationTextType = operationTextType;
+    }
+    public void setOperationTextTypeToString(String operationTextType) {
+        this.operationTextType = operationTextType;
+    }
+
+    /** 操作指令 */
+    @ApiModelProperty(value = "操作指令类型")
+    private String operationTextType;
+
 
     /** 操作指令 */
     @ApiModelProperty(value = "操作指令")

@@ -19,5 +19,6 @@
         <module>fangyuan-tcp</module>
         <module>fangyuan-api</module>
         <module>fangyuan-new-api</module>
+        <module>fangyuan-websocket</module>
     </modules>
 </project>
