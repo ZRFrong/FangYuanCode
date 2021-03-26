@@ -10,4 +10,5 @@ public enum MsgType {
 	INFO,
 	/** 错误 */
 	ERROR
+
 }

@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.fangyuantcp.aspect.FeedbackIntercept;
 import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
 import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
 import com.ruoyi.fangyuantcp.processingCode.OpcodeTextConf;
@@ -18,6 +19,7 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuantcp.mapper.DbTcpTypeMapper;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
@@ -93,6 +95,15 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
     @Override
     public int updateDbTcpType(DbTcpType dbTcpType) {
         return dbTcpTypeMapper.updateDbTcpType(dbTcpType);
+    }
+
+    @Override
+    @FeedbackIntercept(ChangesState="dbTcpType")
+    public DbTcpType updateDbTcpTypeFeedback(DbTcpType dbTcpType) {
+        dbTcpType.setUpdateTime(new Date());
+        DbTcpType dbTcpType1 = dbTcpTypeMapper.selectDbTcpTypeById(dbTcpType.getTcpTypeId());
+        int i = dbTcpTypeMapper.updateDbTcpType(dbTcpType);
+        return dbTcpType1;
     }
 
     /**
@@ -180,7 +191,7 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
         HashMap<String, String> send = SendCodeListUtils.send(dbOperationVoList1);
 //        回写每条消息响应时间
 
-        return R.data(send.size());
+        return R.data(send);
     }
 
     private List<DbOperationVo> stateAll(List<DbOperationVo> dbOperationVo) {
@@ -226,7 +237,7 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
             Long minuteDiff = DateUtilLong.getMinuteDiff(itm.getUpdateTime(), new Date());
             if (minuteDiff > 10) {
                 itm.setIsShow(1);
-                dbTcpTypeMapper.updateDbTcpType(itm);
+                this.updateDbTcpTypeFeedback(dbTcpTypeMapper.selectDbTcpTypeById(itm.getTcpTypeId()));
             }
         });
 
@@ -293,14 +304,7 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
 
     }
 
-    /*
-     * 更新状态
-     * */
-    @Override
-    public int updateOrInstart(DbTcpType dbTcpType) {
-//            新增
-        return updateDbTcpType(dbTcpType);
-    }
+
 
     private void insert(DbTcpType item) {
         DbStateRecords dbStateRecords = new DbStateRecords();

@@ -54,7 +54,7 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
 
             log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "收到信息" + msg);
             DbTcpClient dbTcpClient = getIp(ctx);
-            dbTcpClient.setHeartName(msg.toString());
+
             receiveUtil.heartbeatUpdate(dbTcpClient);
 
             if (s.contains("0302")) {
@@ -91,8 +91,10 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
 
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "写入自动控制通风" + msg);
                 receiveResponse.stateRespond(ctx, msg.toString());
-            }
-            else {
+            } else if (s.contains("C810")) {
+                log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "主动商法" + msg);
+                receiveUtil.messageActive(ctx, msg.toString());
+            } else {
 
                 log.error("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "乱码:" + msg);
             }

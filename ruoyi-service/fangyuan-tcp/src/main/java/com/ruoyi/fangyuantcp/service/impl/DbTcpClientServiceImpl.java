@@ -2,7 +2,6 @@ package com.ruoyi.fangyuantcp.service.impl;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
 import com.ruoyi.fangyuantcp.processingCode.SendCodeListUtils;
@@ -10,7 +9,6 @@ import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.fangyuantcp.processingCode.OpcodeTextConf;
 import com.ruoyi.fangyuantcp.processingCode.TcpOrderTextConf;
 import com.ruoyi.system.domain.*;
-import com.ruoyi.fangyuantcp.processingCode.SendCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -105,8 +103,9 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
 
     @Override
     public int heartbeatUpdate(DbTcpClient dbTcpClient) {
-        dbTcpClient.setHeartbeatTime(new Date());
-        dbTcpClientMapper.updateDbTcpClient(dbTcpClient);
+        DbTcpClient dbTcpClient1 = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient).get(0);
+        dbTcpClient1.setHeartbeatTime(new Date());
+        dbTcpClientMapper.updateDbTcpClient(dbTcpClient1);
         return 0;
     }
 
@@ -115,7 +114,7 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
      * 远程，本地检测
      * */
     @Override
-    public void TaskOnline(DbTcpClient tcpClient) throws ExecutionException, InterruptedException {
+    public void TaskOnline(DbTcpClient tcpClient)  {
         String heartName = tcpClient.getHeartName();
         List<String> integers = dbEquipmentMapper.selectByHeartNameToEqumentNo(heartName);
 

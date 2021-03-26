@@ -32,6 +32,12 @@ public class RemoteApiFallbackFactory implements FallbackFactory<RemoteApiServic
                 return null;
             }
 
+            @Override
+            public R deviceBelongs(Long equipmentId) {
+                return null;
+            }
+
+
 
         };
     }

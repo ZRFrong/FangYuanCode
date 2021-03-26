@@ -1,9 +1,11 @@
 package com.ruoyi.fangyuantcp.service.impl;
 
 import com.ruoyi.common.core.text.Convert;
+import com.ruoyi.fangyuantcp.aspect.FeedbackIntercept;
 import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
 import com.ruoyi.fangyuantcp.service.IDbEquipmentService;
 import com.ruoyi.system.domain.DbEquipment;
+import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +23,6 @@ import java.util.List;
 public class DbEquipmentServiceImpl implements IDbEquipmentService {
     @Autowired
     private DbEquipmentMapper1 dbEquipmentMapper;
-
-
 
 
     /**
@@ -71,6 +71,15 @@ public class DbEquipmentServiceImpl implements IDbEquipmentService {
         return dbEquipmentMapper.updateDbEquipment(dbEquipment);
     }
 
+    @Override
+    @FeedbackIntercept()
+    public DbEquipment updateDbEquipmentFeedback(DbEquipment dbEquipment) {
+        //dbEquipment.setUpdateTime(DateUtils.getNowDate());
+        DbEquipment dbEquipment1 = dbEquipmentMapper.selectDbEquipmentById(dbEquipment.getEquipmentId());
+        dbEquipmentMapper.updateDbEquipment(dbEquipment);
+        return dbEquipment1;
+    }
+
     /**
      * 删除设备对象
      *
@@ -81,12 +90,6 @@ public class DbEquipmentServiceImpl implements IDbEquipmentService {
     public int deleteDbEquipmentByIds(String ids) {
         return dbEquipmentMapper.deleteDbEquipmentByIds(Convert.toStrArray(ids));
     }
-
-
-
-
-
-
 
 
     /**

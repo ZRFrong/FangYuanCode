@@ -185,7 +185,7 @@ public class SendBasisUtils {
             Thread.sleep(1500);
             int tag = 0;
             //        加锁
-            for (int i = 0; i < 35; i++) {
+            for (int i = 0; i < 15; i++) {
 
                 String s1 = String.valueOf(Thread.currentThread().getId());
                 redisLockUtil.lock(text, s1, 100);
@@ -266,7 +266,6 @@ public class SendBasisUtils {
             int tag = 0;
             //        加锁
             for (int i = 0; i < 35; i++) {
-
                 String s1 = String.valueOf(Thread.currentThread().getId());
                 redisLockUtil.lock(text, s1, 100);
                 String s = redisUtils.get(text);
@@ -279,15 +278,11 @@ public class SendBasisUtils {
                     Integer results = dbTcpOrder.getResults();
 
                     //                    存储进入数据库
-//
                     if (results == 0) {
                         redisLockUtil.unLock(text, s1);
                         tag = 1;
                     } else if (results == 1) {
                         tag = 0;
-//                        if (text.split("_")[2].substring(2, 4).equals("03") || text.split("_")[2].substring(2, 2).equals("01")) {
-//                        } else {
-//                            log.info("查询指令返回，不记录数据库");
                         int i2 = tcpOrderService.insertDbTcpOrder(dbTcpOrder);
 //                        }
                         redisLockUtil.unLock(text, s1);

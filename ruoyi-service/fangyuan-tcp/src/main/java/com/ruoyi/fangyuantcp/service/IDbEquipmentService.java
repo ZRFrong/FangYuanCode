@@ -1,6 +1,8 @@
 package com.ruoyi.fangyuantcp.service;
 
+import com.ruoyi.fangyuantcp.aspect.FeedbackIntercept;
 import com.ruoyi.system.domain.DbEquipment;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -10,6 +12,7 @@ import java.util.List;
  * @author fangyuan
  * @date 2020-09-01
  */
+@Service
 public interface IDbEquipmentService 
 {
     /**
@@ -43,6 +46,9 @@ public interface IDbEquipmentService
      * @return 结果
      */
     public int updateDbEquipment(DbEquipment dbEquipment);
+
+
+    public DbEquipment updateDbEquipmentFeedback(DbEquipment dbEquipment);
 
     /**
      * 批量删除设备

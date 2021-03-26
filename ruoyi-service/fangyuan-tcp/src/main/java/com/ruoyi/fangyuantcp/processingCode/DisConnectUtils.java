@@ -83,7 +83,7 @@ public class DisConnectUtils {
         dbEquipment.setHeartbeatText(heartbeatName);
         DbEquipment dbEquipment1 = equipmentService.selectDbEquipmentList(dbEquipment).get(0);
         dbEquipment1.setIsFault(1);
-        int i = equipmentService.updateDbEquipment(dbEquipment1);
+        equipmentService.updateDbEquipmentFeedback(dbEquipment1);
 
         tcpTypeService.updateByHeartbeat(heartbeatName);
 

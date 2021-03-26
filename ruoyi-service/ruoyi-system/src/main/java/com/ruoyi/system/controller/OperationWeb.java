@@ -26,6 +26,7 @@ public class OperationWeb {
     @GetMapping("getList")
     public R get()
     {
+        System.out.println("进来了");
         return R.data(remoteTcpService.tcpClients());
 
     }

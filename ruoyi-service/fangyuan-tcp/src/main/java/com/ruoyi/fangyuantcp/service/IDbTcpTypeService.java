@@ -1,7 +1,9 @@
 package com.ruoyi.fangyuantcp.service;
 
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.fangyuantcp.aspect.FeedbackIntercept;
 import com.ruoyi.system.domain.*;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.concurrent.ExecutionException;
  * @author fangyuan
  * @date 2020-09-01
  */
+@Service
 public interface IDbTcpTypeService {
     /**
      * 查询设备状态
@@ -46,6 +49,9 @@ public interface IDbTcpTypeService {
      */
     public int updateDbTcpType(DbTcpType dbTcpType);
 
+
+    public DbTcpType updateDbTcpTypeFeedback(DbTcpType dbTcpType);
+
     /**
      * 批量删除设备状态
      *
@@ -68,7 +74,6 @@ public interface IDbTcpTypeService {
      * */
     void curingTypeTiming();
 
-    int updateOrInstart(DbTcpType dbTcpType);
 
     void timingType() throws ExecutionException, InterruptedException;
 

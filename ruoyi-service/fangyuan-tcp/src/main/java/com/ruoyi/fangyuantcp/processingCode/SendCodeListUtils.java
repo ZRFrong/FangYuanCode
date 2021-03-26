@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /*
  * 单设备多指令
@@ -48,9 +49,7 @@ public class SendCodeListUtils {
         Set<String> strings = mps.keySet();
         HashMap<String, String> stringStringHashMap1 = new HashMap<>();
 //    新建几条线程
-
         executorService = ThreadUtil.newExecutor(strings.size() * 2);
-
         for (String string : strings) {
             executorService.execute(new Runnable() {
                 @Override
@@ -74,6 +73,7 @@ public class SendCodeListUtils {
             return R.ok("操作成功");
         }
     }
+
 
 
     private static ExecutorService EXECUTOR_SERVICE = null;
@@ -104,14 +104,14 @@ public class SendCodeListUtils {
                         log.info("发送成功存进去了：" + query + "当前的时间毫秒值是：" + new Date().getTime());
 
                     } catch (FaultExceptions e) {
-                        DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();
-                        dbAbnormalInfo.setAlarmTime(new Date());
-                        dbAbnormalInfo.setObjectType(dbOperationVos.get(finalI).getOperationName());
-                        dbAbnormalInfo.setAlarmExplain(dbOperationVos.get(finalI).getHeartName());
-                        dbAbnormalInfo.setFaultType(BusinessExceptionHandle.FAULT);
-                        dbAbnormalInfo.setText(dbOperationVos.get(finalI).getOperationId());
-                        remoteApiService.saveEquimentOperation(dbAbnormalInfo);
-                        stringStringHashMap.put(dbOperationVos.get(finalI).getOperationName(), BusinessExceptionHandle.FAULT);
+//                        DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();
+//                        dbAbnormalInfo.setAlarmTime(new Date());
+//                        dbAbnormalInfo.setObjectType(dbOperationVos.get(finalI).getOperationName());
+//                        dbAbnormalInfo.setAlarmExplain(dbOperationVos.get(finalI).getHeartName());
+//                        dbAbnormalInfo.setFaultType(BusinessExceptionHandle.FAULT);
+//                        dbAbnormalInfo.setText(dbOperationVos.get(finalI).getOperationId());
+//                        remoteApiService.saveEquimentOperation(dbAbnormalInfo);
+//                        stringStringHashMap.put(dbOperationVos.get(finalI).getOperationName(), BusinessExceptionHandle.FAULT);
                     } catch (OperationExceptions e) {
                         DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();
                         dbAbnormalInfo.setAlarmTime(new Date());
@@ -124,12 +124,13 @@ public class SendCodeListUtils {
                         stringStringHashMap.put(dbOperationVos.get(finalI).getOperationName(), BusinessExceptionHandle.OPERATIONEXCEPTIONS);
                     }
                 }
+
             });
             long t1 = System.currentTimeMillis();
             while(true){
 //                获取当前毫秒
                 long t2 = System.currentTimeMillis();
-                if(t2-t1 >500){
+                if(t2-t1 >1000){
                     break;
                 }else{
 
