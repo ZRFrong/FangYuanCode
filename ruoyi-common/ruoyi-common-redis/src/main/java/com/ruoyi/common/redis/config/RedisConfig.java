@@ -112,6 +112,4 @@ public class RedisConfig
     {
         return redisTemplate.opsForZSet();
     }
-
-
 }

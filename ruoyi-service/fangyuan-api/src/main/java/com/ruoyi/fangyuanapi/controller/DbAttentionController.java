@@ -1,19 +1,14 @@
 package com.ruoyi.fangyuanapi.controller;
-
-import com.github.pagehelper.ISelect;
-import com.github.pagehelper.PageHelper;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.page.PageConf;
 import com.ruoyi.common.utils.sms.ResultEnum;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.system.domain.DbAttention;
 import com.ruoyi.fangyuanapi.service.IDbAttentionService;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;

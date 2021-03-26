@@ -61,4 +61,6 @@ public interface IDbEquipmentService
 
 
     DbEquipment selectByHeart(DbEquipment dbEquipment);
+
+    Integer batchInsertEquipment(String prefix, String suffix, String openInterval, String closedInterval) throws Exception;
 }

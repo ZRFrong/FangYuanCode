@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.utils.aes.TokenUtils;
@@ -42,8 +43,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
     // 排除过滤的 uri 地址
     // swagger排除自行添加
     private static final String[] whiteList = {"/auth/login", "/user/register", "/system/v2/api-docs", "/fangyuanapi/v2/api-docs", "/fangyuantcp/v2/api-docs",
-            "/auth/captcha/check", "/auth/captcha/get", "/act/v2/api-docs", "/auth/login/slide","/system/appVersion/checkUpdate", "/system/appVersion/downapp",
-            "/fangyuanapi/qrcode/qrCodeGenerate","/system/appVersion/checkUpdate"};
+            "/auth/captcha/check", "/auth/captcha/get", "/act/v2/api-docs", "/auth/login/slide", "/system/appVersion/checkUpdate", "/system/appVersion/downapp",
+            "/fangyuanapi/qrcode/qrCodeGenerate", "/system/appVersion/checkUpdate"};
 
     @Resource(name = "stringRedisTemplate")
     private ValueOperations<String, String> ops;
@@ -52,10 +53,10 @@ public class AuthFilter implements GlobalFilter, Ordered {
     /**
      * 方便测试，
      */
-    private static final List<String> zhao = Arrays.asList("/system/sms/","fangyuanapi/wxUser/appLogin","fangyuanapi/wxUser/appRegister","fangyuanapi/dynamic1","fangyuanapi/category","fangyuanapi/wx/v3",
-            "/fangyuanapi/order/insertOrder","fangyuanapi/giveLike","fangyuanapi/wxUser/getOpenId","fangyuanapi/wxUser/smallRegister",
-            "/fangyuanapi/banner/getBannerList","fangyuanapi/wxUser/appUpdatePassword","/fangyuanapi/qrcode/qrCodeGenerate",
-            "qrCodeGenerate","weather","system/apk/upload","/fangyuanapi/wxUser/filesUpload","problem","questions","type","/control/getControlSystem/"
+    private static final List<String> zhao = Arrays.asList("/system/sms/", "fangyuanapi/wxUser/appLogin", "fangyuanapi/wxUser/appRegister", "fangyuanapi/dynamic1", "fangyuanapi/category", "fangyuanapi/wx/v3",
+            "/fangyuanapi/order/insertOrder", "fangyuanapi/giveLike", "fangyuanapi/wxUser/getOpenId", "fangyuanapi/wxUser/smallRegister",
+            "/fangyuanapi/banner/getBannerList", "fangyuanapi/wxUser/appUpdatePassword", "/fangyuanapi/qrcode/qrCodeGenerate",
+            "qrCodeGenerate", "weather", "system/apk/upload", "/fangyuanapi/wxUser/filesUpload", "problem", "questions", "type", "/control/getControlSystem/"
     );
 
     @Autowired
@@ -71,7 +72,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
          * 方便测试，
          */
         for (String s : zhao) {
-            if (url.contains(s)){
+            if (url.contains(s)) {
                 return chain.filter(exchange);
             }
         }
@@ -82,50 +83,83 @@ public class AuthFilter implements GlobalFilter, Ordered {
 
         // token为空
         if (StringUtils.isBlank(token)) {
-            return setUnauthorizedResponse(exchange, "token can't null or empty string","401");
-        }
-        //        请求来自客户端api 转化token为userHomeId
-        if (url.contains("fangyuanapi") || url.contains("websocket")) {
-            Map<String, Object> map = TokenUtils.verifyToken(token, tokenConf.getAccessTokenKey());
-            if (map != null){
-                /* id == null token被篡改 解密失败 */
-                String id = map.get("id")+"";
-                //此处对ws开头的url就进行重写 将userid加到后面
-                if (url.contains("websocket")){
-                    addOriginalRequestUrl(exchange,exchange.getRequest().getURI());
-                    String newPath =url+"/"+id;
-                    ServerHttpRequest newRequest = exchange.getRequest().mutate()
-                            .path(newPath)
-                            .build();
-                    exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR, newRequest.getURI());
-                    return chain.filter(exchange.mutate()
-                            .request(newRequest).build());
-                }
-                if ("1".equals(map.get("type")+"") ) {
-                    String redisToken = ops.get(RedisKeyConf.APP_ACCESS_TOKEN_.name() + id);
-                    if (!token.equals(redisToken)) {
-                        return setUnauthorizedResponse(exchange, "token verify error", "403");
-                    }
-                }
-                ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, id).build();
-                ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();
-                return chain.filter(mutableExchange);
+            if (!url.contains("websocket")) {
+
+                return setUnauthorizedResponse(exchange, "token can't null or empty string", "401");
             }
         }
+//        token解析
+        Map<String, Object> map2 = TokenUtils.verifyToken(token, tokenConf.getAccessTokenKey());
+        String id = "";
+        JSONObject jo = null;
+        if (map2 != null) {
+            id = map2.get("id") + "";
+            if ("1".equals(map2.get("type") + "")) {
+                String redisToken = ops.get(RedisKeyConf.APP_ACCESS_TOKEN_.name() + id);
+                if (!token.equals(redisToken)) {
+                    return setUnauthorizedResponse(exchange, "token verify error", "403");
+                }
+            }
+        } else {
+            String userStr = ops.get(Constants.ACCESS_TOKEN + token);
+            if (StringUtils.isBlank(userStr)) {
+                if (!url.contains("websocket")) {
+                    return setUnauthorizedResponse(exchange, "token verify error", "401");
+                }
+            }else {
+                jo = JSONObject.parseObject(userStr);
+                id = jo.getString("userId");
+            }
 
-        String userStr = ops.get(Constants.ACCESS_TOKEN + token);
-        if (StringUtils.isBlank(userStr)) {
-            return setUnauthorizedResponse(exchange, "token verify error","401");
         }
-        JSONObject jo = JSONObject.parseObject(userStr);
-        String userId = jo.getString("userId");
+
+        //        请求来自客户端api 转化token为userHomeId
+        if (url.contains("fangyuanapi") || url.contains("websocket")) {
+            /* id == null token被篡改 解密失败 */
+
+            //此处对ws开头的url就进行重写 将userid加到后面
+            if (url.contains("websocket")) {
+                addOriginalRequestUrl(exchange, exchange.getRequest().getURI());
+                String newPath = "";
+                if (id == null||id.equals("")) {
+                    List<String> collect = Arrays.stream(url.split("/").clone()).skip(3).collect(Collectors.toList());
+                    String s = collect.get(0);
+                    Map<String, Object> map3 = TokenUtils.verifyToken(s, tokenConf.getAccessTokenKey());
+                    if (map3 != null) {
+                        url.replace(s, map3.get("id") + "");
+
+                    } else {
+                        String userStr = ops.get(Constants.ACCESS_TOKEN + s);
+                        if (StringUtils.isBlank(userStr)) {
+                            return setUnauthorizedResponse(exchange, "token verify error", "401");
+                        }
+                        jo = JSONObject.parseObject(userStr);
+                        String userId = url.replace(s, jo.getString("userId"));
+                    newPath = userId;
+                    }
+                } else {
+                    newPath = url + "/" + id;
+                }
+                ServerHttpRequest newRequest = exchange.getRequest().mutate()
+                        .path(newPath)
+                        .build();
+                exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR, newRequest.getURI());
+                return chain.filter(exchange.mutate()
+                        .request(newRequest).build());
+            }
+
+            ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, id).build();
+            ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();
+            return chain.filter(mutableExchange);
+        }
+
         // 查询token信息
-        if (StringUtils.isBlank(userId)) {
-            return setUnauthorizedResponse(exchange, "token verify error","401");
+        if (StringUtils.isBlank(id)) {
+            return setUnauthorizedResponse(exchange, "token verify error", "401");
         }
 
         // 设置userId到request里，后续根据userId，获取用户信息
-        ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, userId)
+        ServerHttpRequest mutableReq = exchange.getRequest().mutate().header(Constants.CURRENT_ID, id)
                 .header(Constants.CURRENT_USERNAME, jo.getString("loginName")).build();
         ServerWebExchange mutableExchange = exchange.mutate().request(mutableReq).build();
 
@@ -134,7 +168,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     }
 
 
-    private Mono<Void> setUnauthorizedResponse(ServerWebExchange exchange, String msg,String code) {
+    private Mono<Void> setUnauthorizedResponse(ServerWebExchange exchange, String msg, String code) {
         ServerHttpResponse originalResponse = exchange.getResponse();
         originalResponse.setStatusCode(HttpStatus.UNAUTHORIZED);
         originalResponse.getHeaders().add("Content-Type", "application/json;charset=UTF-8");

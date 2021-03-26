@@ -32,7 +32,6 @@ public class ZhaoQRCodeUtils {
 
         BitMatrix bitMatrix = null;
         try {
-            //生成矩阵，因为我的业务场景传来的是编码之后的URL，所以先解码
             bitMatrix = new MultiFormatWriter().encode(content,
                     BarcodeFormat.QR_CODE, width, height, hints);
 

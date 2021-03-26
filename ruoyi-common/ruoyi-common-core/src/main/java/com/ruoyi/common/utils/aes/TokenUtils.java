@@ -76,9 +76,9 @@ public class TokenUtils {
         String s = null;
         try {
             KeyGenerator aes = KeyGenerator.getInstance("AES");
-            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-            random.setSeed(key.getBytes("UTF-8"));
-            aes.init(128,random);
+//            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+//            random.setSeed(key.getBytes("UTF-8"));
+            aes.init(128);
             SecretKey secretKey = aes.generateKey();
             byte[] keyEncoded = secretKey.getEncoded();
             /*  转换为AES秘钥 */
@@ -96,8 +96,6 @@ public class TokenUtils {
         } catch (BadPaddingException e) {
             e.printStackTrace();
         } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return s;
@@ -182,5 +180,6 @@ public class TokenUtils {
         System.out.println(DateUtils.parseDateToStr("yyyy-MM-dd kk:mm:ss", date));
         System.out.println(new SimpleDateFormat().format(date));
         System.out.println(System.currentTimeMillis()+(1000L*60L*60L*365L*3L));
+        System.out.println("密文： "+encrypt("{userid: 1}", "196B0F14EBA66E10FBA74DBF9E99C22F"));
     }
 }
