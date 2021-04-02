@@ -226,6 +226,11 @@ public class DbLandServiceImpl implements IDbLandService
         return list;
     }
 
+    @Override
+    public List<DbLand> selectDbLandsByUserId(Long userId) {
+        return dbLandMapper.selectDbLandsByUserId(userId);
+    }
+
     private DbLand checkLand(DbLand land,Integer num){
         DbLand dbLand = new DbLand();
         dbLand.setNickName(DbLandUtils.getLnadName(num));

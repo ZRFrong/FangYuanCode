@@ -82,4 +82,6 @@ public interface DbLandMapper
     Integer selectDbLandBySiteId(Long landId);
 
     List<Map<String,Object>> selectDbLandByUserIdAndSideId(@Param("userId") Long userId,@Param("sideId") Long sideId);
+
+    List<DbLand> selectDbLandsByUserId(Long userId);
 }

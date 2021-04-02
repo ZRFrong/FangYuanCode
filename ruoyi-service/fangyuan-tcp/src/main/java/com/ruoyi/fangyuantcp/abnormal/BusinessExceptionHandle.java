@@ -69,12 +69,10 @@ public class BusinessExceptionHandle {
         dbAbnormalInfo.setAlarmTime(new Date());
         dbAbnormalInfo.setAlarmExplain(e.getMessage());
         dbAbnormalInfo.setObjectType(e.getCode());
-
         dbAbnormalInfo.setFaultType(OPERATIONEXCEPTIONS);
         dbAbnormalInfo.setText(e.getEquipmentId());
 //        abnormalInfoSave.saveEquimentOperation(dbAbnormalInfo);
         remoteApiService.saveEquimentOperation(dbAbnormalInfo);
-
         return R.error(e.getMessage() + "设备操作异常");
     }
 

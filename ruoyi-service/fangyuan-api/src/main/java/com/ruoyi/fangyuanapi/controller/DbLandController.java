@@ -180,27 +180,35 @@ public class DbLandController extends BaseController {
     /**
      * 查询土地列表
      */
+//    @GetMapping("listBinding")
+//    @ApiOperation(value = "查询土地列表app", notes = "土地列表")
+//    public R listBinding(@ApiParam(name = "DbLand", value = "传入json格式", required = true) DbLand dbLand) {
+//        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+//        dbLand.setDbUserId(Long.valueOf(userId));
+//        dbLand.setSiteId(0l);
+//        List<LandVo> landVos = new ArrayList<>();
+//        List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
+//
+//        for (DbLand land : dbLands) {
+//
+//            LandVo landVo = new LandVo();
+//            landVo.setPlotName(land.getNickName());
+//            DbLand dbLand1 = new DbLand();
+//            dbLand1.setSiteId(land.getLandId());
+//            List<DbLand> dbLands2 = dbLandService.selectDbLandList(dbLand1);
+//            landVo.setLands(dbLands2);
+//            landVos.add(landVo);
+//        }
+//
+//        return R.data(landVos);
+//    }
+
     @GetMapping("listBinding")
     @ApiOperation(value = "查询土地列表app", notes = "土地列表")
-    public R listBinding(@ApiParam(name = "DbLand", value = "传入json格式", required = true) DbLand dbLand) {
+    public R listBinding() {
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
-        dbLand.setDbUserId(Long.valueOf(userId));
-        dbLand.setSiteId(0l);
-        List<LandVo> landVos = new ArrayList<>();
-        List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
-
-        for (DbLand land : dbLands) {
-
-            LandVo landVo = new LandVo();
-            landVo.setPlotName(land.getNickName());
-            DbLand dbLand1 = new DbLand();
-            dbLand1.setSiteId(land.getLandId());
-            List<DbLand> dbLands2 = dbLandService.selectDbLandList(dbLand1);
-            landVo.setLands(dbLands2);
-            landVos.add(landVo);
-        }
-
-        return R.data(landVos);
+        List<DbLand> list = dbLandService.selectDbLandsByUserId(Long.valueOf(userId));
+        return R.data(list);
     }
 
 

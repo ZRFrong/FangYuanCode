@@ -1,6 +1,7 @@
 package com.ruoyi.fangyuanapi.mapper;
 
 import com.ruoyi.system.domain.DbQrCode;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -60,6 +61,10 @@ public interface DbQrCodeMapper
      */
     public int deleteDbQrCodeByIds(String[] qrCodeIds);
 
+
+    void updateDbQrCodeById(@Param("qrCodeId") Long qrCodeId,@Param("heartbeatText") String heartbeatText);
+
+    DbQrCode selectDbQrCodeByEquipmentId(Long equipmentId);
 
 
 }

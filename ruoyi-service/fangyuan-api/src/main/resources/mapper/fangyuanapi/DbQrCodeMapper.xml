@@ -31,11 +31,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectDbQrCodeById" parameterType="Long" resultMap="DbQrCodeResult">
+    <select id="selectDbQrCodeById" parameterType="Long" resultMap="DbQrCodeResult" >
         <include refid="selectDbQrCodeVo"/>
         where qr_code_id = #{qrCodeId}
     </select>
-        
+    <select id="selectDbQrCodeByEquipmentId" resultMap="DbQrCodeResult" >
+        select  * from   db_qr_code where equipment_id =#{equipmentId}
+    </select>
+
     <insert id="insertDbQrCode" parameterType="DbQrCode" useGeneratedKeys="true" keyProperty="qrCodeId" keyColumn="qrCodeId">
         insert into db_qr_code
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -88,6 +91,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="adminAddress != null  and adminAddress != ''">admin_address =#{adminAddress},</if>
         </trim>
         where qr_code_id = #{qrCodeId}
+    </update>
+    <update id="updateDbQrCodeById">
+        update db_qr_code set qr_code_pic = #{heartbeatText} where qr_code_id = #{qrCodeId}
     </update>
 
     <delete id="deleteDbQrCodeById" parameterType="Long">

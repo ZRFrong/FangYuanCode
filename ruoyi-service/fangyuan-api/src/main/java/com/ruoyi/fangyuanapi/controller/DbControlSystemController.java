@@ -52,6 +52,7 @@ public class DbControlSystemController {
             System.out.println(Arrays.toString(arrs));
             DbEquipment equipment = equipmentService.selectDbEquipmentById(Long.valueOf(id));
             HashMap<String, String> map = new HashMap<>();
+            map.put("videoUrl",controlSystemConf.getVoideUrl().get(id));
             map.put("heartbeatText",equipment.getHeartbeatText());
             map.put("equipmentName",equipment.getEquipmentName());
             map.put("handlerText",equipment.getHandlerText());
@@ -93,6 +94,7 @@ public class DbControlSystemController {
         operationVo.setOperationText(instruct);
         operationVo.setCreateTime(new Date());
         return remoteTcpService.operation(operationVo);
+//        return R.data(instruct);
     }
 
 }

@@ -36,6 +36,10 @@
         where equipment_id = #{equipmentId}
     </select>
 
+    <select id="selectByHeartbeatText" resultMap="DbEquipmentResult">
+        select * from db_equipment where heartbeat_text = #{heartbeatText} limit 1
+    </select>
+
     <insert id="insertDbEquipment" parameterType="DbEquipment" useGeneratedKeys="true" keyProperty="equipmentId">
         insert into db_equipment
         <trim prefix="(" suffix=")" suffixOverrides=",">

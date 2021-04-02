@@ -62,8 +62,10 @@ public interface DbEquipmentMapper
      */
     public int deleteDbEquipmentByIds(String[] equipmentIds);
 
-    @Select("select * from db_equipment where equipment_no=#{equipmentNo} and heartbeat_text LIKE CONCAT('%',#{heartbeatText},'%')")
+    @Select("select * from db_equipment where equipment_no=#{equipmentNo} and heartbeat_text LIKE CONCAT('%',#{heartbeatText},'%') limit 1")
     DbEquipment selectByHeart(@Param("heartbeatText") String heartbeatText,@Param("equipmentNo") String equipmentNo);
 
     int updateDbEquipmentName(DbEquipment dbEquipment);
+
+    DbEquipment selectByHeartbeatText(String heartbeatText);
 }

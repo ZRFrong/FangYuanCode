@@ -73,6 +73,9 @@
         select land_id,IFNULL(nick_name,'未命名')nick_name from db_land
             where db_user_id = #{userId} and site_id = #{sideId}
     </select>
+    <select id="selectDbLandsByUserId" resultMap="DbLandResult">
+        select  * from  db_land where  db_user_id = #{userId} and site_id > 0
+    </select>
 
     <insert id="insertDbLand" parameterType="DbLand" useGeneratedKeys="true" keyProperty="landId" keyColumn="landId">
         insert into db_land
