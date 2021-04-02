@@ -43,7 +43,7 @@ public class WebSocketServer {
 	 * 连接建立成功调用的方法
 	 * */
 	@OnOpen
-	public void onOpen(Session session, @PathParam("sid") String sid) throws IOException {
+	public void onOpen(Session session, @PathParam("sid") String sid ) throws IOException {
 		this.session = session;
 		//如果存在就先删除一个，防止重复推送消息
 		for (WebSocketServer webSocket:webSocketSet) {
