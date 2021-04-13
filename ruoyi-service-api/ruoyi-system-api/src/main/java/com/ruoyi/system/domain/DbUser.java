@@ -1,12 +1,10 @@
 package com.ruoyi.system.domain;
 
-import lombok.Data;
+import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.ruoyi.common.core.domain.BaseEntity;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Date;
 
@@ -18,6 +16,9 @@ import java.util.Date;
  */
 @ApiModel
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class DbUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;

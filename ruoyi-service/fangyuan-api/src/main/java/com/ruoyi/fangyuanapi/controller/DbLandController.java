@@ -5,21 +5,18 @@ import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.sms.ResultEnum;
 import com.ruoyi.fangyuanapi.conf.OperationConf;
-import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
+import com.ruoyi.fangyuanapi.service.*;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.feign.RemoteTcpService;
+import com.ruoyi.system.feign.SendSmsClient;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.fangyuanapi.service.IDbLandService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 土地 提供者
@@ -45,6 +42,21 @@ public class DbLandController extends BaseController {
 
     @Autowired
     private OperationConf operationConf;
+
+    @Autowired
+    private IDbQrCodeService dbQrCodeService;
+
+    @Autowired
+    private IDbEquipmentService dbEquipmentService;
+
+    @Autowired
+    private IDbEquipmentAdminService dbEquipmentAdminService;
+
+    @Autowired
+    private SendSmsClient smsClient;
+
+    @Autowired
+    private IDbUserService dbUserService;
 
     @RequestMapping("getOperationConf")
     public R getOperationConf(){
@@ -204,11 +216,72 @@ public class DbLandController extends BaseController {
 //    }
 
     @GetMapping("listBinding")
-    @ApiOperation(value = "查询土地列表app", notes = "土地列表")
+    @ApiOperation(value = "查询土地列表app", notes = "土地列表",httpMethod = "GET")
     public R listBinding() {
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
         List<DbLand> list = dbLandService.selectDbLandsByUserId(Long.valueOf(userId));
         return R.data(list);
+    }
+
+    @PostMapping("listBinding")
+    @ApiOperation(value = "扫码绑定获取土地及设备接口",notes = "扫码绑定获取土地及设备接口",httpMethod = "POST")
+    public R listBinding(Long qrCodeId){
+        //查，是否已经绑定过
+        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+        DbQrCode qrCode = dbQrCodeService.selectDbQrCodeById(qrCodeId);
+        //0 未绑定 1 已被其他人绑定出验证  2 已被当前用户绑定
+        Map<String,Object> result = new HashMap<>();
+        System.out.println(qrCode.getAdminUserId());
+        if ( null != qrCode.getAdminUserId() ){
+            if ( userId.equals(qrCode.getAdminUserId()+"")){
+                //已经被当前用户绑定
+                result.put("status","2");
+            }else{
+                //已被其他用户绑定 需要验证
+                result.put("status","1");
+                result.put("phone",qrCode.getAdminPhone());
+            }
+        }else {
+            result.put("status","0");new HashMap<>();
+        }
+        List<DbLand> list = dbLandService.selectDbLandsByUserId(Long.valueOf(userId));
+        DbEquipment equipment = dbEquipmentService.selectDbEquipmentById(qrCode.getEquipmentId());
+        result.put("lands",list);
+        result.put("equipment",equipment);
+        return R.data(result);
+    }
+
+    @PostMapping("bindingAck")
+    public R bindingAck(Long landId){
+        DbLand land = dbLandService.selectDbLandById(landId);
+        int length = land.getEquipmentIds().split(",").length;
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("landName",land.getNickName());
+        map.put("num",length);
+        return R.data(map);
+    }
+
+    @PostMapping("bindingEquipment")
+    public R bindingEquipment(String phone,String code,Long landId,String landName){
+        Long userId = Long.valueOf(getRequest().getHeader(Constants.CURRENT_ID));
+        R r = smsClient.checkCode(phone, code);
+        if ("200".equals(r.get("code")+"")){
+            DbUser user = dbUserService.selectDbUserById(userId);
+            DbEquipmentAdmin equipmentAdmin = dbEquipmentAdminService.selectDbEquipmentAdminByUserIdAndLandId(landId, userId, null);
+            if (equipmentAdmin != null){
+                return R.error("您已经绑定该设备了!");
+            }
+            int i = dbEquipmentAdminService.insertDbEquipmentAdmin(DbEquipmentAdmin.builder()
+                    .createTime(new Date())
+                    .isSuperAdmin(1)
+                    .userId(Long.valueOf(userId))
+                    .avatar(user.getAvatar())
+                    .landId(landId)
+                    .landName(landName)
+                    .build());
+            return  i > 0 ? R.ok():R.error();
+        }
+        return r;
     }
 
 
@@ -321,13 +394,13 @@ public class DbLandController extends BaseController {
 
         for (Long aLong : d) {
             dbLand.setDbUserId(aLong);
-            dbLand.setSiteId(1l);
+            dbLand.setSiteId(1L);
             List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
 //                添加地块
             if (dbLands.size() >= 6) {
                 for (int i = 0; i <= ((dbLands.size() / 6)); i++) {
                     DbLand dbLand1 = new DbLand();
-                    dbLand1.setSiteId(0l);
+                    dbLand1.setSiteId(0L);
                     dbLand1.setNickName("地块" + (i + 1));
                     dbLand1.setDbUserId(aLong);
                     int i1 = dbLandService.insertDbLand(dbLand1);
@@ -335,7 +408,7 @@ public class DbLandController extends BaseController {
                 }
             } else {
                 DbLand dbLand1 = new DbLand();
-                dbLand1.setSiteId(0l);
+                dbLand1.setSiteId(0L);
                 dbLand1.setNickName("地块1");
                 dbLand1.setDbUserId(aLong);
                 int i1 = dbLandService.insertDbLand(dbLand1);
@@ -346,6 +419,26 @@ public class DbLandController extends BaseController {
             }
         }
     }
+
+    /**
+     * 查询用户下的大棚
+     * @since: 2.0.0
+     * @return: com.ruoyi.common.core.domain.R
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/13 9:46
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @GetMapping()
+    public R getAPPLandList(){
+        Long userId = Long.valueOf(getRequest().getHeader(Constants.CURRENT_ID));
+        List<DbLand> lands = dbLandService.selectDbLandsByUserId(userId);
+
+        return null;
+    }
+
+
+
+
 
     private void separatedList(List<DbLand> dbLands, int i, Long landId) {
         if (dbLands.size() <= i * 6) {
@@ -361,5 +454,13 @@ public class DbLandController extends BaseController {
                 int i2 = dbLandService.updateDbLand(dbLand);
             }
         }
+    }
+
+    public static void main(String[] args){
+        Long i = 345L;
+        String s = "345";
+        System.out.println(Long.valueOf(s).equals(i));
+        System.out.println((i + "").equals(s));
+
     }
 }

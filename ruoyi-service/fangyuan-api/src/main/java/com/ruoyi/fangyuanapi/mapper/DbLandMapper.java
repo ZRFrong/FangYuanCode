@@ -83,5 +83,14 @@ public interface DbLandMapper
 
     List<Map<String,Object>> selectDbLandByUserIdAndSideId(@Param("userId") Long userId,@Param("sideId") Long sideId);
 
+    /**
+     * 根据UserId查询其所属土地
+     * @since: 1.0.0
+     * @param userId
+     * @return: java.util.List<com.ruoyi.system.domain.DbLand>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/13 9:45
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
     List<DbLand> selectDbLandsByUserId(Long userId);
 }

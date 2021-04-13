@@ -51,6 +51,8 @@
         where t.land_id = #{landId}
     </select>
 
+
+
     <select id="selectDbLandByUserId" resultMap="DbLandResult">
         select * from  db_land where db_user_id = #{dbUserId}
         <if test="siteId != null ">and site_id = #{siteId}</if>

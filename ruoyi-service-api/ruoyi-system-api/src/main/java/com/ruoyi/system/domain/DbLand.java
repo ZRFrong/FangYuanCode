@@ -1,11 +1,14 @@
 package com.ruoyi.system.domain;
 
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.ruoyi.common.core.domain.TreeEntity;
+
+import java.util.Date;
 
 /**
  * 土地对象 db_land
@@ -14,7 +17,8 @@ import com.ruoyi.common.core.domain.TreeEntity;
  * @date 2020-09-25
  */
 @ApiModel
-public class DbLand extends TreeEntity
+@Data
+public class DbLand
 {
     private static final long serialVersionUID = 1L;
 
@@ -60,6 +64,16 @@ public class DbLand extends TreeEntity
     @Excel(name = "详细地址")
     @ApiModelProperty(value = "详细地址")
     private String address;
+
+    /** 创建时间 */
+    @Excel(name = "创建时间")
+    @ApiModelProperty(value = "创建时间")
+    private Date createTime;
+
+    /** 修改时间 */
+    @Excel(name = "修改时间")
+    @ApiModelProperty(value = "修改时间")
+    private Date updateTime;
 
     @Override
     public String toString() {

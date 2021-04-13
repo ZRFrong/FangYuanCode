@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbInformationMapper">
+    
+    <resultMap type="DbInformation" id="DbInformationResult">
+        <result property="id"    column="id"    />
+        <result property="cover"    column="cover"    />
+        <result property="title"    column="title"    />
+        <result property="isDel"    column="is_del"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="content"    column="content"    />
+        <result property="readNum"    column="read_num"    />
+    </resultMap>
+
+    <sql id="selectDbInformationVo">
+        select id, cover, title, is_del, create_time, content, read_num from db_information
+    </sql>
+
+    <select id="selectDbInformationList" parameterType="DbInformation" resultMap="DbInformationResult">
+        <include refid="selectDbInformationVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbInformationById" parameterType="Long" resultMap="DbInformationResult">
+        <include refid="selectDbInformationVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbInformation" parameterType="DbInformation" useGeneratedKeys="true" keyProperty="id">
+        insert into db_information
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cover != null  and cover != ''">cover,</if>
+            <if test="title != null  and title != ''">title,</if>
+            <if test="isDel != null ">is_del,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="content != null  and content != ''">content,</if>
+            <if test="readNum != null ">read_num,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cover != null  and cover != ''">#{cover},</if>
+            <if test="title != null  and title != ''">#{title},</if>
+            <if test="isDel != null ">#{isDel},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="content != null  and content != ''">#{content},</if>
+            <if test="readNum != null ">#{readNum},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbInformation" parameterType="DbInformation">
+        update db_information
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cover != null  and cover != ''">cover = #{cover},</if>
+            <if test="title != null  and title != ''">title = #{title},</if>
+            <if test="isDel != null ">is_del = #{isDel},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="content != null  and content != ''">content = #{content},</if>
+            <if test="readNum != null ">read_num = #{readNum},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbInformationById" parameterType="Long">
+        delete from db_information where id = #{id}
+    </delete>
+
+    <delete id="deleteDbInformationByIds" parameterType="String">
+        delete from db_information where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

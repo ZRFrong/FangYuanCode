@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbEquipmentAdminMapper">
+    
+    <resultMap type="DbEquipmentAdmin" id="DbEquipmentAdminResult">
+        <result property="id"    column="id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="isDel"    column="is_del"    />
+        <result property="landId"    column="land_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="functionIds"    column="function_ids"    />
+        <result property="isSuperAdmin"    column="is_super_admin"    />
+        <result property="avatar"    column="avatar"    />
+        <result property="landName"    column="land_name"    />
+        <result property="equipmentId"    column="equipment_id"    />
+    </resultMap>
+
+    <sql id="selectDbEquipmentAdminVo">
+        select id, create_time, is_del, land_id, user_id, function_ids,is_super_admin,avatar,land_name from db_equipment_admin
+    </sql>
+
+    <select id="selectDbEquipmentAdminList" parameterType="DbEquipmentAdmin" resultMap="DbEquipmentAdminResult">
+        <include refid="selectDbEquipmentAdminVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbEquipmentAdminById" parameterType="Long" resultMap="DbEquipmentAdminResult">
+        <include refid="selectDbEquipmentAdminVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbEquipmentAdmin" parameterType="DbEquipmentAdmin" useGeneratedKeys="true" keyProperty="id">
+        insert into db_equipment_admin
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createTime != null ">create_time,</if>
+            <if test="isDel != null ">is_del,</if>
+            <if test="landId != null ">land_id,</if>
+            <if test="userId != null ">user_id,</if>
+            <if test="functionIds != null ">function_ids,</if>
+            <if test="isSuperAdmin != null ">is_super_admin,</if>
+            <if test="avatar != null ">avatar,</if>
+            <if test="landName != null ">land_name,</if>
+            <if test="equipmentId != null ">equipment_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="isDel != null ">#{isDel},</if>
+            <if test="landId != null ">#{landId},</if>
+            <if test="userId != null ">#{userId},</if>
+            <if test="functionIds != null ">#{functionIds},</if>
+            <if test="isSuperAdmin != null ">#{isSuperAdmin},</if>
+            <if test="avatar != null ">#{avatar},</if>
+            <if test="landName != null ">#{landName},</if>
+            <if test="equipmentId != null ">#{equipmentId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDbEquipmentAdmin" parameterType="DbEquipmentAdmin">
+        update db_equipment_admin
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="isDel != null ">is_del = #{isDel},</if>
+            <if test="landId != null ">land_id = #{landId},</if>
+            <if test="adminId != null ">admin_id = #{adminId},</if>
+            <if test="functionIds != null ">function_ids = #{functionIds},</if>
+            <if test="isSuperAdmin != null ">#{isSuperAdmin},</if>
+            <if test="avatar != null ">#{avatar},</if>
+            <if test="landName != null ">#{landName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbEquipmentAdminById" parameterType="Long">
+        delete from db_equipment_admin where id = #{id}
+    </delete>
+
+    <delete id="deleteDbEquipmentAdminByIds" parameterType="String">
+        delete from db_equipment_admin where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="selectEquipmentIdByUserId" resultType="java.lang.Long">
+        select land_id from db_equipment_admin where user_id = #{userId}
+    </select>
+
+
+    <select id="selectDbEquipmentAdminByLandId" resultMap="DbEquipmentAdminResult">
+        select land_id, user_id,is_super_admin,avatar,land_name   from db_equipment_admin where land_id in
+        <foreach item="landId" collection="list" open="(" separator="," close=")">
+            #{landId}
+        </foreach>
+    </select>
+    <select id="selectDbEquipmentAdminByUserIdAndLandId" resultMap="DbEquipmentAdminResult">
+        <include refid="selectDbEquipmentAdminVo"/>
+        where land_id = #{landId} and user_id = #{userId}
+        <if test="equipmentId != null ">
+            and equipment_id like CONCAT('%',#{equipmentId},'%')
+        </if>
+
+    </select>
+
+</mapper>

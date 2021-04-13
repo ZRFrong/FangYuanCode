@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.sms.PhoneUtils;
 import com.ruoyi.system.domain.DbUserDynamic;
 import com.ruoyi.fangyuanapi.dto.DynamicDto;
 import com.ruoyi.fangyuanapi.mapper.*;
@@ -186,6 +187,7 @@ public class DbUserServiceImpl implements IDbUserService
         map.put("age",user.getAge()+"");
         map.put("signature",user.getSignature()+"");
         map.put("birthday",DateUtils.parseDateToStr("yyyy-MM-dd", user.getBirthday()));
+        map.put("phone",PhoneUtils.replacePhone(user.getPhone(),3,7,"*"));
         return map;
     }
 

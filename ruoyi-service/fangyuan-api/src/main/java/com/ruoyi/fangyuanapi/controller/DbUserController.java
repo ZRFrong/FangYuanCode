@@ -1,5 +1,4 @@
 package com.ruoyi.fangyuanapi.controller;
-
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.constant.Constants;
@@ -31,22 +30,19 @@ import io.swagger.annotations.ApiOperation;
 import jdk.nashorn.internal.runtime.logging.Logger;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
-import org.hibernate.validator.internal.util.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.*;
 
+@SuppressWarnings({"ALL", "AlibabaClassMustHaveAuthor"})
 @RestController
 @RequestMapping("wxUser")
 @Logger
 public class DbUserController extends BaseController {
 
-//
 //    @Autowired
 //    private RemoteDeptService remoteDeptService;
 
@@ -150,7 +146,6 @@ public class DbUserController extends BaseController {
 
     /**
      * 修改密码
-     *
      * @param phone
      * @param code
      * @param password
@@ -191,10 +186,8 @@ public class DbUserController extends BaseController {
         return R.error(ResultEnum.PARAMETERS_ERROR.getCode(), ResultEnum.PARAMETERS_ERROR.getMessage());
     }
 
-
     /**
      * app用户登陆
-     *
      * @param phone    手机号
      * @param password 密码
      * @param code     验证码
@@ -211,7 +204,8 @@ public class DbUserController extends BaseController {
         DbUser dbUser = null;
         String s = redisUtils.get(CategoryType.PHONE_LOGIN_NUM_.name() + phone);
         Integer num = s == null ? 0 : Integer.valueOf(s);
-        if (5 < Integer.valueOf(s == null ? "0" : s)) {//登录频繁
+        if (5 < Integer.valueOf(s == null ? "0" : s)) {
+            //登录频繁
             return R.error(ResultEnum.LOGIN_HOUR_ERROR.getCode(), ResultEnum.LOGIN_HOUR_ERROR.getMessage());
         }
         if (phone != null && PhoneUtils.checkPhone(phone)) {
@@ -248,7 +242,8 @@ public class DbUserController extends BaseController {
             }
         }
 
-        if (dbUser != null && StringUtils.isEmpty(password) && StringUtils.isNotEmpty(code)) {//验证码登录
+        if (dbUser != null && StringUtils.isEmpty(password) && StringUtils.isNotEmpty(code)) {
+            //验证码登录
             R r = sendSmsClient.checkCode(phone, code);
             if ("200".equals(r.get("code") + "")) {
                 if (StringUtils.isNotEmpty(token)){
@@ -287,9 +282,48 @@ public class DbUserController extends BaseController {
     }
 
 
+    /***
+     * APP 2.0 注册及登录接口
+     * @since: 2.0.0
+     * @param phone 手机号
+     * @param code  验证码
+     * @return: com.ruoyi.common.core.domain.R
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/12 13:27
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @PostMapping("appPhoneLogin")
+    @ApiOperation(value = "APP2.0登录", notes = "如若验证码真确，已经注册的直接登录,未注册的添加后登录！",httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "phone",value = "手机号",required = true),
+            @ApiImplicitParam(name = "code",value = "验证码",required = true)
+    })
+    public R appPhoneLogin(String phone,String code){
+        R r = sendSmsClient.checkCode(phone, code);
+        if (!"200".equals(r.get("code"))){
+            return r;
+        }
+        DbUser user =DbUser.builder()
+                        .phone(phone)
+                        .build();
+        DbUser dbUser = dbUserService.selectDbUserByPhone(user);
+        if (dbUser == null){
+            user.setCreateTime(new Date());
+            user.setIsBanned(0);
+            user.setGender(0);
+            int i = dbUserService.insertDbUser(user);
+        }
+        //登录成功
+        String token = getToken(user.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + 1000L*60L*60L*24L*365L*3L,1);
+        /* 返回token 并且记录 */
+        redisUtils.set(RedisKeyConf.APP_ACCESS_TOKEN_.name() + user.getId(), token,60 * 60 * 24 * 365*3);
+        return R.data(token);
+    }
+
+
+
     /**
      * app注册
-     *
      * @param phone         手机号
      * @param password      密码
      * @param passwordAgain 确认密码
@@ -308,7 +342,8 @@ public class DbUserController extends BaseController {
         if (StringUtils.isEmpty(phone) || StringUtils.isEmpty(password) || StringUtils.isEmpty(passwordAgain) || StringUtils.isEmpty(code)) {
             return R.error(ResultEnum.PARAMETERS_ERROR.getCode(), ResultEnum.PARAMETERS_ERROR.getMessage());
         }
-        if (!password.equals(passwordAgain)) {//不做提示
+        if (!password.equals(passwordAgain)) {
+            //不做提示
             return R.error();
         }
         if (!StringUtils.checkPassword(password)) {
@@ -375,7 +410,8 @@ public class DbUserController extends BaseController {
                 dbUser = dbUserService.wxRegister(phone,openId,nickname,avatar);
                 return R.data(getToken(dbUser.getId(), tokenConf.getAccessTokenKey(),System.currentTimeMillis() + 1000L*60L*60L*24L*365L*3L,0));
             }
-            if (dbUser != null && StringUtils.isEmpty(dbUser.getOpenId())){//修改操作
+            if (dbUser != null && StringUtils.isEmpty(dbUser.getOpenId())){
+                //修改操作
                 dbUser.setOpenId(openId);
                 if (dbUser.getAvatar() == null){
                     dbUser.setAvatar(avatar);
@@ -519,8 +555,8 @@ public class DbUserController extends BaseController {
         if (dynamicIds == null || dynamicIds.size() <= 0) {
             return R.ok("您的相册为空！");
         }
-        List<Map<String, String>> PhotoAlbum = dbUserDynamicService.selectImagesByDynamicId(dynamicIds, currPage,PageConf.pageSize);
-        return R.data(PhotoAlbum);
+        List<Map<String, String>> photoAlbum = dbUserDynamicService.selectImagesByDynamicId(dynamicIds, currPage,PageConf.pageSize);
+        return R.data(photoAlbum);
     }
 
     /**
@@ -552,7 +588,7 @@ public class DbUserController extends BaseController {
             @ApiImplicitParam(name = "birthday",value = "生日",required = true),
             @ApiImplicitParam(name = "signature",value = "签名 不超过三十字",required = true),
     })
-    public R UpdateUserData(String avatar,String username,String nickName,Integer gender,Date birthday,String signature) {
+    public R updateUserData(String avatar,String username,String nickName,Integer gender,Date birthday,String signature) {
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
         DbUser dbUser = new DbUser();
         dbUser.setUserName(username);
@@ -594,10 +630,7 @@ public class DbUserController extends BaseController {
 
 
 
-    /*
-    *
-    * 用户列表
-    * */
+
     @GetMapping("getUserList")
     @ApiOperation(value = "个人资料接口",notes = "个人资料页面",httpMethod = "GET")
     public R getUserList() {

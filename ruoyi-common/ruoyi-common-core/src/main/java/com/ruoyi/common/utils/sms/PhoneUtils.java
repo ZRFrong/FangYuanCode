@@ -33,6 +33,25 @@ public class PhoneUtils {
         return b;
     }
 
+    /**
+     * 对字符串指定位置 替换指定字符
+     * @since: 1.0.0
+     * @param phone 手机号
+     * @param beginIndex 开始替换位置
+     * @param endIndex 结束位置
+     * @param replaceStr 要替换的字符类型
+     * @return: java.lang.String
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/12 14:17
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    public static String replacePhone(String phone,int beginIndex,int endIndex,String replaceStr){
+        String str = "";
+        for (int i = 0; i < endIndex - beginIndex; i++) {
+            str = str + replaceStr;
+        }
+        return phone.substring(0,beginIndex)+str+phone.substring(endIndex,phone.length());
+    }
 
     public static void main(String[] args) {
         String phone = "13934154053";
