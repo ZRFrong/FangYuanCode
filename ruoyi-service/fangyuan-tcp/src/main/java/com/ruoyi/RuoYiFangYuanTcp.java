@@ -1,9 +1,6 @@
 package com.ruoyi;
 
-import com.ruoyi.fangyuantcp.timing.TaskHeartbeat;
-import com.ruoyi.fangyuantcp.timing.TaskOnline;
-import com.ruoyi.fangyuantcp.timing.TaskTcpType;
-import com.ruoyi.fangyuantcp.timing.TaskTongFeng;
+import com.ruoyi.fangyuantcp.timing.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -53,8 +50,12 @@ public class RuoYiFangYuanTcp {
         log.info("开启远程，本地检测");
         TaskOnline taskOnline = new TaskOnline();
         taskOnline.HeartbeatRun();
-
-
+/*
+* 开启传感数据定时存储
+* */
+        log.info("装态定时存储");
+        TaskTcpOrder taskTcpOrder = new TaskTcpOrder();
+        taskTcpOrder.HeartbeatRun();
 
     }
 }

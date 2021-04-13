@@ -214,6 +214,11 @@ public class DbLandServiceImpl implements IDbLandService
     }
 
     @Override
+    public List<DbLand> selectDbLandListByUserIdAndSideId(Long userId) {
+        return dbLandMapper.selectDbLandListByUserIdAndSideId(userId);
+    }
+
+    @Override
     public List<Map<String,Object>> selectDbLandByUserIdAndSideId(Long userId) {
         List<Map<String,Object>> list = dbLandMapper.selectDbLandByUserIdAndSideId(userId,0L);
         if (list == null || list.size() <= 0){

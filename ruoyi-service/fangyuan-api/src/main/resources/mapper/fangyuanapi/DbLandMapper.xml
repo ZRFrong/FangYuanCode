@@ -30,6 +30,7 @@
         <where>
             <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
             <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
+            <if test="equipmentIds != null  and equipmentIds != ''"> and equipment_ids like concat('%', #{equipmentIds}, '%')</if>
             <if test="siteId != null "> and site_id = #{siteId}</if>
             <if test="dbUserId != null  and dbUserId != ''"> and db_user_id = #{dbUserId}</if>
         </where>
@@ -72,6 +73,9 @@
     <select id="selectDbLandByUserIdAndSideId" resultType="java.util.Map">
         select land_id,IFNULL(nick_name,'未命名')nick_name from db_land
             where db_user_id = #{userId} and site_id = #{sideId}
+    </select>
+    <select id="selectDbLandListByUserIdAndSideId" resultMap="DbLandResult">
+        select *  from db_land where db_user_id =#{userId} and site_id != 0
     </select>
 
     <insert id="insertDbLand" parameterType="DbLand" useGeneratedKeys="true" keyProperty="landId" keyColumn="landId">

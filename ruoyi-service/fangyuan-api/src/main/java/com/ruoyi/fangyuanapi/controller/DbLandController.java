@@ -47,21 +47,21 @@ public class DbLandController extends BaseController {
     private OperationConf operationConf;
 
     @RequestMapping("getOperationConf")
-    public R getOperationConf(){
+    public R getOperationConf() {
         return R.data(operationConf.getTyps());
     }
 
 
     @PostMapping("sendStopOperation")
-    @ApiOperation(value = "批量暂停",notes = "批量对土地下的设备暂停： 粒度为单个操作：1卷帘 2 通风/卷膜 3补光 4浇水 5打药 6 施肥  7 锄草 8滴灌",httpMethod = "POST")
+    @ApiOperation(value = "批量暂停", notes = "批量对土地下的设备暂停： 粒度为单个操作：1卷帘 2 通风/卷膜 3补光 4浇水 5打药 6 施肥  7 锄草 8滴灌", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "landId",value = "土地id",required = true),
-            @ApiImplicitParam(name = "type",value = "操作类型",required = true)
+            @ApiImplicitParam(name = "landId", value = "土地id", required = true),
+            @ApiImplicitParam(name = "type", value = "操作类型", required = true)
     })
-    public R sendStopOperation(@RequestParam Long landId, @RequestParam String type){
+    public R sendStopOperation(@RequestParam Long landId, @RequestParam String type) {
         DbLand land = dbLandService.selectDbLandById(landId);
         String ids = land.getEquipmentIds();
-        if (StringUtils.isEmpty(ids)){
+        if (StringUtils.isEmpty(ids)) {
             return R.error("该土地尚未绑定设备！");
         }
         String[] split = ids.split(",");
@@ -69,14 +69,14 @@ public class DbLandController extends BaseController {
         for (String id : split) {
             DbEquipment equipment = equipmentService.selectDbEquipmentById(Long.valueOf(id));
             List<OperatePojo> pojos = JSON.parseArray(equipment.getHandlerText(), OperatePojo.class);
-            pojos.forEach(e ->{
-                if (type.equals(e.getCheckCode())){
-                    e.getSpList().forEach(d ->{
+            pojos.forEach(e -> {
+                if (type.equals(e.getCheckCode())) {
+                    e.getSpList().forEach(d -> {
                         if ("start_stop".equals(d.getHandleName()) || "down_stop".equals(d.getHandleName())) {
                             DbOperationVo vo = new DbOperationVo();
                             vo.setHeartName(equipment.getHeartbeatText());
-                            vo.setFacility(equipment.getEquipmentNo()+"");
-                            vo.setOperationId(equipment.getEquipmentId()+"");
+                            vo.setFacility(equipment.getEquipmentNo() + "");
+                            vo.setOperationId(equipment.getEquipmentId() + "");
                             vo.setOperationName(equipment.getEquipmentName() + " " + e.getCheckName() + " " + d.getHandleName());
                             vo.setOperationText(d.getHandleCode());
                             list.add(vo);
@@ -90,12 +90,12 @@ public class DbLandController extends BaseController {
     }
 
     @PostMapping("sendOperation")
-    @ApiOperation(value = "对土地下的设备批量操作",notes = "批量操作",httpMethod = "POST")
+    @ApiOperation(value = "对土地下的设备批量操作", notes = "批量操作", httpMethod = "POST")
     @ApiParam(name = "dbOperationVos", value = "传入json格式", required = true)
     public R sendOperation(@RequestBody List<DbOperationVo> dbOperationVos) {
 
-        if (dbOperationVos == null || dbOperationVos.size() <= 0){
-            return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
+        if (dbOperationVos == null || dbOperationVos.size() <= 0) {
+            return R.error(ResultEnum.PARAMETERS_ERROR.getCode(), ResultEnum.PARAMETERS_ERROR.getMessage());
         }
         R r = remoteTcpService.operationList(dbOperationVos);
         return r;
@@ -105,7 +105,7 @@ public class DbLandController extends BaseController {
      * 查询${tableComment}
      */
     @GetMapping("get/{landId}")
-    @ApiOperation(value = "根据土地id获取详细信息",notes = "根据土地id查询",httpMethod = "GET")
+    @ApiOperation(value = "根据土地id获取详细信息", notes = "根据土地id查询", httpMethod = "GET")
     public DbLand get(@PathVariable("landId") Long landId) {
         return dbLandService.selectDbLandById(landId);
     }
@@ -114,8 +114,8 @@ public class DbLandController extends BaseController {
      * 查询 土地下对应所有设备的操作集
      */
     @GetMapping("getLandOperation/{landId}")
-    @ApiOperation(value = "土地下对应所有设备的操作集", notes = "查询操作" ,httpMethod = "POST")
-    @ApiImplicitParam(name = "landId",value = "土地Id",required = true)
+    @ApiOperation(value = "土地下对应所有设备的操作集", notes = "查询操作", httpMethod = "POST")
+    @ApiImplicitParam(name = "landId", value = "土地Id", required = true)
     public R getLandOperation(@PathVariable("landId") Long landId) {
         if (landId < 0) {
             return null;
@@ -188,18 +188,8 @@ public class DbLandController extends BaseController {
         List<LandVo> landVos = new ArrayList<>();
         List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
 
-        for (DbLand land : dbLands) {
 
-            LandVo landVo = new LandVo();
-            landVo.setPlotName(land.getNickName());
-            DbLand dbLand1 = new DbLand();
-            dbLand1.setSiteId(land.getLandId());
-            List<DbLand> dbLands2 = dbLandService.selectDbLandList(dbLand1);
-            landVo.setLands(dbLands2);
-            landVos.add(landVo);
-        }
-
-        return R.data(landVos);
+        return R.data(dbLands);
     }
 
 
@@ -253,7 +243,7 @@ public class DbLandController extends BaseController {
     @GetMapping("remove")
     public R remove(String landId) {
         int i = dbLandService.deleteDbLandById(Long.valueOf(landId));
-        return i>0 ? R.ok() : R.error("删除失败或者检查选中的地块下是否存在土地！");
+        return i > 0 ? R.ok() : R.error("删除失败或者检查选中的地块下是否存在土地！");
     }
 
     /*
@@ -278,7 +268,7 @@ public class DbLandController extends BaseController {
     public R typeNow(@ApiParam(name = "Long", value = "Long格式", required = true) @PathVariable("landId") Long landId) {
         DbLand dbLand = dbLandService.selectDbLandById(landId);
         String equipmentIds = dbLand.getEquipmentIds();
-        String[] split = StringUtils.isEmpty(equipmentIds)? new String[]{} :equipmentIds.split(",");
+        String[] split = StringUtils.isEmpty(equipmentIds) ? new String[]{} : equipmentIds.split(",");
         String s = null;
         if (StringUtils.isEmpty(equipmentIds)) {
             return R.data(null);
@@ -352,5 +342,14 @@ public class DbLandController extends BaseController {
                 int i2 = dbLandService.updateDbLand(dbLand);
             }
         }
+    }
+
+    /*设备返回用户id*/
+    @GetMapping("deviceBelongs/{equipmentId}")
+    private R deviceBelongs( @PathVariable("equipmentId") Long equipmentId){
+        DbLand dbLand = new DbLand();
+        dbLand.setEquipmentIds(equipmentId.toString());
+        List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
+        return R.data(JSON.toJSONString(dbLands));
     }
 }

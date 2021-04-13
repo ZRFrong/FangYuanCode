@@ -6,22 +6,19 @@ import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.fangyuantcp.aspect.FeedbackIntercept;
-import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
-import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
+import com.ruoyi.fangyuantcp.mapper.*;
 import com.ruoyi.fangyuantcp.processingCode.OpcodeTextConf;
 import com.ruoyi.fangyuantcp.processingCode.SendCodeListUtils;
 import com.ruoyi.fangyuantcp.processingCode.SendCodeUtils;
 import com.ruoyi.fangyuantcp.processingCode.TcpOrderTextConf;
 import com.ruoyi.fangyuantcp.utils.*;
 import com.ruoyi.system.domain.*;
-import com.ruoyi.fangyuantcp.mapper.DbStateRecordsMapper;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import com.ruoyi.fangyuantcp.mapper.DbTcpTypeMapper;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.common.core.text.Convert;
 
@@ -42,10 +39,10 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
     private DbStateRecordsMapper dbStateRecordsMapper;
 
     @Autowired
-    private DbStateRecordsMapper dbStateRecordsMapper1;
+    private DbStateRecordsMapper1 dbStateRecordsMapper1;
 
     @Autowired
-    private DbStateRecordsMapper dbStateRecordsMapper2;
+    private DbStateRecordsMapper2 dbStateRecordsMapper2;
 
     @Autowired
     private DbEquipmentMapper1 dbEquipmentMapper1;
@@ -121,11 +118,8 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
      * 信息状态同步
      * */
     @Override
-    public void curingTypeTiming() {
-        DbTcpType dbTcpType = new DbTcpType();
-        List<DbTcpType> dbTcpTypes = selectDbTcpTypeList(dbTcpType);
-        dbTcpTypes.forEach(item -> insert(item));
-
+    public void curingTypeTiming(DbTcpType dbTcpType) {
+        insert(dbTcpType);
     }
 
     /*

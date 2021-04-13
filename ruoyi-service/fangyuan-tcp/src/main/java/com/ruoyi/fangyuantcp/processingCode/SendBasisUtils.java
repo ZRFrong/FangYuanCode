@@ -132,6 +132,12 @@ public class SendBasisUtils {
     }
 
 
+    public static void main(String[] args) {
+
+
+        }
+
+
     /*
      * 普通操作指令发送 通道
      * */

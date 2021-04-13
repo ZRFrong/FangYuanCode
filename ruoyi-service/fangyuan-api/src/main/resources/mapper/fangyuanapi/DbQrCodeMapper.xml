@@ -27,8 +27,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectDbQrCodeList" parameterType="DbQrCode" resultMap="DbQrCodeResult">
         <include refid="selectDbQrCodeVo"/>
-        <where>  
+
+        <where>
+            <if test="heartbeatText != null  and heartbeatText != ''"> and heartbeat_text like concat('%', #{heartbeatText}, '%')</if>
+            <if test="equipmentProductionBatch != null  and equipmentProductionBatch != ''"> and equipment_production_batch like concat('%', #{equipmentProductionBatch}, '%')</if>
+            <if test="equipmentProductionSite != null  and equipmentProductionSite != ''"> and equipment_production_site like concat('%', #{equipmentProductionSite}, '%')</if>
+            <if test="equipmentModel != null  and equipmentModel != ''"> and equipment_model like concat('%', #{equipmentModel}, '%')</if>
         </where>
+        order by create_time DESC
     </select>
     
     <select id="selectDbQrCodeById" parameterType="Long" resultMap="DbQrCodeResult">

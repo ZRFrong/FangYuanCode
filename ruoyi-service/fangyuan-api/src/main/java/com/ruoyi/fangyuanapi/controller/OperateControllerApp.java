@@ -242,5 +242,18 @@ public class OperateControllerApp extends BaseController {
         return R.data(dbTcpType1);
     }
 
+    /*
+    * 操作计时
+    * */
+
+
+
+
+
+    /*
+    * 操作时长
+    * */
+
+
 
 }

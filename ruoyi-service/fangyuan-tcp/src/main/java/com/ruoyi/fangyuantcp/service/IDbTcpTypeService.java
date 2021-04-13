@@ -72,7 +72,7 @@ public interface IDbTcpTypeService {
      /*
      *定时状态存储
      * */
-    void curingTypeTiming();
+    void curingTypeTiming(DbTcpType dbTcpType);
 
 
     void timingType() throws ExecutionException, InterruptedException;

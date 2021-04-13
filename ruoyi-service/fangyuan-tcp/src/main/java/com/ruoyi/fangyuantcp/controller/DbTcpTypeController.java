@@ -93,19 +93,19 @@ public class DbTcpTypeController extends BaseController {
         return toAjax(dbTcpTypeService.deleteDbTcpTypeByIds(ids));
     }
 
-    /*
-     * 状态留根
-     * */
-    @GetMapping("curingType")
-    public R curingTypeTiming() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                dbTcpTypeService.curingTypeTiming();
-            }
-        });
-        return R.ok();
-    }
+//    /*
+//     * 状态留根
+//     * */
+//    @GetMapping("curingType")
+//    public R curingTypeTiming() {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                dbTcpTypeService.curingTypeTiming();
+//            }
+//        });
+//        return R.ok();
+//    }
 
     /*
      * 状态查询 温度湿度等

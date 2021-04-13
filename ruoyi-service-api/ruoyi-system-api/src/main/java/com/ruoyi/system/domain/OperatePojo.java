@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -28,6 +29,18 @@ public class OperatePojo {
 
     @ApiModelProperty(value = "分类名称（用户自定义）")
     private  String checkName;
+
+    @ApiModelProperty(value = "功能标识")
+    private  String FeatureId;
+
+    @ApiModelProperty(value = "进度说明")
+    private  String percentage;
+
+    @ApiModelProperty(value = "开启时间")
+    private Date startDate;
+
+    @ApiModelProperty(value = "开关状态")
+    private  String switchState;
 
 
     @ApiModelProperty(value = "具体按钮的操作项目")

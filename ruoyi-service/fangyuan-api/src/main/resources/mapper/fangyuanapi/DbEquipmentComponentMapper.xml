@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbEquipmentComponentMapper">
+    
+    <resultMap type="DbEquipmentComponent" id="DbEquipmentComponentResult">
+        <result property="id"    column="id"    />
+        <result property="classificationId"    column="classification_id"    />
+        <result property="equipmentVersion"    column="equipment_version"    />
+        <result property="functionLogo"    column="function_logo"    />
+        <result property="noteText"    column="note_text"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="standbyOne"    column="standby_one"    />
+        <result property="standbyTwo"    column="standby_two"    />
+        <result property="equipmentName"    column="equipment_name"    />
+    </resultMap>
+
+    <sql id="selectDbEquipmentComponentVo">
+        select id, classification_id, equipment_version, function_logo, note_text, create_time, standby_one, standby_two, equipment_name from db_equipment_component
+    </sql>
+
+    <select id="selectDbEquipmentComponentList" parameterType="DbEquipmentComponent" resultMap="DbEquipmentComponentResult">
+        <include refid="selectDbEquipmentComponentVo"/>
+        <where>  
+            <if test="equipmentName != null  and equipmentName != ''"> and equipment_name like concat('%', #{equipmentName}, '%')</if>
+            <if test="classificationId != null "> and classification_id =  #{classificationId}</if>
+        </where>
+    </select>
+    
+    <select id="selectDbEquipmentComponentById" parameterType="Long" resultMap="DbEquipmentComponentResult">
+        <include refid="selectDbEquipmentComponentVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbEquipmentComponent" parameterType="DbEquipmentComponent">
+        insert into db_equipment_component
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="classificationId != null ">classification_id,</if>
+            <if test="equipmentVersion != null  and equipmentVersion != ''">equipment_version,</if>
+            <if test="functionLogo != null  and functionLogo != ''">function_logo,</if>
+            <if test="noteText != null  and noteText != ''">note_text,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="standbyOne != null  and standbyOne != ''">standby_one,</if>
+            <if test="standbyTwo != null  and standbyTwo != ''">standby_two,</if>
+            <if test="equipmentName != null  and equipmentName != ''">equipment_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="classificationId != null ">#{classificationId},</if>
+            <if test="equipmentVersion != null  and equipmentVersion != ''">#{equipmentVersion},</if>
+            <if test="functionLogo != null  and functionLogo != ''">#{functionLogo},</if>
+            <if test="noteText != null  and noteText != ''">#{noteText},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="standbyOne != null  and standbyOne != ''">#{standbyOne},</if>
+            <if test="standbyTwo != null  and standbyTwo != ''">#{standbyTwo},</if>
+            <if test="equipmentName != null  and equipmentName != ''">#{equipmentName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbEquipmentComponent" parameterType="DbEquipmentComponent">
+        update db_equipment_component
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="classificationId != null ">classification_id = #{classificationId},</if>
+            <if test="equipmentVersion != null  and equipmentVersion != ''">equipment_version = #{equipmentVersion},</if>
+            <if test="functionLogo != null  and functionLogo != ''">function_logo = #{functionLogo},</if>
+            <if test="noteText != null  and noteText != ''">note_text = #{noteText},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="standbyOne != null  and standbyOne != ''">standby_one = #{standbyOne},</if>
+            <if test="standbyTwo != null  and standbyTwo != ''">standby_two = #{standbyTwo},</if>
+            <if test="equipmentName != null  and equipmentName != ''">equipment_name = #{equipmentName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbEquipmentComponentById" parameterType="Long">
+        delete from db_equipment_component where id = #{id}
+    </delete>
+
+    <delete id="deleteDbEquipmentComponentByIds" parameterType="String">
+        delete from db_equipment_component where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
