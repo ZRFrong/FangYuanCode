@@ -14,10 +14,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="operationObjectId"    column="operation_object_id"    />
         <result property="operationObjectType"    column="operation_object_type"    />
         <result property="operationSource"    column="operation_source"    />
+        <result property="landId"    column="land_id"    />
     </resultMap>
 
     <sql id="selectDbOperationRecordVo">
-        select id, db_user_id, is_complete, operation_time, operation_text, operation_object, operation_object_type, operation_source from db_operation_record
+        select id,land_id, db_user_id, is_complete, operation_time, operation_text, operation_object, operation_object_type, operation_source from db_operation_record
     </sql>
 
     <select id="selectDbOperationRecordList" parameterType="DbOperationRecord" resultMap="DbOperationRecordResult">
@@ -29,6 +30,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDbOperationRecordById" parameterType="Long" resultMap="DbOperationRecordResult">
         <include refid="selectDbOperationRecordVo"/>
         where id = #{id}
+    </select>
+
+    <select id="selectDbOperationRecordByLandIdAndUserId" resultMap="DbOperationRecordResult">
+        <include refid="selectDbOperationRecordVo"/>
+        where land_id = #{landId}
+        <if test="userId != null">
+            and db_user_id =#{userId}
+        </if>
+        limit #{currPage},#{pageSize}
     </select>
         
     <insert id="insertDbOperationRecord" parameterType="DbOperationRecord">
@@ -42,7 +52,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="operationObject != null  and operationObject != ''">operation_object,</if>
             <if test="operationObjectType != null ">operation_object_type,</if>
             <if test="operationSource != null ">operation_source,</if>
-         </trim>
+            <if test="landId != null ">land_id,</if>
+
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null ">#{id},</if>
             <if test="dbUserId != null ">#{dbUserId},</if>
@@ -52,7 +64,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="operationObject != null  and operationObject != ''">#{operationObject},</if>
             <if test="operationObjectType != null ">#{operationObjectType},</if>
             <if test="operationSource != null ">#{operationSource},</if>
-         </trim>
+            <if test="landId != null ">#{landId},</if>
+
+        </trim>
     </insert>
 
     <update id="updateDbOperationRecord" parameterType="DbOperationRecord">
@@ -79,6 +93,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
 
     <select id="listGroupDay" parameterType="String" resultMap="DbOperationRecordResult">
         <include refid="selectDbOperationRecordVo"/>

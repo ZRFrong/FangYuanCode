@@ -63,4 +63,7 @@ public interface DbOperationRecordMapper {
 
 
     List<DbOperationRecord> listGroupDay(@Param("operationText") String operationText, @Param("operationTime") String operationTime, @Param("currPage") Integer currPage, @Param("pageSize") Integer pageSize, @Param("dbUserId") Long dbUserId);
+
+    List<DbOperationRecord> selectDbOperationRecordByLandIdAndUserId(@Param("landId") Long landId,@Param("userId") String userId,@Param("currPage") Integer currPage, @Param("pageSize")Integer pageSize);
+
 }

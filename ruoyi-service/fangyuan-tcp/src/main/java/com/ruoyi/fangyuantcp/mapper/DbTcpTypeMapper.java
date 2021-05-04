@@ -43,6 +43,7 @@ public interface DbTcpTypeMapper
      * @param dbTcpType 设备状态
      * @return 结果
      */
+
     public int updateDbTcpType(DbTcpType dbTcpType);
 
     /**

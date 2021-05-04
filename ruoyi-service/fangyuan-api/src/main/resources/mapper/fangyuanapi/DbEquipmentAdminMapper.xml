@@ -64,11 +64,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="isDel != null ">is_del = #{isDel},</if>
             <if test="landId != null ">land_id = #{landId},</if>
-            <if test="adminId != null ">admin_id = #{adminId},</if>
+            <if test="userId != null ">user_id = #{userId},</if>
             <if test="functionIds != null ">function_ids = #{functionIds},</if>
-            <if test="isSuperAdmin != null ">#{isSuperAdmin},</if>
-            <if test="avatar != null ">#{avatar},</if>
-            <if test="landName != null ">#{landName},</if>
+            <if test="isSuperAdmin != null ">is_super_admin=#{isSuperAdmin},</if>
+            <if test="avatar != null ">avatar = #{avatar},</if>
+            <if test="landName != null ">land_name = #{landName},</if>
+            <if test="equipmentId != null ">equipment_id =#{equipmentId},</if>
         </trim>
         where id = #{id}
     </update>
@@ -102,5 +103,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </if>
 
     </select>
+    <select id="selectDbEquipmentAdminListByUserId" resultMap="DbEquipmentAdminResult">
+        select  * from db_equipment_admin where user_id = #{userId}
+    </select>
+    <select id="selectIsSuperAdmin" resultMap="DbEquipmentAdminResult">
+        select  * from db_equipment_admin where land_id = #{landId} and is_super_admin = 0
+    </select>
+    <select id="selectDbEquipmentAdminsByLandId" resultMap="DbEquipmentAdminResult">
+         select * from db_equipment_admin where  land_id = #{landId}
+    </select>
+
+    <update id="updateAdminAvatar">
+          update db_equipment_admin set avatar = #{avatar}  where  user_id = #{id}
+     </update>
 
 </mapper>

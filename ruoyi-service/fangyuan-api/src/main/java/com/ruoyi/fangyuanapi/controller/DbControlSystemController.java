@@ -52,7 +52,6 @@ public class DbControlSystemController {
             System.out.println(Arrays.toString(arrs));
             DbEquipment equipment = equipmentService.selectDbEquipmentById(Long.valueOf(id));
             HashMap<String, String> map = new HashMap<>();
-            map.put("videoUrl",controlSystemConf.getVoideUrl().get(id));
             map.put("heartbeatText",equipment.getHeartbeatText());
             map.put("equipmentName",equipment.getEquipmentName());
             map.put("handlerText",equipment.getHandlerText());
@@ -83,18 +82,18 @@ public class DbControlSystemController {
             @ApiImplicitParam(name = "equipmentNo",value = "唯一编号",required = true),
     })
     public  R sendInstruct(String heartbeatText,String instruct,String operationName,String equipmentNo){
-        if (StringUtils.isEmpty(heartbeatText) || StringUtils.isEmpty(instruct) || StringUtils.isEmpty(operationName)
-                || StringUtils.isEmpty(equipmentNo) ){
-            return R.error();
+        DbOperationVo dbOperationVo = new DbOperationVo();
+        dbOperationVo.setHeartName(heartbeatText);
+        if (Integer.parseInt(equipmentNo)<10){
+            dbOperationVo.setFacility("0"+equipmentNo);
+        }else {
+            dbOperationVo.setFacility(equipmentNo);
         }
-        DbOperationVo operationVo = new DbOperationVo();
-        operationVo.setHeartName(heartbeatText);
-        operationVo.setFacility(equipmentNo);
-        operationVo.setOperationName(operationName);
-        operationVo.setOperationText(instruct);
-        operationVo.setCreateTime(new Date());
-        return remoteTcpService.operation(operationVo);
-//        return R.data(instruct);
+        dbOperationVo.setOperationName(operationName);
+        dbOperationVo.setOperationText(instruct);
+        dbOperationVo.setCreateTime(new Date());
+        dbOperationVo.setOperationTextType("05");
+        return remoteTcpService.operation(dbOperationVo);
     }
 
 }

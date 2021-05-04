@@ -76,9 +76,9 @@ public class TokenUtils {
         String s = null;
         try {
             KeyGenerator aes = KeyGenerator.getInstance("AES");
-//            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-//            random.setSeed(key.getBytes("UTF-8"));
-            aes.init(128);
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+            random.setSeed(key.getBytes("UTF-8"));
+            aes.init(128,random);
             SecretKey secretKey = aes.generateKey();
             byte[] keyEncoded = secretKey.getEncoded();
             /*  转换为AES秘钥 */
@@ -96,6 +96,8 @@ public class TokenUtils {
         } catch (BadPaddingException e) {
             e.printStackTrace();
         } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return s;
@@ -172,14 +174,16 @@ public class TokenUtils {
 //        String s = decrypt(encrypt, key);
 //        System.out.println(s);
 //        System.out.println(encrypt("54254", "4545215431321543213").length());
-        System.out.println(System.currentTimeMillis());
-        Map<String, Object> map = TokenUtils.verifyToken("3446DEFDFE916E14E7ACB44CC7D25E70D8F3097727EE8168846B77A512A88719E10E9184DDE0795B8219910CEF356F04E57DDC4411099D4063CF36638D0ADE31", "196B0F14EBA66E10FBA74DBF9E99C22F");
-        System.out.println(map);
-        Date date = new Date();
-        date.setTime(1000*60*60*365+System.currentTimeMillis());
-        System.out.println(DateUtils.parseDateToStr("yyyy-MM-dd kk:mm:ss", date));
-        System.out.println(new SimpleDateFormat().format(date));
-        System.out.println(System.currentTimeMillis()+(1000L*60L*60L*365L*3L));
-        System.out.println("密文： "+encrypt("{userid: 1}", "196B0F14EBA66E10FBA74DBF9E99C22F"));
+//        System.out.println(System.currentTimeMillis());
+//        Map<String, Object> map = TokenUtils.verifyToken("3446DEFDFE916E14E7ACB44CC7D25E70D8F3097727EE8168846B77A512A88719E10E9184DDE0795B8219910CEF356F04E57DDC4411099D4063CF36638D0ADE31", "196B0F14EBA66E10FBA74DBF9E99C22F");
+//        System.out.println(map);
+//        Date date = new Date();
+//        date.setTime(1000*60*60*365+System.currentTimeMillis());
+//        System.out.println(DateUtils.parseDateToStr("yyyy-MM-dd kk:mm:ss", date));
+//        System.out.println(new SimpleDateFormat().format(date));
+//        System.out.println(System.currentTimeMillis()+(1000L*60L*60L*365L*3L));
+        String token = TokenUtils.getToken((long) 1, System.currentTimeMillis(), "dhsa", "1", "4513274d");
+        String s = TokenUtils.decrypt("460DD35443B5A9873AFDB5A520D7BE2BCAC002D94C8F395BBD89B116205C15CB83FE972C83B3D69E30F5CFC1837FE100", "196B0F14EBA66E10FBA74DBF9E99C22F");
+        System.out.println(s);
     }
 }

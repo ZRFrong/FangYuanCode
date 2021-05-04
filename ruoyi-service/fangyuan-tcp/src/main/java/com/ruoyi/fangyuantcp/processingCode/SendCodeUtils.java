@@ -14,53 +14,31 @@ public class SendCodeUtils {
 
 private   static SendBasisUtils basisUtils=new SendBasisUtils();
 
-
-
     /*
-     * 普通操作指令发送  05
-     * */
-    public static int query05(DbOperationVo tcpOrder) {
-        String text = tcpOrder.getFacility() + "," + "05," + tcpOrder.getOperationText();
-        return basisUtils.operateCode(text, tcpOrder);
-    }
-
-    /*
-     * 普通操作指令发送  06  自动状态设置更改
-     * */
-    public static int query06(DbOperationVo tcpOrder) {
-        String text = tcpOrder.getFacility() + "," + "06," + tcpOrder.getOperationText();
-        return basisUtils.operateCode(text, tcpOrder);
-    }
-
-    /*
-     * 普通操作指令发送子线程   不指定操作码
+     * 普通操作指令发送子线程   不指定操作类型
      * */
     public static int query(DbOperationVo tcpOrder) {
         String text = tcpOrder.getOperationText();
-        return basisUtils.operateCode(text, tcpOrder);
+        return SendBasisUtils.operateCode(text, tcpOrder);
     }
-
-
     /*
-     * 状态查询指令发送03
+     * 普通操作指令发送子线程   不指定操作类型
      * */
-    public static int query03(DbOperationVo tcpOrder) {
-        String text = tcpOrder.getFacility() + "," + "03," + tcpOrder.getOperationText();
-        return basisUtils.operateCode(text, tcpOrder);
+    public static int queryText(DbOperationVo tcpOrder) {
+        String text = tcpOrder.getOperationText();
+        return SendBasisUtils.operateCodetest(text, tcpOrder);
     }
-
-
     /*
-     *状态操作指令发送01
+     * 普通操作指令发送子线程   指定操作类型
      * */
-    public static int query01(DbOperationVo tcpOrder) {
-        String text = tcpOrder.getFacility() + "," + "01," + tcpOrder.getOperationText();
-        return basisUtils.operateCode(text, tcpOrder);
+    public static int queryType(DbOperationVo tcpOrder) {
+        String text = tcpOrder.getFacility() +","+ tcpOrder.getOperationTextType()+"," + tcpOrder.getOperationText();
+        return SendBasisUtils.operateCode(text, tcpOrder);
     }
 
 
-    public void queryNoWait(DbOperationVo tcpOrder,int type) {
-        String text = tcpOrder.getFacility() + ",0" + type+"," + tcpOrder.getOperationText();
+    public static void queryNoWait(DbOperationVo tcpOrder) {
+        String text = tcpOrder.getFacility() +","+ tcpOrder.getOperationTextType()+"," + tcpOrder.getOperationText();
          basisUtils.operateCodeNoWait(text, tcpOrder);
     }
 }

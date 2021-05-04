@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain;
 
+import lombok.Builder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;

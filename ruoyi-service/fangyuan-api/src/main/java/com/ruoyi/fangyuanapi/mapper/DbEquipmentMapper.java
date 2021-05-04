@@ -68,4 +68,7 @@ public interface DbEquipmentMapper
     int updateDbEquipmentName(DbEquipment dbEquipment);
 
     DbEquipment selectByHeartbeatText(String heartbeatText);
+
+    List<DbEquipment> selectAllDbEquipment();
+
 }

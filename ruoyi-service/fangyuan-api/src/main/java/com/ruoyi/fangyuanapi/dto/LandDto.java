@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
 * @Description:    java类作用描述
 * @Author:          ZhaoHuiSheng
@@ -27,12 +29,6 @@ public class LandDto {
     @ApiModelProperty("大棚id")
     private Long landId;
 
-    @ApiModelProperty("心跳名称")
-    private String heartbeatText;
-
-    @ApiModelProperty("设备id")
-    private Long equipmentId;
-
     @ApiModelProperty("土壤温度")
     private String temperatureSoil;
 
@@ -44,5 +40,20 @@ public class LandDto {
 
     @ApiModelProperty("二氧化碳")
     private String co2;
+
+    @ApiModelProperty("空气温度")
+    private String temperatureAir;
+
+    @ApiModelProperty("空气湿度")
+    private String humidityAir;
+
+    @ApiModelProperty("是否显示")
+    private String isShow;
+
+    @ApiModelProperty("大棚所属功能")
+    private List<FunctionDto> functionList;
+
+    @ApiModelProperty("是否该大棚的管理员")
+    private Long isAdmin;
 
 }

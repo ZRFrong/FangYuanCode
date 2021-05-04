@@ -72,7 +72,7 @@
     </select>
 
     <select id="selectDbLandByUserIdAndSideId" resultType="java.util.Map">
-        select land_id,IFNULL(nick_name,'未命名')nick_name from db_land
+        select land_id,IFNULL(nick_name,'未命名')nick_name ,product_name,address,region from db_land
             where db_user_id = #{userId} and site_id = #{sideId}
     </select>
     <select id="selectDbLandsByUserId" resultMap="DbLandResult">
@@ -140,5 +140,13 @@
             #{landId}
         </foreach>
     </delete>
+
+    <select id="selectDbLandListByUserIdAndSideId" resultMap="DbLandResult">
+        select * from db_land where db_user_id =#{userId} and site_id != 0
+    </select>
+    <select id="selectDbLandsByUserIdAndSiteId" resultType="java.util.Map">
+        select land_id,IFNULL(nick_name,'未命名')nick_name ,product_name,address,region from db_land
+            where db_user_id = #{userId} and site_id != 0 and equipment_ids is not null
+    </select>
 
 </mapper>

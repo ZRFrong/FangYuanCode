@@ -114,4 +114,6 @@ public interface IDbUserService
      * @return
      */
     DbUser selectDbUserByPhoneAndOpenId(@Param(value = "phone") String phone,@Param(value = "openId") String openId);
+
+    String selectAvatarById(Long dbUserId);
 }

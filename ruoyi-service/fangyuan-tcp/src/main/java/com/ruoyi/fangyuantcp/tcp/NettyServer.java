@@ -10,10 +10,11 @@ import org.slf4j.LoggerFactory;
 import java.nio.channels.SocketChannel;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class NettyServer {
     //连接map
-    public static Map<String, ChannelHandlerContext> map = new HashMap<String, ChannelHandlerContext>();
+    public static Map<String, ChannelHandlerContext> map = new ConcurrentHashMap<String, ChannelHandlerContext>();
     private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
 
     public static void bind(int port) throws Exception {

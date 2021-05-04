@@ -74,4 +74,15 @@ public interface IDbTcpClientService
     int heartbeatUpdate(DbTcpClient dbTcpClient);
 
     List<String> heartBeatDFuzzy(String heartBeat);
+
+    /**
+     * 按照心跳查询是否在线
+     * @since: 2.0.0
+     * @param heartName 心跳名
+     * @return: java.lang.Integer 行数
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/28 11:27
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    Integer queryOne(String heartName);
 }

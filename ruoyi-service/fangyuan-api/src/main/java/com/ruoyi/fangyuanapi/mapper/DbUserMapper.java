@@ -96,4 +96,7 @@ public interface DbUserMapper
     int updateUserPassword(String phone, String password, String uuid);
 
     DbUser selectDbUserByPhoneAndOpenId(@Param("phone") String phone,@Param("openId") String openId);
+
+    String selectAvatarById(Long dbUserId);
+
 }

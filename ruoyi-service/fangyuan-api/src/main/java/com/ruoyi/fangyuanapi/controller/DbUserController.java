@@ -29,12 +29,14 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import jdk.nashorn.internal.runtime.logging.Logger;
 import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @SuppressWarnings({"ALL", "AlibabaClassMustHaveAuthor"})
@@ -79,6 +81,10 @@ public class DbUserController extends BaseController {
 
     @PostMapping("filesUpload")
     @CrossOrigin
+    @ApiOperation(value = "多文件上传接口：支持格式为：.jpg.png.jpeg.gif",notes = "多文件上传接口; 不能上传大于2M的文件",httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "files",value = "MultipartFile 类型",required = true)
+    })
     public R avatarUpload(@RequestPart("files") MultipartFile[] files){
         if (files == null || files.length <= 0){
             return R.error("图片不能为空，或者图片格式不正确！");
@@ -108,6 +114,10 @@ public class DbUserController extends BaseController {
 
     @PostMapping("avatarUpload")
     @CrossOrigin
+    @ApiOperation(value = "单文件上传接口",notes = "单文件上传接口",httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "file",value = "MultipartFile 类型",required = true)
+    })
     public R avatarUpload(@RequestPart("file") MultipartFile file){
         if (file == null){
             return R.error("图片不能为空，或者图片格式不正确！");
@@ -299,19 +309,21 @@ public class DbUserController extends BaseController {
             @ApiImplicitParam(name = "code",value = "验证码",required = true)
     })
     public R appPhoneLogin(String phone,String code){
-        R r = sendSmsClient.checkCode(phone, code);
-        if (!"200".equals(r.get("code"))){
-            return r;
-        }
+//        R r = sendSmsClient.checkCode(phone, code);
+//        if (!"200".equals(r.get("code")+"")){
+//            return r;
+//        }
         DbUser user =DbUser.builder()
                         .phone(phone)
                         .build();
         DbUser dbUser = dbUserService.selectDbUserByPhone(user);
-        if (dbUser == null){
+        if (dbUser == null ||  dbUser.getId() == null){
             user.setCreateTime(new Date());
             user.setIsBanned(0);
             user.setGender(0);
             int i = dbUserService.insertDbUser(user);
+        }else {
+            user = dbUser;
         }
         //登录成功
         String token = getToken(user.getId(), tokenConf.getAccessTokenKey(), System.currentTimeMillis() + 1000L*60L*60L*24L*365L*3L,1);
@@ -570,6 +582,7 @@ public class DbUserController extends BaseController {
     public R getUserDate(HttpServletRequest request) {
         String userId = request.getHeader(Constants.CURRENT_ID);
         Map<String, String> map = dbUserService.getUserData(Long.valueOf(userId));
+
         return map == null ? R.error() : R.data(map);
     }
 
@@ -597,6 +610,9 @@ public class DbUserController extends BaseController {
         dbUser.setBirthday(birthday);
         dbUser.setSignature(signature);
         dbUser.setAvatar(avatar);
+        if (birthday != null){
+            dbUser.setAge(getAgeByBirth(birthday));
+        }
         dbUser.setId(Long.valueOf(userId));
         int i = dbUserService.updateDbUser(dbUser);
         return i > 0 ? new R() : R.error(ResultEnum.SERVICE_BUSY.getCode(), ResultEnum.SERVICE_BUSY.getMessage());
@@ -628,17 +644,41 @@ public class DbUserController extends BaseController {
         return map;
     }
 
-
-
-
-    @GetMapping("getUserList")
-    @ApiOperation(value = "个人资料接口",notes = "个人资料页面",httpMethod = "GET")
-    public R getUserList() {
-        DbUser dbUser = new DbUser();
-        List<DbUser> dbUsers = dbUserService.selectDbUserList(dbUser);
-        return R.data(dbUsers);
+    /**
+     * 计算年龄
+     * @since: 2.0.0
+     * @param birthDay
+     * @return: int
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/25 16:41
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    private static int getAgeByBirth(Date birthDay) throws ParseException {
+        int age = 0;
+        Calendar cal = Calendar.getInstance();
+        if (cal.before(birthDay)) { //出生日期晚于当前时间，无法计算
+            throw new IllegalArgumentException(
+                    "The birthDay is before Now.It's unbelievable!");
+        }
+        int yearNow = cal.get(Calendar.YEAR);  //当前年份
+        int monthNow = cal.get(Calendar.MONTH);  //当前月份
+        int dayOfMonthNow = cal.get(Calendar.DAY_OF_MONTH); //当前日期
+         cal.setTime(birthDay);
+        int yearBirth = cal.get(Calendar.YEAR);
+        int monthBirth = cal.get(Calendar.MONTH);
+        int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
+        age = yearNow - yearBirth;   //计算整岁数
+        if (monthNow <= monthBirth) {
+            if (monthNow == monthBirth) {
+                if (dayOfMonthNow < dayOfMonthBirth) {
+                    age--;
+                };//当前日期在生日之前，年龄减一
+            } else {
+                age--;//当前月份在生日之前，年龄减一
+            }
+        }
+        return age;
     }
-
 
 }
 

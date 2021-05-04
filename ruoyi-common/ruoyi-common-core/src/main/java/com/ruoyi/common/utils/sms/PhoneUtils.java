@@ -46,6 +46,9 @@ public class PhoneUtils {
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
     public static String replacePhone(String phone,int beginIndex,int endIndex,String replaceStr){
+        if (StringUtils.isEmpty(phone)){
+            return null;
+        }
         String str = "";
         for (int i = 0; i < endIndex - beginIndex; i++) {
             str = str + replaceStr;

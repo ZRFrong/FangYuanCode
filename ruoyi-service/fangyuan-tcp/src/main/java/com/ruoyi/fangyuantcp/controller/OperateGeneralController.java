@@ -44,8 +44,6 @@ public class OperateGeneralController  extends BaseController {
     @PostMapping("operationList")
     @ApiOperation(value = "批量操作设备", notes = "批量操作设备")
     public R operationList(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) @RequestBody List<DbOperationVo> dbOperationVo) throws ExecutionException, InterruptedException {
-
         return operateGeneralService.operationList(dbOperationVo);
-
     }
 }

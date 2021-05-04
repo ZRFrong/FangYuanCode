@@ -3,13 +3,18 @@ package com.ruoyi.system.domain;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @ApiModel
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class DbOperationVo {
-    public DbOperationVo() {
-    }
+
 
 
     @Override
@@ -85,7 +90,11 @@ public class DbOperationVo {
         this.operationTextType = operationTextType;
     }
 
-    /** 操作指令 */
+    /** 操作指令
+     *  01  03 查
+     *  05 操作
+     *  06 写
+     * */
     @ApiModelProperty(value = "操作指令类型")
     private String operationTextType;
 

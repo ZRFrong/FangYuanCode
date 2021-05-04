@@ -29,7 +29,18 @@ public class GlobalExceptionHandler
     public R handleException(HttpRequestMethodNotSupportedException e)
     {
         logger.error(e.getMessage(), e);
-        return R.error("不支持' " + e.getMethod() + "'请求");
+        return R.error(HttpStatus.METHOD_NOT_ALLOWED.value(),"不支持' " + e.getMethod() + "'请求");
+    }
+
+    /**
+     * 空指针异常
+     */
+    @ExceptionHandler({NullPointerException.class})
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public R nullException(NullPointerException e)
+    {
+        logger.error(e.getMessage(), e);
+        return R.error(ExceptionEnum.BODY_NOT_MATCH.getResultCode(),ExceptionEnum.BODY_NOT_MATCH.getResultMsg());
     }
 
     /**
@@ -43,9 +54,18 @@ public class GlobalExceptionHandler
             throw e;
         }
         logger.error("运行时异常:", e);
-        return R.error("运行时异常:" + e.getMessage());
+        return R.error(ExceptionEnum.INTERNAL_SERVER_ERROR.getResultCode(),ExceptionEnum.INTERNAL_SERVER_ERROR.getResultMsg());
     }
 
+    /**
+     * 拦截所有异常
+     */
+    @ExceptionHandler(Throwable.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public R exception(Throwable throwable) {
+        logger.error("系统异常！", throwable);
+        return R.error(HttpStatus.INTERNAL_SERVER_ERROR.value() , "系统异常！");
+    }
     /**
      * 处理自定义异常
      */

@@ -1,9 +1,14 @@
 package com.ruoyi.fangyuanapi.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.ruoyi.fangyuanapi.dto.OperationDto;
+import com.ruoyi.fangyuanapi.mapper.DbEquipmentAdminMapper;
 import com.ruoyi.fangyuanapi.mapper.DbOperationRecordMapper1;
 import com.ruoyi.fangyuanapi.mapper.DbOperationRecordMapper2;
+import com.ruoyi.fangyuanapi.service.IDbUserService;
+import com.ruoyi.system.domain.DbEquipmentAdmin;
 import com.ruoyi.system.domain.DbOperationRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +30,12 @@ public class DbOperationRecordServiceImpl implements IDbOperationRecordService {
     private DbOperationRecordMapper1 dbOperationRecordMapper1;
     @Autowired
     private DbOperationRecordMapper2 dbOperationRecordMapper2;
+
+    @Autowired
+    private DbEquipmentAdminMapper dbEquipmentAdminMapper;
+
+    @Autowired
+    private IDbUserService dbUserService;
 
     /**
      * 查询用户操作记录
@@ -63,14 +74,16 @@ public class DbOperationRecordServiceImpl implements IDbOperationRecordService {
      */
     @Override
     public int insertDbOperationRecord(DbOperationRecord dbOperationRecord) {
-        if (dbOperationRecord.getDbUserId() % 3 == 0) {
-            return dbOperationRecordMapper.insertDbOperationRecord(dbOperationRecord);
-        } else if (dbOperationRecord.getDbUserId() % 3 == 1) {
-            return dbOperationRecordMapper1.insertDbOperationRecord(dbOperationRecord);
-        } else if (dbOperationRecord.getDbUserId() % 3 == 2) {
-            return dbOperationRecordMapper2.insertDbOperationRecord(dbOperationRecord);
-        }
-        return 0;
+        return dbOperationRecordMapper.insertDbOperationRecord(dbOperationRecord);
+
+//        if (dbOperationRecord.getDbUserId() % 3 == 0) {
+//            return dbOperationRecordMapper.insertDbOperationRecord(dbOperationRecord);
+//        } else if (dbOperationRecord.getDbUserId() % 3 == 1) {
+//            return dbOperationRecordMapper1.insertDbOperationRecord(dbOperationRecord);
+//        } else if (dbOperationRecord.getDbUserId() % 3 == 2) {
+//            return dbOperationRecordMapper2.insertDbOperationRecord(dbOperationRecord);
+//        }
+//        return 0;
     }
 
     /**
@@ -109,13 +122,32 @@ public class DbOperationRecordServiceImpl implements IDbOperationRecordService {
         return dbOperationRecordMapper.listGroupDay(operationText, operationTime, currPage, pageSize, dbUserId);
     }
 
+    @Override
+    public ArrayList<OperationDto> selectDbOperationRecordByLandIdAndUserId(Long landId, String userId, Integer currPage, Integer pageSize) {
+        DbEquipmentAdmin admin = dbEquipmentAdminMapper.selectIsSuperAdmin(landId);
+        currPage = (currPage - 1) * pageSize;
+        List<DbOperationRecord> operationRecords = dbOperationRecordMapper.selectDbOperationRecordByLandIdAndUserId(landId,userId,currPage,pageSize);
+        ArrayList<OperationDto> dtos = new ArrayList<>();
+        for (DbOperationRecord operationRecord : operationRecords) {
+            dtos.add(OperationDto.builder()
+                    .operationType(operationRecord.getOperationObjectType())
+                    .operationTime(operationRecord.getOperationTime().getTime())
+                    .operationText(operationRecord.getOperationText())
+                    .avatar(dbUserService.selectAvatarById(operationRecord.getDbUserId()))
+                    .build());
+        }
+        return dtos;
+    }
+
     /**
      * 删除用户操作记录信息
      *
      * @param id 用户操作记录ID
      * @return 结果
      */
+    @Override
     public int deleteDbOperationRecordById(Long id) {
+
         return dbOperationRecordMapper.deleteDbOperationRecordById(id);
     }
 }

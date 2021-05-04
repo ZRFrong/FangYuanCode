@@ -103,5 +103,8 @@
             #{equipmentId}
         </foreach>
     </delete>
+    <select id="selectAllDbEquipment" resultMap="DbEquipmentResult">
+        select * from db_equipment
+    </select>
 
 </mapper>

@@ -15,16 +15,17 @@ import com.ruoyi.fangyuanapi.aspect.OperationLog;
 import com.ruoyi.fangyuanapi.aspect.OperationLogType;
 import com.ruoyi.fangyuanapi.aspect.OperationLogUtils;
 import com.ruoyi.fangyuanapi.aspect.UserOperationLog;
+import com.ruoyi.fangyuanapi.service.IDbEquipmentComponentService;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
+import com.ruoyi.fangyuanapi.service.IDbOperationRecordService;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.feign.RemoteTcpService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,6 +51,12 @@ public class OperateControllerWeChat extends BaseController {
 
     @Autowired
     private OperationLogUtils operationLogUtils;
+
+    @Autowired
+    private IDbEquipmentComponentService dbEquipmentComponentService;
+
+    @Autowired
+    private IDbOperationRecordService dbOperationRecordService;
 
     /*
      *列表回写    当前用户下边所有土地
@@ -107,7 +114,49 @@ public class OperateControllerWeChat extends BaseController {
 
     }
         return remoteTcpService.stateAllQuery(operateWeChatVos);
-}
+    }
+
+    /**
+     * @Version 2.0.0
+     * @Author ZHAOXIAOSI
+     * @Description 单操作接口
+     * @Date 20:56 2021/5/2
+     * @param landId 土地id
+     * @param operationText 指令
+     * @param operationId 功能id
+     * @param operationType 操作类型
+     * @param handleName   指令对应名称
+     * @return com.ruoyi.common.core.domain.R
+     * @sign 他日若遂凌云志,敢笑黄巢不丈夫!
+     **/
+    @PostMapping("singleOperation")
+    @ApiOperation(value = "App2.0单操作接口",notes = "App2.0单操作接口",httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "landId",value = "大棚id",required = true),
+            @ApiImplicitParam(name = "operationText",value = "指令",required = true),
+            @ApiImplicitParam(name = "operationType",value = "操作类型",required = true),
+            @ApiImplicitParam(name = "handleName",value = "指令对应名称: 放下",required = true),
+            @ApiImplicitParam(name = "operationId",value = "功能id",required = true)
+    })
+    public R SingleOperation(Long landId,String operationText,String operationType,String handleName,Long operationId){
+        DbEquipmentComponent component = dbEquipmentComponentService.selectDbEquipmentComponentById(operationId);
+        dbOperationRecordService.insertDbOperationRecord(DbOperationRecord.builder()
+                .dbUserId(Long.valueOf(getRequest().getHeader(Constants.CURRENT_ID)))
+                .landId(landId)
+                .operationText(component.getEquipmentName()+handleName)
+                .operationObjectType(Integer.valueOf(operationType))
+                .operationTime(new Date())
+                .build());
+//        return remoteTcpService.operation(DbOperationVo.builder()
+//                .heartName(component.getHeartbeatText())
+//                .facility(component.getEquipmentNoString())
+//                .operationText(operationText)
+//                .operationName(operationLogUtils.toOperationText(component.getEquipmentName(),handleName))
+//                .operationTextType("05")
+//                .build());
+        return R.ok();
+    }
+
 
     /*
      *页面操作（单项）

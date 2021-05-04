@@ -3,20 +3,25 @@ package com.ruoyi.fangyuanapi.controller;
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.sms.PhoneUtils;
 import com.ruoyi.common.utils.sms.ResultEnum;
 import com.ruoyi.fangyuanapi.conf.OperationConf;
+import com.ruoyi.fangyuanapi.mapper.DbEquipmentComponentMapper;
 import com.ruoyi.fangyuanapi.service.*;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.feign.RemoteTcpService;
 import com.ruoyi.system.feign.SendSmsClient;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 土地 提供者
@@ -47,9 +52,6 @@ public class DbLandController extends BaseController {
     private IDbQrCodeService dbQrCodeService;
 
     @Autowired
-    private IDbEquipmentService dbEquipmentService;
-
-    @Autowired
     private IDbEquipmentAdminService dbEquipmentAdminService;
 
     @Autowired
@@ -63,6 +65,25 @@ public class DbLandController extends BaseController {
         return R.data(operationConf.getTyps());
     }
 
+
+    @PutMapping("updateDbLand")
+    @ApiOperation(value = "修改大棚接口",notes = "修改大棚接口,非超级管理员禁止修改",httpMethod ="PUT" )
+    public R updateDbLand(DbLand land){
+        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+        DbEquipmentAdmin admin = dbEquipmentAdminService.selectDbEquipmentAdminByUserIdAndLandId(land.getLandId(), Long.valueOf(userId), null);
+        if (admin == null){
+            return R.error(HttpStatus.BAD_REQUEST.value(),"错误参数！");
+        }
+        if ( admin.getIsSuperAdmin() > 0L){
+            return R.ok("您不是超级管理员，不具备修改的权限！");
+        }
+        dbLandService.updateDbLand(land);
+        if (!admin.getLandName().equals(land.getNickName())){
+            admin.setLandName(land.getNickName());
+            dbEquipmentAdminService.updateDbEquipmentAdmin(admin);
+        }
+        return R.ok();
+    }
 
     @PostMapping("sendStopOperation")
     @ApiOperation(value = "批量暂停",notes = "批量对土地下的设备暂停： 粒度为单个操作：1卷帘 2 通风/卷膜 3补光 4浇水 5打药 6 施肥  7 锄草 8滴灌",httpMethod = "POST")
@@ -105,10 +126,10 @@ public class DbLandController extends BaseController {
     @ApiOperation(value = "对土地下的设备批量操作",notes = "批量操作",httpMethod = "POST")
     @ApiParam(name = "dbOperationVos", value = "传入json格式", required = true)
     public R sendOperation(@RequestBody List<DbOperationVo> dbOperationVos) {
-
         if (dbOperationVos == null || dbOperationVos.size() <= 0){
             return R.error(ResultEnum.PARAMETERS_ERROR.getCode(),ResultEnum.PARAMETERS_ERROR.getMessage());
         }
+        // 0001 0000 0000
         R r = remoteTcpService.operationList(dbOperationVos);
         return r;
     }
@@ -151,26 +172,23 @@ public class DbLandController extends BaseController {
         return result(dbLandService.selectDbLandNoSiteList(dbLand));
     }
 
-//    /**
-//     * APP查询土地列表
-//     *
-//     */
-//    @GetMapping("getLandListApp")
-//    @ApiOperation(value = "App查询土地列表", notes = "土地列表")
-//    public R getLandListApp(@ApiParam(name = "DbLand", value = "传入json格式", required = true) DbLand dbLand) {
-//        String userId = getRequest().getHeader(Constants.CURRENT_ID);
-//        dbLand.setDbUserId(Long.valueOf(userId));
-//        List<DbLand> lands = dbLandService.selectDbLandWeChatList(dbLand);
-//        return R.data(lands);
-//    }
+    /*设备返回用户id*/
+    @GetMapping("deviceBelongs/{equipmentId}")
+    private R deviceBelongs( @PathVariable("equipmentId") Long equipmentId){
+        DbLand dbLand = new DbLand();
+        dbLand.setEquipmentIds(equipmentId.toString());
+        List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
+        return R.data(JSON.toJSONString(dbLands));
+    }
 
     /**
      * APP查询土地列表
      */
     @GetMapping("getLandListApp")
     @ApiOperation(value = "App查询土地列表", notes = "土地列表")
-    public R getLandListApp(@ApiParam(name = "DbLand", value = "传入json格式", required = true) DbLand dbLand) {
+    public R getLandListApp() {
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
+        DbLand dbLand = new DbLand();
         dbLand.setDbUserId(Long.valueOf(userId));
         List<Map<String, Object>> result = dbLandService.selectDbLandByUserIdAndSideId(Long.valueOf(userId));
         return R.data(result);
@@ -188,6 +206,7 @@ public class DbLandController extends BaseController {
         List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
         return R.data(dbLands);
     }
+
 
     /**
      * 查询土地列表
@@ -215,42 +234,120 @@ public class DbLandController extends BaseController {
 //        return R.data(landVos);
 //    }
 
+    /**
+     * 获取大棚列表 只展示他自己的
+     * @since: 2.0.0
+     * @return: com.ruoyi.common.core.domain.R
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/28 15:51
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @GetMapping("getLandDataList")
+    @ApiOperation(value = "APP2.0获取土地列表",notes = "APP2.0获取土地列表",httpMethod = "GET")
+    public R getLandDataList(){
+        return R.data(dbLandService.selectDbLandsByUserIdAndSiteId(Long.valueOf(getRequest().getHeader(Constants.CURRENT_ID))));
+    }
+
+
     @GetMapping("listBinding")
     @ApiOperation(value = "查询土地列表app", notes = "土地列表",httpMethod = "GET")
     public R listBinding() {
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
-        List<DbLand> list = dbLandService.selectDbLandsByUserId(Long.valueOf(userId));
-        return R.data(list);
+        return R.data(dbLandService.selectDbLandsByUserId(Long.valueOf(userId)));
     }
 
+    /**
+     * 决定是否未第一次绑定接口 是，跳入添加大棚或者选择大棚，否，直接驳回，告知去app联系管理员添加
+     * @since: 2.0.0
+     * @param qrCodeId 二维码id
+     * @return: com.ruoyi.common.core.domain.R  1：被绑定，直接驳回 0：未绑定，
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/16 13:51
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
     @PostMapping("listBinding")
-    @ApiOperation(value = "扫码绑定获取土地及设备接口",notes = "扫码绑定获取土地及设备接口",httpMethod = "POST")
+    @ApiOperation(value = "决定是否未第一次绑定接口",notes = "决定是否未第一次绑定接口 是，跳入添加大棚或者选择大棚，否，直接驳回，告知去app联系管理员添加",httpMethod = "POST")
     public R listBinding(Long qrCodeId){
         //查，是否已经绑定过
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
-        DbQrCode qrCode = dbQrCodeService.selectDbQrCodeById(qrCodeId);
-        //0 未绑定 1 已被其他人绑定出验证  2 已被当前用户绑定
-        Map<String,Object> result = new HashMap<>();
-        System.out.println(qrCode.getAdminUserId());
-        if ( null != qrCode.getAdminUserId() ){
-            if ( userId.equals(qrCode.getAdminUserId()+"")){
-                //已经被当前用户绑定
-                result.put("status","2");
-            }else{
-                //已被其他用户绑定 需要验证
-                result.put("status","1");
-                result.put("phone",qrCode.getAdminPhone());
+        DbQrCode dbQrCode = dbQrCodeService.selectDbQrCodeById(qrCodeId);
+        //管理员 id
+        Long id = dbQrCode.getAdminUserId();
+        HashMap<String, Object> map = new HashMap<>();
+        if (id != null){
+            // 已经被绑定 进行验证 方可通过
+            if (!userId.equals(id+"")){
+                //绑定者是当前用户  告知当前绑定在那个棚下 以及功能
+                DbUser user = dbUserService.selectDbUserById(Long.valueOf(userId));
+                map.put("phone",PhoneUtils.replacePhone(user.getPhone(),3,7,"8"));
+                map.put("nickName",user.getNickname());
+                map.put("avatar",user.getAvatar());
+                map.put("isBinding",1);
+                return R.data(map);
             }
-        }else {
-            result.put("status","0");new HashMap<>();
         }
-        List<DbLand> list = dbLandService.selectDbLandsByUserId(Long.valueOf(userId));
-        DbEquipment equipment = dbEquipmentService.selectDbEquipmentById(qrCode.getEquipmentId());
-        result.put("lands",list);
-        result.put("equipment",equipment);
-        return R.data(result);
+        map.put("isBinding",0);
+        return R.data(map);
     }
 
+    /**
+     * 将设备绑定在新增大棚上
+     * @since: 2.0.0
+     * @param dbLand
+     * @return: com.ruoyi.common.core.domain.R
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/19 11:11
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @PostMapping("bindingEquipmentToLand")
+    @ApiOperation(value = "将设备绑定在新增大棚上",notes = "将设备绑定在新增大棚上 ： 添加操作",httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "address",value = "详细地址 例如门牌号",required = true),
+            @ApiImplicitParam(name = "area",value = "土地面积 单位亩",required = true),
+            @ApiImplicitParam(name = "latitude",value = "纬度",required = false),
+            @ApiImplicitParam(name = "longitude",value = "经度",required = false),
+            @ApiImplicitParam(name = "nickName",value = "大棚昵称",required = true),
+            @ApiImplicitParam(name = "productCategory",value = "产品类别",required = true),
+            @ApiImplicitParam(name = "productName",value = "产品名称",required = true),
+            @ApiImplicitParam(name = "region",value = "地区格式（山西省,太原市,小店区）",required = true),
+            @ApiImplicitParam(name = "noteText",value = "备注",required = false),
+            @ApiImplicitParam(name = "equipmentId",value = "设备id",required = true),
+    })
+    public R insertEquipmentToLand(DbLand dbLand,Long equipmentId) {
+        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+        return dbLandService.insertEquipmentToLand(dbLand,userId,equipmentId) ? R.ok():R.error("绑定出错了，请稍后再试或者联系管理员！") ;
+    }
+
+    /**
+     * 将设备绑定在已有大棚上
+     * @since: 2.0.0
+     * @param landId
+     * @param equipmentId
+     * @return: com.ruoyi.common.core.domain.R
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/19 11:10
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @PutMapping("bindingEquipmentToLand")
+    @ApiOperation(value = "将设备绑定在已有大棚上",notes = "将设备绑定在已有大棚上 : 修改操作",httpMethod = "PUT")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "landId",value = "土地Id",required = true),
+            @ApiImplicitParam(name = "equipmentId",value = "设备Id",required = true)
+    })
+    public R updateEquipmentToLand(Long landId,Long equipmentId){
+        String userId = getRequest().getHeader(Constants.CURRENT_ID);
+        return dbLandService.updateEquipmentToLand(landId,equipmentId ,userId) ? R.ok() : R.error("绑定出错了，请稍后再试或者联系管理员！");
+    }
+
+    /***
+     * 绑定设备大棚确认接口 未使用
+     * @since: 2.0.0
+     * @param landId
+     * @return: com.ruoyi.common.core.domain.R
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/16 13:49
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
     @PostMapping("bindingAck")
     public R bindingAck(Long landId){
         DbLand land = dbLandService.selectDbLandById(landId);
@@ -260,6 +357,34 @@ public class DbLandController extends BaseController {
         map.put("num",length);
         return R.data(map);
     }
+
+    /**
+     * 获取单个大棚操作信息
+     * @Author BugKing
+     * @Date 14:53 2021/5/2
+     * @since: 2.0.0
+     * @param  landId
+     * @return com.ruoyi.common.core.domain.R
+     * @sign 他日若遂凌云志,敢笑黄巢不丈夫!
+     **/
+    @GetMapping("getOneLand")
+    public R getOneLand(Long landId){
+
+        return null;
+    }
+
+    /**
+     * 设备和大棚绑定接口 未使用
+     * @since: 2.0.0
+     * @param phone
+     * @param code
+     * @param landId
+     * @param landName
+     * @return: com.ruoyi.common.core.domain.R
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/16 13:52
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
 
     @PostMapping("bindingEquipment")
     public R bindingEquipment(String phone,String code,Long landId,String landName){
@@ -273,7 +398,7 @@ public class DbLandController extends BaseController {
             }
             int i = dbEquipmentAdminService.insertDbEquipmentAdmin(DbEquipmentAdmin.builder()
                     .createTime(new Date())
-                    .isSuperAdmin(1)
+                    .isSuperAdmin(1L)
                     .userId(Long.valueOf(userId))
                     .avatar(user.getAvatar())
                     .landId(landId)
@@ -432,13 +557,9 @@ public class DbLandController extends BaseController {
     public R getAPPLandList(){
         Long userId = Long.valueOf(getRequest().getHeader(Constants.CURRENT_ID));
         List<DbLand> lands = dbLandService.selectDbLandsByUserId(userId);
-
+        //todo
         return null;
     }
-
-
-
-
 
     private void separatedList(List<DbLand> dbLands, int i, Long landId) {
         if (dbLands.size() <= i * 6) {
@@ -456,11 +577,81 @@ public class DbLandController extends BaseController {
         }
     }
 
-    public static void main(String[] args){
-        Long i = 345L;
-        String s = "345";
-        System.out.println(Long.valueOf(s).equals(i));
-        System.out.println((i + "").equals(s));
+    @Autowired
+    private DbEquipmentComponentMapper dbEquipmentComponentMapper;
 
+    /**
+     * 将1.0运行时产生的数据转换到2.0
+     * @since: 2.0.0
+     * @return: com.ruoyi.common.core.domain.R
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/19 15:17
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @GetMapping("dataChange")
+    @Transactional(rollbackFor = Exception.class)
+    public R dataChange(){
+        //所有用户数据
+        List<DbUser> dbUserList = dbUserService.selectDbUserList(null);
+        for (DbUser dbUser : dbUserList) {
+            //一个用户下所有的土地
+            List<DbLand> list = dbLandService.selectDbLandsByUserId(dbUser.getId());
+            for (DbLand land : list) {
+                //先查该土地是否已经有了超级管理员  如果有那么将该管理员添加为子管理员
+                String equipmentIds = land.getEquipmentIds();
+
+                if (StringUtils.isEmpty(equipmentIds) ){
+                    continue;
+                }
+                DbEquipmentAdmin admin = dbEquipmentAdminService.selectIsSuperAdmin(land.getLandId());
+                DbEquipmentAdmin dbEquipmentAdmin = null;
+                String functionIds = "";
+                if (admin == null){
+                    //添加为超级管理员
+                    dbEquipmentAdminService.insertDbEquipmentAdmin(insertAdmin(dbUser,0L,land));
+                }else {
+                    //添加为子管理员
+                    dbEquipmentAdminService.insertDbEquipmentAdmin(insertAdmin(dbUser,admin.getUserId(),land));
+                }
+            }
+        }
+        return R.ok("大棚管理员转换完成！");
     }
+    //操作集为空
+    private DbEquipmentAdmin  insertAdmin(DbUser dbUser,Long isSuperAdmin,DbLand land ){
+        String[] split = land.getEquipmentIds().split(",");
+        String functionIds = "";
+        for (int i = 0; i < split.length; i++) {
+            if (i == 0){
+                functionIds = getDbEquipmentComponent(Long.valueOf(split[i]));
+            }else {
+                functionIds = functionIds + "," + getDbEquipmentComponent(Long.valueOf(split[i]));
+            }
+        }
+        return DbEquipmentAdmin.builder()
+                .isSuperAdmin(isSuperAdmin)
+                .isDel(0)
+                .functionIds(functionIds)
+                .createTime(new Date())
+                .avatar(dbUser.getAvatar())
+                .landId(land.getLandId())
+                .landName(land.getNickName())
+                .userId(dbUser.getId())
+                .build();
+    }
+
+    public String getDbEquipmentComponent(Long equipmentId){
+        List<DbEquipmentComponent> dbEquipmentComponentList = dbEquipmentComponentMapper.selectDbEquipmentComponentByEquipmentId(equipmentId);
+        List<Long> ids = dbEquipmentComponentList.stream().map(DbEquipmentComponent::getId).collect(Collectors.toList());
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < ids.size(); i++) {
+            if (i == 0){
+                builder.append(ids.get(i));
+            }else {
+                builder.append(",").append(ids.get(i));
+            }
+        }
+        return builder.toString();
+    }
+
 }

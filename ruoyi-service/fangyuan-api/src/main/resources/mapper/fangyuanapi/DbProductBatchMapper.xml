@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbProductBatchMapper">
+    
+    <resultMap type="DbProductBatch" id="DbProductBatchResult">
+        <result property="id"    column="id"    />
+        <result property="productBatch"    column="product_batch"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="serviceArea"    column="service_area"    />
+        <result property="noteText"    column="note_text"    />
+        <result property="standbyOne"    column="standby_one"    />
+        <result property="standbyTwo"    column="standby_two"    />
+        <result property="equipmentComponentIds"    column="equipment_component_ids"    />
+    </resultMap>
+
+    <sql id="selectDbProductBatchVo">
+        select id, product_batch, create_time, service_area, note_text, standby_one, standby_two, equipment_component_ids from db_product_batch
+    </sql>
+
+    <select id="selectDbProductBatchList" parameterType="DbProductBatch" resultMap="DbProductBatchResult">
+        <include refid="selectDbProductBatchVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbProductBatchById" parameterType="Long" resultMap="DbProductBatchResult">
+        <include refid="selectDbProductBatchVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbProductBatch" parameterType="DbProductBatch" useGeneratedKeys="true" keyProperty="id">
+        insert into db_product_batch
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productBatch != null  and productBatch != ''">product_batch,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="serviceArea != null  and serviceArea != ''">service_area,</if>
+            <if test="noteText != null  and noteText != ''">note_text,</if>
+            <if test="standbyOne != null  and standbyOne != ''">standby_one,</if>
+            <if test="standbyTwo != null  and standbyTwo != ''">standby_two,</if>
+            <if test="equipmentComponentIds != null  and equipmentComponentIds != ''">equipment_component_ids,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productBatch != null  and productBatch != ''">#{productBatch},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="serviceArea != null  and serviceArea != ''">#{serviceArea},</if>
+            <if test="noteText != null  and noteText != ''">#{noteText},</if>
+            <if test="standbyOne != null  and standbyOne != ''">#{standbyOne},</if>
+            <if test="standbyTwo != null  and standbyTwo != ''">#{standbyTwo},</if>
+            <if test="equipmentComponentIds != null  and equipmentComponentIds != ''">#{equipmentComponentIds},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbProductBatch" parameterType="DbProductBatch">
+        update db_product_batch
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productBatch != null  and productBatch != ''">product_batch = #{productBatch},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="serviceArea != null  and serviceArea != ''">service_area = #{serviceArea},</if>
+            <if test="noteText != null  and noteText != ''">note_text = #{noteText},</if>
+            <if test="standbyOne != null  and standbyOne != ''">standby_one = #{standbyOne},</if>
+            <if test="standbyTwo != null  and standbyTwo != ''">standby_two = #{standbyTwo},</if>
+            <if test="equipmentComponentIds != null  and equipmentComponentIds != ''">equipment_component_ids = #{equipmentComponentIds},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbProductBatchById" parameterType="Long">
+        delete from db_product_batch where id = #{id}
+    </delete>
+
+    <delete id="deleteDbProductBatchByIds" parameterType="String">
+        delete from db_product_batch where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

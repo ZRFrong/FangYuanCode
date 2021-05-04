@@ -1,7 +1,9 @@
 package com.ruoyi.fangyuanapi.service;
 
+import com.ruoyi.fangyuanapi.dto.OperationDto;
 import com.ruoyi.system.domain.DbOperationRecord;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,4 +64,8 @@ public interface IDbOperationRecordService
 
 
     List<DbOperationRecord> listGroupDay(String operationText,String operationTime, Integer currPage, Integer pageSize, Long userId);
+
+
+    ArrayList<OperationDto> selectDbOperationRecordByLandIdAndUserId(Long landId, String userId, Integer currPage, Integer pageSize);
+
 }

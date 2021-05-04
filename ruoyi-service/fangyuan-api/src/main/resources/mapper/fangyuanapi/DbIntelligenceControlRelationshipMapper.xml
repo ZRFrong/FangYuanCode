@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbIntelligenceControlRelationshipMapper">
+    
+    <resultMap type="DbIntelligenceControlRelationship" id="DbIntelligenceControlRelationshipResult">
+        <result property="id"    column="id"    />
+        <result property="dbUserId"    column="db_user_id"    />
+        <result property="dbEquipmentComponentIds"    column="db_equipment_component_ids"    />
+        <result property="dbEquipmentIds"    column="db_equipment_ids"    />
+        <result property="dbProductBathId"    column="db_product_bath_id"    />
+        <result property="dbFunctionDisplay"    column="db_function_display"    />
+        <result property="dbEquipmentTempId"    column="db_equipment_temp_id"    />
+        <result property="standbyOne"    column="standby_one"    />
+        <result property="standbyTwo"    column="standby_two"    />
+    </resultMap>
+
+    <sql id="selectDbIntelligenceControlRelationshipVo">
+        select id, db_user_id, db_equipment_component_ids, db_equipment_ids, db_product_bath_id, db_function_display, db_equipment_temp_id, standby_one, standby_two from db_intelligence_control_relationship
+    </sql>
+
+    <select id="selectDbIntelligenceControlRelationshipList" parameterType="DbIntelligenceControlRelationship" resultMap="DbIntelligenceControlRelationshipResult">
+        <include refid="selectDbIntelligenceControlRelationshipVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDbIntelligenceControlRelationshipById" parameterType="Long" resultMap="DbIntelligenceControlRelationshipResult">
+        <include refid="selectDbIntelligenceControlRelationshipVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbIntelligenceControlRelationship" parameterType="DbIntelligenceControlRelationship" useGeneratedKeys="true" keyProperty="id">
+        insert into db_intelligence_control_relationship
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dbUserId != null ">db_user_id,</if>
+            <if test="dbEquipmentComponentIds != null  and dbEquipmentComponentIds != ''">db_equipment_component_ids,</if>
+            <if test="dbEquipmentIds != null ">db_equipment_ids,</if>
+            <if test="dbProductBathId != null ">db_product_bath_id,</if>
+            <if test="dbFunctionDisplay != null  and dbFunctionDisplay != ''">db_function_display,</if>
+            <if test="dbEquipmentTempId != null ">db_equipment_temp_id,</if>
+            <if test="standbyOne != null  and standbyOne != ''">standby_one,</if>
+            <if test="standbyTwo != null  and standbyTwo != ''">standby_two,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dbUserId != null ">#{dbUserId},</if>
+            <if test="dbEquipmentComponentIds != null  and dbEquipmentComponentIds != ''">#{dbEquipmentComponentIds},</if>
+            <if test="dbEquipmentIds != null ">#{dbEquipmentIds},</if>
+            <if test="dbProductBathId != null ">#{dbProductBathId},</if>
+            <if test="dbFunctionDisplay != null  and dbFunctionDisplay != ''">#{dbFunctionDisplay},</if>
+            <if test="dbEquipmentTempId != null ">#{dbEquipmentTempId},</if>
+            <if test="standbyOne != null  and standbyOne != ''">#{standbyOne},</if>
+            <if test="standbyTwo != null  and standbyTwo != ''">#{standbyTwo},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbIntelligenceControlRelationship" parameterType="DbIntelligenceControlRelationship">
+        update db_intelligence_control_relationship
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dbUserId != null ">db_user_id = #{dbUserId},</if>
+            <if test="dbEquipmentComponentIds != null  and dbEquipmentComponentIds != ''">db_equipment_component_ids = #{dbEquipmentComponentIds},</if>
+            <if test="dbEquipmentIds != null ">db_equipment_ids = #{dbEquipmentIds},</if>
+            <if test="dbProductBathId != null ">db_product_bath_id = #{dbProductBathId},</if>
+            <if test="dbFunctionDisplay != null  and dbFunctionDisplay != ''">db_function_display = #{dbFunctionDisplay},</if>
+            <if test="dbEquipmentTempId != null ">db_equipment_temp_id = #{dbEquipmentTempId},</if>
+            <if test="standbyOne != null  and standbyOne != ''">standby_one = #{standbyOne},</if>
+            <if test="standbyTwo != null  and standbyTwo != ''">standby_two = #{standbyTwo},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbIntelligenceControlRelationshipById" parameterType="Long">
+        delete from db_intelligence_control_relationship where id = #{id}
+    </delete>
+
+    <delete id="deleteDbIntelligenceControlRelationshipByIds" parameterType="String">
+        delete from db_intelligence_control_relationship where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

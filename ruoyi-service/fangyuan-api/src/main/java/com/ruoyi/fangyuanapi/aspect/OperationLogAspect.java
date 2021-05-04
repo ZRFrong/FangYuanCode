@@ -62,6 +62,7 @@ public class OperationLogAspect {
 
 //        判断选择存储类型  Determine type   返回操作记录类
 
+
         DbOperationRecord dbOperationRecord = determineType(name, type, source, maps);
 
         IDbOperationRecordService bean = SpringUtils.getBean(IDbOperationRecordService.class);

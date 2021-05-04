@@ -1,7 +1,6 @@
 package com.ruoyi.fangyuanapi.controller;
 
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.aes.TokenUtils;
 import com.ruoyi.common.utils.sms.PhoneUtils;
 import com.ruoyi.common.utils.sms.ResultEnum;
 import io.swagger.annotations.*;

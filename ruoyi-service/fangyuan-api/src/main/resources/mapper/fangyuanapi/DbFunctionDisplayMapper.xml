@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbFunctionDisplayMapper">
+    
+    <resultMap type="DbFunctionDisplay" id="DbFunctionDisplayResult">
+        <result property="id"    column="id"    />
+        <result property="functionName"    column="function_name"    />
+        <result property="functionSource"    column="function_source"    />
+        <result property="noteText"    column="note_text"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="standbyOne"    column="standby_one"    />
+        <result property="standbyTwo"    column="standby_two"    />
+    </resultMap>
+
+    <sql id="selectDbFunctionDisplayVo">
+        select id, function_name, function_source, note_text, create_time, standby_one, standby_two from db_function_display
+    </sql>
+
+    <select id="selectDbFunctionDisplayList" parameterType="DbFunctionDisplay" resultMap="DbFunctionDisplayResult">
+        <include refid="selectDbFunctionDisplayVo"/>
+        <where>  
+            <if test="functionName != null  and functionName != ''"> and function_name like concat('%', #{functionName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectDbFunctionDisplayById" parameterType="Long" resultMap="DbFunctionDisplayResult">
+        <include refid="selectDbFunctionDisplayVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDbFunctionDisplay" parameterType="DbFunctionDisplay" useGeneratedKeys="true" keyProperty="id">
+        insert into db_function_display
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="functionName != null  and functionName != ''">function_name,</if>
+            <if test="functionSource != null  and functionSource != ''">function_source,</if>
+            <if test="noteText != null  and noteText != ''">note_text,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="standbyOne != null  and standbyOne != ''">standby_one,</if>
+            <if test="standbyTwo != null  and standbyTwo != ''">standby_two,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="functionName != null  and functionName != ''">#{functionName},</if>
+            <if test="functionSource != null  and functionSource != ''">#{functionSource},</if>
+            <if test="noteText != null  and noteText != ''">#{noteText},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="standbyOne != null  and standbyOne != ''">#{standbyOne},</if>
+            <if test="standbyTwo != null  and standbyTwo != ''">#{standbyTwo},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbFunctionDisplay" parameterType="DbFunctionDisplay">
+        update db_function_display
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="functionName != null  and functionName != ''">function_name = #{functionName},</if>
+            <if test="functionSource != null  and functionSource != ''">function_source = #{functionSource},</if>
+            <if test="noteText != null  and noteText != ''">note_text = #{noteText},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="standbyOne != null  and standbyOne != ''">standby_one = #{standbyOne},</if>
+            <if test="standbyTwo != null  and standbyTwo != ''">standby_two = #{standbyTwo},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbFunctionDisplayById" parameterType="Long">
+        delete from db_function_display where id = #{id}
+    </delete>
+
+    <delete id="deleteDbFunctionDisplayByIds" parameterType="String">
+        delete from db_function_display where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

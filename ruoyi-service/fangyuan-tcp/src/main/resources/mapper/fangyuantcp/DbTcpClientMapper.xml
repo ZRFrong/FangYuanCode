@@ -69,5 +69,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{tcpClientId}
         </foreach>
     </delete>
-    
+    <select id="queryOne" resultType="java.lang.Integer">
+       SELECT COUNT(1) from db_tcp_client
+        where
+        heart_name = #{heartName}
+    </select>
+
 </mapper>

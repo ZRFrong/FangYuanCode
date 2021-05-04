@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /*
  * 单设备多指令
@@ -44,21 +45,19 @@ public class SendCodeListUtils {
     private static Map<String, ChannelHandlerContext> map = NettyServer.map;
 
 
-    public static R queryIoList(Map<String, List<DbOperationVo>> mps, int type) throws ExecutionException, InterruptedException {
+    public static R queryIoList(Map<String, List<DbOperationVo>> mps)  {
         Set<String> strings = mps.keySet();
         HashMap<String, String> stringStringHashMap1 = new HashMap<>();
 //    新建几条线程
-
-        executorService = ThreadUtil.newExecutor(strings.size()*2);
-
+        executorService = ThreadUtil.newExecutor(strings.size() * 2);
         for (String string : strings) {
             executorService.execute(new Runnable() {
                 @Override
                 public void run() {
-                    HashMap<String, String> send = send(mps.get(string), type);
-                        if (send != null) {
-                            stringStringHashMap1.putAll(send);
-                        }
+                    HashMap<String, String> send = send(mps.get(string));
+                    if (send != null) {
+                        stringStringHashMap1.putAll(send);
+                    }
                 }
             });
         }
@@ -76,71 +75,82 @@ public class SendCodeListUtils {
     }
 
 
-    private static HashMap<String, String> send(List<DbOperationVo> dbOperationVos, int type) {
 
+    private static ExecutorService EXECUTOR_SERVICE = null;
 
-
-                HashMap<String, String> stringStringHashMap = new HashMap<>();
-                //                    循环list
+    public static HashMap<String, String> send(List<DbOperationVo> dbOperationVos) {
+        HashMap<String, String> stringStringHashMap = new HashMap<>();
+        //                    循环list
 //                    int query = query(dbOperationVo);
-                for (int i = 0; i < dbOperationVos.size(); i++) {
-
+        EXECUTOR_SERVICE = ThreadUtil.newExecutor();
+        for (int i = 0; i < dbOperationVos.size(); i++) {
+            int finalI = i;
+            EXECUTOR_SERVICE.execute(new Runnable() {
+                @Override
+                public void run() {
                     String query = null;
                     try {
-                        switch (type) {
-                            case 1:
-                                sendCodeUtils.query01(dbOperationVos.get(i));
-                                break;
-                            case  3:
-                                sendCodeUtils.query03(dbOperationVos.get(i));
-                                break;
-                            case 5:
-                                sendCodeUtils.query05(dbOperationVos.get(i));
-                                break;
-                            case 6:
-                                sendCodeUtils.query06(dbOperationVos.get(i));
-                                break;
-                            case 0:
-                                sendCodeUtils.query(dbOperationVos.get(i));
-                                break;
+
+                        if (dbOperationVos.get(finalI).getOperationTextType().equals("0") ) {
+                            sendCodeUtils.query(dbOperationVos.get(finalI));
+                        }else if (dbOperationVos.get(finalI).getOperationTextType().equals("9")){
+                            sendCodeUtils.queryText(dbOperationVos.get(finalI));
                         }
+                        else {
+                            sendCodeUtils.queryType(dbOperationVos.get(finalI));
+                        }
+
+
                         log.info("发送成功存进去了：" + query + "当前的时间毫秒值是：" + new Date().getTime());
-                        /*
-                         * 建立监听返回的数据
-                         * */
-                        stringStringHashMap.put(dbOperationVos.get(i).getOperationName(), "响应成功");
+
                     } catch (FaultExceptions e) {
-                        DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();
-                        dbAbnormalInfo.setAlarmTime(new Date());
-                        dbAbnormalInfo.setObjectType(dbOperationVos.get(i).getOperationName());
-                        dbAbnormalInfo.setAlarmExplain(dbOperationVos.get(i).getHeartName());
-                        dbAbnormalInfo.setFaultType(BusinessExceptionHandle.FAULT);
-                        dbAbnormalInfo.setText(dbOperationVos.get(i).getOperationId());
-                        remoteApiService.saveEquimentOperation(dbAbnormalInfo);
-                        stringStringHashMap.put(dbOperationVos.get(i).getOperationName(), BusinessExceptionHandle.FAULT);
+//                        DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();
+//                        dbAbnormalInfo.setAlarmTime(new Date());
+//                        dbAbnormalInfo.setObjectType(dbOperationVos.get(finalI).getOperationName());
+//                        dbAbnormalInfo.setAlarmExplain(dbOperationVos.get(finalI).getHeartName());
+//                        dbAbnormalInfo.setFaultType(BusinessExceptionHandle.FAULT);
+//                        dbAbnormalInfo.setText(dbOperationVos.get(finalI).getOperationId());
+//                        remoteApiService.saveEquimentOperation(dbAbnormalInfo);
+//                        stringStringHashMap.put(dbOperationVos.get(finalI).getOperationName(), BusinessExceptionHandle.FAULT);
                     } catch (OperationExceptions e) {
                         DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();
                         dbAbnormalInfo.setAlarmTime(new Date());
                         dbAbnormalInfo.setAlarmExplain(e.getMessage());
-                        dbAbnormalInfo.setObjectType(dbOperationVos.get(i).getOperationName());
-                        dbAbnormalInfo.setAlarmExplain(dbOperationVos.get(i).getHeartName());
-                        dbAbnormalInfo.setText(dbOperationVos.get(i).getOperationId());
+                        dbAbnormalInfo.setObjectType(dbOperationVos.get(finalI).getOperationName());
+                        dbAbnormalInfo.setAlarmExplain(dbOperationVos.get(finalI).getHeartName());
+                        dbAbnormalInfo.setText(dbOperationVos.get(finalI).getOperationId());
                         dbAbnormalInfo.setFaultType(BusinessExceptionHandle.OPERATIONEXCEPTIONS);
                         remoteApiService.saveEquimentOperation(dbAbnormalInfo);
-                        stringStringHashMap.put(dbOperationVos.get(i).getOperationName(), BusinessExceptionHandle.OPERATIONEXCEPTIONS);
+                        stringStringHashMap.put(dbOperationVos.get(finalI).getOperationName(), BusinessExceptionHandle.OPERATIONEXCEPTIONS);
                     }
                 }
-                //                    等待500
-                return stringStringHashMap;
+
+            });
+            long t1 = System.currentTimeMillis();
+            while(true){
+//                获取当前毫秒
+                long t2 = System.currentTimeMillis();
+                if(t2-t1 >1000){
+                    break;
+                }else{
+
+                }
+            }
+
+        }
+        EXECUTOR_SERVICE.shutdown();
+        while (!EXECUTOR_SERVICE.isTerminated()) {
+//            等待执行完成再返回
+        }
+        //                    等待500
+        return stringStringHashMap;
 
     }
 
 
-
-
-    public static void queryIoListNoWait(List<DbOperationVo> lists, int type) throws ExecutionException, InterruptedException {
+    public static void queryIoListNoWait(List<DbOperationVo> lists){
         for (DbOperationVo list : lists) {
-            sendCodeUtils.queryNoWait(list,type);
+            sendCodeUtils.queryNoWait(list);
         }
 
 

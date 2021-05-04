@@ -43,6 +43,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="nickname != null  and nickname != ''"> and nickname like concat('%', #{nickname}, '%')</if>
         </where>
     </select>
+
+    <select id="selectAvatarById" resultType="string">
+        select avatar from  db_user where  id = #{dbUserId}
+    </select>
     
     <select id="selectDbUserById" parameterType="Long" resultMap="DbUserResult">
         <include refid="selectDbUserVo"/>

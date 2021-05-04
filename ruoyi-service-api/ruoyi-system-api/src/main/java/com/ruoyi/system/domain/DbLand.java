@@ -16,7 +16,6 @@ import java.util.Date;
  * @author zheng
  * @date 2020-09-25
  */
-@ApiModel
 @Data
 public class DbLand
 {
@@ -27,71 +26,55 @@ public class DbLand
 
     /** 地区（省市县三级逗号分隔） */
     @Excel(name = "地区", readConverterExp = "省=市县三级逗号分隔")
-    @ApiModelProperty(value = "地区")
+    @ApiModelProperty(value = "地区",required = true)
     private String region;
 
     /** 经度 */
     @Excel(name = "经度")
-    @ApiModelProperty(value = "经度")
+    @ApiModelProperty(value = "经度",required = true)
     private String longitude;
 
     /** 纬度 */
     @Excel(name = "纬度")
-    @ApiModelProperty(value = "纬度")
+    @ApiModelProperty(value = "纬度",required = true)
     private String latitude;
 
     /** 产品类别 */
     @Excel(name = "产品类别")
-    @ApiModelProperty(value = "产品类别")
+    @ApiModelProperty(value = "产品类别",required = true)
     private String productCategory;
 
     /** 产品名称 */
     @Excel(name = "产品名称")
-    @ApiModelProperty(value = "产品名称")
+    @ApiModelProperty(value = "产品名称",required = true)
     private String productName;
 
     /** 备注信息 */
     @Excel(name = "备注信息")
-    @ApiModelProperty(value = "备注信息")
+    @ApiModelProperty(value = "备注信息",required = false)
     private String noteText;
 
     /** 关联用户id */
     @Excel(name = "关联用户id")
-    @ApiModelProperty(value = "关联用户id")
     private Long dbUserId;
 
     /** 详细地址 */
     @Excel(name = "详细地址")
-    @ApiModelProperty(value = "详细地址")
+    @ApiModelProperty(value = "详细地址",required = true)
     private String address;
 
     /** 创建时间 */
     @Excel(name = "创建时间")
-    @ApiModelProperty(value = "创建时间")
     private Date createTime;
 
     /** 修改时间 */
     @Excel(name = "修改时间")
-    @ApiModelProperty(value = "修改时间")
     private Date updateTime;
 
-    @Override
-    public String toString() {
-        return "DbLand{" +
-                "landId=" + landId +
-                ", region='" + region + '\'' +
-                ", longitude='" + longitude + '\'' +
-                ", latitude='" + latitude + '\'' +
-                ", productCategory='" + productCategory + '\'' +
-                ", productName='" + productName + '\'' +
-                ", noteText='" + noteText + '\'' +
-                ", dbUserId=" + dbUserId +
-                ", address='" + address + '\'' +
-                ", nickName='" + nickName + '\'' +
-                ", siteId=" + siteId +
-                ", equipmentIds='" + equipmentIds + '\'' +
-                '}';
-    }
+    /** 大棚面积 */
+    @Excel(name = "大棚面积")
+    @ApiModelProperty(value = "大棚面积",required = true)
+    private String area;
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -107,117 +90,40 @@ public class DbLand
 
     /** 别称自定义 */
     @Excel(name = "别称自定义")
-    @ApiModelProperty(value = "别称自定义")
+    @ApiModelProperty(value = "别称自定义",required = true)
     private String nickName;
 
     /** 地区id */
     @Excel(name = "地区id")
-    @ApiModelProperty(value = "地区id")
     private Long siteId;
 
     /** 设备集 */
     @Excel(name = "设备集")
-    @ApiModelProperty(value = "设备集")
     private String equipmentIds;
 
-    public void setLandId(Long landId)
-    {
-        this.landId = landId;
-    }
+    /** 不知道 */
+    @Excel(name = "设备集")
+    private String parentName;
 
-    public Long getLandId()
-    {
-        return landId;
-    }
-    public void setRegion(String region)
-    {
-        this.region = region;
-    }
-
-    public String getRegion()
-    {
-        return region;
-    }
-    public void setLongitude(String longitude)
-    {
-        this.longitude = longitude;
-    }
-
-    public String getLongitude()
-    {
-        return longitude;
-    }
-    public void setLatitude(String latitude)
-    {
-        this.latitude = latitude;
-    }
-
-    public String getLatitude()
-    {
-        return latitude;
-    }
-    public void setProductCategory(String productCategory)
-    {
-        this.productCategory = productCategory;
-    }
-
-    public String getProductCategory()
-    {
-        return productCategory;
-    }
-    public void setProductName(String productName)
-    {
-        this.productName = productName;
-    }
-
-    public String getProductName()
-    {
-        return productName;
-    }
-    public void setNoteText(String noteText)
-    {
-        this.noteText = noteText;
-    }
-
-    public String getNoteText()
-    {
-        return noteText;
-    }
-    public void setDbUserId(Long dbUserId)
-    {
-        this.dbUserId = dbUserId;
-    }
-
-    public Long getDbUserId()
-    {
-        return dbUserId;
-    }
-    public void setNickName(String nickName)
-    {
-        this.nickName = nickName;
-    }
-
-    public String getNickName()
-    {
-        return nickName;
-    }
-    public void setSiteId(Long siteId)
-    {
-        this.siteId = siteId;
-    }
-
-    public Long getSiteId()
-    {
-        return siteId;
-    }
-    public void setEquipmentIds(String equipmentIds)
-    {
-        this.equipmentIds = equipmentIds;
-    }
-
-    public String getEquipmentIds()
-    {
-        return equipmentIds;
+    @Override
+    public String toString() {
+        return "DbLand{" +
+                "landId=" + landId +
+                ", region='" + region + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", productCategory='" + productCategory + '\'' +
+                ", productName='" + productName + '\'' +
+                ", noteText='" + noteText + '\'' +
+                ", dbUserId=" + dbUserId +
+                ", address='" + address + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", area=" + area +
+                ", nickName='" + nickName + '\'' +
+                ", siteId=" + siteId +
+                ", equipmentIds='" + equipmentIds + '\'' +
+                '}';
     }
 
 }

@@ -44,12 +44,12 @@ public class DbEquipmentAdmin
     /** 此为保留字：留作对功能的权限控制 */
     @Excel(name = "此为保留字：留作对功能的权限控制")
     @ApiModelProperty(value = "此为保留字：留作对功能的权限控制")
-    private Long functionIds;
+    private String functionIds;
 
     /** 是否为顶级管理员：0是 1否 */
     @Excel(name = "是否为顶级管理员：0是 1否")
     @ApiModelProperty(value = "是否为顶级管理员：0是 1否")
-    private Integer isSuperAdmin;
+    private Long isSuperAdmin;
 
     /** 用户头像 */
     @Excel(name = "用户头像")

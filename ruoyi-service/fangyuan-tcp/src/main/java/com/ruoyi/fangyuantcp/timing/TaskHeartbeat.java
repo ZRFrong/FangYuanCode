@@ -56,7 +56,7 @@ public class TaskHeartbeat {
                                     List<DbEquipment> dbEquipments = dbEquipmentService.selectDbEquipmentList(dbEquipment1);
                                     for (DbEquipment dbEquipment : dbEquipments) {
                                         dbEquipment.setIsFault(1);
-                                        dbEquipmentService.updateDbEquipment(dbEquipment);
+                                        dbEquipmentService.updateDbEquipmentFeedback(dbEquipment);
                                     }
                                     /*
                                     * 删除对应的状态

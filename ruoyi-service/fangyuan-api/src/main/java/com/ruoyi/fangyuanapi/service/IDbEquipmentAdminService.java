@@ -58,6 +58,15 @@ public interface IDbEquipmentAdminService
      */
     public int deleteDbEquipmentAdminById(Long id);
 
+    /**
+     * 根据userId获取其所管理的大棚id
+     * @since: 2.0.0
+     * @param userId
+     * @return: java.util.List<java.lang.Long>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/25 10:29
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
     List<Long> selectEquipmentIdByUserId(Long userId);
 
     /***
@@ -94,4 +103,37 @@ public interface IDbEquipmentAdminService
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
     DbEquipmentAdmin selectDbEquipmentAdminByUserIdAndLandId(Long landId, Long userId,String equipmentId);
+
+    /***
+     * 根据UserId 获取所管理的大棚
+     * @since: 2.0.0
+     * @param userId
+     * @return: java.util.List<com.ruoyi.system.domain.DbEquipmentAdmin>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/16 16:38
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<DbEquipmentAdmin> selectDbEquipmentAdminListByUserId(Long userId);
+
+    /**
+     * 方法描述
+     * @since: 2.0.0
+     * @param landId
+     * @return: com.ruoyi.system.domain.DbEquipmentAdmin
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/22 11:26
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    DbEquipmentAdmin selectIsSuperAdmin(Long landId);
+
+    /**
+     * 根据大棚id查询其下的所有管理员
+     * @since: 2.0.0
+     * @param landId
+     * @return: java.util.List<com.ruoyi.system.domain.DbEquipmentAdmin>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/29 10:10
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<DbEquipmentAdmin> selectDbEquipmentAdminsByLandId(Long landId);
 }

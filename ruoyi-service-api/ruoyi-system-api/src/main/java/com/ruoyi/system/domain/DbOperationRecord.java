@@ -1,5 +1,8 @@
 package com.ruoyi.system.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -15,6 +18,9 @@ import java.util.Date;
  * @date 2020-10-16
  */
 @ApiModel
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class DbOperationRecord extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -61,6 +67,12 @@ public class DbOperationRecord extends BaseEntity
     @Excel(name = "操作来源", readConverterExp = "小=程序，app，网页端")
     @ApiModelProperty(value = "操作来源")
     private Integer operationSource;
+
+    /** 大棚id */
+    @Excel(name = "大棚id")
+    @ApiModelProperty(value = "大棚id")
+    private Long landId;
+
 
     public void setId(Long id) 
     {

@@ -45,22 +45,20 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
         if (s.contains("dapeng")) {
 //            心跳处理
             DbTcpClient dbTcpClient = getIp(ctx);
-            dbTcpClient.setHeartName(msg.toString());
+            dbTcpClient.setHeartName(msg.toString());//心跳
             receiveUtil.heartbeatChoose(dbTcpClient, ctx);
             log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "心跳处理：" + msg);
         } else {
-
             //       前两位是设备号   然后是标识符 03状态返回  05操作响应
-
             log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "收到信息" + msg);
             DbTcpClient dbTcpClient = getIp(ctx);
-            dbTcpClient.setHeartName(msg.toString());
+
             receiveUtil.heartbeatUpdate(dbTcpClient);
 
             if (s.contains("0302")) {
 
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "手动自动返回：" + msg);
-//                状态处理  返回几位处理
+//              状态处理  返回几位处理
 
                 //手动自动返回    01 03 02  05 06
                 receiveUtil.sinceOrHandRead(s, ctx);
@@ -91,9 +89,10 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
 
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "写入自动控制通风" + msg);
                 receiveResponse.stateRespond(ctx, msg.toString());
-            }
-            else {
-
+            } else if (s.contains("C810")) {
+                log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "主动商法" + msg);
+                receiveUtil.messageActive(ctx, msg.toString());
+            } else {
                 log.error("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "乱码:" + msg);
             }
 
@@ -146,7 +145,6 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
         super.channelInactive(ctx);
         disConnectUtils.normalClose(ctx);
         //断开连接时，必须关闭，否则造成资源浪费，并发量很大情况下可能造成宕机
-
     }
 
     /**
@@ -163,6 +161,7 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
     }
 
 
+    /* 通过心跳拿到ip 和 端口  */
     private DbTcpClient getIp(ChannelHandlerContext ctx) {
         InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
         String clientIp = insocket.getAddress().getHostAddress();

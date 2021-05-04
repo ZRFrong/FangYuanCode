@@ -29,7 +29,7 @@ public class OperateGeneralServiceImpl implements OperateGeneralService {
 //       根据心跳分组
         Map<String, List<DbOperationVo>> mps = dbOperationVo.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
 //         多个map依次执行（多线程）
-        R r = SendCodeListUtils.queryIoList(mps,OpcodeTextConf.OPCODE05);
+        R r = SendCodeListUtils.queryIoList(mps);
 
 
         return r;
@@ -42,7 +42,7 @@ public class OperateGeneralServiceImpl implements OperateGeneralService {
     @Override
     public int operation(DbOperationVo dbTcpClient) {
 //        发送指令
-        int query = sendCodeUtils.query05(dbTcpClient);
+        int query = SendCodeUtils.queryType(dbTcpClient);
 
         return query;
     }

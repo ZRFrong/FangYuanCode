@@ -1,19 +1,15 @@
 package com.ruoyi.fangyuantcp.controller;
 
-import com.ruoyi.system.domain.DbOperationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
-
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -37,7 +33,6 @@ public class DbTcpClientController extends BaseController {
     @ApiOperation(value = "根据id查询", notes = "查询${tableComment}")
     public DbTcpClient get(@ApiParam(name = "id", value = "long", required = true) @PathVariable("tcpClientId") Long tcpClientId) {
         return dbTcpClientService.selectDbTcpClientById(tcpClientId);
-
     }
 
     /**
@@ -89,9 +84,11 @@ public class DbTcpClientController extends BaseController {
         return toAjax(dbTcpClientService.deleteDbTcpClientByIds(ids));
     }
 
-
-
-
+    @GetMapping("queryOne")
+    @ApiOperation(value = "根据心跳查询设备是否在线")
+    public R queryOne(String heartName){
+        return R.data(dbTcpClientService.queryOne(heartName));
+    }
 
 
 }

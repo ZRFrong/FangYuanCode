@@ -6,10 +6,10 @@ package com.ruoyi.fangyuantcp.processingCode;
 * */
 public class OpcodeTextConf {
 
-    public static final int OPCODE01 = 1;
-    public static final int OPCODE03 = 3;
-    public static final int OPCODE05 = 5;
-    public static final int OPCODE06 = 6;
-    public static final int OPCODEEMPTY = 0;
+    public static final String OPCODE01 = "01";
+    public static final String OPCODE03 = "03";
+    public static final String OPCODE05 = "05";
+    public static final String OPCODE06 ="06";
+    public static final String OPCODEEMPTY ="0";
 
 }

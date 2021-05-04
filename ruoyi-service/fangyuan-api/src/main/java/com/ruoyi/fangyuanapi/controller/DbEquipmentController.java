@@ -1,23 +1,25 @@
 package com.ruoyi.fangyuanapi.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.fangyuanapi.service.IDbLandService;
-import com.ruoyi.fangyuanapi.service.IDbUserService;
+import com.ruoyi.fangyuanapi.service.*;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.feign.RemoteTcpService;
 import com.ruoyi.system.feign.SendSmsClient;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 设备 提供者
@@ -153,6 +155,7 @@ public class DbEquipmentController extends BaseController {
      * @param suffix  心跳后缀 例: -dapeng
      * @param openInterval 心跳中间数字开区间：00032
      * @param closedInterval 心跳中间数字闭区间: 00050
+     * @author: ZHAOXIAOSI
      * @return R
      */
     @PostMapping("batchEquipment")
@@ -169,6 +172,88 @@ public class DbEquipmentController extends BaseController {
         return rows > 0 ? R.ok(rows+"") : R.error(500,"该区间所有的设备已存在！");
     }
 
+    //产品批次
+    @Autowired
+    private IDbProductBatchService dbProductBatchService;
 
+    //设备模板
+    @Autowired
+    private IDbEquipmentTempService dbEquipmentTempService;
+
+
+    @Autowired
+    private IDbEquipmentComponentService dbEquipmentComponentService;
+
+    @Autowired
+    private IDbFunctionDisplayService dbFunctionDisplayService;
+
+    /***
+     * 1.0数据向2.0数据转换
+     * @since: 2.0.0
+     * @return: com.ruoyi.common.core.domain.R
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/16 9:40
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @GetMapping("updateEquipmentData")
+    @Transactional
+    public R updateEquipmentData(){
+        List<DbEquipment> dbEquipments =  dbEquipmentService.selectAllDbEquipment();
+        for (DbEquipment equipment : dbEquipments) {
+            String text = equipment.getHandlerText();
+            if (StringUtils.isEmpty(text)){
+                continue;
+            }
+            List<Map<String,Object>> o = (List<Map<String, Object>>) JSON.parse(text);
+            if (o.size()<=1 || o == null ){
+                continue;
+            }
+            for (Map<String, Object> map : o) {
+                DbEquipmentComponent component = DbEquipmentComponent.builder()
+                        .equipmentName(map.get("checkName") + "")
+                        .createTime(new Date())
+                        .heartbeatText(equipment.getHeartbeatText())
+                        .equipmentNo(equipment.getEquipmentNo()+"")
+                        .equipmentId(equipment.getEquipmentId())
+                        .build();
+                int i = dbEquipmentComponentService.insertDbEquipmentComponent(component);
+                //功能id
+                map.put("functionId", component.getId());
+                //开启时间
+                map.put("startDate",null);
+                //开关状态
+                map.put("switchState",null);
+                //允许定时
+                map.put("isScheduled",1);
+                //在线状态 放到dto中
+                //map.put("isOline",1);
+                //进度量
+                if (map.get("checkCode").equals("1") || map.get("checkCode").equals("2") ){
+                    component.setFunctionLogo("1,2,3");
+                    //进度条
+                    map.put("percentage",1);
+                    //是否允许滑动
+                    map.put("isSlide", 1);
+                }else {
+                    component.setFunctionLogo("2,3");
+                }
+                if (map.get("checkCode").equals("3")){
+                    map.put("isScheduled",0);
+                }
+                component.setSpList(JSON.toJSONString(map,SerializerFeature.WriteMapNullValue));
+                dbEquipmentComponentService.updateDbEquipmentComponent(component);
+            }
+            String s = JSON.toJSONString(o,SerializerFeature.WriteMapNullValue);
+            System.out.println("Json序列化之后:  "+s);
+            equipment.setHandlerText(s);
+            dbEquipmentService.updateDbEquipment(equipment);
+        }
+        return R.ok("数据转换已完成！");
+    }
+
+    public static void main(String[] args){
+        List<Map<String,Object>> s = (List<Map<String, Object>>) JSON.parse("[{\"spList\":[{}]}]");
+        System.out.println(s);
+    }
 
 }

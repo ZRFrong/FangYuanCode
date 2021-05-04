@@ -15,6 +15,7 @@ import com.ruoyi.fangyuanapi.mapper.DbEquipmentAdminMapper;
 import com.ruoyi.system.domain.DbEquipmentAdmin;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentAdminService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
 * @Description:    java类作用描述
@@ -82,6 +83,7 @@ public class DbEquipmentAdminServiceImpl implements IDbEquipmentAdminService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int updateDbEquipmentAdmin(DbEquipmentAdmin dbEquipmentAdmin)
     {
         return dbEquipmentAdminMapper.updateDbEquipmentAdmin(dbEquipmentAdmin);
@@ -119,7 +121,6 @@ public class DbEquipmentAdminServiceImpl implements IDbEquipmentAdminService
      * @author: ZHAOXIAOSI
      * @date: 2021/4/6 11:31
      */
-
     @Override
     public List<Long> selectEquipmentIdByUserId(Long userId) {
         return dbEquipmentAdminMapper.selectEquipmentIdByUserId(userId);
@@ -172,11 +173,27 @@ public class DbEquipmentAdminServiceImpl implements IDbEquipmentAdminService
                 .landName(land.getNickName())
                 .avatar(user.getAvatar())
                 .userId(user.getId())
-                .isSuperAdmin(1)
+                .isSuperAdmin(1L)
                 .createTime(new Date())
                 .equipmentId(equipmentId)
                 .build();
         int i = dbEquipmentAdminMapper.insertDbEquipmentAdmin(equipmentAdmin);
         return i>0? equipmentAdmin : null;
+    }
+
+
+    @Override
+    public List<DbEquipmentAdmin> selectDbEquipmentAdminListByUserId(Long userId) {
+        return dbEquipmentAdminMapper.selectDbEquipmentAdminListByUserId(userId);
+    }
+
+    @Override
+    public DbEquipmentAdmin selectIsSuperAdmin(Long landId) {
+        return dbEquipmentAdminMapper.selectIsSuperAdmin(landId);
+    }
+
+    @Override
+    public List<DbEquipmentAdmin> selectDbEquipmentAdminsByLandId(Long landId) {
+        return dbEquipmentAdminMapper.selectDbEquipmentAdminsByLandId(landId);
     }
 }

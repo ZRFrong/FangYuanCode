@@ -45,6 +45,10 @@ public enum RedisKeyConf {
     /**
      *
      */
-    APP_ACCESS_TOKEN_
+    APP_ACCESS_TOKEN_,
+    /**
+     * 黄历key
+     */
+    ALMANAC_
 
 }

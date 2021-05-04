@@ -1,5 +1,10 @@
 package com.ruoyi.fangyuanapi.service.impl;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import com.ruoyi.common.utils.DateUtils;
@@ -8,6 +13,7 @@ import com.ruoyi.common.utils.sms.PhoneUtils;
 import com.ruoyi.system.domain.DbUserDynamic;
 import com.ruoyi.fangyuanapi.dto.DynamicDto;
 import com.ruoyi.fangyuanapi.mapper.*;
+import org.apache.commons.collections4.Put;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +51,9 @@ public class DbUserServiceImpl implements IDbUserService
 
     @Autowired
     private DbGiveLikeMapper dbGiveLikeMapper;
+
+    @Autowired
+    private DbEquipmentAdminMapper dbEquipmentAdminMapper;
 
     /**
      * 查询前台用户
@@ -92,8 +101,10 @@ public class DbUserServiceImpl implements IDbUserService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int updateDbUser(DbUser dbUser)
     {
+        dbEquipmentAdminMapper.updateAdminAvatar(dbUser.getId(),dbUser.getAvatar());
         return dbUserMapper.updateDbUser(dbUser);
     }
 
@@ -188,6 +199,10 @@ public class DbUserServiceImpl implements IDbUserService
         map.put("signature",user.getSignature()+"");
         map.put("birthday",DateUtils.parseDateToStr("yyyy-MM-dd", user.getBirthday()));
         map.put("phone",PhoneUtils.replacePhone(user.getPhone(),3,7,"*"));
+        LocalDate date = user.getCreated().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate now = LocalDate.now();
+        long l = ChronoUnit.DAYS.between(date, now);
+        map.put("duration",l+1+"");
         return map;
     }
 
@@ -226,8 +241,14 @@ public class DbUserServiceImpl implements IDbUserService
         return dbUserMapper.selectDbUserByPhoneAndOpenId(phone,openId);
     }
 
+    @Override
+    public String selectAvatarById(Long dbUserId) {
+        return dbUserMapper.selectAvatarById(dbUserId);
+    }
+
     public static void main(String[] args){
         Date date = new Date();
-        System.out.println(date);
+        LocalDateTime time = LocalDateTime.ofInstant(Instant.ofEpochMilli(1619974364688L), ZoneId.systemDefault());
+        System.out.println(time);
     }
 }

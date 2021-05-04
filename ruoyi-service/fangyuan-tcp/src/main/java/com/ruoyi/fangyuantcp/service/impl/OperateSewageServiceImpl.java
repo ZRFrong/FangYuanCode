@@ -41,7 +41,6 @@ public class OperateSewageServiceImpl implements OperateSewageService {
         dbOperationVo.setOperationText(type);
         dbOperationVo.setHeartName(dbSewage.getHeartName());
         dbOperationVo.setFacility(dbSewage.getEquipmentNo());
-        SendCodeUtils.query06(dbOperationVo);
-        return SendCodeUtils.query06(dbOperationVo);
+        return SendCodeUtils.queryType(dbOperationVo);
     }
 }

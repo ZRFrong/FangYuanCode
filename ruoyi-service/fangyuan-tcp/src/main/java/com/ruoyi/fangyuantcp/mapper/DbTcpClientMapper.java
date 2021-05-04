@@ -70,4 +70,16 @@ public interface DbTcpClientMapper
 
     @Select("SELECT heart_name from db_tcp_client h where heart_name  like #{heartBeat}")
     List<String> heartBeatDFuzzy(String heartBeat);
+
+    /**
+     * 按照心跳查询是否在线
+     * @since: 2.0.0
+     * @param heartName 心跳名
+     * @return: java.lang.Integer
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/28 11:26
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    Integer queryOne(String heartName);
+
 }

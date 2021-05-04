@@ -54,9 +54,10 @@ public class Crc16Util {
                     // 如果移出位为 1, CRC寄存器与多项式A001进行异或
                     crc = crc >> 1;
                     crc = crc ^ 0xA001;
-                } else
+                } else {
                     // 如果移出位为 0,再次右移一位
                     crc = crc >> 1;
+                }
             }
         }
         return intToBytes(crc);

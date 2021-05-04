@@ -1,23 +1,19 @@
 package com.ruoyi.fangyuanapi.service.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.domain.Ztree;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.fangyuanapi.mapper.DbEquipmentMapper;
-import com.ruoyi.fangyuanapi.mapper.DbEquipmentTempMapper;
+import com.ruoyi.fangyuanapi.mapper.*;
 import com.ruoyi.fangyuanapi.utils.DbLandUtils;
-import com.ruoyi.system.domain.DbEquipment;
+import com.ruoyi.system.domain.*;
+import org.apache.commons.codec.language.bm.Lang;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.fangyuanapi.mapper.DbLandMapper;
-import com.ruoyi.system.domain.DbLand;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
 import com.ruoyi.common.core.text.Convert;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +32,15 @@ public class DbLandServiceImpl implements IDbLandService
 
     @Autowired
     private DbEquipmentMapper dbEquipmentMapper;
+
+    @Autowired
+    private DbEquipmentAdminMapper dbEquipmentAdminMapper;
+
+    @Autowired
+    private DbEquipmentComponentMapper dbEquipmentComponentMapper;
+
+    @Autowired
+    private DbUserMapper dbUserMapper;
 
     /**
      * 查询土地
@@ -81,6 +86,7 @@ public class DbLandServiceImpl implements IDbLandService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int updateDbLand(DbLand dbLand)
     {
         dbLand.setUpdateTime(DateUtils.getNowDate());
@@ -106,7 +112,8 @@ public class DbLandServiceImpl implements IDbLandService
      * @param landId 土地ID
      * @return 结果
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
+    @Override
     public int deleteDbLandById(Long landId)
     {
         Integer i = dbLandMapper.selectDbLandBySiteId(landId);
@@ -239,8 +246,92 @@ public class DbLandServiceImpl implements IDbLandService
         int i = dbLandMapper.insertDbLand(dbLand);
         return dbLand;
     }
-    public static void main(String[] args){
-        System.out.println(0/1);
 
+    /**
+     * 二次追加
+     * @since: 2.0.0
+     * @return:
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/19 14:01
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateEquipmentToLand(Long landId, Long equipmentId, String userId) {
+        DbEquipmentAdmin admin = dbEquipmentAdminMapper.selectDbEquipmentAdminByUserIdAndLandId(landId, Long.valueOf(userId), null);
+        DbLand land = dbLandMapper.selectDbLandById(landId);
+        if (land == null){
+            throw new NullPointerException();
+        }
+        String[] split = land.getEquipmentIds().split(",");
+        for (String s : split) {
+            if (s.equals(equipmentId+"")){
+                return true;
+            }
+        }
+        land.setEquipmentIds(StringUtils.isNotEmpty(land.getEquipmentIds())?equipmentId+"":land.getEquipmentIds()+","+equipmentId);
+        if (!land.getEquipmentIds().contains(equipmentId+"")){
+            return true;
+        }
+        //要求后台人员必须在出厂前填好指令码
+        admin.setFunctionIds(admin.getFunctionIds()+","+getDbEquipmentComponent(equipmentId));
+        int i = dbEquipmentAdminMapper.updateDbEquipmentAdmin(admin);
+        return i>0 ? true : false;
+    }
+
+
+    @Override
+    public List<Map<String, String>> selectDbLandsByUserIdAndSiteId(Long userId) {
+        return dbLandMapper.selectDbLandsByUserIdAndSiteId(userId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean insertEquipmentToLand(DbLand dbLand, String userId, Long equipmentId) {
+        dbLand.setDbUserId(Long.valueOf(userId));
+        //设备id让扫码页填写
+        dbLand.setEquipmentIds(equipmentId+"");
+        weChatAddSave(dbLand);
+        DbUser user = dbUserMapper.selectDbUserById(Long.valueOf(userId));
+        int i = dbEquipmentAdminMapper.insertDbEquipmentAdmin(DbEquipmentAdmin.builder()
+                .avatar(user.getAvatar())
+                .isSuperAdmin(0L)
+                .functionIds(getDbEquipmentComponent(equipmentId))
+                .landId(dbLand.getLandId())
+                .landName(dbLand.getNickName())
+                .userId(Long.valueOf(userId))
+                .createTime(new Date())
+                .isDel(0)
+                .build());
+        return i>0 ? true : false;
+    }
+
+    @Override
+    public List<DbLand> selectDbLandListByUserIdAndSideId(Long userId) {
+        return dbLandMapper.selectDbLandListByUserIdAndSideId(userId);
+    }
+
+    /***
+     * 通过设备id 获取到对应的功能id
+     * @since: 2.0.0
+     * @param equipmentId
+     * @return: java.lang.String
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/19 14:04
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    //DEL
+    private String getDbEquipmentComponent(Long equipmentId){
+        List<DbEquipmentComponent> dbEquipmentComponentList = dbEquipmentComponentMapper.selectDbEquipmentComponentByEquipmentId(equipmentId);
+        List<Long> ids = dbEquipmentComponentList.stream().map(DbEquipmentComponent::getId).collect(Collectors.toList());
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < ids.size(); i++) {
+            if (i == 0){
+                builder.append(ids.get(i));
+            }else {
+                builder.append(",").append(ids.get(i));
+            }
+        }
+        return builder.toString();
     }
 }

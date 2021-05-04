@@ -13,7 +13,6 @@ public class InitController {
 
     @Value("${person.listen-port}")
     private int port;
-
     /*
     *加载bean的时候初始化一些服务
     * */

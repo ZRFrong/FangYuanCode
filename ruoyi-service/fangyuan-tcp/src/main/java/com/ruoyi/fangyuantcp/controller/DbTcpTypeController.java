@@ -93,19 +93,19 @@ public class DbTcpTypeController extends BaseController {
         return toAjax(dbTcpTypeService.deleteDbTcpTypeByIds(ids));
     }
 
-    /*
-     * 状态留根
-     * */
-    @GetMapping("curingType")
-    public R curingTypeTiming() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                dbTcpTypeService.curingTypeTiming();
-            }
-        });
-        return R.ok();
-    }
+//    /*
+//     * 状态留根
+//     * */
+//    @GetMapping("curingType")
+//    public R curingTypeTiming() {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                dbTcpTypeService.curingTypeTiming();
+//            }
+//        });
+//        return R.ok();
+//    }
 
     /*
      * 状态查询 温度湿度等
@@ -119,9 +119,7 @@ public class DbTcpTypeController extends BaseController {
                 dbTcpTypeService.timingType();
             }
         });
-
         return R.ok();
-
     }
 
     /*
@@ -130,9 +128,7 @@ public class DbTcpTypeController extends BaseController {
     @GetMapping("timingTongFengHand")
     public R timingTongFengHand() throws ExecutionException, InterruptedException {
         dbTcpTypeService.timingTongFengHand();
-
         return toAjax(1);
-
     }
 
 
@@ -143,7 +139,6 @@ public class DbTcpTypeController extends BaseController {
     public R timingTongFengType() throws ExecutionException, InterruptedException {
         dbTcpTypeService.timingTongFengType();
         return toAjax(1);
-
     }
 
 
@@ -171,14 +166,15 @@ public class DbTcpTypeController extends BaseController {
     }
 
     /*
-     *所有状态更新
+     * 查询设备所有状态  传感器  通风手自动 远程本地  通分手自动开关温度
      * */
     @PostMapping("stateAllQuery")
     public R stateAllQuery(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) @RequestBody List<DbOperationVo> dbOperationVo) throws ExecutionException, InterruptedException {
-
         return dbTcpTypeService.stateAllQuery(dbOperationVo);
 
     }
+
+
 
 
 }

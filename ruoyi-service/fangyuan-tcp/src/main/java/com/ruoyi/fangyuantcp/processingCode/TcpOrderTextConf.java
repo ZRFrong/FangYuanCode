@@ -6,7 +6,6 @@ package com.ruoyi.fangyuantcp.processingCode;
  * */
 public class TcpOrderTextConf {
 
-
     public static final String SinceOrhand = "00,00,00,01";
 
     /*
@@ -19,8 +18,6 @@ public class TcpOrderTextConf {
      * 查询当前自动通风开始和关闭的温度
      * */
     public static final String SinceOrhandTongFengType = "00,200,00,02";
-
-
 
     /*
      * 更改自动手动通风操作 开

@@ -85,4 +85,43 @@ public interface IDbLandService
     List<Map<String,Object>> selectDbLandByUserIdAndSideId(Long aLong);
 
     List<DbLand> selectDbLandsByUserId(Long userId);
+
+    List<DbLand> selectDbLandListByUserIdAndSideId(Long userId);
+
+    /**
+     * 将设备绑定到大棚，修改操作
+     * @since: 2.0.0
+     * @param landId 大棚id
+     * @param userId 用户id
+     * @param equipmentId 设备id
+     * @return: boolean
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/19 11:22
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    boolean updateEquipmentToLand(Long landId, Long equipmentId ,String userId);
+
+    /**
+     * 将设备与大棚绑定，新增操作
+     * @since: 2.0.0
+     * @param dbLand
+     * @param userId
+     * @param equipmentId
+     * @return: boolean
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/19 13:58
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    boolean insertEquipmentToLand(DbLand dbLand, String userId, Long equipmentId);
+
+    /**
+     * 根据userId 查询不等于地块的
+     * @since: 2.0.0
+     * @param userId
+     * @return: java.util.List<java.util.Map<java.lang.String,java.lang.String>>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/4/28 15:58
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<Map<String,String>> selectDbLandsByUserIdAndSiteId(Long userId);
 }

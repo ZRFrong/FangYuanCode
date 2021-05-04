@@ -25,5 +25,5 @@ public class EquipmentAdminDto {
     //用户头像
     private String avatar;
     //是否为超级管理员
-    private Integer isSuperAdmin;
+    private Long isSuperAdmin;
 }
