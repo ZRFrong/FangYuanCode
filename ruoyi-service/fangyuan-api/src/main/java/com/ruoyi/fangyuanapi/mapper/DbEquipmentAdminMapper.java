@@ -1,9 +1,12 @@
 package com.ruoyi.fangyuanapi.mapper;
 
 import com.ruoyi.system.domain.DbEquipmentAdmin;
+import com.ruoyi.system.domain.DbOperationRecord;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 【请填写功能名称】Mapper接口
@@ -111,5 +114,19 @@ public interface DbEquipmentAdminMapper
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
     int updateAdminAvatar(@Param("id") Long id,@Param("avatar") String avatar);
+
+    /**
+     * 根据大棚id获取用户iD 获取大棚名称
+     * @since: 2.0.0
+     * @param landId
+     * @param userId
+     * @return: java.util.List<java.util.Map<java.lang.String,java.lang.String>>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/9 14:11
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<Map<String,Object>> selectLandIdAndNameByUserId(@Param("landId") Long landId,@Param("userId") Long userId);
+
+    int updateLandNameByLandId(@Param("landId") Long landId,@Param("nickName") String nickName);
 
 }

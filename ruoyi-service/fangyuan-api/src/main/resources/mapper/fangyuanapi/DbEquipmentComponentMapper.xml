@@ -16,10 +16,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="equipmentName"    column="equipment_name"    />
         <result property="equipmentId"    column="equipment_id"    />
         <result property="spList"    column="spList"    />
+        <result property="percentage"    column="percentage"    />
+        <result property="shceduled"    column="shceduled"    />
     </resultMap>
 
     <sql id="selectDbEquipmentComponentVo">
-        select id, classification_id, equipment_version, function_logo, note_text, create_time, heartbeatText, equipment_no, equipment_name,equipment_id,spList from db_equipment_component
+        select id, classification_id, equipment_version, function_logo, note_text, create_time, heartbeatText, equipment_no, equipment_name,equipment_id,spList,percentage,shceduled from db_equipment_component
     </sql>
 
     <select id="selectDbEquipmentComponentList" parameterType="DbEquipmentComponent" resultMap="DbEquipmentComponentResult">
@@ -55,6 +57,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="equipmentName != null  and equipmentName != ''">equipment_name,</if>
             <if test="equipmentId != null  and equipmentId != ''">equipment_id,</if>
             <if test="spList != null  and spList != ''">spList,</if>
+            <if test="percentage != null  and spList != ''">percentage,</if>
+            <if test="shceduled != null  and spList != ''">shceduled,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null ">#{id},</if>
@@ -68,6 +72,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="equipmentName != null  and equipmentName != ''">#{equipmentName},</if>
             <if test="equipmentId != null  and equipmentId != ''">#{equipmentId},</if>
             <if test="spList != null  and spList != ''">#{spList},</if>
+            <if test="percentage != null  and spList != ''">#{percentage},</if>
+            <if test="shceduled != null  and spList != ''">#{shceduled},</if>
         </trim>
     </insert>
 
@@ -84,6 +90,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="equipmentName != null  and equipmentName != ''">equipment_name = #{equipmentName},</if>
             <if test="equipmentId != null  and equipmentId != ''">equipment_id = #{equipmentId},</if>
             <if test="spList != null  and spList != ''">spList = #{spList},</if>
+            <if test="percentage != null  and percentage != ''">percentage = #{percentage},</if>
+            <if test="shceduled != null  and shceduled != ''">shceduled = #{shceduled},</if>
         </trim>
         where id = #{id}
     </update>
@@ -105,6 +113,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
+    </select>
+    <select id="selectDbEquipmentComponentNameByEquipmentId" resultType="java.util.Map">
+        select id,equipment_name as operateName from  db_equipment_component where equipment_id = #{equipmentId}
+    </select>
+    <select id="selectDbEquipmentComponentByheartbeatText" resultMap="DbEquipmentComponentResult">
+        select id,spList from db_equipment_component where heartbeatText =#{heartbeatText} and equipment_name like '%补光%'
+    </select>
+    <select id="selectDbEquipmentComponentByheartbeatTextAndLogo" resultMap="DbEquipmentComponentResult">
+        select id,spList
+          from db_equipment_component
+        where heartbeatText =#{heartbeatText} and equipment_name like concat('%',#{fucncitonLogo,jdbcType=VARCHAR},'%')
     </select>
 
 </mapper>

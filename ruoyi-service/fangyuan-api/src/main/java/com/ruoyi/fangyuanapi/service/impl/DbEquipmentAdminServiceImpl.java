@@ -196,4 +196,14 @@ public class DbEquipmentAdminServiceImpl implements IDbEquipmentAdminService
     public List<DbEquipmentAdmin> selectDbEquipmentAdminsByLandId(Long landId) {
         return dbEquipmentAdminMapper.selectDbEquipmentAdminsByLandId(landId);
     }
+
+    @Override
+    public List<Map<String, Object>> selectLandIdAndNameByUserId(Long landId, Long userId) {
+        return dbEquipmentAdminMapper.selectLandIdAndNameByUserId(landId,userId);
+    }
+
+    @Override
+    public int updateLandNameByLandId(Long landId, String nickName) {
+        return dbEquipmentAdminMapper.updateLandNameByLandId(landId,nickName);
+    }
 }

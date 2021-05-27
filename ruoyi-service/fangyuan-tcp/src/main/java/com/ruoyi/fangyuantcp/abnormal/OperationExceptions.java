@@ -12,6 +12,26 @@ public class OperationExceptions extends RuntimeException {
     //    设备id
     private final String equipmentId;
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getLandId() {
+        return landId;
+    }
+
+    public void setLandId(Long landId) {
+        this.landId = landId;
+    }
+
+    private Long userId;
+
+    private Long landId;
+
     public String getEquipmentId() {
         return equipmentId;
     }
@@ -25,9 +45,11 @@ public class OperationExceptions extends RuntimeException {
         return message;
     }
 
-    public OperationExceptions(String code, String message, String equipmentId) {
+    public OperationExceptions(String code, String message, String equipmentId,Long userId,Long landId) {
         this.code = code;
         this.message = message;
         this.equipmentId = equipmentId;
+        this.userId = userId;
+        this.landId = landId;
     }
 }

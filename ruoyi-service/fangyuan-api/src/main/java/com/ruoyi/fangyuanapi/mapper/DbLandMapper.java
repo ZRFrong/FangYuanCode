@@ -106,4 +106,15 @@ public interface DbLandMapper
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
     List<Map<String,String>> selectDbLandsByUserIdAndSiteId(Long userId);
+
+    /**
+     * 根据UserId 获取其下所有大棚
+     * @since: 2.0.0
+     * @param userId
+     * @return: java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/8 11:14
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<Map<String,Object>> selectDbLandNameByUserId(Long userId);
 }

@@ -88,7 +88,33 @@ public class DbAbnormalInfo extends BaseEntity
     @ApiModelProperty(value = "故障类型")
     private String objectType;
 
-    public void setId(Long id) 
+    /** 大棚Id */
+    @Excel(name = "")
+    @ApiModelProperty(value = "大棚Id")
+    private Long landId;
+
+    /** 用户Id */
+    @Excel(name = "用户ID")
+    @ApiModelProperty(value = "用户ID")
+    private Long userId;
+
+    public Long getLandId() {
+        return landId;
+    }
+
+    public void setLandId(Long landId) {
+        this.landId = landId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }

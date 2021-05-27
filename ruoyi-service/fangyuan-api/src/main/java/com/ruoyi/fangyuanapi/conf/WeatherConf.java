@@ -14,7 +14,7 @@ import java.util.Map;
  * @author ZHAOXIAOSI
  * @version 1.0.0
  * @ClassName ruoyi-cloud.com.ruoyi.fangyuanapi.conf.WeatherConf.java
- * @Description TODO
+ * @Description
  * @createTime 2021年04月23日 13:20:00
  */
 

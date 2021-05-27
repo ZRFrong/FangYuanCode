@@ -28,6 +28,8 @@ public class LandAdminDto {
 
     private Long isSuperAdmin;
 
+    private String functionIds;
+
     private List<OperationDto> operation;
 
 }

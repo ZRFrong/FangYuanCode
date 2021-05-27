@@ -3,7 +3,9 @@ package com.ruoyi.fangyuanapi.service;
 import com.ruoyi.system.domain.DbAbnormalInfo;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 报警信息Service接口
@@ -62,4 +64,19 @@ public interface IDbAbnormalInfoService
     public int deleteDbAbnormalInfoById(Long id);
 
     List<DbAbnormalInfo> selectAbnormalList(DbAbnormalInfo dbAbnormalInfo);
+
+    /**
+     * 查询预警信息
+     * @since: 2.0.0
+     * @param list 大棚id数组
+     * @param date 时间查询
+     * @param userId 时间查询
+     * @param currPage 页码
+     * @param pageSize 条数
+     * @return: List<Map<String,String>>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/9 13:33
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<Map<String,String>> selectAbnormals(List<Long> list, Long userId,Date date, Long currPage, Long pageSize);
 }

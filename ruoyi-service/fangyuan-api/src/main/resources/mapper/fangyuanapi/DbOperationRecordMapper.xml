@@ -38,6 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="userId != null">
             and db_user_id =#{userId}
         </if>
+        order by operation_time desc
         limit #{currPage},#{pageSize}
     </select>
         
@@ -107,4 +108,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <!--</if>-->
     </select>
 
+    <insert id="batchInsert" parameterType="java.util.List">
+          insert into db_operation_record
+        (land_id, db_user_id, is_complete, operation_time, operation_text, operation_object, operation_object_type, operation_source)
+          values
+          <foreach collection="list" item="item" index="index" separator=",">
+              (
+              #{item.landId,jdbcType=BIGINT},
+              #{item.dbUserId,jdbcType=BIGINT},
+              #{item.isComplete,jdbcType=INTEGER},
+              #{item.operationTime},
+              #{item.operationText,jdbcType=VARCHAR},
+              #{item.operationObject,jdbcType=VARCHAR},
+              #{item.operationObjectType,jdbcType=INTEGER},
+              #{item.operationSource,jdbcType=INTEGER}
+              )
+          </foreach>
+    </insert>
+    <!--<insert id="batchInsert" parameterType="java.util.List">-->
+        <!--insert into db_operation_record-->
+        <!--<foreach collection="list" item="item" index="index" separator=",">-->
+
+        <!--</foreach>-->
+    <!--</insert>-->
 </mapper>

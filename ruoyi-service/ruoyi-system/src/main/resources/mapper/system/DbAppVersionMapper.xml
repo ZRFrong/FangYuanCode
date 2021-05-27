@@ -7,15 +7,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="DbAppVersion" id="DbAppVersionResult">
         <result property="id"    column="id"    />
         <result property="appVersion"    column="app_version"    />
-        <result property="updateTime"    column="update_time"    />
+        <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateState"    column="update_state"    />
         <result property="isConstraint"    column="is_constraint"    />
         <result property="downloadUrl"    column="download_url"    />
+        <result property="md5"    column="md5"     />
     </resultMap>
 
     <sql id="selectDbAppVersionVo">
-        select id, app_version, update_time, update_by, update_state, is_constraint, download_url from db_app_version
+        select id, app_version, create_time, update_by, update_state, is_constraint, download_url,md5 from db_app_version
     </sql>
 
     <select id="selectDbAppVersionList" parameterType="DbAppVersion" resultMap="DbAppVersionResult">
@@ -32,24 +33,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDbAppVersionByAppVersion" resultMap="DbAppVersionResult">
         select * from db_app_version where app_version = #{apkVersion} limit 1
     </select>
+    <select id="selectDbAppVersionsByVersion" resultType="java.util.Map">
+        select update_state,is_constraint,download_url,md5  from db_app_version where app_version > #{version}
+    </select>
 
     <insert id="insertDbAppVersion" parameterType="DbAppVersion" useGeneratedKeys="true" keyProperty="id">
         insert into db_app_version
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="appVersion != null  and appVersion != ''">app_version,</if>
-            <if test="updateTime != null ">update_time,</if>
+            <if test="createTime != null ">create_time,</if>
             <if test="updateBy != null  and updateBy != ''">update_by,</if>
             <if test="updateState != null  and updateState != ''">update_state,</if>
             <if test="isConstraint != null ">is_constraint,</if>
             <if test="downloadUrl != null  and downloadUrl != ''">download_url,</if>
+            <if test="md5 != null  and md5 != ''">md5,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="appVersion != null  and appVersion != ''">#{appVersion},</if>
-            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="createTime != null ">#{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
             <if test="updateState != null  and updateState != ''">#{updateState},</if>
             <if test="isConstraint != null ">#{isConstraint},</if>
             <if test="downloadUrl != null  and downloadUrl != ''">#{downloadUrl},</if>
+            <if test="md5 != null  and md5 != ''">#{md5},</if>
          </trim>
     </insert>
 
@@ -57,7 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update db_app_version
         <trim prefix="SET" suffixOverrides=",">
             <if test="appVersion != null  and appVersion != ''">app_version = #{appVersion},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             <if test="updateState != null  and updateState != ''">update_state = #{updateState},</if>
             <if test="isConstraint != null ">is_constraint = #{isConstraint},</if>

@@ -6,7 +6,7 @@ import java.lang.annotation.*;
  * @author ZHAO
  * @version 2.0.0
  * @ClassName ruoyi-cloud.com.ruoyi.fangyuanapi.aspect.Operation.java
- * @Description TODO
+ * @Description
  * @createTime 2021年05月02日 22:27:00
  */
 @Target(ElementType.METHOD)

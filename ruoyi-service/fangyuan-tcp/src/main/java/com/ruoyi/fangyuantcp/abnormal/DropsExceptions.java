@@ -14,6 +14,27 @@ public class DropsExceptions extends RuntimeException {
     //    设备id
     private final String equipmentId;
 
+    private Long userId;
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getLandId() {
+        return landId;
+    }
+
+    public void setLandId(Long landId) {
+        this.landId = landId;
+    }
+
+    private Long landId;
+
+
     public String getEquipmentId() {
         return equipmentId;
     }
@@ -27,10 +48,12 @@ public class DropsExceptions extends RuntimeException {
         return message;
     }
 
-    public DropsExceptions(String code, String message, String equipmentId) {
+    public DropsExceptions(String code, String message, String equipmentId,Long userId,Long landId) {
         this.code = code;
         this.message = message;
         this.equipmentId = equipmentId;
+        this.userId = userId;
+        this.landId = landId;
     }
 
 

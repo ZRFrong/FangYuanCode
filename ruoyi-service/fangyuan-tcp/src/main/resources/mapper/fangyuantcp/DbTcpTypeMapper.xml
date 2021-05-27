@@ -18,10 +18,17 @@
         <result property="temperatureAir"    column="temperature_air"    />
         <result property="humidityAir"    column="humidity_air"    />
         <result property="isShow"    column="is_show"    />
+        <result property="conductivity"    column="conductivity"    />
+        <result property="ph"    column="ph"    />
+        <result property="nitrogen"    column="nitrogen"    />
+        <result property="phosphorus"    column="phosphorus"    />
+        <result property="potassium"    column="potassium"    />
     </resultMap>
 
     <sql id="selectDbTcpTypeVo">
-        select tcp_type_id, temperature_soil, humidity_soil, light, heart_name, co2, id_auto,autocontrol_type_end, autocontrol_type, update_time, temperature_air, humidity_air, is_show from db_tcp_type
+        select tcp_type_id, temperature_soil, humidity_soil, light, heart_name, co2, id_auto,autocontrol_type_end, autocontrol_type, update_time, temperature_air, humidity_air, is_show
+         , conductivity, ph, nitrogen, phosphorus, potassium
+         from db_tcp_type
     </sql>
 
     <select id="selectDbTcpTypeList" parameterType="DbTcpType" resultMap="DbTcpTypeResult">
@@ -51,6 +58,11 @@
             <if test="temperatureAir != null  and temperatureAir != ''">temperature_air,</if>
             <if test="humidityAir != null  and humidityAir != ''">humidity_air,</if>
             <if test="isShow != null ">is_show,</if>
+            <if test="conductivity != null ">conductivity,</if>
+            <if test="ph != null ">ph,</if>
+            <if test="nitrogen != null ">nitrogen,</if>
+            <if test="phosphorus != null ">phosphorus,</if>
+            <if test="potassium != null ">potassium,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="temperatureSoil != null  and temperatureSoil != ''">#{temperatureSoil},</if>
@@ -65,6 +77,11 @@
             <if test="temperatureAir != null  and temperatureAir != ''">#{temperatureAir},</if>
             <if test="humidityAir != null  and humidityAir != ''">#{humidityAir},</if>
             <if test="isShow != null ">#{isShow},</if>
+            <if test="conductivity != null ">#{conductivity},</if>
+            <if test="ph != null ">#{ph},</if>
+            <if test="nitrogen != null ">#{nitrogen},</if>
+            <if test="phosphorus != null ">#{phosphorus},</if>
+            <if test="potassium != null ">#{potassium},</if>
         </trim>
     </insert>
 
@@ -83,6 +100,11 @@
             <if test="temperatureAir != null  and temperatureAir != ''">temperature_air = #{temperatureAir},</if>
             <if test="humidityAir != null  and humidityAir != ''">humidity_air = #{humidityAir},</if>
             <if test="isShow != null ">is_show = #{isShow},</if>
+            <if test="conductivity != null ">conductivity = #{conductivity},</if>
+            <if test="ph != null ">ph = #{ph},</if>
+            <if test="nitrogen != null ">nitrogen = #{nitrogen},</if>
+            <if test="phosphorus != null ">phosphorus = #{phosphorus},</if>
+            <if test="potassium != null ">potassium = #{potassium},</if>
         </trim>
         where tcp_type_id = #{tcpTypeId}
     </update>
@@ -102,4 +124,27 @@
         delete from db_tcp_type  where heart_name like concat('%', #{heartbeatText}, '%')
 
     </delete>
+    <update id="updateDbTcpTypeSensorData">
+         update db_tcp_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="temperatureSoil != null  and temperatureSoil != ''">temperature_soil = #{temperatureSoil},</if>
+            <if test="humiditySoil != null  and humiditySoil != ''">humidity_soil = #{humiditySoil},</if>
+            <if test="light != null  and light != ''">light = #{light},</if>
+            <if test="co2 != null  and co2 != ''">co2 = #{co2},</if>
+            <if test="temperatureAir != null  and temperatureAir != ''">temperature_air = #{temperatureAir},</if>
+            <if test="humidityAir != null  and humidityAir != ''">humidity_air = #{humidityAir},</if>
+            <if test="conductivity != null  and conductivity != ''">conductivity = #{conductivity},</if>
+            <if test="ph != null  and ph != ''">ph = #{ph},</if>
+            <if test="nitrogen != null  and nitrogen != ''">nitrogen = #{nitrogen},</if>
+            <if test="phosphorus != null  and phosphorus != ''">phosphorus = #{phosphorus},</if>
+            <if test="potassium != null  and potassium != ''">potassium = #{potassium},</if>
+        </trim>
+         where heart_name like concat('%', #{heartName}, '%')
+    </update>
+    <select id="selectDbTcpTypeByHeartName" resultType="integer">
+        select tcp_type_id from db_tcp_type where heart_name like concat('%', #{heartbeatText}, '%') limit 1
+    </select>
+
+
+
 </mapper>

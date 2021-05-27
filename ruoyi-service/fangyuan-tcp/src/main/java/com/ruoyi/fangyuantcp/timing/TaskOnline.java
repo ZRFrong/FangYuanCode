@@ -28,15 +28,18 @@ public class TaskOnline {
                 /*
                 * 远程，本地检测
                 * */
-                DbTcpClient dbTcpClient = new DbTcpClient();
-                List<DbTcpClient> dbTcpClients = dbTcpClientService.selectDbTcpClientList(dbTcpClient);
-                if (dbTcpClients.size()>0&&dbTcpClients!=null){
-                    for (DbTcpClient tcpClient : dbTcpClients) {
-                        dbTcpClientService.TaskOnline(tcpClient);
+                try {
+                    DbTcpClient dbTcpClient = new DbTcpClient();
+                    List<DbTcpClient> dbTcpClients = dbTcpClientService.selectDbTcpClientList(dbTcpClient);
+                    if (dbTcpClients.size()>0&&dbTcpClients!=null){
+                        for (DbTcpClient tcpClient : dbTcpClients) {
+                            dbTcpClientService.TaskOnline(tcpClient);
 
+                        }
                     }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-
 
             }
         };

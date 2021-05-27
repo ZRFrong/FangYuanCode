@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
  * @author ZHAOXIAOSI
  * @version 1.0.0
  * @ClassName ruoyi-cloud.com.ruoyi.fangyuanapi.dto.WeatherDto.java
- * @Description TODO
+ * @Description
  * @createTime 2021年04月23日 13:33:00
  */
 @Data

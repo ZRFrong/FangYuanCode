@@ -117,4 +117,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
           update db_equipment_admin set avatar = #{avatar}  where  user_id = #{id}
      </update>
 
+
+
+    <select id="selectLandIdAndNameByUserId" resultType="map">
+        select land_id,land_name from db_equipment_admin where user_id = #{userId}
+        <if test="landId != null">and land_id = #{landId} </if>
+    </select>
+    <update id="updateLandNameByLandId">
+        update db_equipment_admin set land_name = #{nickName} where land_id = #{landId}
+    </update>
+
 </mapper>

@@ -84,9 +84,9 @@ public class DbTcpClientController extends BaseController {
         return toAjax(dbTcpClientService.deleteDbTcpClientByIds(ids));
     }
 
-    @GetMapping("queryOne")
+    @GetMapping("queryOne/{heartName}")
     @ApiOperation(value = "根据心跳查询设备是否在线")
-    public R queryOne(String heartName){
+    public R queryOne(@PathVariable("heartName") String heartName){
         return R.data(dbTcpClientService.queryOne(heartName));
     }
 

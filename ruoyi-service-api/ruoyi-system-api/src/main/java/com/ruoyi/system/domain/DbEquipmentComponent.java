@@ -76,6 +76,14 @@ public class DbEquipmentComponent
     @ApiModelProperty(value = "设备功能指令集")
     private String spList;
 
+    /**  进度指令 */
+    @Excel(name = "进度指令")
+    private String percentage;
+
+    /**  定时指令*/
+    @Excel(name = "定时指令")
+    private String shceduled;
+
     public String getEquipmentNoString()
     {
         if (equipmentNo!=null){

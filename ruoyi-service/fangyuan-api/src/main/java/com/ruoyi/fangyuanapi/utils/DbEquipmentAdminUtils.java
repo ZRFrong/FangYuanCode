@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * @author ZHAO
  * @version 1.0.0
  * @ClassName ruoyi-cloud.com.ruoyi.fangyuanapi.utils.DbEquipmentAdminUtils.java
- * @Description TODO
+ * @Description
  * @createTime 2021年05月03日 00:09:00
  */
 public class DbEquipmentAdminUtils {
@@ -32,6 +32,7 @@ public class DbEquipmentAdminUtils {
                 if (admin.getIsSuperAdmin() == 0){
                     build.setLandName(admin.getLandName());
                     build.setLandId(admin.getLandId());
+                    build.setFunctionIds(admin.getFunctionIds());
                 }
                 if (admin.getUserId().equals(Long.valueOf(userId))){
                     build.setIsSuperAdmin(admin.getIsSuperAdmin());

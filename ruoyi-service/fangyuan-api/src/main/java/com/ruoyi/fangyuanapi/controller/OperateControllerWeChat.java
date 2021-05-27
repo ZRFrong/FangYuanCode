@@ -6,15 +6,14 @@ package com.ruoyi.fangyuanapi.controller;
  * */
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.fangyuanapi.aspect.OperationLog;
-import com.ruoyi.fangyuanapi.aspect.OperationLogType;
-import com.ruoyi.fangyuanapi.aspect.OperationLogUtils;
-import com.ruoyi.fangyuanapi.aspect.UserOperationLog;
+import com.ruoyi.fangyuanapi.aspect.*;
+import com.ruoyi.fangyuanapi.dto.OperateVO;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentComponentService;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
@@ -24,14 +23,12 @@ import com.ruoyi.system.feign.RemoteTcpService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 
 @RestController
 @Api("operateWeChat")
@@ -54,9 +51,6 @@ public class OperateControllerWeChat extends BaseController {
 
     @Autowired
     private IDbEquipmentComponentService dbEquipmentComponentService;
-
-    @Autowired
-    private IDbOperationRecordService dbOperationRecordService;
 
     /*
      *列表回写    当前用户下边所有土地
@@ -112,20 +106,17 @@ public class OperateControllerWeChat extends BaseController {
                 operateWeChatVos.add(dbOperationVo);
             }
 
-    }
+        }
         return remoteTcpService.stateAllQuery(operateWeChatVos);
     }
+
+
 
     /**
      * @Version 2.0.0
      * @Author ZHAOXIAOSI
      * @Description 单操作接口
      * @Date 20:56 2021/5/2
-     * @param landId 土地id
-     * @param operationText 指令
-     * @param operationId 功能id
-     * @param operationType 操作类型
-     * @param handleName   指令对应名称
      * @return com.ruoyi.common.core.domain.R
      * @sign 他日若遂凌云志,敢笑黄巢不丈夫!
      **/
@@ -136,27 +127,86 @@ public class OperateControllerWeChat extends BaseController {
             @ApiImplicitParam(name = "operationText",value = "指令",required = true),
             @ApiImplicitParam(name = "operationType",value = "操作类型",required = true),
             @ApiImplicitParam(name = "handleName",value = "指令对应名称: 放下",required = true),
-            @ApiImplicitParam(name = "operationId",value = "功能id",required = true)
+            @ApiImplicitParam(name = "operationId",value = "功能id",required = true),
+            @ApiImplicitParam(name = "startTime",value = "开始时间",required = false),
+            @ApiImplicitParam(name = "stopTime",value = "结束时间",required = false),
+            @ApiImplicitParam(name = "flag",value = "定时开关：0开 1取消",required = false),
+            @ApiImplicitParam(name = "percentage",value = "卷帘卷膜百分比",required = false)
     })
-    public R SingleOperation(Long landId,String operationText,String operationType,String handleName,Long operationId){
-        DbEquipmentComponent component = dbEquipmentComponentService.selectDbEquipmentComponentById(operationId);
-        dbOperationRecordService.insertDbOperationRecord(DbOperationRecord.builder()
-                .dbUserId(Long.valueOf(getRequest().getHeader(Constants.CURRENT_ID)))
-                .landId(landId)
-                .operationText(component.getEquipmentName()+handleName)
-                .operationObjectType(Integer.valueOf(operationType))
-                .operationTime(new Date())
-                .build());
-//        return remoteTcpService.operation(DbOperationVo.builder()
-//                .heartName(component.getHeartbeatText())
-//                .facility(component.getEquipmentNoString())
-//                .operationText(operationText)
-//                .operationName(operationLogUtils.toOperationText(component.getEquipmentName(),handleName))
-//                .operationTextType("05")
-//                .build());
-        return R.ok();
+    @Operation()
+
+    public R SingleOperation(OperateVO operateVO){
+        DbEquipmentComponent component = null;
+        if (operateVO.getPercentage() != null && operateVO.getPercentage() >= 0 && operateVO.getPercentage() <= 100){
+            //百分比开启
+            component = dbEquipmentComponentService.selectDbEquipmentComponentById(operateVO.getOperationId());
+            Map<String,Object> o = (Map<String, Object>) JSON.parse(component.getSpList());
+            List<Map<String,String>> list = (List<Map<String, String>>) o.get("spList");
+            R r = remoteTcpService.percentageOperate(component.getHeartbeatText(), component.getEquipmentNo(), operateVO.getPercentage(),component.getPercentage());
+            if (r.get("code").equals(HttpStatus.OK.value())){
+                //进度值
+                o.put("percentage",operateVO.getPercentage());
+                dbEquipmentComponentService.updateDbEquipmentComponent(DbEquipmentComponent.builder()
+                        .spList(JSON.toJSONString(o,SerializerFeature.WriteMapNullValue))
+                        .id(component.getId())
+                        .build());
+            }
+            return r;
+        }
+
+        if (operateVO.getOperationType().equals("3") && operateVO.getFlag() != null){
+            component = dbEquipmentComponentService.selectDbEquipmentComponentById(operateVO.getOperationId());
+            if (operateVO.getFlag() != null) {
+                //补光定时
+                R r = null;
+                if (operateVO.getFlag() == 0) {
+                    //开多久停
+                    Long stop = (operateVO.getStopTime() - operateVO.getStartTime()) / 1000L / 60L;
+                    //多久后开
+                    Long start = (operateVO.getStartTime() - System.currentTimeMillis()) / 1000L / 60L;
+                    r = remoteTcpService.operateLight(component.getHeartbeatText(), component.getEquipmentNo(), operateVO.getFlag(), start, stop);
+                } else {
+                    r = remoteTcpService.operateLight(component.getHeartbeatText(), component.getEquipmentNo(), operateVO.getFlag(), null, null);
+                }
+                if (r.get("code").equals(HttpStatus.OK.value())) {
+                    //插入时间值
+                    Map<String, Object> o = (Map<String, Object>) JSON.parse(component.getSpList());
+                    o.put("startDate", operateVO.getFlag() == 0 ? operateVO.getStartTime() : null);
+                    dbEquipmentComponentService.updateDbEquipmentComponent(DbEquipmentComponent.builder()
+                            .spList(JSON.toJSONString(o, SerializerFeature.WriteMapNullValue))
+                            .id(component.getId())
+                            .build());
+                    return r;
+                }
+            }
+            R r = remoteTcpService.operation(getDbOperationVo(operateVO));
+            if (r.get("code").equals(HttpStatus.OK.value())){
+                Map<String, Object> o = (Map<String, Object>) JSON.parse(component.getSpList());
+                if (operateVO.getHandleName().contains("stop")){
+                        o.put("switchState",1 );
+                    }
+                o.put("switchState",0 );
+                dbEquipmentComponentService.updateDbEquipmentComponent(DbEquipmentComponent.builder()
+                        .spList(JSON.toJSONString(o, SerializerFeature.WriteMapNullValue))
+                        .id(component.getId())
+                        .build());
+            }
+            return r;
+        }
+        //return R.ok();
+       // 一律为单操作
+        return remoteTcpService.operation(getDbOperationVo(operateVO));
     }
 
+    public static void main(String[] args){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY,19);
+        long time = calendar.getTimeInMillis();
+        long l1 = Calendar.getInstance().getTimeInMillis();
+        long i = System.currentTimeMillis();
+        System.out.println((time - l1)/1000/60);
+
+    }
 
     /*
      *页面操作（单项）
@@ -164,7 +214,7 @@ public class OperateControllerWeChat extends BaseController {
     @GetMapping("operate")
     @ApiOperation(value = "页面操作（单项）", notes = "页面操作（单项）")
     @OperationLog(OperationLogNmae=OperationLogType.EQUIPMENT,OperationLogSource = OperationLogType.WEchat)
-    @UserOperationLog(OperationLogType=false)
+    @UserOperationLog()
     public R operate(@ApiParam(name = "id", value = "设备id", required = true)Long id, @ApiParam(name = "text", value = "操作指令", required = true)String text,
                      @ApiParam(name = "name", value = "操作对象", required = true)String name,
                      @ApiParam(name = "type", value = "操作对象类型", required = true)String type,
@@ -174,10 +224,66 @@ public class OperateControllerWeChat extends BaseController {
         dbOperationVo.setHeartName(dbEquipment.getHeartbeatText());
         dbOperationVo.setFacility(dbEquipment.getEquipmentNoString());
         dbOperationVo.setOperationText(text);
+        dbOperationVo.setOperationTextType("05");
         //                        操作名称
-        dbOperationVo.setOperationName(operationLogUtils.toOperationText(name,handleName));
+        dbOperationVo.setOperationName(operationLogUtils.toOperationText(name, handleName));
         R operation = remoteTcpService.operation(dbOperationVo);
         return operation;
+    }
+
+    /**
+     * 拼装发送对象
+     * @since: 2.0.0
+     * @param operateVO
+     * @return: com.ruoyi.system.domain.DbOperationVo
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/6 20:42
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    private DbOperationVo getDbOperationVo(OperateVO operateVO){
+        DbOperationVo dbOperationVo = new DbOperationVo();
+        DbEquipmentComponent component = dbEquipmentComponentService.selectDbEquipmentComponentById(operateVO.getOperationId());
+        dbOperationVo.setHeartName(component.getHeartbeatText());
+        dbOperationVo.setFacility(component.getEquipmentNoString());
+        dbOperationVo.setOperationText(operateVO.getOperationText());
+        dbOperationVo.setOperationTextType("05");
+        dbOperationVo.setOperationName(dbEquipmentComponentService.selectDbEquipmentComponentById(operateVO.getOperationId()).getEquipmentName());
+        dbOperationVo.setLandId(operateVO.getLandId()+"");
+        dbOperationVo.setUserId(getRequest().getHeader(Constants.CURRENT_ID));
+        return dbOperationVo;
+    }
+
+    /**
+     * 批量操作
+     * @since: 2.0.0
+     * @param operateVOS
+     * @return: com.ruoyi.common.core.domain.R
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/6 20:21
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @PostMapping("batchOperate")
+    @ApiOperation(value = "批量操作接口",notes = "批量操作接口",httpMethod = "POST")
+    @Operation(OperationLogType = true)
+    @ApiImplicitParams({
+
+    })
+    public R batchOperate(@RequestBody List<OperateVO> operateVOS){
+        if (CollectionUtils.isEmpty(operateVOS)){
+            return null;
+        }
+        if (operateVOS.size() > 5){
+            return R.error(HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST.getReasonPhrase());
+        }
+        ArrayList<DbOperationVo> list = new ArrayList<>();
+        operateVOS.forEach(e -> list.add(getDbOperationVo(e)));
+        R r = remoteTcpService.operationList(list);
+        return remoteTcpService.operationList(list);
+    }
+
+    @PostMapping("operateFillInLight")
+    public R operateFillInLight(){
+        return null;
     }
 
 
@@ -186,8 +292,7 @@ public class OperateControllerWeChat extends BaseController {
      * */
     @GetMapping("oprateEqment")
     @ApiOperation(value = "设备页面操作", notes = "设备页面操作")
-    @OperationLog(OperationLogType=true,OperationLogNmae=OperationLogType.EQUIPMENT,OperationLogSource = OperationLogType.WEchat)
-    @UserOperationLog(OperationLogType=true)
+    @OperationLog(OperationLogType = true, OperationLogNmae = OperationLogType.EQUIPMENT, OperationLogSource = OperationLogType.WEchat)
     public R oprateEqment(@ApiParam(name = "id", value = "设备id", required = true) Long id, @ApiParam(name = "type"
             , value = "操作单位名称:例如卷帘1", required = true) String type,
                           @ApiParam(name = "handleName", value = "具体操作名称开始 ：start，开始暂停：start_stop，结束down,结束暂停down_stop", required = true) String handleName)
@@ -203,19 +308,20 @@ public class OperateControllerWeChat extends BaseController {
             if (type.equals(pojo.getCheckCode())) {
                 for (OperatePojo.OperateSp operateSp : pojo.getSpList()) {
                     if (operateSp.getHandleName().equals(handleName)) {
-                        DbOperationVo dbOperationVo = new DbOperationVo();
+                         DbOperationVo dbOperationVo = new DbOperationVo();
 //        心跳名称
                         dbOperationVo.setHeartName(dbEquipment.getHeartbeatText());
+
 //        设备号
                         dbOperationVo.setFacility(dbEquipment.getEquipmentNoString());
 //        是否完成
                         dbOperationVo.setIsTrue("1");
 //                        操作名称
-                        dbOperationVo.setOperationName(operationLogUtils.toOperationText(pojo.getCheckCode(),operateSp.getHandleName()));
+                        dbOperationVo.setOperationName(operationLogUtils.toOperationText(pojo.getCheckCode(), operateSp.getHandleName()));
 //        创建时间
                         dbOperationVo.setCreateTime(new Date());
                         dbOperationVo.setOperationText(operateSp.getHandleCode());
-
+                        dbOperationVo.setOperationTextType("05");
                         vos.add(dbOperationVo);
                     }
                 }
@@ -233,14 +339,13 @@ public class OperateControllerWeChat extends BaseController {
     }
 
 
-
-    private  ArrayList<OperateWeChatVo> getOperateWeChatVos(List<DbLand> dbLands) {
+    private ArrayList<OperateWeChatVo> getOperateWeChatVos(List<DbLand> dbLands) {
         ArrayList<OperateWeChatVo> operateWeChatVos = new ArrayList<>();
         for (DbLand dbLand : dbLands) {
             OperateWeChatVo operateWeChatVo = new OperateWeChatVo();
             operateWeChatVo.setDbLandId(dbLand.getLandId());
             operateWeChatVo.setNickName(dbLand.getNickName());
-            if (StringUtils.isEmpty(dbLand.getEquipmentIds()) ) {
+            if (StringUtils.isEmpty(dbLand.getEquipmentIds())) {
                 operateWeChatVo.setIsBound(0);
                 continue;
             }
@@ -257,7 +362,7 @@ public class OperateControllerWeChat extends BaseController {
                 dbTcpType.setHeartName(dbEquipment.getHeartbeatText() + "_" + dbEquipment.getEquipmentNoString());
                 List<DbTcpType> list = remoteTcpService.list(dbTcpType);
 
-                if (list.size() != 0&&list!=null) {
+                if (list.size() != 0 && list != null) {
                     DbTcpType dbTcpType1 = list.get(0);
 
                     dbEquipmentVo.setDbTcpType(dbTcpType1);
@@ -266,9 +371,9 @@ public class OperateControllerWeChat extends BaseController {
                  * 剩余时长，到期时长计算
                  * */
 //                运行时长
-                dbEquipmentVo.setRemaining(DateUtils.getDatePoorDay(dbEquipment.getAllottedTime(),new Date()));
+                dbEquipmentVo.setRemaining(DateUtils.getDatePoorDay(dbEquipment.getAllottedTime(), new Date()));
 //              剩余时长
-                dbEquipmentVo.setRuntime(DateUtils.getDatePoorDay(new Date(),dbEquipment.getCreateTime()));
+                dbEquipmentVo.setRuntime(DateUtils.getDatePoorDay(new Date(), dbEquipment.getCreateTime()));
 
 
 

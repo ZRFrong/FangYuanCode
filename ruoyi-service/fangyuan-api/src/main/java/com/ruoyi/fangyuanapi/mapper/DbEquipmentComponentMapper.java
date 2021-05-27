@@ -1,8 +1,10 @@
 package com.ruoyi.fangyuanapi.mapper;
 
 import com.ruoyi.system.domain.DbEquipmentComponent;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 版本加功能Mapper接口
@@ -74,11 +76,26 @@ public interface DbEquipmentComponentMapper
     /**
      * 批量查询
      * @since: 2.0.0
-     * @param split
+     * @param ids
      * @return: java.util.List<com.ruoyi.system.domain.DbEquipmentComponent>
      * @author: ZHAOXIAOSI
      * @date: 2021/4/25 11:28
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
     List<DbEquipmentComponent> selectDbEquipmentComponentByIds(String[] ids);
+
+    /**
+     * 方法描述
+     * @since: 2.0.0
+     * @param equipmentId
+     * @return: java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/8 11:19
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<Map<String,Object>> selectDbEquipmentComponentNameByEquipmentId(Long equipmentId);
+
+    DbEquipmentComponent selectDbEquipmentComponentByheartbeatText(String heartbeatText);
+
+    DbEquipmentComponent selectDbEquipmentComponentByheartbeatTextAndLogo(@Param("heartbeatText") String heartbeatText, @Param("fucncitonLogo")String fucncitonLogo);
 }

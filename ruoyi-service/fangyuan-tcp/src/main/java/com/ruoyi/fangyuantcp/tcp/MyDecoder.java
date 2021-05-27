@@ -23,12 +23,15 @@ public class MyDecoder extends ByteToMessageDecoder {
         //复制内容到字节数组b
             buffer.readBytes(b);
         //字节数组转字符串
-            String str = new String(b);
+            String str = new String(b,"UTF-8");
         if (str.contains("dapeng")){
+            System.out.println("大棚心跳为："+str);
             out.add(str);
         }else {
-        //System.out.println(str);
-            out.add(bytesToHexString(b));
+            String s = bytesToHexString(b);
+            System.out.println("主动上发的十六进制字符串为："+s);
+            //System.out.println(str);
+            out.add(s);
         }
     }
 

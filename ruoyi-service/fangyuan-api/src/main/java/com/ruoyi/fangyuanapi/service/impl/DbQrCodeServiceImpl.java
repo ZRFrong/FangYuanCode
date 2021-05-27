@@ -112,11 +112,13 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
      * */
     @Override
     public String qrCodeGenerate(DbQrCode dbQrCode) throws Exception {
-
+        DbQrCode code = dbQrCodeMapper.selectDbQrCodeById(dbQrCode.getQrCodeId());
         dbQrCode.setCreateTime(new Date());
         String argument = "?qrCodeId=" + dbQrCode.getQrCodeId();
-        String text = url + argument;
-        String encode = QrCodeUtils.encode(text, "http://cdn.fangyuancun.cn/logo9.png", true);
+        //String text = url + argument;
+        String text = "http://192.168.3.5:8080/problem/information" + argument;
+        //http://192.168.0.105:8080/problem/information
+        String encode = QrCodeUtils.encode(text, "http://cdn.fangyuancun.cn/logo9.png", true,code.getHeartbeatText());
         dbQrCode.setQrCodePic(encode);
         int i = dbQrCodeMapper.updateDbQrCode(dbQrCode);
         if (i > 0) {
@@ -138,9 +140,8 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
             DbQrCodeVo dbQrCodeVo = new DbQrCodeVo();
             DbQrCode dbQrCode = dbQrCodeMapper.selectDbQrCodeById(Long.valueOf(qrCodeId));
 
-
             dbQrCodeVo.setDbQrCode(dbQrCode);
-            if (dbQrCode.getAdminUserId()!=null){
+            if (dbQrCode != null && dbQrCode.getAdminUserId()!=null){
             dbQrCodeVo.setFirstBind(dbQrCode.getAdminUserId().equals(id) ? true : false);
             }else {
             dbQrCodeVo.setFirstBind(true);

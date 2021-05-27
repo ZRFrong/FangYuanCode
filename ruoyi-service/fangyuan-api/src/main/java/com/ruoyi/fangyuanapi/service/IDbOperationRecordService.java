@@ -66,6 +66,28 @@ public interface IDbOperationRecordService
     List<DbOperationRecord> listGroupDay(String operationText,String operationTime, Integer currPage, Integer pageSize, Long userId);
 
 
+    /**
+     * 根据userId和landId 返回指定条数得记录
+     * @since: 2.0.0
+     * @param landId
+     * @param userId
+     * @param currPage
+     * @param pageSize
+     * @return: java.util.ArrayList<com.ruoyi.fangyuanapi.dto.OperationDto>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/6 21:25
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
     ArrayList<OperationDto> selectDbOperationRecordByLandIdAndUserId(Long landId, String userId, Integer currPage, Integer pageSize);
 
+    /**
+     * 批量插入操作记录
+     * @since: 2.0.0
+     * @param records
+     * @return: int
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/6 21:25
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    int batchInsert(ArrayList<DbOperationRecord> records);
 }

@@ -28,9 +28,9 @@
     <select id="selectDbLandList" parameterType="DbLand" resultMap="DbLandResult">
         <include refid="selectDbLandVo"/>
         <where>
+            site_id != 0
             <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
             <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
-            <if test="siteId != null "> and site_id = #{siteId}</if>
             <if test="dbUserId != null  and dbUserId != ''"> and db_user_id = #{dbUserId}</if>
         </where>
         order by site_id
@@ -144,9 +144,13 @@
     <select id="selectDbLandListByUserIdAndSideId" resultMap="DbLandResult">
         select * from db_land where db_user_id =#{userId} and site_id != 0
     </select>
+
     <select id="selectDbLandsByUserIdAndSiteId" resultType="java.util.Map">
         select land_id,IFNULL(nick_name,'未命名')nick_name ,product_name,address,region from db_land
             where db_user_id = #{userId} and site_id != 0 and equipment_ids is not null
+    </select>
+    <select id="selectDbLandNameByUserId" resultType="java.util.Map">
+        select land_id,IFNULL(nick_name,'未命名')nick_name  from db_land  where db_user_id =#{userId} and site_id != 0
     </select>
 
 </mapper>

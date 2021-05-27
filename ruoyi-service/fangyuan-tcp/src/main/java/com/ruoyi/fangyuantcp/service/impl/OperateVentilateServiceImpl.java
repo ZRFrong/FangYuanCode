@@ -9,6 +9,7 @@ import com.ruoyi.fangyuantcp.processingCode.TcpOrderTextConf;
 import com.ruoyi.system.domain.DbOperationVo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -73,10 +74,45 @@ public class OperateVentilateServiceImpl implements OperateVentilateService {
         dbOperationVos.add(dbOperationVo2);
         Map<String, List<DbOperationVo>> mps = dbOperationVos.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
 
-           return sendCodeUtils.queryIoList(mps);
+        return sendCodeUtils.queryIoList(mps);
+    }
 
 
+    @Override
+    public int operateLight(String heartbeatText, String equipmentNo, Integer flag, String startTime, String stopTime) {
+        DbOperationVo operationVo = new DbOperationVo();
+        operationVo.setHeartName(heartbeatText);
+        operationVo.setFacility("0"+equipmentNo);
+        operationVo.setOperationText(flag == 0 ? TcpOrderTextConf.LIGHT_SCHEDULED+","+startTime+","+stopTime:TcpOrderTextConf.CLEAR_LIGHT_SCHEDULED);
+        operationVo.setOperationTextType(flag == 0?OpcodeTextConf.OPCODE16 : OpcodeTextConf.OPCODE05);
+        operationVo.setOperationName(flag == 0 ?new Date()+ heartbeatText+": 设置补光定时,"+startTime+"分后开启,开"+stopTime+"分"  :heartbeatText +":取消补光定时" );
+        operationVo.setCreateTime(new Date());
+        operationVo.setIsTrue("1");
+        ArrayList<DbOperationVo> arrayList = new ArrayList<>();
+        arrayList.add(operationVo);
+        Map<String, List<DbOperationVo>> mps = arrayList.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
+        R r = SendCodeListUtils.queryIoList(mps);
+        return 1;
+    }
 
 
+    @Override
+    public int percentageOperate(String heartbeatText, String equipmentNo, Integer percentage,String operationText) {
+        ArrayList<DbOperationVo> arrayList = new ArrayList<>();
+        if (percentage == 0){
+        }
+        arrayList.add(DbOperationVo.builder()
+                .heartName(heartbeatText)
+                .facility("0" + equipmentNo)
+                .operationText(operationText+","+percentage)
+                .operationTextType(OpcodeTextConf.OPCODE16)
+                .operationName(heartbeatText + ": 开到百分比为" + percentage)
+                .createTime(new Date())
+                .isTrue("1")
+                .build());
+        Map<String, List<DbOperationVo>> mps = arrayList.stream().collect(Collectors.groupingBy(DbOperationVo::getHeartName));
+        R r = SendCodeListUtils.queryIoList(mps);
+        System.out.println(r.toString());
+        return  1;
     }
 }

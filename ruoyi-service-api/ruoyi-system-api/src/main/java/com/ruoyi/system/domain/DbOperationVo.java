@@ -115,6 +115,22 @@ public class DbOperationVo {
     @ApiModelProperty(value = "是否成功")
     private String isTrue;
 
+    public String getLandId() {
+        return landId;
+    }
+
+    public void setLandId(String landId) {
+        this.landId = landId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     /*创建时间*/
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
@@ -122,6 +138,10 @@ public class DbOperationVo {
     /*操作指令名称*/
     @ApiModelProperty(value = "操作对象名称")
     private String operationName;
+
+    private String landId;
+
+    private String userId;
 
     /*操作指令名称*/
     @ApiModelProperty(value = "操作设备id")
@@ -134,4 +154,5 @@ public class DbOperationVo {
     public void setOperationId(String operationId) {
         this.operationId = operationId;
     }
+
 }

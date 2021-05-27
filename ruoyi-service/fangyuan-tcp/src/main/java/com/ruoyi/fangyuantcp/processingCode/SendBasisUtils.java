@@ -47,7 +47,7 @@ public class SendBasisUtils {
      * */
     public static int operateCode(String text, DbOperationVo tcpOrder) {
 
-        String address = tcpOrder.getHeartName();
+         String address = tcpOrder.getHeartName();
         ArrayList<String> strings1 = new ArrayList<>();
 //          text处理
         String[] split3 = text.split(",");
@@ -73,11 +73,13 @@ public class SendBasisUtils {
             data = Crc16Util.getData(bytes);
             ChannelHandlerContext no1_1 = map.get(address);
             Channel channel = no1_1.channel();
+            //channel.writeAndFlush(Unpooled.copiedBuffer(data));
             channel.write(Unpooled.copiedBuffer(data));
             channel.flush();
+            channel.read();
         } catch (Exception e) {
 //            抛出异常
-            throw new FaultExceptions(tcpOrder.getHeartName(), tcpOrder.getOperationName(), tcpOrder.getFacility());
+            throw new FaultExceptions(tcpOrder.getHeartName(), tcpOrder.getOperationName(), tcpOrder.getFacility(),Long.valueOf(tcpOrder.getUserId()),Long.valueOf(tcpOrder.getLandId()));
         }
 //        "010300C80002 45 F5"
 
@@ -121,6 +123,21 @@ public class SendBasisUtils {
             case "06":
                 substring = str2;
                 break;
+            case "10":
+                byte[] bytes = new byte[6];
+                for (int i1 = 0; i1 < data.length; i1++) {
+                    if (i1 == 6){
+                        break;
+                    }
+                    bytes[i1] = data[i1];
+                }
+                byte[] crc16 = Crc16Util.getCrc16(bytes);
+                substring = Crc16Util.byteTo16String(bytes).toUpperCase()+Crc16Util.byteTo16String(crc16).toUpperCase();
+                substring = substring.replaceAll("\\s*", "");
+                order.setResults(0);
+                break;
+            default:
+                substring = null;
         }
 
         String s = RedisKeyConf.HANDLE + ":" + heartName + "_" + facility + "_" + substring;
@@ -129,6 +146,8 @@ public class SendBasisUtils {
         return s;
 
     }
+
+
 
 
 
@@ -182,13 +201,13 @@ public class SendBasisUtils {
 
     /*
     * 操作指令等待返回方法
-    *
+    * 返回
     * */
     private static void HeartbeatRun(String text, DbOperationVo dbOperationVo) {
         try {
             Thread.sleep(1500);
             int tag = 0;
-            //        加锁
+             //        加锁
             for (int i = 0; i < 15; i++) {
 
                 String s1 = String.valueOf(Thread.currentThread().getId());
@@ -222,7 +241,8 @@ public class SendBasisUtils {
                 Thread.sleep(100);
             }
             if (tag == 1) {
-                throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
+                return;
+                //throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility(),Long.valueOf(dbOperationVo.getUserId()),Long.valueOf(dbOperationVo.getLandId()));
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -261,7 +281,7 @@ public class SendBasisUtils {
             channel.flush();
         } catch (Exception e) {
 //            抛出异常
-            throw new FaultExceptions(tcpOrder.getHeartName(), tcpOrder.getOperationName(), tcpOrder.getFacility());
+            throw new FaultExceptions(tcpOrder.getHeartName(), tcpOrder.getOperationName(), tcpOrder.getFacility(),Long.valueOf(tcpOrder.getUserId()),Long.valueOf(tcpOrder.getLandId()));
         }
     }
 
@@ -299,7 +319,7 @@ public class SendBasisUtils {
                 Thread.sleep(100);
             }
             if (tag == 1) {
-                throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility());
+                throw new OperationExceptions(dbOperationVo.getHeartName(), dbOperationVo.getOperationName(), dbOperationVo.getFacility(),Long.valueOf(dbOperationVo.getUserId()),Long.valueOf(dbOperationVo.getLandId()));
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -340,7 +360,7 @@ public class SendBasisUtils {
             channel.flush();
         } catch (Exception e) {
 //            抛出异常
-            throw new FaultExceptions(tcpOrder.getHeartName(), tcpOrder.getOperationName(), tcpOrder.getFacility());
+            throw new FaultExceptions(tcpOrder.getHeartName(), tcpOrder.getOperationName(), tcpOrder.getFacility(),Long.valueOf(tcpOrder.getUserId()),Long.valueOf(tcpOrder.getLandId()));
         }
 //        "010300C80002 45 F5"
 

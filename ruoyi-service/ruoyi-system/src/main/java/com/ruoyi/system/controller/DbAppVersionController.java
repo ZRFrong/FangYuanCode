@@ -7,9 +7,13 @@ import com.ruoyi.system.service.ISysOssService;
 import io.swagger.annotations.*;
 import net.dongliu.apk.parser.ApkFile;
 import net.dongliu.apk.parser.bean.ApkMeta;
+import net.dongliu.apk.parser.bean.ApkSigner;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.ruoyi.common.core.domain.R;
@@ -21,8 +25,14 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.Signature;
+import java.security.cert.CertificateException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * app版本更新 提供者
@@ -111,11 +121,11 @@ public class DbAppVersionController extends BaseController
 		DbAppVersion dbAppVersion = new DbAppVersion();
 		DbAppVersion dbAppVersion1 = dbAppVersionService.selectDbAppVersionList(dbAppVersion).get(0);
 		DbAppUpdate dbAppUpdate = new DbAppUpdate();
-			dbAppUpdate.setNew_version(dbAppVersion1.getAppVersion());
+			dbAppUpdate.setNew_version(dbAppVersion1.getAppVersion()+"");
 			dbAppUpdate.setApk_file_url(dbAppVersion1.getDownloadUrl());
 			dbAppUpdate.setUpdate_log(dbAppVersion1.getUpdateState());
 			dbAppUpdate.setConstraint(dbAppVersion1.getIsConstraint().equals(0)?true :false );
-		if (Integer.parseInt(versions)>=Integer.parseInt(dbAppVersion1.getAppVersion())){
+		if (Integer.parseInt(versions)>=Integer.parseInt(dbAppVersion1.getAppVersion()+"")){
 //			最新版本无需更新
 			dbAppUpdate.setUpdate("No");
 		}else {
@@ -123,6 +133,22 @@ public class DbAppVersionController extends BaseController
 
 		}
 		return R.data(dbAppUpdate);
+	}
+
+	/**
+	 * 检测App是否需要更新
+	 * @since: 2.0.0
+	 * @param version
+	 * @return: com.ruoyi.common.core.domain.R
+	 * @author: ZHAOXIAOSI
+	 * @date: 2021/5/5 16:15
+	 * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+	 */
+	@GetMapping("AppCheckUpdate/{version}")
+	@ApiOperation(value = "检测App是否需要更新",notes = "根据is_constraint：0 无需更新，1 需要强制更新，2 有新版本但无需强制更新”",httpMethod = "GET")
+	@ApiImplicitParam(name = "version",value = "当前版本号",required = true)
+	public R appCheckUpdate(@PathVariable("version") Integer version){
+		return R.data(dbAppVersionService.appCheckUpdate(version+""));
 	}
 
 
@@ -135,12 +161,12 @@ public class DbAppVersionController extends BaseController
             @ApiImplicitParam(name = "updateState",value = "版本更新特性说明!",required = true),
     })
 	public R apkUpload(@RequestPart("file")MultipartFile file, @RequestParam(name = "updateUserName") String updateUserName,@RequestParam(name = "isConstraint") Integer isConstraint, @RequestParam(name = "updateState")String updateState) {
-		if (file.isEmpty()){
-			return R.error();
+		if (file.isEmpty() || !file.getOriginalFilename().contains(".apk")){
+			return R.error(HttpStatus.BAD_REQUEST.value(),"请上传APK!");
 		}
 		String apkVersion ;
         try {
-            File fileTmp = new File(file.getOriginalFilename());
+			File fileTmp = new File(file.getOriginalFilename());
             FileUtils.copyInputStreamToFile(file.getInputStream(),fileTmp);
             DbAppVersion version = new DbAppVersion();
             ApkFile apkFile = new ApkFile(fileTmp);
@@ -150,11 +176,12 @@ public class DbAppVersionController extends BaseController
             if (dbAppVersion != null){
                 return R.error(ResultEnum.APK_EXIST.getCode(),ResultEnum.APK_EXIST.getMessage());
             }
-            version.setAppVersion(apkVersion);
+            version.setAppVersion(Integer.valueOf(apkVersion));
             version.setUpdateState(updateState);
             version.setIsConstraint(isConstraint);
             version.setUpdateBy(updateUserName);
-            version.setUpdateTime(new Date());
+            version.setCreateTime(new Date());
+            version.setMd5(DigestUtils.md5Hex(new FileInputStream(fileTmp)));
             SysOss sysOss = sysOssService.insertFile(file, updateUserName);
             String url = sysOss.getUrl();
             if (url != null){
@@ -169,4 +196,6 @@ public class DbAppVersionController extends BaseController
         }
         return R.error();
 	}
+
+
 }

@@ -12,6 +12,7 @@ import com.ruoyi.system.domain.DbUser;
 import com.ruoyi.system.feign.SendSmsClient;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -125,21 +126,21 @@ public class DbEquipmentAdminController extends BaseController
 
     /**
      * @since: 1.0.0
-     * @param landId
+     * @param landId 大棚id
+     * @param functionIds 功能id集合
      * @return: com.ruoyi.common.core.domain.R
      * @author: ZHAOXIAOSI
      * @date: 2021/4/7 10:08
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
     @PostMapping("insertEquipmentAdmin")
-    public R insertEquipmentAdmin(Long landId){
+    public R insertEquipmentAdmin(Long landId,String functionIds){
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
         DbEquipmentAdmin admin  = dbEquipmentAdminService.selectDbEquipmentAdminByUserIdAndLandId(landId,Long.valueOf(userId),null);
         if (admin != null){
             return R.ok("您已经成为此大棚的管理员了，切勿重复添加~ _ ~!");
         }
-        DbEquipmentAdmin dbEquipmentAdmin =  dbEquipmentAdminService.insertEquipmentAdmin(landId,userId,admin.getEquipmentId());
-        return dbEquipmentAdmin != null ? R.ok("添加成功，请前去看看吧！") : R.error("添加失败，请稍后再试或者联系管理员！");
+        return checkupAdmin(Long.valueOf(userId), landId, functionIds);
     }
 
     /***
@@ -177,6 +178,9 @@ public class DbEquipmentAdminController extends BaseController
 		DbUser user = new DbUser();
 		user.setPhone(phone);
 		user = dbUserService.selectDbUserByPhone(user);
+		if (user == null){
+			return R.error(HttpStatus.BAD_REQUEST.value(),"此用户尚未在方圆村注册,请联系该用户注册！");
+		}
 		return checkupAdmin(user.getId(),landId,functionIds);
     }
 

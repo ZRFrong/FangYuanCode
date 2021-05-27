@@ -1,29 +1,32 @@
 package com.ruoyi.fangyuanapi.controller;
 
 import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.core.page.PageConf;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.fangyuanapi.service.IDbEquipmentAdminService;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
 import com.ruoyi.system.domain.DbAbnormalInfo;
 import com.ruoyi.system.domain.DbEquipment;
+import com.ruoyi.system.domain.DbEquipmentAdmin;
 import com.ruoyi.system.domain.DbLand;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.fangyuanapi.service.IDbAbnormalInfoService;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.xml.crypto.Data;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 报警信息 提供者
@@ -153,6 +156,63 @@ public class DbAbnormalInfoController extends BaseController {
         return result1(dbAbnormalInfos);
 
     }
+
+    @Autowired
+    private IDbEquipmentAdminService dbEquipmentAdminService;
+
+    /**
+     * 获取预警信息
+     * @since: 2.0.0
+     * @param landId
+     * @param date
+     * @param currPage
+     *  @param pageSize
+     * @return: com.ruoyi.common.core.domain.R
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/9 15:11
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @GetMapping("getAbnormalInfo/{landId}/{date}/{currPage}/{pageSize}")
+    @ApiOperation(value = "获取预警信息",notes = "获取预警信息",httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "landId",value = "大棚id",required = false),
+            @ApiImplicitParam(name = "date",value = "时间 2010-1-1 到天即可，没有可以为 null 或者 双引号",required = false),
+            @ApiImplicitParam(name = "currPage",value = "从1 开始",required = true),
+            @ApiImplicitParam(name = "pageSize",value = "条数 最大不得50",required = true)
+    })
+    public R getAbnormalInfo(@PathVariable("landId") Long landId,@PathVariable("date") Date date,@PathVariable("currPage") Long currPage,@PathVariable("pageSize") Long pageSize){
+        if (pageSize > PageConf.MAX_PAGE_SIZE || currPage == null || pageSize == null){
+            return null;
+        }
+        Long userId = Long.valueOf(getRequest().getHeader(Constants.CURRENT_ID));
+        List<Long> list = new ArrayList<Long>();
+        List<Map<String,Object>> mapList = null;
+        if (landId != null && landId > 0 ){
+            //查询单个大棚
+            list = Arrays.asList(landId);
+        }
+        HashMap<Long, String> map = new HashMap<>();
+        if (list.size() == 0){
+            //查询多个大棚或者按照日期查询多个大棚
+            mapList = dbEquipmentAdminService.selectLandIdAndNameByUserId(null,userId);
+            if (mapList.size() == 0){
+                return R.ok("暂无大棚！");
+            }
+        }else {
+            mapList = dbEquipmentAdminService.selectLandIdAndNameByUserId(landId,userId);
+        }
+        for (Map<String, Object> e : mapList) {
+            list.add(Long.valueOf(e.get("land_id")+""));
+            map.put(Long.valueOf(e.get("land_id")+""),e.get("land_name")+"");
+        }
+        currPage = (currPage - 1) * pageSize;
+        List<Map<String, String>> maps = dbAbnormalInfoService.selectAbnormals(list, userId, date, currPage, pageSize);
+        for (Map<String, String> m : maps) {
+            m.put("land_name",map.get(m.get("land_id")));
+        }
+        return R.data(maps);
+    }
+
 
 
 }

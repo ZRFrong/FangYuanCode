@@ -1,6 +1,9 @@
 package com.ruoyi.system.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -15,6 +18,10 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @date 2020-09-28
  */
 @ApiModel
+@Builder(toBuilder = true)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class DbTcpType extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -72,139 +79,36 @@ public class DbTcpType extends BaseEntity
     @ApiModelProperty(value = "空气湿度")
     private String humidityAir;
 
-    @Override
-    public String toString() {
-        return "DbTcpType{" +
-                "tcpTypeId=" + tcpTypeId +
-                ", temperatureSoil='" + temperatureSoil + '\'' +
-                ", humiditySoil='" + humiditySoil + '\'' +
-                ", light='" + light + '\'' +
-                ", heartName='" + heartName + '\'' +
-                ", co2='" + co2 + '\'' +
-                ", idAuto=" + idAuto +
-                ", autocontrolType='" + autocontrolType + '\'' +
-                ", autocontrolTypeEnd='" + autocontrolTypeEnd + '\'' +
-                ", temperatureAir='" + temperatureAir + '\'' +
-                ", humidityAir='" + humidityAir + '\'' +
-                ", isShow=" + isShow +
-                '}';
-    }
+    /** 电导率 */
+    @Excel(name = "电导率")
+    @ApiModelProperty(value = "电导率")
+    private String conductivity;
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
+    /** ph */
+    @Excel(name = "ph")
+    @ApiModelProperty(value = "ph")
+    private String ph;
 
-    public String getAutocontrolTypeEnd() {
-        return autocontrolTypeEnd;
-    }
+    /** 氮 */
+    @Excel(name = "氮")
+    @ApiModelProperty(value = "氮")
+    private String nitrogen;
 
-    public void setAutocontrolTypeEnd(String autocontrolTypeEnd) {
-        this.autocontrolTypeEnd = autocontrolTypeEnd;
-    }
+    /** 磷 */
+    @Excel(name = "磷")
+    @ApiModelProperty(value = "磷")
+    private String phosphorus;
+
+    /** 钾 */
+    @Excel(name = "钾")
+    @ApiModelProperty(value = "钾")
+    private String potassium;
 
     /** 是否显示（掉线的话不显示） */
     @Excel(name = "是否显示", readConverterExp = "掉=线的话不显示")
     @ApiModelProperty(value = "是否显示")
     private Integer isShow;
 
-    public void setTcpTypeId(Long tcpTypeId)
-    {
-        this.tcpTypeId = tcpTypeId;
-    }
 
-    public Long getTcpTypeId()
-    {
-        return tcpTypeId;
-    }
-    public void setTemperatureSoil(String temperatureSoil)
-    {
-        this.temperatureSoil = temperatureSoil;
-    }
-
-    public String getTemperatureSoil()
-    {
-        return temperatureSoil;
-    }
-    public void setHumiditySoil(String humiditySoil)
-    {
-        this.humiditySoil = humiditySoil;
-    }
-
-    public String getHumiditySoil()
-    {
-        return humiditySoil;
-    }
-    public void setLight(String light)
-    {
-        this.light = light;
-    }
-
-    public String getLight()
-    {
-        return light;
-    }
-    public void setHeartName(String heartName)
-    {
-        this.heartName = heartName;
-    }
-
-    public String getHeartName()
-    {
-        return heartName;
-    }
-    public void setCo2(String co2)
-    {
-        this.co2 = co2;
-    }
-
-    public String getCo2()
-    {
-        return co2;
-    }
-    public void setIdAuto(Integer idAuto)
-    {
-        this.idAuto = idAuto;
-    }
-
-    public Integer getIdAuto()
-    {
-        return idAuto;
-    }
-    public void setAutocontrolType(String autocontrolType)
-    {
-        this.autocontrolType = autocontrolType;
-    }
-
-    public String getAutocontrolType()
-    {
-        return autocontrolType;
-    }
-    public void setTemperatureAir(String temperatureAir)
-    {
-        this.temperatureAir = temperatureAir;
-    }
-
-    public String getTemperatureAir()
-    {
-        return temperatureAir;
-    }
-    public void setHumidityAir(String humidityAir)
-    {
-        this.humidityAir = humidityAir;
-    }
-
-    public String getHumidityAir()
-    {
-        return humidityAir;
-    }
-    public void setIsShow(Integer isShow)
-    {
-        this.isShow = isShow;
-    }
-
-    public Integer getIsShow()
-    {
-        return isShow;
-    }
 
 }

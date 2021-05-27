@@ -5,6 +5,7 @@ import com.ruoyi.common.core.domain.R;
 import com.ruoyi.system.feign.factory.RemoteApiFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  * @author ZHAOXIAOSI
@@ -15,6 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @FeignClient(name = ServiceNameConstants.SYSTEM_FANGYUANTCP, fallbackFactory = RemoteApiFallbackFactory.class)
 public interface DbTcpClientService {
-    @GetMapping("/client/queryOne")
-    public R queryOne(String heartName);
+    @GetMapping("/client/queryOne/{heartName}")
+    R queryOne(@PathVariable("heartName") String heartName);
 }

@@ -2,12 +2,7 @@ package com.ruoyi.fangyuanapi.controller;
 
 import com.ruoyi.system.domain.DbEquipmentComponent;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -15,6 +10,8 @@ import io.swagger.annotations.ApiParam;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentComponentService;
+
+import java.util.List;
 
 /**
  * 版本加功能 提供者
@@ -104,5 +101,50 @@ public class DbEquipmentComponentController extends BaseController
         return result(dbEquipmentComponentService.selectDbEquipmentComponentList(dbEquipmentComponent));
     }
 
-	
+    /**
+     * 修改补光的开关状态
+     * @since: 2.0.0
+ 	 * @param heartbeatText
+ 	 * @param switchState
+     * @return: com.ruoyi.common.core.domain.R
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/20 17:38
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+	@PutMapping("modifyLightStatus")
+	public R modifyLightStatus(String heartbeatText,String switchState,Integer fillLightTimingStatus){
+		return dbEquipmentComponentService.updateLightStatus(heartbeatText,switchState,fillLightTimingStatus);
+	}
+
+	/**
+	 * 修改功能的开关状态
+	 * @since: 2.0.0
+	 * @param heartbeatText
+	 * @param switchState
+	 * @param  functionLogo 功能标识
+	 * @return: com.ruoyi.common.core.domain.R
+	 * @author: ZHAOXIAOSI
+	 * @date: 2021/5/20 17:38
+	 * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+	 */
+	@PutMapping("modifyFunctionStatus")
+	public R modifyFunctionLogoStatus(String heartbeatText,String functionLogo,String switchState,Integer fillLightTimingStatus){
+		return dbEquipmentComponentService.updatFunctionLogo(heartbeatText,functionLogo,switchState,fillLightTimingStatus);
+	}
+
+	/**
+	 * 卷帘卷膜进度解析
+	 * @since: 2.0.0
+ 	 * @param list
+ 	 * @param heartbeatText
+	 * @return: com.ruoyi.common.core.domain.R
+	 * @author: ZHAOXIAOSI
+	 * @date: 2021/5/20 17:44
+	 * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+	 */
+	@PutMapping("heartbeatText")
+	public R progressAnalysis(@RequestParam("list") List<String> list,@RequestParam("heartbeatText")String heartbeatText){
+		int i = dbEquipmentComponentService.updateDbEquipmentComponentProgress(list, heartbeatText);
+		return i>0 ? R.ok() : R.error();
+	}
 }

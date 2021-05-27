@@ -66,4 +66,5 @@ public interface IDbEquipmentService
 
     List<DbEquipment> selectAllDbEquipment();
 
+    String selectByHeartbeatText(String heartbeatText);
 }

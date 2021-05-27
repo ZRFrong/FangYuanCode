@@ -6,6 +6,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.sms.PhoneUtils;
 import com.ruoyi.common.utils.sms.ResultEnum;
 import com.ruoyi.fangyuanapi.conf.OperationConf;
+import com.ruoyi.fangyuanapi.dto.FunctionDto;
 import com.ruoyi.fangyuanapi.mapper.DbEquipmentComponentMapper;
 import com.ruoyi.fangyuanapi.service.*;
 import com.ruoyi.system.domain.*;
@@ -60,6 +61,9 @@ public class DbLandController extends BaseController {
     @Autowired
     private IDbUserService dbUserService;
 
+    @Autowired
+    private IDbEquipmentComponentService dbEquipmentComponentService;
+
     @RequestMapping("getOperationConf")
     public R getOperationConf(){
         return R.data(operationConf.getTyps());
@@ -80,7 +84,7 @@ public class DbLandController extends BaseController {
         dbLandService.updateDbLand(land);
         if (!admin.getLandName().equals(land.getNickName())){
             admin.setLandName(land.getNickName());
-            dbEquipmentAdminService.updateDbEquipmentAdmin(admin);
+            dbEquipmentAdminService.updateLandNameByLandId(land.getLandId(),land.getNickName());
         }
         return R.ok();
     }
@@ -174,7 +178,7 @@ public class DbLandController extends BaseController {
 
     /*设备返回用户id*/
     @GetMapping("deviceBelongs/{equipmentId}")
-    private R deviceBelongs( @PathVariable("equipmentId") Long equipmentId){
+    public R deviceBelongs( @PathVariable("equipmentId") Long equipmentId){
         DbLand dbLand = new DbLand();
         dbLand.setEquipmentIds(equipmentId.toString());
         List<DbLand> dbLands = dbLandService.selectDbLandList(dbLand);
@@ -192,7 +196,6 @@ public class DbLandController extends BaseController {
         dbLand.setDbUserId(Long.valueOf(userId));
         List<Map<String, Object>> result = dbLandService.selectDbLandByUserIdAndSideId(Long.valueOf(userId));
         return R.data(result);
-
     }
 
     /**
@@ -313,9 +316,9 @@ public class DbLandController extends BaseController {
             @ApiImplicitParam(name = "noteText",value = "备注",required = false),
             @ApiImplicitParam(name = "equipmentId",value = "设备id",required = true),
     })
-    public R insertEquipmentToLand(DbLand dbLand,Long equipmentId) {
+    public R insertEquipmentToLand(DbLand dbLand,Long equipmentId,Long qrCodeId) {
         String userId = getRequest().getHeader(Constants.CURRENT_ID);
-        return dbLandService.insertEquipmentToLand(dbLand,userId,equipmentId) ? R.ok():R.error("绑定出错了，请稍后再试或者联系管理员！") ;
+        return dbLandService.insertEquipmentToLand(dbLand,userId,equipmentId,qrCodeId) ? R.ok():R.error("绑定出错了，请稍后再试或者联系管理员！") ;
     }
 
     /**
@@ -360,17 +363,18 @@ public class DbLandController extends BaseController {
 
     /**
      * 获取单个大棚操作信息
-     * @Author BugKing
+     * @Author ZHAOXIAOSI
      * @Date 14:53 2021/5/2
      * @since: 2.0.0
-     * @param  landId
+     * @param  equipmentId
      * @return com.ruoyi.common.core.domain.R
      * @sign 他日若遂凌云志,敢笑黄巢不丈夫!
      **/
-    @GetMapping("getOneLand")
-    public R getOneLand(Long landId){
-
-        return null;
+    @GetMapping("getLandAndOperateInfo/{equipmentId}")
+    @ApiOperation(value = "获取单个大棚操作信息",notes = "获取单个大棚操作信息",httpMethod = "GET")
+    @ApiImplicitParam(name = "landId",value = "大棚信息" ,required = true)
+    public R getLandAndOperateInfo(@PathVariable("equipmentId") Long equipmentId){
+        return R.data(dbLandService.getLandAndOperateInfo(equipmentId,Long.valueOf(getRequest().getHeader(Constants.CURRENT_ID))));
     }
 
     /**
@@ -385,7 +389,6 @@ public class DbLandController extends BaseController {
      * @date: 2021/4/16 13:52
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
-
     @PostMapping("bindingEquipment")
     public R bindingEquipment(String phone,String code,Long landId,String landName){
         Long userId = Long.valueOf(getRequest().getHeader(Constants.CURRENT_ID));
@@ -557,7 +560,7 @@ public class DbLandController extends BaseController {
     public R getAPPLandList(){
         Long userId = Long.valueOf(getRequest().getHeader(Constants.CURRENT_ID));
         List<DbLand> lands = dbLandService.selectDbLandsByUserId(userId);
-        //todo
+        //todo 尚未使用
         return null;
     }
 

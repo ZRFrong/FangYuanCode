@@ -59,7 +59,7 @@ public class ReceiveResponse {
 ////        页面响应
 //        connectionResponse(getname,string);
 
-        log.info("收到操作指令：" + key + "当前的时间毫秒值是：" + new Date().getTime());
+        log.info("收到操作指令：" + key + "当前的时间毫秒值是：" + System.currentTimeMillis());
 
 //        加锁
         String s1 = String.valueOf(Thread.currentThread().getId());
@@ -73,14 +73,14 @@ public class ReceiveResponse {
         try {
             dbTcpClient = redisUtils.get(key, DbTcpOrder.class);
             dbTcpClient.setResults(1);
-            Long i = new Date().getTime() - dbTcpClient.getCreateTime().getTime();
+            Long i = System.currentTimeMillis() - dbTcpClient.getCreateTime().getTime();
             dbTcpClient.setWhenTime(i);
             dbTcpClient.setUpdateTime(new Date());
             dbTcpClient.setResultsText(string);
 //       改变状态存储进去
             redisUtils.set(key, JSONArray.toJSONString(dbTcpClient));
         } catch (Exception e) {
-            log.info("无反馈接收：" + key + "当前的时间毫秒值是：" + new Date().getTime());
+            log.info("无反馈接收：" + key + "当前的时间毫秒值是：" + System.currentTimeMillis());
         }
 
 
@@ -105,7 +105,9 @@ public class ReceiveResponse {
             case "06":
                 charStic2 = string;
                 break;
-
+            case "10":
+                charStic2 = string;
+                break;
         }
         String charStic = string.substring(0, 2);
 

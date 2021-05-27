@@ -20,7 +20,6 @@ public class BusinessExceptionHandle {
     public static final  String FAULT="故障";
     public static final  String OPERATIONEXCEPTIONS="操作返回异常";
     private RemoteApiService remoteApiService = SpringUtils.getBean(RemoteApiService.class);
-    private IDbAbnormalInfoService1 abnormalInfoSave = SpringUtils.getBean(IDbAbnormalInfoService1.class);
 
     /**
      * 掉线异常处理
@@ -35,10 +34,10 @@ public class BusinessExceptionHandle {
 
         dbAbnormalInfo.setObjectType(e.getCode());
         dbAbnormalInfo.setDbEquipmentId(Long.valueOf(e.getEquipmentId()));
-
+        dbAbnormalInfo.setText(e.getEquipmentId());
         dbAbnormalInfo.setFaultType(DROPS);
-
-//        abnormalInfoSave.insertDbAbnormalInfo(dbAbnormalInfo);
+        dbAbnormalInfo.setUserId(e.getUserId());
+        dbAbnormalInfo.setLandId(e.getLandId());
         remoteApiService.abnormalInfoSave(dbAbnormalInfo);
 
         return R.error(e.getMessage() + "设备掉线异常");
@@ -55,7 +54,8 @@ public class BusinessExceptionHandle {
         dbAbnormalInfo.setObjectType(e.getCode());
         dbAbnormalInfo.setFaultType(FAULT);
         dbAbnormalInfo.setText(e.getEquipmentId());
-//        abnormalInfoSave.saveEquimentOperation(dbAbnormalInfo);
+        dbAbnormalInfo.setUserId(e.getUserId());
+        dbAbnormalInfo.setLandId(e.getLandId());
         remoteApiService.saveEquimentOperation(dbAbnormalInfo);
         return R.error(e.getMessage() + "设备故障异常");
     }
@@ -69,10 +69,10 @@ public class BusinessExceptionHandle {
         dbAbnormalInfo.setAlarmTime(new Date());
         dbAbnormalInfo.setAlarmExplain(e.getMessage());
         dbAbnormalInfo.setObjectType(e.getCode());
-
+        dbAbnormalInfo.setUserId(e.getUserId());
+        dbAbnormalInfo.setLandId(e.getLandId());
         dbAbnormalInfo.setFaultType(OPERATIONEXCEPTIONS);
         dbAbnormalInfo.setText(e.getEquipmentId());
-//        abnormalInfoSave.saveEquimentOperation(dbAbnormalInfo);
         remoteApiService.saveEquimentOperation(dbAbnormalInfo);
 
         return R.error(e.getMessage() + "设备操作异常");

@@ -2,6 +2,7 @@ package com.ruoyi.system.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -21,6 +22,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class DbOperationRecord extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -72,89 +74,6 @@ public class DbOperationRecord extends BaseEntity
     @Excel(name = "大棚id")
     @ApiModelProperty(value = "大棚id")
     private Long landId;
-
-
-    public void setId(Long id) 
-    {
-        this.id = id;
-    }
-
-    public Long getId() 
-    {
-        return id;
-    }
-    public void setDbUserId(Long dbUserId) 
-    {
-        this.dbUserId = dbUserId;
-    }
-
-    public Long getDbUserId() 
-    {
-        return dbUserId;
-    }
-    public void setIsComplete(Integer isComplete) 
-    {
-        this.isComplete = isComplete;
-    }
-
-    public Integer getIsComplete() 
-    {
-        return isComplete;
-    }
-    public void setOperationTime(Date operationTime) 
-    {
-        this.operationTime = operationTime;
-    }
-
-    public Date getOperationTime() 
-    {
-        return operationTime;
-    }
-    public void setOperationText(String operationText) 
-    {
-        this.operationText = operationText;
-    }
-
-    public String getOperationText() 
-    {
-        return operationText;
-    }
-    public void setOperationObject(String operationObject) 
-    {
-        this.operationObject = operationObject;
-    }
-
-    public String getOperationObject() 
-    {
-        return operationObject;
-    }
-    public void setOperationObjectId(String operationObjectId)
-    {
-        this.operationObjectId = operationObjectId;
-    }
-
-    public String getOperationObjectId()
-    {
-        return operationObjectId;
-    }
-    public void setOperationObjectType(Integer operationObjectType)
-    {
-        this.operationObjectType = operationObjectType;
-    }
-
-    public Integer getOperationObjectType() 
-    {
-        return operationObjectType;
-    }
-    public void setOperationSource(Integer operationSource) 
-    {
-        this.operationSource = operationSource;
-    }
-
-    public Integer getOperationSource() 
-    {
-        return operationSource;
-    }
 
     @Override
     public String toString() {

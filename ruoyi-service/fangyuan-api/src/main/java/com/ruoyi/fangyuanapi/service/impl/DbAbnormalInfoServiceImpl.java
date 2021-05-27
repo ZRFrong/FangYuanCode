@@ -1,13 +1,17 @@
 package com.ruoyi.fangyuanapi.service.impl;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import com.ruoyi.fangyuanapi.mapper.DbLandMapper;
 import com.ruoyi.system.domain.DbAbnormalInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.mapper.DbAbnormalInfoMapper;
 import com.ruoyi.fangyuanapi.service.IDbAbnormalInfoService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 报警信息Service业务层处理
@@ -20,6 +24,10 @@ public class DbAbnormalInfoServiceImpl implements IDbAbnormalInfoService
 {
     @Autowired
     private DbAbnormalInfoMapper dbAbnormalInfoMapper;
+
+    @Autowired
+    private DbLandMapper dbLandMapper;
+
 
     /**
      * 查询报警信息
@@ -52,6 +60,7 @@ public class DbAbnormalInfoServiceImpl implements IDbAbnormalInfoService
      * @return 结果
      */
     @Override
+    @Transactional
     public int insertDbAbnormalInfo(DbAbnormalInfo dbAbnormalInfo)
     {
         return dbAbnormalInfoMapper.insertDbAbnormalInfo(dbAbnormalInfo);
@@ -92,8 +101,14 @@ public class DbAbnormalInfoServiceImpl implements IDbAbnormalInfoService
      * @param id 报警信息ID
      * @return 结果
      */
+    @Override
     public int deleteDbAbnormalInfoById(Long id)
     {
         return dbAbnormalInfoMapper.deleteDbAbnormalInfoById(id);
+    }
+
+    @Override
+    public List<Map<String, String>> selectAbnormals(List<Long> list,Long userId, Date date, Long currPage, Long pageSize) {
+        return dbAbnormalInfoMapper.selectAbnormals(list,date,userId,currPage,pageSize);
     }
 }

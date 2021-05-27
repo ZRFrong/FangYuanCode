@@ -102,4 +102,17 @@ public interface IDbTcpTypeService {
 
 
     R querySync(List<DbOperationVo> dbOperationVoList);
+
+    /**
+     * 根据设备主动上传的数据修改大棚环境传感器数据值
+     * @since: 2.0.0
+     * @param dbTcpType
+     * @return: int
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/20 16:52
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    int updateDbTcpTypeSensorData(DbTcpType dbTcpType);
+
+    Integer selectDbTcpTypeByHeartName(String heartbeatText);
 }

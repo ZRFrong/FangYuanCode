@@ -35,7 +35,7 @@ public class TaskHeartbeat {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-//                try {
+                try {
                     DbTcpClient dbTcpClient = new DbTcpClient();
                     dbTcpClient.setIsOnline(0);
                     List<DbTcpClient> dbTcpClients = dbTcpClientService.selectDbTcpClientList(dbTcpClient);
@@ -75,10 +75,10 @@ public class TaskHeartbeat {
 
                     }
                     log.info("心跳定时查询===时间："+new Date());
-//                }
-//                catch (Exception e) {
-//                    log.error("心跳定时查询错误===时间："+new Date());
-//                }
+                }
+                catch (Exception e) {
+                    log.error("心跳定时查询错误===时间："+new Date());
+                }
             }
         };
 //       心跳定时执行1分钟

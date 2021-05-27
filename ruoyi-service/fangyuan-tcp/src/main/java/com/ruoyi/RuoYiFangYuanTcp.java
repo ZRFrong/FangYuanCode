@@ -1,7 +1,9 @@
 package com.ruoyi;
 
+import com.ruoyi.fangyuantcp.tcp.NettyServer;
 import com.ruoyi.fangyuantcp.timing.*;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -22,12 +24,19 @@ import tk.mybatis.spring.annotation.MapperScan;
 @MapperScan("com.ruoyi.*.mapper")
 @Log4j2
 public class RuoYiFangYuanTcp {
+
     public static void main(String[] args) {
         // System.setProperty("spring.devtools.restart.enabled", "false");
         /*
          *开启心跳定时查询
          * */
         SpringApplication.run(RuoYiFangYuanTcp.class, args);
+        try {
+            NettyServer.bind(12307);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         log.info("开启心跳定时查询");
         TaskHeartbeat taskHeartbeat = new TaskHeartbeat();
         taskHeartbeat.HeartbeatRun();

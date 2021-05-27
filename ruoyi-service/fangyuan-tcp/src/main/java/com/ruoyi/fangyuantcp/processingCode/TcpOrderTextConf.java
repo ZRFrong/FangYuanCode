@@ -30,6 +30,25 @@ public class TcpOrderTextConf {
     /*更改自动手动通风操作 关*/
     public static String operateTongFengOver = "01,244,00,00";
 
+    /**
+     * 补光定时
+     * */
+    public static String LIGHT_SCHEDULED = "00,232,00,02,04";
+
+    /**
+     * 取消定时
+     * */
+    public static  String CLEAR_LIGHT_SCHEDULED = "00,49,255,00";
+
+    /**
+     * 卷帘卷膜百分比操作
+     * */
+    public static String PERCENTAGE_OPERATE1 = "00,60,00,02,04,00,01,00";
+
+    /**
+     * 卷帘卷膜百分比操作
+     * */
+    public static String PERCENTAGE_OPERATE2 = "00,62,00,02,04,00,01,00";
 
     /*
      * 更改自动手动通风温度操作 开

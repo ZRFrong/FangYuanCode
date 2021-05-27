@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.util.CollectionUtils;
 
 
 /**
@@ -103,7 +104,11 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
 
     @Override
     public int heartbeatUpdate(DbTcpClient dbTcpClient) {
-        DbTcpClient dbTcpClient1 = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient).get(0);
+        List<DbTcpClient> list = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
+        if (CollectionUtils.isEmpty(list)){
+            return 0;
+        }
+        DbTcpClient dbTcpClient1 = list.get(0);
         dbTcpClient1.setHeartbeatTime(new Date());
         dbTcpClientMapper.updateDbTcpClient(dbTcpClient1);
         return 0;
@@ -211,6 +216,8 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
 
     @Override
     public Integer queryOne(String heartName) {
+        Integer integer = dbTcpClientMapper.queryOne(heartName);
+        System.out.println(heartName + "  === " + integer);
         return dbTcpClientMapper.queryOne(heartName);
     }
 }

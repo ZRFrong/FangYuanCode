@@ -38,7 +38,7 @@ public class DbUserRecordController extends BaseController
 	
 	@Autowired
 	private IDbUserRecordService dbUserRecordService;
-	
+
 	/**
 	 * 查询${tableComment}
 	 */

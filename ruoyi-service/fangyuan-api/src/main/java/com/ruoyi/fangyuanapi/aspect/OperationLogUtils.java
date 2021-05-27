@@ -60,7 +60,7 @@ public class OperationLogUtils {
             if (typs[i].equals(s)) {
                 for (int i1 = 0; i1 < handleNamecode.length; i1++) {
                     if (handleNamecode[i1].equals(handleName)) {
-                        stringBuilder.append("_"+arrs[1][i1]);
+                        stringBuilder.append(arrs[1][i1]);
                         return stringBuilder.toString();
                     }
                 }

@@ -2,6 +2,7 @@ package com.ruoyi.system.mapper;
 
 import com.ruoyi.system.domain.DbAppVersion;
 import java.util.List;
+import java.util.Map;
 
 /**
  * app版本更新Mapper接口
@@ -60,4 +61,15 @@ public interface DbAppVersionMapper
     public int deleteDbAppVersionByIds(String[] ids);
 
     DbAppVersion selectDbAppVersionByAppVersion(String apkVersion);
+
+    /**
+     * 检测app是否需要更新
+     * @since: 2.0.0
+     * @param version 当前版本号
+     * @return: java.util.List<java.util.Map<java.lang.String,java.lang.String>>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/5 15:49
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<Map<String,Object>> selectDbAppVersionsByVersion(String version);
 }

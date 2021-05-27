@@ -65,10 +65,8 @@ public class OperateControllerApp extends BaseController {
 
         List<String> strings = Arrays.asList(ids.split(","));
         String text = "";
-
         if (time!=null){
 //            添加定时任务
-
         }
 
         strings.forEach(ite -> send(landService.selectDbLandById(Long.valueOf(ite)), type, handleName,text));

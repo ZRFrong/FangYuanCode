@@ -83,4 +83,34 @@ public interface RemoteTcpService {
     //传感器状态留根
     @GetMapping(value = "type/curingType")
     R startSaveTiming();
+
+    /**
+     * 补光定时，或者取消
+     * @since: 2.0.0
+     * @param heartbeatText
+     * @param equipmentNo
+     * @param flag 0设置定时 1 取消定时
+     * @param startTime
+     * @param stopTime
+     * @return: com.ruoyi.common.core.domain.R
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/17 13:34
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @PostMapping("operateVentilate/operateLight")
+    R operateLight(@RequestParam("heartbeatText") String heartbeatText,@RequestParam("equipmentNo")String equipmentNo,@RequestParam("flag")Integer flag,@RequestParam("startTime")Long startTime,@RequestParam("stopTime")Long stopTime);
+
+    /**
+     * 卷帘卷膜进度百分比控制
+     * @since: 2.0.0
+     * @param heartbeatText
+     * @param equipmentNo
+     * @param percentage
+     * @return: com.ruoyi.common.core.domain.R
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/17 16:18
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @PostMapping("operateVentilate/percentageOperate")
+    R percentageOperate(@RequestParam("heartbeatText")String heartbeatText,@RequestParam("equipmentNo")String equipmentNo,@RequestParam("percentage")Integer percentage,@RequestParam("operateText")String operateText);
 }

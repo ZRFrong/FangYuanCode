@@ -134,7 +134,6 @@ public class OperationLogAspect {
         String ids = maps.get("ids").toString();
         StringBuilder stringBuilder = new StringBuilder();
         for (String s : ids.split(",")) {
-
             DbLand dbLand = landService.selectDbLandById(Long.valueOf(s));
             stringBuilder.append(dbLand.getNickName()+"\n");
         }

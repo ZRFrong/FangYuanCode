@@ -12,10 +12,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="alarmExplain"    column="alarm_explain"    />
         <result property="objectType"    column="object_type"    />
         <result property="dbEquipmentId"    column="db_equipment_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="landId"    column="land_id"    />
     </resultMap>
 
     <sql id="selectDbAbnormalInfoVo">
-        select id, fault_type, alarm_time, is_dispose, alarm_explain, object_type ,db_equipment_id from db_abnormal_info
+        select id, fault_type, alarm_time, is_dispose, alarm_explain, object_type ,db_equipment_id,user_id,user_id from db_abnormal_info
     </sql>
 
     <select id="selectDbAbnormalInfoList" parameterType="DbAbnormalInfo" resultMap="DbAbnormalInfoResult">
@@ -46,7 +48,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alarmExplain != null  and alarmExplain != ''">alarm_explain,</if>
             <if test="objectType != null  and objectType != ''">object_type,</if>
             <if test="dbEquipmentId != null  ">db_equipment_id,</if>
-         </trim>
+            <if test="userId != null  ">user_id,</if>
+            <if test="landId != null  ">land_id,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="faultType != null  and faultType != ''">#{faultType},</if>
             <if test="alarmTime != null ">#{alarmTime},</if>
@@ -54,6 +58,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alarmExplain != null  and alarmExplain != ''">#{alarmExplain},</if>
             <if test="objectType != null  and objectType != ''">#{objectType},</if>
             <if test="dbEquipmentId != null  ">#{dbEquipmentId},</if>
+            <if test="userId != null  ">#{userId},</if>
+            <if test="landId != null  ">#{landId},</if>
          </trim>
     </insert>
 
@@ -80,5 +86,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
-    
+    <select id="selectAbnormals" resultType="map" >
+        select fault_type,alarm_time,alarm_explain,land_id from db_abnormal_info where user_id = #{userId}
+        <if test="date != null" > and to_days(alarm_time)  = to_days(#{date})  </if>
+        and land_id in
+        <foreach collection="list" item="landId" open="(" separator="," close=")">
+            #{landId}
+        </foreach>
+        order by alarm_time desc
+        limit #{currPage},#{pageSize}
+    </select>
+
 </mapper>

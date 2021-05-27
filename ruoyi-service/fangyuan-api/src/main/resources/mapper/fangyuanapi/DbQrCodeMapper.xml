@@ -106,5 +106,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{qrCodeId}
         </foreach>
     </delete>
-    
+    <update id="updateDbQrCodeUserIdById">
+        update db_qr_code set admin_user_id = #{userId} where qr_code_id = #{qrCodeId}
+    </update>
+
 </mapper>

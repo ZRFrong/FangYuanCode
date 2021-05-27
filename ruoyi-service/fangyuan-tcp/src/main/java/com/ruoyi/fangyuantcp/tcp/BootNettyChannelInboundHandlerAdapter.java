@@ -2,6 +2,7 @@ package com.ruoyi.fangyuantcp.tcp;
 
 
 import com.ruoyi.fangyuantcp.processingCode.DisConnectUtils;
+import com.ruoyi.fangyuantcp.processingCode.HexTest;
 import com.ruoyi.fangyuantcp.processingCode.ReceiveResponse;
 import com.ruoyi.fangyuantcp.processingCode.ReceiveUtil;
 import com.ruoyi.system.domain.DbTcpClient;
@@ -41,9 +42,11 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
          * */
 //        接收到的消息格式
         String s = msg.toString();
+        System.out.println(s);
 
         if (s.contains("dapeng")) {
 //            心跳处理
+            log.warn("来到的心跳名称是："+s);
             DbTcpClient dbTcpClient = getIp(ctx);
             dbTcpClient.setHeartName(msg.toString());//心跳
             receiveUtil.heartbeatChoose(dbTcpClient, ctx);
@@ -79,19 +82,28 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
 //                更改设备自动手动状态
                 receiveUtil.returnHand(ctx, msg.toString());
                 receiveResponse.stateRespond(ctx, msg.toString());
-
             } else if (s.contains("0304")) {
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "开分风口温度：" + msg);
 //                更改设备自动手动开关温度
                 receiveUtil.returnautocontrolType(ctx, msg.toString());
                 receiveResponse.stateRespond(ctx, msg.toString());
             } else if (s.contains("0106")) {
-
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "写入自动控制通风" + msg);
                 receiveResponse.stateRespond(ctx, msg.toString());
             } else if (s.contains("C810")) {
-                log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "主动商法" + msg);
-                receiveUtil.messageActive(ctx, msg.toString());
+                log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "主动上发：" + msg);
+                HexTest test = new HexTest();
+                test.messageActive(ctx,msg.toString());
+                //receiveUtil.messageActive(ctx, msg.toString());
+            }else if (s.substring(2,8).equals("10003C")){
+                log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "卷膜一号百分比操作指令反馈：" + msg);
+                receiveResponse.stateRespond(ctx, msg.toString());
+            }else if (s.substring(2,8).equals("10003E")){
+                log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "卷膜二号百分比操作指令反馈：" + msg);
+                receiveResponse.stateRespond(ctx, msg.toString());
+            }else if (s.substring(2,8).equals("1000E8")){
+                log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "补光定时操作指令反馈：" + msg);
+                receiveResponse.stateRespond(ctx, msg.toString());
             } else {
                 log.error("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "乱码:" + msg);
             }

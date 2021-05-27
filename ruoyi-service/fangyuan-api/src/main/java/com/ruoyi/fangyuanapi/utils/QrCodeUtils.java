@@ -29,7 +29,7 @@ public class QrCodeUtils {
     private static final int QRCODE_SIZE = 300;
 
     // 用二维码生成新图片，新图片加高多少，比如加的字体大小为24，这里就设置成26
-    private static final int FONT_SIZE_HEIGHT = 30;
+    private static final int FONT_SIZE_HEIGHT = 24;
     // 用二维码生成新图片，宽度
     private static final int BUFFEREDIMAGE_SIZE_WIDTH = QRCODE_SIZE;
     // 用二维码生成新图片，高度
@@ -136,12 +136,26 @@ public class QrCodeUtils {
         BufferedImage image = QrCodeUtils.createImage(content, logoPath, needCompress);
 //        BufferedImage bufferedImage = addNote(image, note);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();//io流
-            ImageIO.write(image, "png", baos);//写入流中
-            byte[] bytes = baos.toByteArray();//转换成字节
-            BASE64Encoder encoder = new BASE64Encoder();
-            String png_base64 = encoder.encodeBuffer(bytes).trim();//转换成base64串
-            png_base64 = png_base64.replaceAll("\n", "").replaceAll("\r", "");//删除 \r\n
-            //        ImageIO.write(bufferedImage, "png", new File("D:/qrcode1.png"));
+        ImageIO.write(image, "png", baos);//写入流中
+        byte[] bytes = baos.toByteArray();//转换成字节
+        BASE64Encoder encoder = new BASE64Encoder();
+        String png_base64 = encoder.encodeBuffer(bytes).trim();//转换成base64串
+        png_base64 = png_base64.replaceAll("\n", "").replaceAll("\r", "");//删除 \r\n
+        //        ImageIO.write(bufferedImage, "png", new File("D:/qrcode1.png"));
+        return "data:image/jpg;base64,"+png_base64;
+    }
+
+    public static String encode(String content, String logoPath , boolean needCompress,String note)
+            throws Exception {
+        BufferedImage image = QrCodeUtils.createImage(content, logoPath, needCompress);
+        BufferedImage bufferedImage = addNote(image, note);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();//io流
+        ImageIO.write(bufferedImage, "png", baos);//写入流中
+        byte[] bytes = baos.toByteArray();//转换成字节
+        BASE64Encoder encoder = new BASE64Encoder();
+        String png_base64 = encoder.encodeBuffer(bytes).trim();//转换成base64串
+        png_base64 = png_base64.replaceAll("\n", "").replaceAll("\r", "");//删除 \r\n
+        //        ImageIO.write(bufferedImage, "png", new File("D:/qrcode1.png"));
         return "data:image/jpg;base64,"+png_base64;
     }
 
@@ -159,23 +173,23 @@ public class QrCodeUtils {
             tag = new BufferedImage(BUFFEREDIMAGE_SIZE_WIDTH, BUFFEREDIMAGE_SIZE_HEIGHT,BufferedImage.TYPE_INT_RGB);
         }else{
             //这句代码还没调试过，这里表示文字需要折行
-            tag = new BufferedImage(300, 345,BufferedImage.TYPE_INT_RGB);
+            tag = new BufferedImage(200, 200,BufferedImage.TYPE_INT_RGB);
         }
         //设置低栏白边
         Graphics g1 = tag.getGraphics();
         //设置文字
         Graphics2D g2 = tag.createGraphics();
-        Font font = new Font("微软雅黑",Font.BOLD,24);
+        Font font = new Font("微软雅黑",Font.BOLD,20);
         g2.setFont(font);
         g2.setColor(Color.BLACK);
         if (note.length()<=24) {
             //下面这个26要和tag = new BufferedImage(330, 356,BufferedImage.TYPE_INT_RGB);356-330=26对上
             g1.fillRect(0, QRCODE_SIZE, QRCODE_SIZE, FONT_SIZE_HEIGHT);
             //文字在图片上的位置
-            g2.drawString(note,/*QRCODE_SIZE/2-note.length()*8-14*/20, QRCODE_SIZE+font.getSize());
+            g2.drawString(note,/*QRCODE_SIZE/2-note.length()*8-14*/30, QRCODE_SIZE+font.getSize());
         }else{
             //这里的代码还没测试过
-            g1.fillRect(0, QRCODE_SIZE, QRCODE_SIZE, 45);
+            g1.fillRect(0, QRCODE_SIZE, QRCODE_SIZE, 20);
             //下面两次表示文件需要换行显示
             g2.drawString(note.substring(0, 24),5, QRCODE_SIZE+font.getSize());
             g2.drawString(note.substring(24,note.length()), QRCODE_SIZE/2-(note.length()-24)*8-14, QRCODE_SIZE+font.getSize()*2+4);
@@ -200,8 +214,8 @@ public class QrCodeUtils {
     }
 
     public static void main(String[] args) throws Exception {
-//        String encode = QrCodeUtils.encode("https://fangyuancun.cn/shop/build?qrCodeId=160", "http://cdn.fangyuancun.cn/logo9.png", true,"嚣张");
-//        System.out.println(encode);
+        String encode = QrCodeUtils.encode("https://fangyuancun.cn/shop/build?qrCodeId=160", "http://cdn.fangyuancun.cn/logo9.png", true,"yanfabu-ren001-dapeng");
+        System.out.println(encode);
     }
 
 

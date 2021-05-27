@@ -1,5 +1,6 @@
 package com.ruoyi.fangyuanapi.service;
 
+import com.ruoyi.common.core.domain.R;
 import com.ruoyi.system.domain.DbEquipmentComponent;
 
 import java.util.List;
@@ -70,4 +71,40 @@ public interface IDbEquipmentComponentService
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
     List<DbEquipmentComponent> selectDbEquipmentComponentByIds(String[] split);
+
+    /**
+     * 方法描述
+     * @since: 2.0.0
+     * @param heartbeatText
+     * @param switchState
+     * @return: com.ruoyi.common.core.domain.R
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/18 23:06
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    R updateLightStatus(String heartbeatText, String switchState,Integer fillLightTimingStatus);
+
+    /**
+     * 方法描述 修改操作状态
+     * @since: 2.0.0
+     * @param heartbeatText
+     * @param switchState
+     * @return: com.ruoyi.common.core.domain.R
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/18 23:06
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    R updatFunctionLogo(String heartbeatText,String fucntionLogo, String switchState,Integer fillLightTimingStatus);
+
+    /**
+     * 修改功能进度数值
+     * @since: 2.0.0
+     * @param list
+     * @param heartbeatText
+     * @return: int
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/20 17:52
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    int updateDbEquipmentComponentProgress(List<String> list, String heartbeatText);
 }

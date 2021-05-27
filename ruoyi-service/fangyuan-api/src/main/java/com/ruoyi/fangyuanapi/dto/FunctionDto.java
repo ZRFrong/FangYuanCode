@@ -22,6 +22,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Builder
 @ApiModel(value = "功能表传输对象")
+@sun.misc.Contended//确保该对象变量独占缓存行 JVM -XX:-RestrictContended 开启此功能。 JAVA1.8开始支持
 public class FunctionDto {
 
 
@@ -30,4 +31,5 @@ public class FunctionDto {
 
     @ApiModelProperty("是否在线")
     private String isOnline;
+
 }

@@ -143,7 +143,7 @@ public class DbOperationRecordController extends BaseController {
             @ApiImplicitParam( name = "pageSize",value = "条数",required = true),
     })
     public R getOperationList(@PathVariable("currPage") Integer currPage,@PathVariable("pageSize") Integer pageSize){
-        if ( StringUtils.isEmpty(currPage+"") || StringUtils.isEmpty(pageSize +"") || pageSize > 50 || pageSize <= 0 || currPage <= 0 ){
+        if ( StringUtils.isEmpty(currPage+"") || StringUtils.isEmpty(pageSize +"") || pageSize > PageConf.MAX_PAGE_SIZE || pageSize <= 0 || currPage <= 0 ){
             return R.error(HttpStatus.HTTP_BAD_REQUEST,"参数异常");
         }
         String user = getRequest().getHeader(Constants.CURRENT_ID);
@@ -185,7 +185,7 @@ public class DbOperationRecordController extends BaseController {
     @GetMapping("getOperationByLand/{landId}/{userId}/{currPage}/{pageSize}")
     public R getOperationByLand(@PathVariable("landId") Long landId,@PathVariable("userId")String userId,@PathVariable("currPage")Integer currPage,@PathVariable("pageSize")Integer pageSize){
         String dbUserId = getRequest().getHeader(Constants.CURRENT_ID);
-        if (StringUtils.isEmpty(userId) || "null".equals(userId)){
+        if (StringUtils.isEmpty(userId) || "null".equals(userId) || Long.valueOf(userId) <= 0L){
             userId = null;
         }
         if (!dbUserId.equals(userId)){
@@ -193,6 +193,7 @@ public class DbOperationRecordController extends BaseController {
 
             if (admin != null && admin.getIsSuperAdmin() > 0){
                 userId = dbUserId;
+                return R.ok("您不能查看其他管理员的记录！");
             }
         }
         return R.data(dbOperationRecordService.selectDbOperationRecordByLandIdAndUserId(landId,userId,currPage,pageSize));

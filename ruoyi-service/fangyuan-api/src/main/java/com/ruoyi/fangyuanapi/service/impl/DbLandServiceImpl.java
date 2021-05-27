@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
 import com.ruoyi.common.core.text.Convert;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 /**
  * 土地Service业务层处理
@@ -41,6 +42,9 @@ public class DbLandServiceImpl implements IDbLandService
 
     @Autowired
     private DbUserMapper dbUserMapper;
+
+    @Autowired
+    private DbQrCodeMapper dbQrCodeMapper;
 
     /**
      * 查询土地
@@ -286,13 +290,22 @@ public class DbLandServiceImpl implements IDbLandService
     }
 
     @Override
+    public Map<String, Object> getLandAndOperateInfo(Long equipmentId, Long userId) {
+        HashMap<String, Object> map = new HashMap<>(2);
+        map.put("lands",dbLandMapper.selectDbLandNameByUserId(userId));
+        map.put("operate",dbEquipmentComponentMapper.selectDbEquipmentComponentNameByEquipmentId(equipmentId));
+        return map;
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean insertEquipmentToLand(DbLand dbLand, String userId, Long equipmentId) {
+    public boolean insertEquipmentToLand(DbLand dbLand, String userId, Long equipmentId,Long qrCodeId) {
         dbLand.setDbUserId(Long.valueOf(userId));
         //设备id让扫码页填写
         dbLand.setEquipmentIds(equipmentId+"");
         weChatAddSave(dbLand);
         DbUser user = dbUserMapper.selectDbUserById(Long.valueOf(userId));
+        dbQrCodeMapper.updateDbQrCodeUserIdById(Long.valueOf(userId),qrCodeId);
         int i = dbEquipmentAdminMapper.insertDbEquipmentAdmin(DbEquipmentAdmin.builder()
                 .avatar(user.getAvatar())
                 .isSuperAdmin(0L)

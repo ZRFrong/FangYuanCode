@@ -10,6 +10,8 @@ public class OpcodeTextConf {
     public static final String OPCODE03 = "03";
     public static final String OPCODE05 = "05";
     public static final String OPCODE06 ="06";
+    public static final String OPCODE10 ="10";
+    public static final String OPCODE16 ="16";
     public static final String OPCODEEMPTY ="0";
 
 }

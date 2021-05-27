@@ -112,16 +112,6 @@ public class SendCodeListUtils {
 //                        dbAbnormalInfo.setText(dbOperationVos.get(finalI).getOperationId());
 //                        remoteApiService.saveEquimentOperation(dbAbnormalInfo);
 //                        stringStringHashMap.put(dbOperationVos.get(finalI).getOperationName(), BusinessExceptionHandle.FAULT);
-                    } catch (OperationExceptions e) {
-                        DbAbnormalInfo dbAbnormalInfo = new DbAbnormalInfo();
-                        dbAbnormalInfo.setAlarmTime(new Date());
-                        dbAbnormalInfo.setAlarmExplain(e.getMessage());
-                        dbAbnormalInfo.setObjectType(dbOperationVos.get(finalI).getOperationName());
-                        dbAbnormalInfo.setAlarmExplain(dbOperationVos.get(finalI).getHeartName());
-                        dbAbnormalInfo.setText(dbOperationVos.get(finalI).getOperationId());
-                        dbAbnormalInfo.setFaultType(BusinessExceptionHandle.OPERATIONEXCEPTIONS);
-                        remoteApiService.saveEquimentOperation(dbAbnormalInfo);
-                        stringStringHashMap.put(dbOperationVos.get(finalI).getOperationName(), BusinessExceptionHandle.OPERATIONEXCEPTIONS);
                     }
                 }
 

@@ -102,6 +102,20 @@ public class DbEquipmentController extends BaseController {
         return toAjax(dbEquipmentService.deleteDbEquipmentByIds(ids));
     }
 
+    /**
+     * 根据心跳名查询站号
+     * @since: 2.0.0
+     * @param heartbeatText
+     * @return: java.lang.String
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/20 21:11
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @GetMapping("selectByHeartbeatText/{heartbeatText}")
+    public String selectByHeartbeatText(@PathVariable("heartbeatText") String heartbeatText){
+        return dbEquipmentService.selectByHeartbeatText(heartbeatText);
+    }
+
 
 
 
@@ -231,7 +245,7 @@ public class DbEquipmentController extends BaseController {
                 if (map.get("checkCode").equals("1") || map.get("checkCode").equals("2") ){
                     component.setFunctionLogo("1,2,3");
                     //进度条
-                    map.put("percentage",1);
+                    map.put("percentage",null);
                     //是否允许滑动
                     map.put("isSlide", 1);
                 }else {

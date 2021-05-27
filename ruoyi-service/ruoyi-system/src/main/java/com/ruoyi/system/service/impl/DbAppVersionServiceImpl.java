@@ -1,6 +1,10 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.DbAppVersionMapper;
@@ -8,6 +12,7 @@ import com.ruoyi.system.domain.DbAppVersion;
 import com.ruoyi.system.service.IDbAppVersionService;
 import com.ruoyi.common.core.text.Convert;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 /**
  * app版本更新Service业务层处理
@@ -88,6 +93,7 @@ public class DbAppVersionServiceImpl implements IDbAppVersionService
      * @param id app版本更新ID
      * @return 结果
      */
+    @Override
     public int deleteDbAppVersionById(Long id)
     {
         return dbAppVersionMapper.deleteDbAppVersionById(id);
@@ -96,5 +102,25 @@ public class DbAppVersionServiceImpl implements IDbAppVersionService
     @Override
     public DbAppVersion selectDbAppVersionByAppVersion(String apkVersion) {
         return dbAppVersionMapper.selectDbAppVersionByAppVersion(apkVersion);
+    }
+
+    @Override
+    public Map<String, Object> appCheckUpdate(String version) {
+        List<Map<String, Object>> dbAppVersionsByVersions = dbAppVersionMapper.selectDbAppVersionsByVersion(version);
+        Map<String, Object> hashMap = null;
+        if (CollectionUtils.isEmpty(dbAppVersionsByVersions)){
+            hashMap = new HashMap<>();
+            hashMap.put("is_constraint", "0");
+            return hashMap;
+        }
+        hashMap = dbAppVersionsByVersions.get(dbAppVersionsByVersions.size()-1);
+        for (Map<String, Object> map : dbAppVersionsByVersions) {
+            if("1".equals(map.get("is_constraint")+"")){
+                hashMap.put("is_constraint", "1");
+                return hashMap;
+            }
+        }
+        hashMap.put("is_constraint", "2");
+        return hashMap;
     }
 }

@@ -62,7 +62,8 @@ public class FeedbackInterceptAspect {
             DbEquipment dbEquipment1 = (DbEquipment) point.proceed();
             Equator equator = new GetterBaseEquator();
             if (!equator.isEquals(dbEquipment, dbEquipment1)) {
-                connectionResponse(dbEquipment1.getHeartbeatText());
+                //调用发送
+                //connectionResponse(dbEquipment1.getHeartbeatText());
                 return dbEquipment1;
             }
         } else if (feedbackIntercept.ChangesState().equals("dbTcpType") ){
@@ -73,7 +74,8 @@ public class FeedbackInterceptAspect {
             Equator equator = new GetterBaseEquator();
             List<FieldInfo> diffFields  = equator.getDiffFields(dbTcpType, dbTcpType1);
             if (diffFields.size()>1){
-                connectionResponse(dbTcpType1.getHeartName());
+                //条用发送
+                //connectionResponse(dbTcpType1.getHeartName());
                 return dbTcpType1;
             }
         }
@@ -99,9 +101,9 @@ public class FeedbackInterceptAspect {
 
         socketMsg.setMsgType(MsgType.INFO.name());
         socketMsg.setMsg(PushEffectType.REFRESHPAGE.name());
-//       页面刷新
+//       页面刷新 预警
         if (data.size() > 1) {
-            Map<Long, List<DbLand>> mps = data.stream().collect(Collectors.groupingBy(DbLand::getDbUserId));
+            Map<Long, List<DbLand>> mps = data.stream().filter(land -> land.getLandId() != null).collect(Collectors.groupingBy(DbLand::getDbUserId));
             mps.keySet().forEach(ite -> {
                 socketMsg.setUserId(ite.toString());
                 redisMqUtils.publishTopic(socketMsg, WSTypeEnum.SYSTEM);

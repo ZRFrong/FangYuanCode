@@ -1,15 +1,25 @@
 package com.ruoyi.fangyuantcp.processingCode;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.qiniu.util.Json;
+import com.ruoyi.common.redis.config.RedisKeyConf;
+import com.ruoyi.common.redis.util.RedisLockUtil;
 import com.ruoyi.common.redis.util.RedisMqUtils;
+import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.redis.wsmsg.MsgType;
 import com.ruoyi.common.redis.wsmsg.SocketMsg;
+import com.ruoyi.common.redis.wsmsg.WSTypeEnum;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.fangyuantcp.abnormal.DropsExceptions;
 import com.ruoyi.fangyuantcp.service.IDbEquipmentService;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
+import com.ruoyi.system.feign.DbEquipmentComponentClient;
+import com.ruoyi.system.feign.RemoteDeptService;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +37,7 @@ public class ReceiveUtil {
     private IDbEquipmentService iDbEquipmentService = SpringUtils.getBean(IDbEquipmentService.class);
     private IDbTcpTypeService tcpTypeService = SpringUtils.getBean(IDbTcpTypeService.class);
     private RedisMqUtils redisMqUtils = SpringUtils.getBean(RedisMqUtils.class);
-
+    private DbEquipmentComponentClient dbEquipmentComponentClient = SpringUtils.getBean(DbEquipmentComponentClient.class);
     /*
      * 心跳添加或者更改状态处理
      * */
@@ -86,7 +96,7 @@ public class ReceiveUtil {
         String s3 = intToString(Integer.parseInt(Long.toString(Long.parseLong(arr.get(0), 16))));
         dbTcpType.setHeartName(getname + "_" + s3);
         List<DbTcpType> dbTcpTypes = tcpTypeService.selectDbTcpTypeList(dbTcpType);
-        dbTcpType= dbTcpTypes.get(0);
+        dbTcpType = dbTcpTypes.get(0);
 
 //      几位返回
         int i1 = Integer.parseInt(Long.toString(Long.parseLong(arr.get(2), 16)));
@@ -152,7 +162,9 @@ public class ReceiveUtil {
         dbEquipment1.setHeartbeatText(getname);
         dbEquipment1.setEquipmentNo(Integer.parseInt(substring));
         List<DbEquipment> dbEquipments = iDbEquipmentService.selectDbEquipmentList(dbEquipment1);
+
         DbEquipment dbEquipment = dbEquipments.get(0);
+
 
         if (i < 450) {
 //            手动
@@ -295,18 +307,16 @@ public class ReceiveUtil {
         dbTcpType.setHeartName(getname + "_" + arr.get(0));
 
         List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType);
-        dbTcpType.setAutocontrolType(getTemp(arr.get(3) + arr.get(4)));
-        dbTcpType.setAutocontrolTypeEnd(getTemp(arr.get(5) + arr.get(6)));
         if (list != null && list.size() > 0) {
             DbTcpType dbTcpType1 = list.get(0);
-
-            dbTcpType.setTcpTypeId(dbTcpType1.getTcpTypeId());
+            dbTcpType1.setAutocontrolType(getTemp(arr.get(3) + arr.get(4)));
+            dbTcpType1.setAutocontrolTypeEnd(getTemp(arr.get(5) + arr.get(6)));
+            //dbTcpType.setTcpTypeId(dbTcpType1.getTcpTypeId());
             tcpTypeService.updateDbTcpTypeFeedback(dbTcpType1);
         } else {
 
             int i = tcpTypeService.insertDbTcpType(dbTcpType);
         }
-
 
     }
 
@@ -323,14 +333,15 @@ public class ReceiveUtil {
     /*
      * 主动通讯返回
      * */
-    public void messageActive(ChannelHandlerContext ctx, String s) {}
-    public static void messageActive(/*ChannelHandlerContext ctx,*/ String s) {
-        //String getname = getname(ctx);
-        String getname = "";
+    public void messageActive(ChannelHandlerContext ctx, String s) {
+        String getname = getname(ctx);
+        if (StringUtils.isEmpty(getname)){
+            return;
+        }
         /* C8 10 00 00 00 14 28                  头信息 包含设备号
-           2B C1                                  程序版本号  未使用
-           00 3C                                  发送时间间隔 未使用
-           00 01                                  远程本地加风口自动手动 0 控制柜 1 通风
+           2B C1                                  程序版本号
+           00 3C                                  发送时间间隔
+           00 01                                  远程本地加风口自动手动
            00 D4 00 CA 00 00 00 00 00 22 02 BB    传感器数据
            00 1E  01 F4                           开关风口温度
            00 32 13 88 01 F4 01 F4 01 F4 01 F4   两卷帘4卷膜百分比显示    卷帘1 卷帘2 卷膜1 卷膜2 卷膜3 卷膜4
@@ -339,12 +350,16 @@ public class ReceiveUtil {
            60 D2*/
 
         /*
-        * 01 10 00 01 00 14
-         * 28 0C
-          * 8C 04
-          * B0 00
-           * 00 00 00 00 00 00 00 00 00 00 00 00 00 00 1E 00 0A 01 F4 01 F4 01 F4 01 F4 01 F4 01 F4 00 F0 00 00 00 00 71 71
-        *
+        *  C8 10 00 01 00 14 28  14
+        *  10 73    4
+        *  04 B0    4
+        *  00 05
+        *  00 00 00 00 00 00 00 00 00 00 00 00
+        *  02 A6 01 59
+        *  01 F4 01 F4 01 F4 01 F4 01 F4 01 F4
+        *  00 00
+        *  00 00 00 00
+        *  82D3
         * */
         List<String> charToArr = getCharToArr(s);
 //        传感状态记录+
@@ -366,8 +381,8 @@ public class ReceiveUtil {
         stringBuilder.setLength(0);
 //      本地，远程/风口自动,手动   2进制
         List<String> strings1 = charToArr.stream().skip(11).collect(Collectors.toList()).subList(0, 2);
-        int i1 = Integer.parseInt(strings1.get(0), 2);
-        int i2 = Integer.parseInt(strings1.get(1), 2);
+//        int i1 = Integer.parseInt(strings1.get(0), 2);
+//        int i2 = Integer.parseInt(strings1.get(1), 2);
         stringBuilder.setLength(0);
 //    传感状态
         List<String> strings = charToArr.stream().skip(11).collect(Collectors.toList()).subList(0, 12);
@@ -379,11 +394,9 @@ public class ReceiveUtil {
         charToArr.stream().skip(29).collect(Collectors.toList()).subList(0, 12).forEach(item -> stringBuilder.append(item));
         List<String> charToArr1 = getCharToArr(stringBuilder.toString());
         stringBuilder.setLength(0);
-        //TODO 进度 开关量
-        ArrayList<Object> objects = new ArrayList<>();//进度返回值
-
+        ArrayList<Object> objects = new ArrayList<>();
         for (int i3 = 0; i3 < charToArr1.size(); i3++) {
-            if ((i3+1) % 2 == 0) {
+            if ((i3 + 1) % 2 == 0) {
                 stringBuilder.append(charToArr1.get(i3));
                 int i4 = Integer.parseInt(stringBuilder.toString(), 16);
                 objects.add(i4);
@@ -392,33 +405,67 @@ public class ReceiveUtil {
                 stringBuilder.append(charToArr1.get(i3));
             }
         }
-        //TODO 解析出进度量插入数据库，推送至页面
-//调试  //
-        if (code.equals(getname)) {
-        /*
-         *  读取推送至页面
-         * */
-            SocketMsg socketMsg = new SocketMsg();
-            socketMsg.setMsg(JSON.toJSONString(objects));
-            socketMsg.setUserId("1");
-            socketMsg.setMsgType( MsgType.INFO.name());
-            //redisMqUtils.publishTopic(socketMsg,WSTypeEnum.SYSTEM);
-        }
+//调试
+//        if (code.equals(getname)) {
+//            /*
+//             *  读取推送至页面
+//             * */
+//            SocketMsg socketMsg = new SocketMsg();
+//            socketMsg.setMsg(JSON.toJSONString(objects));
+//            socketMsg.setUserId("1");
+//            socketMsg.setMsgType(MsgType.INFO.name());
+//            redisMqUtils.publishTopic(socketMsg, WSTypeEnum.SYSTEM);
+//        }
 
 
-//        两卷帘四卷膜开关装态
-        charToArr.stream().skip(27).collect(Collectors.toList()).subList(0, 2);
+
 //
 
 
     }
 
-    public static void main(String[] args){
-        ReceiveUtil.messageActive("011000010014280C8C04B00000000000000000000000000000001E000A01F401F401F401F401F401F400F0000000007171 ");
+    public static String code = "";
+
+    public static void binaryToDecimal(int n) {
+        int t = 0;  //用来记录位数
+        int bin = 0; //用来记录最后的二进制数
+        int r = 0;  //用来存储余数
+        while (n != 0) {
+            r = n % 2;
+            n = n / 2;
+            bin += r *Math.pow(10, t);
+            t++;
+        }
+        System.out.println(bin);
     }
 
-    public   static   String code="";
+    public static String hexToBinString(String hex){
+        String bin=Integer.toBinaryString(Integer.parseInt(hex,16));
+        int num = 16 - bin.length();
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < num; i++) {
+            builder.append("0");
+        }
+        return builder.append(bin).toString();
+    }
 
+    public static void main(String[] args) {
+        int i = Integer.parseInt("00");
+        System.out.println(Integer.toBinaryString(i));
+        System.out.println(Integer.parseInt(1+"", 2));
+        //字符串形式的:16进制!
+        String s="0A00";
+        //字符串形式十进制--作为桥梁!
+        int sint=Integer.valueOf(s, 16);
+        //十进制在转换成二进制的字符串形式输出!
+        String bin=Integer.toBinaryString(Integer.parseInt(s,16));
+        //输出!
+        System.out.println(bin);
+        String s1 = ReceiveUtil.hexToBinString(s);
+        System.out.println(s1);
+        System.out.println(s1.substring(s1.length() - 13, s1.length() - 12));
+
+    }
 }
 
 

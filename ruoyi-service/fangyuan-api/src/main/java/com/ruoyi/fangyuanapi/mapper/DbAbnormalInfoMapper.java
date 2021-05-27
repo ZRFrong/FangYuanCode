@@ -1,9 +1,12 @@
 package com.ruoyi.fangyuanapi.mapper;
 
 import com.ruoyi.system.domain.DbAbnormalInfo;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 报警信息Mapper接口
@@ -63,4 +66,19 @@ public interface DbAbnormalInfoMapper
 
 
     List<DbAbnormalInfo> selectAbnormalList(DbAbnormalInfo dbAbnormalInfo);
+
+    /**
+     * dasd
+     * @since: 2.0.0
+     * @param list
+     * @param date
+     * @param userId
+     * @param currPage
+     * @param pageSize
+     * @return: java.util.List<java.util.Map<java.lang.String,java.lang.String>>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/9 13:37
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<Map<String,String>> selectAbnormals(@Param("list") List<Long> list,@Param("date") Date date,@Param("userId") Long userId,@Param("currPage") Long currPage,@Param("pageSize") Long pageSize);
 }

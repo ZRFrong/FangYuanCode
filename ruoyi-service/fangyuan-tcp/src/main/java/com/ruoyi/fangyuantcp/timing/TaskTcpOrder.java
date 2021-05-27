@@ -26,19 +26,23 @@ public class TaskTcpOrder {
                 /*
                  * 查询所有列表检索出需要过期的状态信息
                  * */
-                DbTcpType dbTcpType = new DbTcpType();
-                List<DbTcpType> list = dbTcpTypeService.selectDbTcpTypeList(dbTcpType);
-                list.forEach(itm -> {
-                    Long minuteDiff = DateUtilLong.getMinuteDiff(itm.getUpdateTime(), new Date());
-                    if (minuteDiff < 10) {
+                try {
+                    DbTcpType dbTcpType = new DbTcpType();
+                    List<DbTcpType> list = dbTcpTypeService.selectDbTcpTypeList(dbTcpType);
+                    list.forEach(itm -> {
+                        Long minuteDiff = DateUtilLong.getMinuteDiff(itm.getUpdateTime(), new Date());
+                        if (minuteDiff < 10) {
 
-                        try {
-                            dbTcpTypeService.curingTypeTiming(itm);
-                        } catch (Exception e) {
-                            log.error("定时传感数据固化===时间："+new Date()+e);
+                            try {
+                                dbTcpTypeService.curingTypeTiming(itm);
+                            } catch (Exception e) {
+                                log.error("定时传感数据固化===时间："+new Date()+e);
+                            }
                         }
-                    }
-                });
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         };
 //       心跳定时查询等待1秒后开始查询

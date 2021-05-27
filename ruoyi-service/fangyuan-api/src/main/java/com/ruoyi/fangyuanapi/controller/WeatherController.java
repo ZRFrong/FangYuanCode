@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.redis.config.RedisKeyConf;
+import com.ruoyi.common.redis.config.RedisTimeConf;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.HttpUtil;
 import com.ruoyi.common.utils.StringUtils;
@@ -95,7 +96,7 @@ public class WeatherController {
         }
         List<Map<String,String>> hourForcast = (List<Map<String, String>>) f1.get("3hourForcast");
         int i = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        i = i > 8 ? (i-8) /3 +1 : (i+24) /3 + 1;
+        i = getNum(i);
         WeatherDto weatherDto = WeatherDto.builder()
                 .temperature(hourForcast.get(i).get("temperature"))
                 .temperatureMax(hourForcast.get(i).get("temperature_max"))
@@ -113,6 +114,22 @@ public class WeatherController {
         return null;
     }
 
+    private static int getNum(int i){
+        if (i<2){
+            i = 5;
+            return i;
+        }else if(i>=2 && i<5){
+            i = 6;
+            return i;
+        }else if(i>=5 && i<8){
+            i = 7;
+            return i;
+        } else if(i >= 8 ){
+            i =(i-8) /3 +1 ;
+            return i;
+        }
+        return 0;
+    }
     /**
      * 获取聚合数据的老黄历
      * @since: 2.0.0
@@ -132,7 +149,7 @@ public class WeatherController {
             Map<String,String> o = (Map<String, String>) object.get("result");
             //持久缓存
             if (!CollectionUtils.isEmpty(o)){
-                redisUtils.set(RedisKeyConf.ALMANAC_+date,o);
+                redisUtils.set(RedisKeyConf.ALMANAC_+date,o,RedisTimeConf.ONE_YEAR);
             }else {
                 log.error("调用聚合数据错误，错误信息是："+object);
             }
@@ -266,7 +283,8 @@ public class WeatherController {
 
     public static void main(String[] args){
         System.out.println(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
-        System.out.println((25 - 8) / 3 +1);
+        System.out.println((+21)/3 -2);
+
     }
 
 }

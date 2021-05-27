@@ -112,7 +112,7 @@ public interface IDbLandService
      * @date: 2021/4/19 13:58
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
-    boolean insertEquipmentToLand(DbLand dbLand, String userId, Long equipmentId);
+    boolean insertEquipmentToLand(DbLand dbLand, String userId, Long equipmentId,Long qrCodeId);
 
     /**
      * 根据userId 查询不等于地块的
@@ -124,4 +124,16 @@ public interface IDbLandService
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
     List<Map<String,String>> selectDbLandsByUserIdAndSiteId(Long userId);
+
+    /**
+     * 获取该用户下的所有大棚名称，及要绑定设备得操作信息
+     * @since: 2.0.0
+     * @param equipmentId
+     * @param userId
+     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/8 11:09
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    Map<String,Object> getLandAndOperateInfo(Long equipmentId, Long userId);
 }

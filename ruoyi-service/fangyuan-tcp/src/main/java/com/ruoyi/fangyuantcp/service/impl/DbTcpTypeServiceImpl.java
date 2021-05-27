@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 设备状态Service业务层处理
@@ -331,7 +332,19 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
      * @param tcpTypeId 设备状态ID
      * @return 结果
      */
+    @Override
     public int deleteDbTcpTypeById(Long tcpTypeId) {
         return dbTcpTypeMapper.deleteDbTcpTypeById(tcpTypeId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updateDbTcpTypeSensorData(DbTcpType dbTcpType) {
+        return dbTcpTypeMapper.updateDbTcpTypeSensorData(dbTcpType);
+    }
+
+    @Override
+    public Integer selectDbTcpTypeByHeartName(String heartbeatText) {
+        return dbTcpTypeMapper.selectDbTcpTypeByHeartName(heartbeatText);
     }
 }

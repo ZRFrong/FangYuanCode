@@ -18,24 +18,21 @@ public class InitController {
     * */
 
 
-    @PostConstruct
-    public void listen() throws Exception {
-
-        /*
-         * 开启端口监听
-         * */
-        new Thread() {
-            public void run() {
-                System.out.println("启动监听");//这里是线程需要做的事情
-                try {
-                    NettyServer.bind(port);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-
-
-
-    }
+//    @PostConstruct
+//    public void listen() throws Exception {
+//
+//        /*
+//         * 开启端口监听
+//         * */
+//        new Thread() {
+//            public void run() {
+//                System.out.println("启动监听");//这里是线程需要做的事情
+//                try {
+//                    NettyServer.bind(port);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }.start();
+//    }
 }

@@ -13,6 +13,26 @@ public class FaultExceptions extends  RuntimeException {
     //    设备id
     private final String equipmentId;
 
+    private Long userId;
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getLandId() {
+        return landId;
+    }
+
+    public void setLandId(Long landId) {
+        this.landId = landId;
+    }
+
+    private Long landId;
+
     public String getEquipmentId() {
         return equipmentId;
     }
@@ -26,9 +46,11 @@ public class FaultExceptions extends  RuntimeException {
         return message;
     }
 
-    public FaultExceptions(String code, String message, String equipmentId) {
+    public FaultExceptions(String code, String message, String equipmentId,Long userId,Long landId) {
         this.code = code;
         this.message = message;
         this.equipmentId = equipmentId;
+        this.userId = userId;
+        this.landId = landId;
     }
 }

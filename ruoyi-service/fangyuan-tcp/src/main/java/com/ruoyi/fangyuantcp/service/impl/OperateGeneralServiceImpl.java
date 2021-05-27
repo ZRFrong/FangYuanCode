@@ -31,7 +31,6 @@ public class OperateGeneralServiceImpl implements OperateGeneralService {
 //         多个map依次执行（多线程）
         R r = SendCodeListUtils.queryIoList(mps);
 
-
         return r;
     }
 

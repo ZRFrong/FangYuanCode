@@ -128,7 +128,9 @@ public class DbTcpTypeController extends BaseController {
     @GetMapping("timingTongFengHand")
     public R timingTongFengHand() throws ExecutionException, InterruptedException {
         dbTcpTypeService.timingTongFengHand();
+
         return toAjax(1);
+
     }
 
 
@@ -139,6 +141,7 @@ public class DbTcpTypeController extends BaseController {
     public R timingTongFengType() throws ExecutionException, InterruptedException {
         dbTcpTypeService.timingTongFengType();
         return toAjax(1);
+
     }
 
 
@@ -166,7 +169,7 @@ public class DbTcpTypeController extends BaseController {
     }
 
     /*
-     * 查询设备所有状态  传感器  通风手自动 远程本地  通分手自动开关温度
+     *所有状态更新
      * */
     @PostMapping("stateAllQuery")
     public R stateAllQuery(@ApiParam(name = "DbOperationVo", value = "传入json格式", required = true) @RequestBody List<DbOperationVo> dbOperationVo) throws ExecutionException, InterruptedException {

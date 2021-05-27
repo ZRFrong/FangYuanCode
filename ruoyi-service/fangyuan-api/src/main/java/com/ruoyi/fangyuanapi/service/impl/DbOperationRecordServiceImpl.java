@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuanapi.mapper.DbOperationRecordMapper;
 import com.ruoyi.fangyuanapi.service.IDbOperationRecordService;
 import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 用户操作记录Service业务层处理
@@ -123,8 +124,13 @@ public class DbOperationRecordServiceImpl implements IDbOperationRecordService {
     }
 
     @Override
+    @Transactional
+    public int batchInsert(ArrayList<DbOperationRecord> records) {
+        return dbOperationRecordMapper.batchInsert(records);
+    }
+
+    @Override
     public ArrayList<OperationDto> selectDbOperationRecordByLandIdAndUserId(Long landId, String userId, Integer currPage, Integer pageSize) {
-        DbEquipmentAdmin admin = dbEquipmentAdminMapper.selectIsSuperAdmin(landId);
         currPage = (currPage - 1) * pageSize;
         List<DbOperationRecord> operationRecords = dbOperationRecordMapper.selectDbOperationRecordByLandIdAndUserId(landId,userId,currPage,pageSize);
         ArrayList<OperationDto> dtos = new ArrayList<>();

@@ -66,5 +66,15 @@ public interface DbQrCodeMapper
 
     DbQrCode selectDbQrCodeByEquipmentId(Long equipmentId);
 
-
+    /**
+     * 修改二维码管理员id
+     * @since: 2.0.0
+     * @param userId
+     * @param qrCodeId
+     * @return: int
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/9 22:47
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    int updateDbQrCodeUserIdById(@Param("userId") Long userId,@Param("qrCodeId") Long qrCodeId);
 }

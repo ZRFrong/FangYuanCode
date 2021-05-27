@@ -57,7 +57,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
             "/fangyuanapi/order/insertOrder", "fangyuanapi/giveLike", "fangyuanapi/wxUser/getOpenId", "fangyuanapi/wxUser/smallRegister",
             "/fangyuanapi/banner/getBannerList", "fangyuanapi/wxUser/appUpdatePassword", "/fangyuanapi/qrcode/qrCodeGenerate",
             "qrCodeGenerate", "weather", "system/apk/upload", "/fangyuanapi/wxUser/filesUpload", "problem", "questions", "type", "/control/getControlSystem/","/control/sendInstruct","/wxUser/appPhoneLogin"
-            ,"getWeatherByAreaCode"
+            ,"getWeatherByAreaCode","appVersion"
     );
 
     @Autowired
@@ -85,7 +85,6 @@ public class AuthFilter implements GlobalFilter, Ordered {
         // token为空
         if (StringUtils.isBlank(token)) {
             if (!url.contains("websocket")) {
-
                 return setUnauthorizedResponse(exchange, "token can't null or empty string", "401");
             }
         }
@@ -127,7 +126,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
                     String s = collect.get(0);
                     Map<String, Object> map3 = TokenUtils.verifyToken(s, tokenConf.getAccessTokenKey());
                     if (map3 != null) {
-                        url.replace(s, map3.get("id") + "");
+                            url.replace(s, map3.get("id") + "");
                     } else {
                         String userStr = ops.get(Constants.ACCESS_TOKEN + s);
                         if (StringUtils.isBlank(userStr)) {
@@ -138,7 +137,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
                     newPath = userId;
                     }
                 } else {
-                    newPath = url + "/" + id;
+                   newPath = url + "/" + id;
                 }
                 ServerHttpRequest newRequest = exchange.getRequest().mutate()
                         .path(newPath)

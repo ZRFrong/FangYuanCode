@@ -85,6 +85,7 @@ public class DbEquipmentServiceImpl implements IDbEquipmentService {
      * @return 结果
      */
     @Override
+    @Transactional
     public int updateDbEquipment(DbEquipment dbEquipment) {
         //dbEquipment.setUpdateTime(DateUtils.getNowDate());
 
@@ -108,6 +109,7 @@ public class DbEquipmentServiceImpl implements IDbEquipmentService {
      * @param equipmentId 设备ID
      * @return 结果
      */
+    @Override
     public int deleteDbEquipmentById(Long equipmentId) {
         return dbEquipmentMapper.deleteDbEquipmentById(equipmentId);
     }
@@ -288,5 +290,11 @@ public class DbEquipmentServiceImpl implements IDbEquipmentService {
         String s2 = BufferedImageToBase64(image);
         System.out.println(image);
         System.out.println(s2);
+    }
+
+    @Override
+    public String selectByHeartbeatText(String heartbeatText) {
+        DbEquipment equipment = dbEquipmentMapper.selectByHeartbeatText(heartbeatText);
+        return equipment.getEquipmentNoString();
     }
 }

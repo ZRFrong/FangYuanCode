@@ -17,8 +17,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class OperationDto {
+    /**
+     * 操作时间
+//     */
     private Long operationTime;
+
+    /**
+     * 操作类型
+     */
     private Integer operationType;
+
+    /**
+     * 操作名称
+     */
     private String operationText;
+
+    /**
+     * 头像
+     */
     private String avatar;
 }

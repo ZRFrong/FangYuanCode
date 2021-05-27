@@ -51,6 +51,17 @@ public class RemoteTcpFallbackFactory implements FallbackFactory<RemoteTcpServic
             }
 
             @Override
+            public R operateLight(String heartbeatText, String equipmentNo, Integer flag, Long startTime, Long stopTime) {
+                return null;
+            }
+
+            @Override
+            public R percentageOperate(String heartbeatText, String equipmentNo, Integer percentage, String operateText) {
+                return null;
+            }
+
+
+            @Override
             public R operateTongFengType(String heartbeatText, String equipmentNo, Integer i, String temp) {
                 return null;
             }

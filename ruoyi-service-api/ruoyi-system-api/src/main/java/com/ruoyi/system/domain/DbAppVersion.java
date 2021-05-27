@@ -1,11 +1,18 @@
 package com.ruoyi.system.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 /**
  * app版本更新对象 db_app_version
@@ -14,7 +21,11 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @date 2020-10-28
  */
 @ApiModel
-public class DbAppVersion extends BaseEntity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class DbAppVersion
 {
     private static final long serialVersionUID = 1L;
 
@@ -24,7 +35,7 @@ public class DbAppVersion extends BaseEntity
     /** 版本号 */
     @Excel(name = "版本号")
     @ApiModelProperty(value = "版本号")
-    private String appVersion;
+    private Integer appVersion;
 
     /** 特性说明 */
     @Excel(name = "特性说明")
@@ -41,62 +52,17 @@ public class DbAppVersion extends BaseEntity
     @ApiModelProperty(value = "下载链接")
     private String downloadUrl;
 
-    public void setId(Long id) 
-    {
-        this.id = id;
-    }
+    /** 更新人 */
+    @Excel(name = "更新人")
+    @ApiModelProperty(value = "更新人")
+    private String updateBy;
 
-    public Long getId() 
-    {
-        return id;
-    }
-    public void setAppVersion(String appVersion) 
-    {
-        this.appVersion = appVersion;
-    }
+    /** md5 */
+    @Excel(name = "md5")
+    @ApiModelProperty(value = "md5")
+    private String md5;
 
-    public String getAppVersion() 
-    {
-        return appVersion;
-    }
-    public void setUpdateState(String updateState) 
-    {
-        this.updateState = updateState;
-    }
-
-    public String getUpdateState() 
-    {
-        return updateState;
-    }
-    public void setIsConstraint(Integer isConstraint) 
-    {
-        this.isConstraint = isConstraint;
-    }
-
-    public Integer getIsConstraint() 
-    {
-        return isConstraint;
-    }
-    public void setDownloadUrl(String downloadUrl) 
-    {
-        this.downloadUrl = downloadUrl;
-    }
-
-    public String getDownloadUrl() 
-    {
-        return downloadUrl;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("appVersion", getAppVersion())
-            .append("updateTime", getUpdateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateState", getUpdateState())
-            .append("isConstraint", getIsConstraint())
-            .append("downloadUrl", getDownloadUrl())
-            .toString();
-    }
+    /** 创建时间 */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
 }

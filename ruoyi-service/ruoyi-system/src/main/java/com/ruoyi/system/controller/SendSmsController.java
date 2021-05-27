@@ -54,11 +54,10 @@ public class SendSmsController extends BaseController {
     public R sendSms(@PathVariable String phone, @PathVariable String signName , @PathVariable String templateCode){
 
         if (PhoneUtils.checkPhone(phone) && StringUtils.isNotEmpty(phone) && StringUtils.isNotEmpty(signName)) {
-            if ("1".equals(templateCode)){//查询该用户手机号是否已经注册
-
-            }
-            String smsNum = StringUtils.isNotNull(redisUtils.get(CategoryType.SMS_NUM.name()));//单日短信发送总条数
-            String dayNum = StringUtils.isNotNull(redisUtils.get(CategoryType.USER_DAY_NUM_.name() + phone));//当用户每日总条数
+            //单日短信发送总条数
+            String smsNum = StringUtils.isNotNull(redisUtils.get(CategoryType.SMS_NUM.name()));
+            //当用户每日总条数
+            String dayNum = StringUtils.isNotNull(redisUtils.get(CategoryType.USER_DAY_NUM_.name() + phone));
             String hourNum = StringUtils.isNotNull(redisUtils.get(CategoryType.USER_HOUR_NUM_.name() + phone));
             if (Integer.valueOf(smsNum) < SmsData.SMS_NUM) {
                 if (Integer.valueOf(dayNum) < SmsData.USER_DAY_NUM) {

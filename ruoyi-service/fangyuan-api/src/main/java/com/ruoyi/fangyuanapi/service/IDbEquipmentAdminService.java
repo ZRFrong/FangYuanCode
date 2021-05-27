@@ -136,4 +136,19 @@ public interface IDbEquipmentAdminService
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
     List<DbEquipmentAdmin> selectDbEquipmentAdminsByLandId(Long landId);
+
+    /**
+     * 根据大棚id获取用户iD 获取大棚名称
+     * @since: 2.0.0
+     * @param landId
+     * @param userId
+     * @return: java.util.List<java.util.Map<java.lang.String,java.lang.String>>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/9 14:10
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<Map<String,Object>> selectLandIdAndNameByUserId(Long landId, Long userId);
+
+    int updateLandNameByLandId(Long landId, String nickName);
+
 }

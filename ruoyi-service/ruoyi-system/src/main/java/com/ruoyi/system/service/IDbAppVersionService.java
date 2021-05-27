@@ -2,6 +2,7 @@ package com.ruoyi.system.service;
 
 import com.ruoyi.system.domain.DbAppVersion;
 import java.util.List;
+import java.util.Map;
 
 /**
  * app版本更新Service接口
@@ -60,4 +61,15 @@ public interface IDbAppVersionService
     public int deleteDbAppVersionById(Long id);
 
     DbAppVersion selectDbAppVersionByAppVersion(String apkVersion);
+
+    /**
+     * 检测APP是否需要更新接口
+     * @since: 2.0.0
+     * @param version
+     * @return: java.util.Map<java.lang.String,java.lang.String>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/5/5 15:45
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    Map<String,Object> appCheckUpdate(String version);
 }
