@@ -30,7 +30,7 @@ import java.util.ArrayList;
 @Component
 @Configuration
 public class MonitorCloudApiConf {
-    @Value("${monitor-cloud.appId}")
+    @Value("${monitor-cloud.appId}" )
     public String appId;
     @Value("${monitor-cloud.secretKey}")
     public String secretKey;
