@@ -24,7 +24,7 @@ import java.util.Objects;
 @Log4j2
 public class MonitorCloudRequestUtils {
 
-    public static MonitorCloudApiConf monitorCloudApiConf = SpringUtils.getBean(MonitorCloudApiConf.class);
+    public final static MonitorCloudApiConf monitorCloudApiConf = SpringUtils.getBean(MonitorCloudApiConf.class);
     private static RestTemplate restTemplate = SpringUtils.getBean(RestTemplate.class);
     private static RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
     private static final String MONITOR_API_TOKEN_PREFIX = "MONITOR_API_TOKEN:";
