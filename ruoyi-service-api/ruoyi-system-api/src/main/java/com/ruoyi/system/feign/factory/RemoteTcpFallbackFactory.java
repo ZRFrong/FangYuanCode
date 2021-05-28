@@ -7,10 +7,12 @@ import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.system.feign.RemoteTcpService;
 import feign.hystrix.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Slf4j
+@Component
 public class RemoteTcpFallbackFactory implements FallbackFactory<RemoteTcpService> {
 
     @Override
