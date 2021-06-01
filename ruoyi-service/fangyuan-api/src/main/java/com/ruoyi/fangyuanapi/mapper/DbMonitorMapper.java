@@ -17,10 +17,25 @@ public interface DbMonitorMapper
     /**
      * 查询视频监控设备
      * 
-     * @param deviceRegisterCode 视频监控设备ID
+     * @param id 视频监控设备ID
      * @return 视频监控设备
      */
-    public DbMonitor selectDbMonitorById(String deviceRegisterCode);
+    public DbMonitor selectDbMonitorById(String id);
+
+    /**
+     * 查询视频监控设备
+     * @param deviceRegisterCode 视频监控设备注册码
+     * @return 视频监控设备
+     */
+    public DbMonitor selectDbMonitorByRegisterCode(String deviceRegisterCode);
+
+    /**
+     * 查询批量视频监控设备
+     *
+     * @param ids 视频监控设备ID
+     * @return 视频监控设备
+     */
+    public List<DbMonitor> selectDbMonitorByIds(String[] ids);
 
     /**
      * 查询视频监控设备列表
@@ -31,12 +46,36 @@ public interface DbMonitorMapper
     public List<DbMonitor> selectDbMonitorList(DbMonitor dbMonitor);
 
     /**
+     * 查询视频监控设备列表
+     *
+     * @param landId 大棚ID
+     * @return 视频监控设备集合
+     */
+    public List<DbMonitor> selectVideoChannelByLandId(Long landId);
+
+    /**
      * 新增视频监控设备
      * 
      * @param dbMonitor 视频监控设备
      * @return 结果
      */
     public int insertDbMonitor(DbMonitor dbMonitor);
+
+    /**
+     * 批量新增视频通道设备
+     *
+     * @param channelList 视频通道集合
+     * @return 结果
+     */
+    public int batchInsertChannel(@Param("channelList") List<DbMonitor> channelList);
+
+    /**
+     * 批量删除视频通道设备
+     *
+     * @param deviceSerial 序列号
+     * @return 结果
+     */
+    public int deleteDbChannelMonitorByDeviceSerial(@Param("deviceSerial") String deviceSerial);
 
     /**
      * 修改视频监控设备

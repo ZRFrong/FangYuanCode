@@ -66,8 +66,8 @@ pagehelper:
 
 
 monitor-cloud:
-  appId: 111
-  secretKey: 2ee4c64c296552d55985ac721879200c
+  appId: 2165795132052521
+  secretKey: 3b5f61a3e389a1ece372e806f0182857
   api:
     host: https://ezcloud.uniview.com:8088
     interface-url:

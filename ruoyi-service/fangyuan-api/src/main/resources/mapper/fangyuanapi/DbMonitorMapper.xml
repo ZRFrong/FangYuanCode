@@ -13,19 +13,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="deviceModel"    column="device_model"    />
         <result property="deviceCameraImage"    column="device_camera_image"    />
         <result property="deviceLocation"    column="device_location"    />
-        <result property="equipmentProductionDate"    column="equipment_production_date"    />
+        <result property="equipmentProductionDate"    column="device_date"    />
         <result property="deviceDesc"    column="device_desc"    />
     </resultMap>
 
     <sql id="selectDbMonitorVo">
-        select id, device_name, device_register_code, device_serial, device_type, device_model, device_camera_image, device_location, equipment_production_date, device_desc from db_monitor
+        select id, device_name, device_register_code, device_serial, device_type, device_model, device_camera_image, device_location, device_date as equipmentProductionDate, device_desc from db_monitor
     </sql>
 
     <select id="selectDbMonitorList" parameterType="com.ruoyi.system.domain.monitor.DbMonitor" resultMap="DbMonitorResult">
         select
           dm.id, device_name, device_register_code, device_serial,
           device_type, device_model, device_channel, device_camera_image, device_location,
-          equipment_production_date, device_desc, dem.equipment_id as equipmentId, de.heartbeat_text as equipmentHeartName
+          device_date, device_desc, dem.equipment_id as equipmentId, de.heartbeat_text as equipmentHeartName
         from db_monitor dm
         left join db_equipment_monitor dem on dm.id = dem.montior_id
         left join db_equipment de on de.equipment_id = dem.equipment_id
@@ -33,10 +33,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
         </where>
     </select>
+
+    <select id="selectVideoChannelByLandId"  resultMap="DbMonitorResult">
+        SELECT DISTINCTROW
+            dmm.*, dmm.device_channel as deviceChannel
+        FROM
+            db_land dl
+            JOIN db_equipment_monitor dem ON  FIND_IN_SET( dem.equipment_id, dl.equipment_ids )
+            JOIN db_monitor dm ON dem.montior_id = dm.id
+            JOIN db_monitor dmm ON dm.device_serial = dmm.device_serial
+        WHERE
+            dl.land_id = #{landId} and dmm.device_type = 1
+    </select>
     
     <select id="selectDbMonitorById" parameterType="String" resultMap="DbMonitorResult">
         <include refid="selectDbMonitorVo"/>
-        where device_register_code = #{deviceRegisterCode}
+        where id = #{id}
+    </select>
+
+    <select id="selectDbMonitorByRegisterCode" parameterType="String" resultMap="DbMonitorResult">
+        <include refid="selectDbMonitorVo"/>
+        where device_register_code = #{id}
+    </select>
+
+    <select id="selectDbMonitorByIds" parameterType="String" resultMap="DbMonitorResult">
+        <include refid="selectDbMonitorVo"/>
+        where id in
+        <foreach item="monitorId" collection="array" open="(" separator="," close=")">
+            #{monitorId}
+        </foreach>
     </select>
         
     <insert id="insertDbMonitor" parameterType="com.ruoyi.system.domain.monitor.DbMonitor" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -51,7 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deviceChannel != null  and deviceChannel != ''">device_channel,</if>
             <if test="deviceCameraImage != null  and deviceCameraImage != ''">device_camera_image,</if>
             <if test="deviceLocation != null  and deviceLocation != ''">device_location,</if>
-            <if test="equipmentProductionDate != null ">equipment_production_date,</if>
+            <if test="equipmentProductionDate != null ">device_date,</if>
             <if test="deviceDesc != null  and deviceDesc != ''">device_desc,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -69,6 +94,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
+    <insert id="batchInsertChannel" parameterType="com.ruoyi.system.domain.monitor.DbMonitor" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into db_monitor
+            (
+                device_name,device_register_code,
+                device_serial,device_type,
+                device_model,device_channel,
+                device_camera_image,device_location,
+                device_date,device_desc
+            )
+        values
+        <foreach collection="channelList" close="" index="item" item="item" open="" separator="," >
+            (
+                #{item.deviceName},#{item.deviceRegisterCode},
+                #{item.deviceSerial},#{item.deviceType},
+                #{item.deviceModel},#{item.deviceChannel},
+                #{item.deviceCameraImage},#{item.deviceLocation},
+                #{item.equipmentProductionDate},#{item.deviceDesc}
+            )
+        </foreach>
+    </insert>
+
     <update id="updateDbMonitor" parameterType="com.ruoyi.system.domain.monitor.DbMonitor">
         update db_monitor
         <trim prefix="SET" suffixOverrides=",">
@@ -80,7 +126,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deviceChannel != null  and deviceChannel != ''">device_channel = #{deviceChannel},</if>
             <if test="deviceCameraImage != null  and deviceCameraImage != ''">device_camera_image = #{deviceCameraImage},</if>
             <if test="deviceLocation != null  and deviceLocation != ''">device_location = #{deviceLocation},</if>
-            <if test="equipmentProductionDate != null ">equipment_production_date = #{equipmentProductionDate},</if>
+            <if test="equipmentProductionDate != null ">device_date = #{equipmentProductionDate},</if>
             <if test="deviceDesc != null  and deviceDesc != ''">device_desc = #{deviceDesc},</if>
         </trim>
         where id = #{id}
@@ -106,6 +152,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <foreach item="monitorId" collection="array" open="(" separator="," close=")">
             #{monitorId}
         </foreach>
+    </delete>
+    <delete id="deleteDbChannelMonitorByDeviceSerial">
+        delete from db_monitor where device_serial = #{deviceSerial} and device_type = 1
     </delete>
 
     <insert id="bindEquipmentRefMonitor" >

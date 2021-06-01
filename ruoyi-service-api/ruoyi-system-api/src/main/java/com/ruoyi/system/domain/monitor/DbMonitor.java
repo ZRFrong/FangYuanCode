@@ -3,9 +3,11 @@ package com.ruoyi.system.domain.monitor;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.json.JSONObject;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
@@ -17,6 +19,7 @@ import java.util.Date;
  */
 @ApiModel
 @Data
+@Accessors(chain = true)
 public class DbMonitor extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -46,6 +49,7 @@ public class DbMonitor extends BaseEntity
     @Excel(name = "设备序列号")
     @ApiModelProperty(value = "设备序列号")
     private String deviceSerial;
+
 
     /** 设备种类(-1-未知设备，0-IPC，1-NVR，2-VMS) */
     @Excel(name = "设备种类(-1-未知设备，0-IPC，1-NVR，2-VMS)")
@@ -82,4 +86,10 @@ public class DbMonitor extends BaseEntity
     @Excel(name = "设备通道")
     @ApiModelProperty(value = "设备通道")
     private String deviceChannel;
+
+    /** 设备视频流地址 */
+    @ApiModelProperty(value = "设备视频流地址")
+    private JSONObject deviceVideoUrls;
+
+
 }

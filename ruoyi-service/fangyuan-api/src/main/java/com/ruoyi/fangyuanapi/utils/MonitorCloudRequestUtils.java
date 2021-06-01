@@ -341,7 +341,7 @@ public class MonitorCloudRequestUtils {
         Map<String,Object> map = new HashMap<>(1);
         map.put("videoUrl",videoUrl);
         try{
-           return postForEntity(url, map).getStr("liveId");
+           return postForEntity(url, map).getObj("data").getStr("liveId");
         }catch (Exception e){
             throw new Exception("开启直播/回放异常：",e);
         }
@@ -361,7 +361,7 @@ public class MonitorCloudRequestUtils {
      */
     @SneakyThrows
     public static JSONObject getVideo(String deviceSerial,int channelNo,int streamIndex,String streamType
-        ,long startTime,long endTime,String recordTypes) {
+        ,Long startTime,Long endTime,Integer recordTypes) {
         String url = monitorCloudApiConf.getVideo;
         Map<String,Object> map = new HashMap<>(4);
         map.put("deviceSerial",deviceSerial);
@@ -374,7 +374,7 @@ public class MonitorCloudRequestUtils {
             map.put("recordTypes",recordTypes);
         }
         try{
-            return postForEntity(url, map);
+            return postForEntity(url, map).getObj("data");
         }catch (Exception e){
             throw new Exception("获取指定设备通道的直播/回放视频地址异常：",e);
         }
@@ -403,9 +403,10 @@ public class MonitorCloudRequestUtils {
     private static void resolveRes(JSONObject body,String requestUrl) throws Exception {
         log.info("MonitorCloudRequestUtils.resolveRes url:[{}], responseBody:[{}]",requestUrl,body);
         if(!Objects.isNull(body)){
-            if(HttpStatus.OK.value() != body.getInt("code") ){
-                throw new Exception("请求三方接口返回状态异常");
+            if(HttpStatus.OK.value() == body.getInt("code") ){
+                return;
             }
+            throw new Exception("请求三方接口返回状态异常");
         }
         throw new Exception("请求三方接口异常");
     }
