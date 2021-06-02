@@ -88,7 +88,7 @@ public class WxPayController extends BaseController {
         }
         boolean b = weChatPay.validateNotify(Wechatpay_Timestamp, Wechatpay_Nonce, str, Wechatpay_Signature, Wechatpay_Serial);
         if (!b){
-            message = "验签失败！";
+            message = "验签失败！ ";
             return JSON.toJSONString(map);
         }
         String data = weChatPay.AesData(str);
