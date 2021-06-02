@@ -289,6 +289,7 @@ public class DbMonitorController extends BaseController
 	@ApiOperation(value = "heartbeatVideoStream" , notes = "流心跳监测")
 	public R heartbeatVideoStream(@ApiParam(name="liveId",value="视频流ID",required=true)@PathVariable String liveId) {
 		dbMonitorService.heartVideoStream(liveId);
+
 		return R.ok();
 	}
 
