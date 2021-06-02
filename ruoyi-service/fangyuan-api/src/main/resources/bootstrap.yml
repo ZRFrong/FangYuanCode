@@ -66,3 +66,36 @@ pagehelper:
   supportMethodsArguments: true
   params: count=countSql
 
+
+
+monitor-cloud:
+  appId: 2165795132052521
+  secretKey: 3b5f61a3e389a1ece372e806f0182857
+  api:
+    host: https://ezcloud.uniview.com:8088
+    interface-url:
+      device:
+        getToken: ${monitor-cloud.api.host}/openapi/user/app/token/get
+        addDevice: ${monitor-cloud.api.host}/openapi/device/add
+        deleteDevice: ${monitor-cloud.api.host}/openapi/device/delete
+        updateDevice: ${monitor-cloud.api.host}/openapi/device/name/update
+        listDevice: ${monitor-cloud.api.host}/openapi/device/list
+        getDevice: ${monitor-cloud.api.host}/openapi/device/get
+        queryRecordTime: ${monitor-cloud.api.host}/openapi/device/record/time/query
+        listChannel: ${monitor-cloud.api.host}/openapi/device/channel/list
+        getCapture: ${monitor-cloud.api.host}/openapi/device/capture/get
+      ptz:
+        startPtz: ${monitor-cloud.api.host}/openapi/device/ptz/start
+        stopPtz: ${monitor-cloud.api.host}/openapi/device/ptz/stop
+        listPreset: ${monitor-cloud.api.host}/openapi/device/ptz/preset/list
+        addPreset: ${monitor-cloud.api.host}/openapi/device/ptz/preset/add
+        updatePreset: ${monitor-cloud.api.host}/openapi/device/ptz/preset/update
+        deletePreset: ${monitor-cloud.api.host}/openapi/device/ptz/preset/delete
+        invokePreset: ${monitor-cloud.api.host}/openapi/device/ptz/preset/invoke
+      cdn:
+        stopVideo: ${monitor-cloud.api.host}/openapi/cdn/video/stop
+        startVideo: ${monitor-cloud.api.host}/openapi/cdn/video/start
+        getVideo: ${monitor-cloud.api.host}/openapi/cdn/video/get
+
+
+

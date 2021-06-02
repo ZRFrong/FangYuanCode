@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbMonitorMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.monitor.DbMonitor" id="DbMonitorResult">
+        <result property="id"    column="id"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="deviceRegisterCode"    column="device_register_code"    />
+        <result property="deviceSerial"    column="device_serial"    />
+        <result property="deviceType"    column="device_type"    />
+        <result property="deviceModel"    column="device_model"    />
+        <result property="deviceCameraImage"    column="device_camera_image"    />
+        <result property="deviceLocation"    column="device_location"    />
+        <result property="equipmentProductionDate"    column="device_date"    />
+        <result property="deviceDesc"    column="device_desc"    />
+    </resultMap>
+
+    <sql id="selectDbMonitorVo">
+        select id, device_name, device_register_code, device_serial, device_type, device_model, device_camera_image, device_location, device_date as equipmentProductionDate, device_desc from db_monitor
+    </sql>
+
+    <select id="selectDbMonitorList" parameterType="com.ruoyi.system.domain.monitor.DbMonitor" resultMap="DbMonitorResult">
+        select
+          dm.id, device_name, device_register_code, device_serial,
+          device_type, device_model, device_channel, device_camera_image, device_location,
+          device_date, device_desc, dem.equipment_id as equipmentId, de.heartbeat_text as equipmentHeartName
+        from db_monitor dm
+        left join db_equipment_monitor dem on dm.id = dem.montior_id
+        left join db_equipment de on de.equipment_id = dem.equipment_id
+        <where>  
+            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectVideoChannelByLandId"  resultMap="DbMonitorResult">
+        SELECT DISTINCTROW
+            dmm.*, dmm.device_channel as deviceChannel
+        FROM
+            db_land dl
+            JOIN db_equipment_monitor dem ON  FIND_IN_SET( dem.equipment_id, dl.equipment_ids )
+            JOIN db_monitor dm ON dem.montior_id = dm.id
+            JOIN db_monitor dmm ON dm.device_serial = dmm.device_serial
+        WHERE
+            dl.land_id = #{landId} and dmm.device_type = 1
+    </select>
+    
+    <select id="selectDbMonitorById" parameterType="String" resultMap="DbMonitorResult">
+        <include refid="selectDbMonitorVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDbMonitorByRegisterCode" parameterType="String" resultMap="DbMonitorResult">
+        <include refid="selectDbMonitorVo"/>
+        where device_register_code = #{id}
+    </select>
+
+    <select id="selectDbMonitorByIds" parameterType="String" resultMap="DbMonitorResult">
+        <include refid="selectDbMonitorVo"/>
+        where id in
+        <foreach item="monitorId" collection="array" open="(" separator="," close=")">
+            #{monitorId}
+        </foreach>
+    </select>
+        
+    <insert id="insertDbMonitor" parameterType="com.ruoyi.system.domain.monitor.DbMonitor" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into db_monitor
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="deviceName != null  and deviceName != ''">device_name,</if>
+            <if test="deviceRegisterCode != null  and deviceRegisterCode != ''">device_register_code,</if>
+            <if test="deviceSerial != null  and deviceSerial != ''">device_serial,</if>
+            <if test="deviceType != null ">device_type,</if>
+            <if test="deviceModel != null  and deviceModel != ''">device_model,</if>
+            <if test="deviceChannel != null  and deviceChannel != ''">device_channel,</if>
+            <if test="deviceCameraImage != null  and deviceCameraImage != ''">device_camera_image,</if>
+            <if test="deviceLocation != null  and deviceLocation != ''">device_location,</if>
+            <if test="equipmentProductionDate != null ">device_date,</if>
+            <if test="deviceDesc != null  and deviceDesc != ''">device_desc,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="deviceName != null  and deviceName != ''">#{deviceName},</if>
+            <if test="deviceRegisterCode != null  and deviceRegisterCode != ''">#{deviceRegisterCode},</if>
+            <if test="deviceSerial != null  and deviceSerial != ''">#{deviceSerial},</if>
+            <if test="deviceType != null ">#{deviceType},</if>
+            <if test="deviceModel != null  and deviceModel != ''">#{deviceModel},</if>
+            <if test="deviceChannel != null  and deviceChannel != ''">#{deviceChannel},</if>
+            <if test="deviceCameraImage != null  and deviceCameraImage != ''">#{deviceCameraImage},</if>
+            <if test="deviceLocation != null  and deviceLocation != ''">#{deviceLocation},</if>
+            <if test="equipmentProductionDate != null ">#{equipmentProductionDate},</if>
+            <if test="deviceDesc != null  and deviceDesc != ''">#{deviceDesc},</if>
+         </trim>
+    </insert>
+
+    <insert id="batchInsertChannel" parameterType="com.ruoyi.system.domain.monitor.DbMonitor" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into db_monitor
+            (
+                device_name,device_register_code,
+                device_serial,device_type,
+                device_model,device_channel,
+                device_camera_image,device_location,
+                device_date,device_desc
+            )
+        values
+        <foreach collection="channelList" close="" index="item" item="item" open="" separator="," >
+            (
+                #{item.deviceName},#{item.deviceRegisterCode},
+                #{item.deviceSerial},#{item.deviceType},
+                #{item.deviceModel},#{item.deviceChannel},
+                #{item.deviceCameraImage},#{item.deviceLocation},
+                #{item.equipmentProductionDate},#{item.deviceDesc}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateDbMonitor" parameterType="com.ruoyi.system.domain.monitor.DbMonitor">
+        update db_monitor
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceRegisterCode != null and deviceRegisterCode != ''">device_register_code = #{deviceRegisterCode},</if>
+            <if test="deviceName != null  and deviceName != ''">device_name = #{deviceName},</if>
+            <if test="deviceSerial != null  and deviceSerial != ''">device_serial = #{deviceSerial},</if>
+            <if test="deviceType != null ">device_type = #{deviceType},</if>
+            <if test="deviceModel != null  and deviceModel != ''">device_model = #{deviceModel},</if>
+            <if test="deviceChannel != null  and deviceChannel != ''">device_channel = #{deviceChannel},</if>
+            <if test="deviceCameraImage != null  and deviceCameraImage != ''">device_camera_image = #{deviceCameraImage},</if>
+            <if test="deviceLocation != null  and deviceLocation != ''">device_location = #{deviceLocation},</if>
+            <if test="equipmentProductionDate != null ">device_date = #{equipmentProductionDate},</if>
+            <if test="deviceDesc != null  and deviceDesc != ''">device_desc = #{deviceDesc},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbMonitorById" parameterType="String">
+        delete from db_monitor where id = #{deviceRegisterCode}
+    </delete>
+
+    <delete id="deleteDbMonitorByIds" parameterType="String">
+        delete from db_monitor where id in
+        <foreach item="monitorId" collection="array" open="(" separator="," close=")">
+            #{monitorId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteEquipmentRefMonitorByMonitorId" >
+        delete from db_equipment_monitor where montior_id = #{monitorId}
+    </delete>
+
+    <delete id="deleteEquipmentRefMonitorByMonitorIds" parameterType="String">
+        delete from db_equipment_monitor where montior_id in
+        <foreach item="monitorId" collection="array" open="(" separator="," close=")">
+            #{monitorId}
+        </foreach>
+    </delete>
+    <delete id="deleteDbChannelMonitorByDeviceSerial">
+        delete from db_monitor where device_serial = #{deviceSerial} and device_type = 1
+    </delete>
+
+    <insert id="bindEquipmentRefMonitor" >
+        insert into db_equipment_monitor (montior_id,equipment_id) value (#{monitorId},#{equipmentId})
+    </insert>
+    
+</mapper>
