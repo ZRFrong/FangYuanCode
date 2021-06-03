@@ -309,10 +309,10 @@ public class DbUserController extends BaseController {
             @ApiImplicitParam(name = "code",value = "验证码",required = true)
     })
     public R appPhoneLogin(String phone,String code){
-//        R r = sendSmsClient.checkCode(phone, code);
-//        if (!"200".equals(r.get("code")+"")){
-//            return r;
-//        }
+        R r = sendSmsClient.checkCode(phone, code);
+        if (!"200".equals(r.get("code")+"")){
+            return r;
+        }
         DbUser user =DbUser.builder()
                         .phone(phone)
                         .build();

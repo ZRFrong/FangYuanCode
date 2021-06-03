@@ -66,8 +66,7 @@ public interface DbEquipmentComponentClient {
     /**
      * 方法描述
      * @since: 2.0.0
-         
- * @param heartbeatText
+     * @param heartbeatText
      * @return: java.lang.String
      * @author: ZHAOXIAOSI
      * @date: 2021/5/20 22:37

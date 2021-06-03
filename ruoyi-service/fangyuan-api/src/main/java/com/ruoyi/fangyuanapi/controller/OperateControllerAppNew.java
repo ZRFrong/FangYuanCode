@@ -9,6 +9,7 @@ import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.fangyuanapi.dto.FunctionDto;
 import com.ruoyi.fangyuanapi.dto.LandDto;
+import com.ruoyi.fangyuanapi.dto.SensorDeviceDto;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentAdminService;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentComponentService;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
@@ -154,6 +155,7 @@ public class OperateControllerAppNew extends BaseController {
             HashMap<String, Integer> hashMap = new HashMap<>();
             //存放idauto
             HashMap<String, DbTcpType> map = new HashMap<>();
+            ArrayList<SensorDeviceDto> SensorDtos = new ArrayList<>();
             for (String s : set) {
                 DbTcpType dbTcpType = new DbTcpType();
                 dbTcpType.setHeartName(s);
@@ -163,23 +165,39 @@ public class OperateControllerAppNew extends BaseController {
                 }
                 DbTcpType tcpType = list.get(0);
                 /** 此处取多个传感器的温度值，要求采用平均值并不合适  哪个传感器有温度就显示那个，如果有两个或者更多只显示后者 */
+
                 if (strIsNotEmpty(tcpType.getTemperatureSoil())) {
-                    landDto.setTemperatureSoil(tcpType.getTemperatureSoil());
+                    SensorDtos.add(getSensorDeviceDto("土壤温度",tcpType.getTemperatureSoil(),"°C","https://cdn.fangyuancun.cn/fangyuan/20210601/efa57a9e51ae4b3499a513b5fa1cef9e.png"));
                 }
                 if (strIsNotEmpty(tcpType.getHumiditySoil())) {
-                    landDto.setHumiditySoil(tcpType.getHumiditySoil());
+                    SensorDtos.add(getSensorDeviceDto("土壤湿度",tcpType.getHumiditySoil(),"%","https://cdn.fangyuancun.cn/fangyuan/20210601/0c35dfc7b95c48898fadc12e7780c0ad.png"));
                 }
                 if (strIsNotEmpty(tcpType.getLight())) {
-                    landDto.setLight(tcpType.getLight());
+                    SensorDtos.add(getSensorDeviceDto("光照",tcpType.getLight(),"Lux","https://cdn.fangyuancun.cn/fangyuan/20210531/5a67f20d23c943abb9ad79eda6f3ede9.png"));
                 }
                 if (strIsNotEmpty(tcpType.getCo2())) {
-                    landDto.setCo2(tcpType.getCo2());
+                    SensorDtos.add(getSensorDeviceDto("二氧化碳",tcpType.getCo2()," PPM","https://cdn.fangyuancun.cn/fangyuan/20210531/b4ca796f1c37452eb836c06ce9928f4c.png"));
                 }
                 if (strIsNotEmpty(tcpType.getTemperatureAir())) {
-                    landDto.setTemperatureAir(tcpType.getTemperatureAir());
+                    SensorDtos.add(getSensorDeviceDto("空气温度",tcpType.getTemperatureAir(),"°C","https://cdn.fangyuancun.cn/fangyuan/20210531/1344157531f14ec09f854fd5d1c66131.png"));
                 }
                 if (strIsNotEmpty(tcpType.getHumidityAir())) {
-                    landDto.setHumidityAir(tcpType.getHumidityAir());
+                    SensorDtos.add(getSensorDeviceDto("空气湿度",tcpType.getHumidityAir(),"%","https://cdn.fangyuancun.cn/fangyuan/20210531/bd9c257c50eb473c98e2e833be573c84.png"));
+                }
+                if (strIsNotEmpty(tcpType.getConductivity())) {
+                    SensorDtos.add(getSensorDeviceDto("电导率",tcpType.getConductivity(),"mS/cm","https://cdn.fangyuancun.cn/fangyuan/20210531/f413a1f4dfc74ee38d2d51c9d8dad0df.png"));
+                }
+                if (strIsNotEmpty(tcpType.getPh())) {
+                    SensorDtos.add(getSensorDeviceDto("PH",tcpType.getPh(),"","https://cdn.fangyuancun.cn/fangyuan/20210531/5572d3cb9b99427aa621a95c631f87f6.png"));
+                }
+                if (strIsNotEmpty(tcpType.getNitrogen())) {
+                    SensorDtos.add(getSensorDeviceDto("氮",tcpType.getNitrogen(),"g/kg","https://cdn.fangyuancun.cn/fangyuan/20210531/6cef706ab57c442db9f3af4fbbd14b36.png"));
+                }
+                if (strIsNotEmpty(tcpType.getPhosphorus())) {
+                    SensorDtos.add(getSensorDeviceDto("磷",tcpType.getPhosphorus(),"g/kg","https://cdn.fangyuancun.cn/fangyuan/20210531/0fa6b43d9afd49f485beb1c866c5543e.png"));
+                }
+                if (strIsNotEmpty(tcpType.getPotassium())) {
+                    SensorDtos.add(getSensorDeviceDto("钾",tcpType.getPotassium(),"g/kg","https://cdn.fangyuancun.cn/fangyuan/20210531/a8650b01fb014101bc8e4793070d5555.png"));
                 }
                 String s1 = s.split("_")[0];
                 R r = dbTcpClientService.queryOne(s1);
@@ -213,9 +231,7 @@ public class OperateControllerAppNew extends BaseController {
                 components.add(build);
             }
             /** 是否显示，只要有一个温度就显示传感器 */
-            if (StringUtils.isNotEmpty(landDto.getCo2()) || StringUtils.isNotEmpty(landDto.getHumidityAir()) ||
-                    StringUtils.isNotEmpty(landDto.getHumiditySoil()) || StringUtils.isNotEmpty(landDto.getLight())
-                    || StringUtils.isNotEmpty(landDto.getTemperatureAir()) || StringUtils.isNotEmpty(landDto.getTemperatureSoil())) {
+            if (SensorDtos.size() > 1) {
                 landDto.setIsShow("0");
             } else {
                 landDto.setIsShow("1");
@@ -224,6 +240,7 @@ public class OperateControllerAppNew extends BaseController {
             landDto.setLandId(admin.getLandId());
             landDto.setLandName(admin.getLandName());
             landDto.setIsAdmin(admin.getIsSuperAdmin());
+            landDto.setSensor(SensorDtos);
             landDtos.add(landDto);
         }
 
@@ -235,6 +252,15 @@ public class OperateControllerAppNew extends BaseController {
             return true;
         }
         return false;
+    }
+
+    private SensorDeviceDto getSensorDeviceDto(String name ,String value,String unit,String icon){
+        return  SensorDeviceDto.builder()
+                .deviceName(name)
+                .value(value)
+                .unit(unit)
+                .icon(icon)
+                .build();
     }
 
     public static void main(String[] args) {

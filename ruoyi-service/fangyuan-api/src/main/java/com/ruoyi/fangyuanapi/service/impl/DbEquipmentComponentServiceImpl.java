@@ -158,10 +158,11 @@ public class DbEquipmentComponentServiceImpl implements IDbEquipmentComponentSer
     @Override
     public int updateDbEquipmentComponentProgress(List<String> list, String heartbeatText) {
         DbEquipment equipment = dbEquipmentMapper.selectByHeartbeatText(heartbeatText);
-        String text = equipment.getHandlerText();
-        if (StringUtils.isEmpty(text)){
+        if (equipment == null || StringUtils.isEmpty(equipment.getHandlerText())){
             return 0;
         }
+        String text = equipment.getHandlerText();
+
 
         /**
          * 根据录入设备时的自然顺序 对应设备返回的进度值

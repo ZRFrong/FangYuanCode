@@ -29,23 +29,38 @@ public class LandDto {
     @ApiModelProperty("大棚id")
     private Long landId;
 
-    @ApiModelProperty("土壤温度")
-    private String temperatureSoil;
-
-    @ApiModelProperty("土壤湿度")
-    private String humiditySoil;
-
-    @ApiModelProperty("光照")
-    private String light;
-
-    @ApiModelProperty("二氧化碳")
-    private String co2;
-
-    @ApiModelProperty("空气温度")
-    private String temperatureAir;
-
-    @ApiModelProperty("空气湿度")
-    private String humidityAir;
+//    @ApiModelProperty("土壤温度")
+//    private String temperatureSoil;
+//
+//    @ApiModelProperty("土壤湿度")
+//    private String humiditySoil;
+//
+//    @ApiModelProperty("光照")
+//    private String light;
+//
+//    @ApiModelProperty("二氧化碳")
+//    private String co2;
+//
+//    @ApiModelProperty("空气温度")
+//    private String temperatureAir;
+//
+//    @ApiModelProperty("空气湿度")
+//    private String humidityAir;
+//
+//    @ApiModelProperty("电导率")
+//    private String conductivity;
+//
+//    @ApiModelProperty("ph")
+//    private String ph;
+//
+//    @ApiModelProperty("氮")
+//    private String nitrogen;
+//
+//    @ApiModelProperty("磷")
+//    private String phosphorus;
+//
+//    @ApiModelProperty("钾")
+//    private String potassium;
 
     @ApiModelProperty("是否显示")
     private String isShow;
@@ -55,5 +70,8 @@ public class LandDto {
 
     @ApiModelProperty("是否该大棚的管理员")
     private Long isAdmin;
+
+    @ApiModelProperty("传感数据")
+    private List<SensorDeviceDto> sensor;
 
 }

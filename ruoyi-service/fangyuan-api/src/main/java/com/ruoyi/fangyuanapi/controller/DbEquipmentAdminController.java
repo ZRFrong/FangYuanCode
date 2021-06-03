@@ -165,11 +165,10 @@ public class DbEquipmentAdminController extends BaseController
 	})
     public R phoneAuthorizeAdmin(String phone,String code,Long landId,String functionIds){
         //TODO 先空置，待确认流程后在编写 输出手机号直接添加
-//		R r = smsClient.checkCode(phone, code);
-//		if (!"200".equals(r.get("code")+"")){
-//			return r;
-//		}
-		R r = null;
+		R r = smsClient.checkCode(phone, code);
+		if (!"200".equals(r.get("code")+"")){
+			return r;
+		}
 		String userId = getRequest().getHeader(Constants.CURRENT_ID);
 		r = checkSuperAdmin(landId, Long.valueOf(userId));
 		if (!"200".equals(r.get("code")+"")){
