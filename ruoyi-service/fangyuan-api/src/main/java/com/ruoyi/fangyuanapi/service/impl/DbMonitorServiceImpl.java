@@ -17,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -183,6 +184,7 @@ public class DbMonitorServiceImpl implements IDbMonitorService
             // 通道表单添加下的状态
             final byte channelFormAddStatus = 0;
             DbMonitor orignData = dbMonitorMapper.selectDbMonitorById(String.valueOf(dbMonitor.getId()));
+            Assert.notNull(orignData,"通道不存在,请重新同步录像机通道");
             if(orignData.getChannelStatus() == channelFormAddStatus){
                 throw  new Exception("该通道已经添加");
             }
@@ -205,6 +207,7 @@ public class DbMonitorServiceImpl implements IDbMonitorService
     @Transactional(rollbackFor = Exception.class)
     public int syncChannel(Long monitorId) {
         DbMonitor dbMonitor = dbMonitorMapper.selectDbMonitorById(String.valueOf(monitorId));
+        Assert.notNull(dbMonitor,"录像机不存在");
         // 现在该录像机下的通道
         List<DbMonitor> origChannelList = dbMonitorMapper.selectChannelBySerial(dbMonitor.getDeviceSerial());
         Set<String> channelNoSet = origChannelList.stream().map(DbMonitor::getDeviceChannel).collect(Collectors.toSet());
@@ -296,6 +299,7 @@ public class DbMonitorServiceImpl implements IDbMonitorService
     public int deleteDbMonitorById(Long monitorId)
     {
         DbMonitor dbMonitor = selectDbMonitorById(String.valueOf(monitorId));
+        Assert.notNull(dbMonitor,"数据不存在");
         // 录像机删除同步云视频设备进行删除
         if(EquipmentMonitorTypeEnum.VIDEO_RECORDER_DEVICE.getTypeCode().intValue() == dbMonitor.getDeviceType()){
             MonitorCloudRequestUtils.deleteDevice(dbMonitor.getDeviceSerial());
@@ -303,25 +307,27 @@ public class DbMonitorServiceImpl implements IDbMonitorService
             // 同步删除下级通道
             dbMonitorMapper.deleteDbChannelMonitorByDeviceSerial(dbMonitor.getDeviceSerial());
             // todo 同步删除下级通道与机柜设备的关联关系
-            Set<String> collect = channelList.stream().map((v) -> {return String.valueOf(v.getId());}).collect(Collectors.toSet());
-            String arr[] = new String[collect.size()];
-            collect.toArray(arr);
-            dbMonitorMapper.deleteEquipmentRefMonitorByMonitorIds(arr);
+            if(CollectionUtil.isNotEmpty(channelList)){
+                Set<String> collect = channelList.stream().map((v) -> {return String.valueOf(v.getId());}).collect(Collectors.toSet());
+                String arr[] = new String[collect.size()];
+                collect.toArray(arr);
+                dbMonitorMapper.deleteEquipmentRefMonitorByMonitorIds(arr);
+            }
             return dbMonitorMapper.deleteDbMonitorById(monitorId);
         }
 
         else if(EquipmentMonitorTypeEnum.CHANNEL_CAMERAS_DEVICE.getTypeCode().intValue() == dbMonitor.getDeviceType()) {
-            // 摄像头删除关联关系
-            dbMonitorMapper.deleteEquipmentRefMonitorByMonitorId(monitorId);
-            return dbMonitorMapper.deleteDbMonitorById(monitorId);
-        }
-
-        else if(EquipmentMonitorTypeEnum.CAMERA_DEVICE.getTypeCode().intValue() == dbMonitor.getDeviceType()) {
-            // 通道删除关联关系
+            // 删除关联关系
             dbMonitorMapper.deleteEquipmentRefMonitorByMonitorId(monitorId);
             // 通道状态修改同步添加的状态
             dbMonitor.setChannelStatus((byte)1);
             return dbMonitorMapper.updateDbMonitor(dbMonitor);
+        }
+
+        else if(EquipmentMonitorTypeEnum.CAMERA_DEVICE.getTypeCode().intValue() == dbMonitor.getDeviceType()) {
+            // 网络摄像头删除关联关系
+            dbMonitorMapper.deleteEquipmentRefMonitorByMonitorId(monitorId);
+            return dbMonitorMapper.deleteDbMonitorById(monitorId);
         }
 
         throw  new Exception("删除设备异常");

@@ -148,11 +148,11 @@
         where id = #{id}
     </update>
 
-    <delete id="deleteDbMonitorById" parameterType="String">
+    <delete id="deleteDbMonitorById" >
         delete from db_monitor where id = #{deviceRegisterCode}
     </delete>
 
-    <delete id="deleteDbMonitorByIds" parameterType="String">
+    <delete id="deleteDbMonitorByIds" >
         delete from db_monitor where id in
         <foreach item="monitorId" collection="array" open="(" separator="," close=")">
             #{monitorId}
@@ -163,7 +163,7 @@
         delete from db_equipment_monitor where montior_id = #{monitorId}
     </delete>
 
-    <delete id="deleteEquipmentRefMonitorByMonitorIds" parameterType="String">
+    <delete id="deleteEquipmentRefMonitorByMonitorIds">
         delete from db_equipment_monitor where montior_id in
         <foreach item="monitorId" collection="array" open="(" separator="," close=")">
             #{monitorId}
