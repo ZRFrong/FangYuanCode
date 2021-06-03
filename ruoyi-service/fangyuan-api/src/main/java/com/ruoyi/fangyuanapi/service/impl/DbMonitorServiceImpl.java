@@ -76,7 +76,13 @@ public class DbMonitorServiceImpl implements IDbMonitorService
     @Override
     public List<DbMonitor> selectDbMonitorList(DbMonitor dbMonitor)
     {
-        return dbMonitorMapper.selectDbMonitorList(dbMonitor);
+        List<DbMonitor> dbMonitors = dbMonitorMapper.selectDbMonitorList(dbMonitor);
+        dbMonitors.forEach(v -> {
+            if(v.getDeviceType() == EquipmentMonitorTypeEnum.CHANNEL_CAMERAS_DEVICE.getTypeCode().intValue()){
+                v.setChannelIds(new Long[]{v.getChannelParentId(),v.getId()});
+            }
+        });
+        return dbMonitors;
     }
 
     /**
@@ -181,6 +187,10 @@ public class DbMonitorServiceImpl implements IDbMonitorService
 
         // 通道摄像头添加
         if(dbMonitor.getDeviceType() == EquipmentMonitorTypeEnum.CHANNEL_CAMERAS_DEVICE.getTypeCode().intValue()){
+            // 通道下的数据id可从通道树的参数集合中获取
+            if(dbMonitor.getId() ==null && dbMonitor.getChannelIds() != null && dbMonitor.getChannelIds().length>0){
+                dbMonitor.setId(dbMonitor.getChannelIds()[dbMonitor.getChannelIds().length-1]);
+            }
             // 通道表单添加下的状态
             final byte channelFormAddStatus = 0;
             DbMonitor orignData = dbMonitorMapper.selectDbMonitorById(String.valueOf(dbMonitor.getId()));
@@ -191,7 +201,7 @@ public class DbMonitorServiceImpl implements IDbMonitorService
             // 插入设备与机柜绑定关系
             dbMonitorMapper.deleteEquipmentRefMonitorByMonitorId(dbMonitor.getId());
             dbMonitorMapper.bindEquipmentRefMonitor(dbMonitor.getEquipmentId(),dbMonitor.getId());
-            dbMonitor.setChannelStatus(channelFormAddStatus);
+            dbMonitor.setChannelStatus(channelFormAddStatus).setDeviceRegisterCode(orignData.getDeviceRegisterCode());
             return dbMonitorMapper.updateDbMonitor(dbMonitor);
         }
 

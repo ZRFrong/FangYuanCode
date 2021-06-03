@@ -30,12 +30,6 @@ public interface DbMonitorMapper
      */
     public List<DbMonitor> selectChannelBySerial(String deviceSerial);
 
-    /**
-     * 查询视频监控设备
-     * @param deviceRegisterCode 视频监控设备注册码
-     * @return 视频监控设备
-     */
-    public DbMonitor selectDbMonitorByRegisterCode(String deviceRegisterCode);
 
     /**
      * 查询批量视频监控设备

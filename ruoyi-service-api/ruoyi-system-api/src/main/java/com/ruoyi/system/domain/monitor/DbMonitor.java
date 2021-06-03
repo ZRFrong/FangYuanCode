@@ -59,7 +59,7 @@ public class DbMonitor extends BaseEntity
     /** 通道摄像头父Id(录像机ID) */
     @Excel(name = "通道摄像头父Id(录像机ID)")
     @ApiModelProperty(value = "通道摄像头父Id(录像机ID)")
-    private Integer channelParentId;
+    private Long channelParentId;
 
     /** 设备型号 */
     @Excel(name = "设备型号")
@@ -100,6 +100,10 @@ public class DbMonitor extends BaseEntity
     /** 设备视频流地址 */
     @ApiModelProperty(value = "设备视频流地址")
     private JSONObject deviceVideoUrls;
+
+    /** 通道树地址 */
+    @ApiModelProperty(value = "通道树地址")
+    private Long[] channelIds;
 
 
 }

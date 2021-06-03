@@ -25,14 +25,16 @@
 
     <select id="selectDbMonitorList" parameterType="com.ruoyi.system.domain.monitor.DbMonitor" resultMap="DbMonitorResult">
         select
-        dm.id, device_name, device_register_code, device_serial,
-        device_type, device_model, device_channel, device_camera_image, device_location,
-        device_date, device_desc, dem.equipment_id as equipmentId, de.heartbeat_text as equipmentHeartName
+        dm.id, dm.device_name, dm.device_register_code, dm.device_serial,
+        dm.device_type, dm.device_model, dm.device_channel, dm.device_camera_image, dm.device_location,
+        dm.device_date, dm.device_desc, dem.equipment_id as equipmentId, de.heartbeat_text as equipmentHeartName, IFNULL(dmm.id,-1) as channelParentId
         from db_monitor dm
         left join db_equipment_monitor dem on dm.id = dem.montior_id
         left join db_equipment de on de.equipment_id = dem.equipment_id
+        left join db_monitor dmm on dm.device_type = 2 and dm.device_serial = dmm.device_serial and dmm.device_type = 0 and dm.channel_status = 0
         <where>
-            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+            ( dm.channel_status = 0 or dm.channel_status is null )
+            <if test="deviceName != null  and deviceName != ''"> and dm.device_name like concat('%', #{deviceName}, '%')</if>
         </where>
     </select>
 
@@ -68,10 +70,6 @@
         where device_serial = #{deviceSerial} AND device_type = 2
     </select>
 
-    <select id="selectDbMonitorByRegisterCode" parameterType="String" resultMap="DbMonitorResult">
-        <include refid="selectDbMonitorVo"/>
-        where device_register_code = #{id}
-    </select>
 
     <select id="selectDbMonitorByIds" parameterType="String" resultMap="DbMonitorResult">
         <include refid="selectDbMonitorVo"/>
