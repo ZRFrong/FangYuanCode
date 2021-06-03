@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.google.common.collect.Lists;
 import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.enums.EquipmentMonitorTypeEnum;
+import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.json.JSONObject;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.fangyuanapi.listener.RedisExpireKeyListener;
@@ -196,7 +197,7 @@ public class DbMonitorServiceImpl implements IDbMonitorService
             DbMonitor orignData = dbMonitorMapper.selectDbMonitorById(String.valueOf(dbMonitor.getId()));
             Assert.notNull(orignData,"通道不存在,请重新同步录像机通道");
             if(orignData.getChannelStatus() == channelFormAddStatus){
-                throw  new Exception("该通道已经添加");
+                throw  new BusinessException("该通道已经添加");
             }
             // 插入设备与机柜绑定关系
             dbMonitorMapper.deleteEquipmentRefMonitorByMonitorId(dbMonitor.getId());
@@ -205,7 +206,7 @@ public class DbMonitorServiceImpl implements IDbMonitorService
             return dbMonitorMapper.updateDbMonitor(dbMonitor);
         }
 
-        throw  new Exception("视频设备类型参数异常");
+        throw  new BusinessException("视频设备类型参数异常");
     }
 
     /**
@@ -342,7 +343,7 @@ public class DbMonitorServiceImpl implements IDbMonitorService
             return dbMonitorMapper.deleteDbMonitorById(monitorId);
         }
 
-        throw  new Exception("删除设备异常");
+        throw  new BusinessException("删除设备异常");
 
     }
 
@@ -462,7 +463,7 @@ public class DbMonitorServiceImpl implements IDbMonitorService
             liveId = MonitorCloudRequestUtils.startVideo(videoUrl);
             MonitorCloudRequestUtils.stopVideo(liveId);
         }else {
-            throw new Exception("参数异常");
+            throw new BusinessException("参数异常");
         }
         // 清除心跳
         redisExpireKeyListener.removeHeartbeat(liveId);

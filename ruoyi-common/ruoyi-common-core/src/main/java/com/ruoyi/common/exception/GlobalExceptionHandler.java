@@ -75,6 +75,15 @@ public class GlobalExceptionHandler
         return R.error(e.getCode(), e.getMessage());
     }
 
+    /**
+     * 处理业务自定义异常
+     */
+    @ExceptionHandler(BusinessException.class)
+    public R handleBusinessException(BusinessException e)
+    {
+        return R.error(e.getMessage());
+    }
+
 
     @ExceptionHandler(DuplicateKeyException.class)
     public R handleDuplicateKeyException(DuplicateKeyException e)
