@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.fangyuanapi.mapper.DbMonitorMapper">
-    
+
     <resultMap type="com.ruoyi.system.domain.monitor.DbMonitor" id="DbMonitorResult">
         <result property="id"    column="id"    />
         <result property="deviceName"    column="device_name"    />
@@ -23,32 +23,47 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectDbMonitorList" parameterType="com.ruoyi.system.domain.monitor.DbMonitor" resultMap="DbMonitorResult">
         select
-          dm.id, device_name, device_register_code, device_serial,
-          device_type, device_model, device_channel, device_camera_image, device_location,
-          device_date, device_desc, dem.equipment_id as equipmentId, de.heartbeat_text as equipmentHeartName
+        dm.id, device_name, device_register_code, device_serial,
+        device_type, device_model, device_channel, device_camera_image, device_location,
+        device_date, device_desc, dem.equipment_id as equipmentId, de.heartbeat_text as equipmentHeartName
         from db_monitor dm
         left join db_equipment_monitor dem on dm.id = dem.montior_id
         left join db_equipment de on de.equipment_id = dem.equipment_id
-        <where>  
+        <where>
             <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="listAllVideoMonitorByType" resultMap="DbMonitorResult">
+        select
+        dm.id, device_name, device_register_code, device_serial,
+        device_type, device_model, device_channel, device_camera_image, device_location,
+        device_date, device_desc
+        from db_monitor dm
+        <where>
+            <if test="type != null  ">  device_type =  #{type}</if>
         </where>
     </select>
 
     <select id="selectVideoChannelByLandId"  resultMap="DbMonitorResult">
         SELECT DISTINCTROW
-            dmm.*, dmm.device_channel as deviceChannel
+            dm.*, dm.device_channel as deviceChannel
         FROM
             db_land dl
             JOIN db_equipment_monitor dem ON  FIND_IN_SET( dem.equipment_id, dl.equipment_ids )
             JOIN db_monitor dm ON dem.montior_id = dm.id
-            JOIN db_monitor dmm ON dm.device_serial = dmm.device_serial
         WHERE
-            dl.land_id = #{landId} and dmm.device_type = 1
+            dl.land_id = #{landId} and dm.device_type != 0
     </select>
-    
+
     <select id="selectDbMonitorById" parameterType="String" resultMap="DbMonitorResult">
         <include refid="selectDbMonitorVo"/>
         where id = #{id}
+    </select>
+
+    <select id="selectChannelBySerial" parameterType="String" resultMap="DbMonitorResult">
+        <include refid="selectDbMonitorVo"/>
+        where device_serial = #{deviceSerial} AND device_type = 2
     </select>
 
     <select id="selectDbMonitorByRegisterCode" parameterType="String" resultMap="DbMonitorResult">
@@ -63,7 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{monitorId}
         </foreach>
     </select>
-        
+
     <insert id="insertDbMonitor" parameterType="com.ruoyi.system.domain.monitor.DbMonitor" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         insert into db_monitor
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -78,7 +93,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deviceLocation != null  and deviceLocation != ''">device_location,</if>
             <if test="equipmentProductionDate != null ">device_date,</if>
             <if test="deviceDesc != null  and deviceDesc != ''">device_desc,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null ">#{id},</if>
             <if test="deviceName != null  and deviceName != ''">#{deviceName},</if>
@@ -91,26 +106,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deviceLocation != null  and deviceLocation != ''">#{deviceLocation},</if>
             <if test="equipmentProductionDate != null ">#{equipmentProductionDate},</if>
             <if test="deviceDesc != null  and deviceDesc != ''">#{deviceDesc},</if>
-         </trim>
+        </trim>
     </insert>
 
     <insert id="batchInsertChannel" parameterType="com.ruoyi.system.domain.monitor.DbMonitor" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         insert into db_monitor
-            (
-                device_name,device_register_code,
-                device_serial,device_type,
-                device_model,device_channel,
-                device_camera_image,device_location,
-                device_date,device_desc
-            )
+        (
+        device_name,device_register_code,
+        device_serial,device_type,
+        device_model,device_channel,
+        device_camera_image,device_location,
+        device_date,device_desc
+        )
         values
         <foreach collection="channelList" close="" index="item" item="item" open="" separator="," >
             (
-                #{item.deviceName},#{item.deviceRegisterCode},
-                #{item.deviceSerial},#{item.deviceType},
-                #{item.deviceModel},#{item.deviceChannel},
-                #{item.deviceCameraImage},#{item.deviceLocation},
-                #{item.equipmentProductionDate},#{item.deviceDesc}
+            #{item.deviceName},#{item.deviceRegisterCode},
+            #{item.deviceSerial},#{item.deviceType},
+            #{item.deviceModel},#{item.deviceChannel},
+            #{item.deviceCameraImage},#{item.deviceLocation},
+            #{item.equipmentProductionDate},#{item.deviceDesc}
             )
         </foreach>
     </insert>
@@ -128,6 +143,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deviceLocation != null  and deviceLocation != ''">device_location = #{deviceLocation},</if>
             <if test="equipmentProductionDate != null ">device_date = #{equipmentProductionDate},</if>
             <if test="deviceDesc != null  and deviceDesc != ''">device_desc = #{deviceDesc},</if>
+            <if test="deviceDesc != null ">channel_status = #{channelStatus}</if>
         </trim>
         where id = #{id}
     </update>
@@ -160,5 +176,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="bindEquipmentRefMonitor" >
         insert into db_equipment_monitor (montior_id,equipment_id) value (#{monitorId},#{equipmentId})
     </insert>
-    
+
 </mapper>

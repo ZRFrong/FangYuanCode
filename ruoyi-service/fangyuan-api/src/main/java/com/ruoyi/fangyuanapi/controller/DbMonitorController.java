@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * 视频监控设备 提供者
- * 
+ *
  * @author zheng
  * @date 2021-05-25
  */
@@ -23,15 +23,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("monitor")
 public class DbMonitorController extends BaseController
 {
-	
+
 	@Autowired
 	private IDbMonitorService dbMonitorService;
-	
+
 	/**
 	 * 查询${tableComment}
 	 */
 	@GetMapping("get/{deviceRegisterCode}")
-    @ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
+	@ApiOperation(value = "根据id查询" , notes = "查询${tableComment}")
 	public DbMonitor get(@ApiParam(name="id",value="视屏设备ID",required=true)  @PathVariable("deviceRegisterCode") String deviceRegisterCode)
 	{
 		return dbMonitorService.selectDbMonitorById(deviceRegisterCode);
@@ -44,7 +44,6 @@ public class DbMonitorController extends BaseController
 	@ApiOperation(value = "查询视频监控设备类型列表" , notes = "视频监控设备类型列表")
 	public R listMonitorType()
 	{
-		MonitorCloudRequestUtils.getDevice("11");
 		return result(dbMonitorService.selectDbMonitorTypeList());
 	}
 
@@ -52,11 +51,21 @@ public class DbMonitorController extends BaseController
 	 * 查询视频监控设备列表
 	 */
 	@GetMapping("list")
-    @ApiOperation(value = "查询视频监控设备列表" , notes = "视频监控设备列表")
+	@ApiOperation(value = "查询视频监控设备列表" , notes = "视频监控设备列表")
 	public R list(@ApiParam(name="DbMonitor",value="传入json格式",required=true) DbMonitor dbMonitor)
 	{
 		startPage();
-        return result(dbMonitorService.selectDbMonitorList(dbMonitor));
+		return result(dbMonitorService.selectDbMonitorList(dbMonitor));
+	}
+
+	/**
+	 * 查询树形视频监控设备列表
+	 */
+	@GetMapping("listTreeVideoMonitor")
+	@ApiOperation(value = "查询树形视频监控设备列表" , notes = "查询树形视频监控设备列表")
+	public R listTreeVideoMonitor()
+	{
+		return R.data(dbMonitorService.listTreeVideoMonitor());
 	}
 
 	/**
@@ -66,17 +75,17 @@ public class DbMonitorController extends BaseController
 	@ApiOperation(value = "根据大棚ID询视频通道列表" , notes = "视频监控设备列表")
 	public R listVideoChannel(@ApiParam(name="landId",value="大棚ID",required=true) @PathVariable Long landId)
 	{
-		return R.rows(dbMonitorService.selectVideoChannel(landId));
+		return R.data(dbMonitorService.selectVideoChannel(landId));
 	}
-	
-	
+
+
 	/**
 	 * 新增保存视频监控设备
 	 */
 	@PostMapping("save")
-    @ApiOperation(value = "新增保存视频监控设备" , notes = "新增保存视频监控设备")
+	@ApiOperation(value = "新增保存视频监控设备" , notes = "新增保存视频监控设备")
 	public R addSave(@ApiParam(name="DbMonitor",value="传入json格式",required=true) @RequestBody DbMonitor dbMonitor)
-	{		
+	{
 		return toAjax(dbMonitorService.insertDbMonitor(dbMonitor));
 	}
 
@@ -94,19 +103,19 @@ public class DbMonitorController extends BaseController
 	 * 修改保存视频监控设备
 	 */
 	@PostMapping("update")
-    @ApiOperation(value = "修改保存视频监控设备" , notes = "修改保存视频监控设备")
+	@ApiOperation(value = "修改保存视频监控设备" , notes = "修改保存视频监控设备")
 	public R editSave(@ApiParam(name="DbMonitor",value="传入json格式",required=true) @RequestBody DbMonitor dbMonitor)
-	{		
+	{
 		return toAjax(dbMonitorService.updateDbMonitor(dbMonitor));
 	}
-	
+
 	/**
 	 * 删除${tableComment}
 	 */
 	@PostMapping("remove")
-    @ApiOperation(value = "删除视频监控设备" , notes = "删除视频监控设备")
+	@ApiOperation(value = "删除视频监控设备" , notes = "删除视频监控设备")
 	public R remove(@ApiParam(name="ids",value="已逗号分隔的id集",required=true) String ids)
-	{		
+	{
 		return toAjax(dbMonitorService.deleteDbMonitorByIds(ids));
 	}
 
@@ -124,7 +133,7 @@ public class DbMonitorController extends BaseController
 
 	/**
 	 * 设备抓图
-	 */
+	 *//*
 	@PostMapping("getCapture/{monitorId}/{channel}")
 	@ApiOperation(value = "删除视频监控设备" , notes = "删除视频监控设备")
 	public R getCapture(@ApiParam(name="monitorId",value="视屏设备ID",required=true) @PathVariable long monitorId,@ApiParam(name="channel",value="通道",required=true)@PathVariable Integer channel)
@@ -132,13 +141,13 @@ public class DbMonitorController extends BaseController
 		return R.ok(dbMonitorService.getCapture(monitorId,channel));
 	}
 
-	/**
-	 * 开启云平台控制
-	 * @param monitorId 设备ID
-	 * @param channel 通道
-	 * @param command 操作命令
-	 * @param speed 云台转速
-	 */
+	*//**
+ * 开启云平台控制
+ * @param monitorId 设备ID
+ * @param channel 通道
+ * @param command 操作命令
+ * @param speed 云台转速
+ *//*
 	@PostMapping("startPtz/{monitorId}/{channel}/{command}/{speed}")
 	@ApiOperation(value = "开启云平台控制" , notes = "开启云平台控制")
 	public R startPtz(@ApiParam(name="monitorId",value="视屏设备ID",required=true) @PathVariable long monitorId,
@@ -150,12 +159,12 @@ public class DbMonitorController extends BaseController
 		return R.ok();
 	}
 
-	/**
-	 * 停止云平台控制
-	 * @param monitorId 设备ID
-	 * @param channel 通道
-	 * @param command 操作命令
-	 */
+	*//**
+ * 停止云平台控制
+ * @param monitorId 设备ID
+ * @param channel 通道
+ * @param command 操作命令
+ *//*
 	@PostMapping("stopPtz/{monitorId}/{channel}/{command}/{speed}")
 	@ApiOperation(value = "停止云平台控制" , notes = "停止云平台控制")
 	public R stopPtz(@ApiParam(name="monitorId",value="视屏设备ID",required=true) @PathVariable long monitorId,
@@ -166,13 +175,13 @@ public class DbMonitorController extends BaseController
 		return R.ok();
 	}
 
-	/**
-	 * 获取预置位列表
-	 * @param monitorId 设备ID
-	 * @param channel 通道
-	 * @param pageNo 页数
-	 * @param pageSize 页大小
-	 */
+	*//**
+ * 获取预置位列表
+ * @param monitorId 设备ID
+ * @param channel 通道
+ * @param pageNo 页数
+ * @param pageSize 页大小
+ *//*
 	@PostMapping("listPreset/{monitorId}/{channel}/{pageNo}/{pageSize}")
 	@ApiOperation(value = "停止云平台控制" , notes = "停止云平台控制")
 	public R listPreset(@ApiParam(name="monitorId",value="视屏设备ID",required=true) @PathVariable long monitorId,
@@ -186,13 +195,13 @@ public class DbMonitorController extends BaseController
 
 
 
-	/**
-	 * 添加预置位
-	 * @param monitorId 设备ID
-	 * @param channel 通道
-	 * @param presetIndex 预置位索引
-	 * @param name 预置位名称
-	 */
+	*//**
+ * 添加预置位
+ * @param monitorId 设备ID
+ * @param channel 通道
+ * @param presetIndex 预置位索引
+ * @param name 预置位名称
+ *//*
 	@PostMapping("addPreset/{monitorId}/{channel}/{presetIndex/name")
 	@ApiOperation(value = "添加预置位" , notes = "添加预置位")
 	public R addPreset(@ApiParam(name="monitorId",value="视屏设备ID",required=true) @PathVariable long monitorId,
@@ -202,13 +211,13 @@ public class DbMonitorController extends BaseController
 		return R.ok(dbMonitorService.addPreset(monitorId,channel,presetIndex,name));
 	}
 
-	/**
-	 * 修改预置位
-	 * @param monitorId 设备ID
-	 * @param channel 通道
-	 * @param presetIndex 预置位索引
-	 * @param name 预置位名称
-	 */
+	*//**
+ * 修改预置位
+ * @param monitorId 设备ID
+ * @param channel 通道
+ * @param presetIndex 预置位索引
+ * @param name 预置位名称
+ *//*
 	@PostMapping("updatePreset/{monitorId}/{channel}/{presetIndex/name")
 	@ApiOperation(value = "修改预置位" , notes = "修改预置位")
 	public R updatePreset(@ApiParam(name="monitorId",value="视屏设备ID",required=true) @PathVariable long monitorId,
@@ -219,12 +228,12 @@ public class DbMonitorController extends BaseController
 		return R.ok();
 	}
 
-	/**
-	 * 删除预置位
-	 * @param monitorId 设备ID
-	 * @param channel 通道
-	 * @param presetIndex 预置位索引
-	 */
+	*//**
+ * 删除预置位
+ * @param monitorId 设备ID
+ * @param channel 通道
+ * @param presetIndex 预置位索引
+ *//*
 	@PostMapping("deletePreset/{monitorId}/{channel}/{presetIndex")
 	@ApiOperation(value = "删除预置位" , notes = "删除预置位")
 	public R deletePreset(@ApiParam(name="monitorId",value="视屏设备ID",required=true) @PathVariable long monitorId,
@@ -234,12 +243,12 @@ public class DbMonitorController extends BaseController
 		return R.ok();
 	}
 
-	/**
-	 * 激活预置位
-	 * @param monitorId 设备ID
-	 * @param channel 通道
-	 * @param presetIndex 预置位索引
-	 */
+	*//**
+ * 激活预置位
+ * @param monitorId 设备ID
+ * @param channel 通道
+ * @param presetIndex 预置位索引
+ *//*
 	@PostMapping("invokePreset/{monitorId}/{channel}/{presetIndex")
 	@ApiOperation(value = "激活预置位" , notes = "激活预置位")
 	public R invokePreset(@ApiParam(name="monitorId",value="视屏设备ID",required=true) @PathVariable long monitorId,
@@ -247,7 +256,7 @@ public class DbMonitorController extends BaseController
 			,@ApiParam(name="presetIndex",value="预置位索引（范围：1-255）",required=true)@PathVariable Integer presetIndex) {
 		dbMonitorService.invokePreset(monitorId,channel,presetIndex);
 		return R.ok();
-	}
+	}*/
 
 	/**
 	 *  获取指定设备通道的直播/回放视频地址
@@ -289,7 +298,6 @@ public class DbMonitorController extends BaseController
 	@ApiOperation(value = "heartbeatVideoStream" , notes = "流心跳监测")
 	public R heartbeatVideoStream(@ApiParam(name="liveId",value="视频流ID",required=true)@PathVariable String liveId) {
 		dbMonitorService.heartVideoStream(liveId);
-
 		return R.ok();
 	}
 

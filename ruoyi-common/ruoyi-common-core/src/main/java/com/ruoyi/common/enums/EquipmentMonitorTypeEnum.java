@@ -9,11 +9,9 @@ package com.ruoyi.common.enums;
 public enum  EquipmentMonitorTypeEnum {
 
 
-    //1-未知设备，0-IPC，1-NVR，2-VMS)
-    Unknown_device("未知设备",(byte)-1),
-    IPC_device("IPC",(byte)0),
-    NVR_device("NVR",(byte)1),
-    VMS_device("VMS",(byte)2),
+    VIDEO_RECORDER_DEVICE("录像机",(byte)0),
+    CAMERA_DEVICE("网络摄像头",(byte)1),
+    CHANNEL_CAMERAS_DEVICE("通道摄像头",(byte)2),
             ;
 
 

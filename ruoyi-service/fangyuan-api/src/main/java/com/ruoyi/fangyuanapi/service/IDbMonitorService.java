@@ -2,21 +2,22 @@ package com.ruoyi.fangyuanapi.service;
 
 import com.ruoyi.common.json.JSONObject;
 import com.ruoyi.system.domain.monitor.DbMonitor;
+import com.ruoyi.system.domain.monitor.DbMonitorTree;
 
 import java.util.List;
 import java.util.Map;
 
 /**
  * 视频监控设备Service接口
- * 
+ *
  * @author zheng
  * @date 2021-05-25
  */
-public interface IDbMonitorService 
+public interface IDbMonitorService
 {
     /**
      * 查询视频监控设备
-     * 
+     *
      * @param deviceRegisterCode 视频监控设备ID
      * @return 视频监控设备
      */
@@ -30,11 +31,23 @@ public interface IDbMonitorService
 
     /**
      * 查询视频监控设备列表
-     * 
+     *
      * @param dbMonitor 视频监控设备
      * @return 视频监控设备集合
      */
     public List<DbMonitor> selectDbMonitorList(DbMonitor dbMonitor);
+
+    /**
+     * 查询所有视频监控设备列表
+     * @return 查询所有视频监控设备列表
+     */
+    public List<DbMonitor> listAllVideoMonitor();
+
+    /**
+     * 查询树形视频监控设备列表（录像机-通道）
+     * @return 查询树形视频监控设备列表
+     */
+    public List<DbMonitorTree> listTreeVideoMonitor();
 
     /**
      * 查询视频监控设备列表
@@ -46,7 +59,7 @@ public interface IDbMonitorService
 
     /**
      * 新增视频监控设备
-     * 
+     *
      * @param dbMonitor 视频监控设备
      * @return 结果
      */
@@ -62,7 +75,7 @@ public interface IDbMonitorService
 
     /**
      * 修改视频监控设备
-     * 
+     *
      * @param dbMonitor 视频监控设备
      * @return 结果
      */
@@ -70,7 +83,7 @@ public interface IDbMonitorService
 
     /**
      * 批量删除视频监控设备
-     * 
+     *
      * @param ids 需要删除的数据ID
      * @return 结果
      */
@@ -78,7 +91,7 @@ public interface IDbMonitorService
 
     /**
      * 删除视频监控设备信息
-     * 
+     *
      * @param monitorId 视频监控设备ID
      * @return 结果
      */

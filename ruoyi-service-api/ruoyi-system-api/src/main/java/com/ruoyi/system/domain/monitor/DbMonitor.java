@@ -13,7 +13,7 @@ import java.util.Date;
 
 /**
  * 视频监控设备对象 db_monitor
- * 
+ *
  * @author zheng
  * @date 2021-05-25
  */
@@ -51,10 +51,15 @@ public class DbMonitor extends BaseEntity
     private String deviceSerial;
 
 
-    /** 设备种类(-1-未知设备，0-IPC，1-NVR，2-VMS) */
-    @Excel(name = "设备种类(-1-未知设备，0-IPC，1-NVR，2-VMS)")
-    @ApiModelProperty(value = "设备种类(-1-未知设备，0-IPC，1-NVR，2-VMS)")
+    /** 设备种类(0:录像机  1:视频摄像头 2:通道  ) */
+    @Excel(name = "设备种类(0:录像机  1:视频摄像头 2:通道  )")
+    @ApiModelProperty(value = "设备种类(0:录像机  1:视频摄像头 2:通道  )")
     private Integer deviceType;
+
+    /** 通道摄像头父Id(录像机ID) */
+    @Excel(name = "通道摄像头父Id(录像机ID)")
+    @ApiModelProperty(value = "通道摄像头父Id(录像机ID)")
+    private Integer channelParentId;
 
     /** 设备型号 */
     @Excel(name = "设备型号")
@@ -86,6 +91,11 @@ public class DbMonitor extends BaseEntity
     @Excel(name = "设备通道")
     @ApiModelProperty(value = "设备通道")
     private String deviceChannel;
+
+    /** 通道添加状态(0:添加-已在表单添加 1:未添加-指只是数据同步过来未在表单添加) */
+    @Excel(name = "通道添加状态")
+    @ApiModelProperty(value = "通道添加状态 (0:添加-已在表单添加 1:未添加-指只是数据同步过来未在表单添加)")
+    private Byte channelStatus;
 
     /** 设备视频流地址 */
     @ApiModelProperty(value = "设备视频流地址")

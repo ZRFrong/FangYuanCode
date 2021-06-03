@@ -1,5 +1,7 @@
 package com.ruoyi.fangyuanapi.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.google.common.collect.Lists;
 import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.enums.EquipmentMonitorTypeEnum;
 import com.ruoyi.common.json.JSONObject;
@@ -9,18 +11,19 @@ import com.ruoyi.fangyuanapi.mapper.DbMonitorMapper;
 import com.ruoyi.fangyuanapi.service.IDbMonitorService;
 import com.ruoyi.fangyuanapi.utils.MonitorCloudRequestUtils;
 import com.ruoyi.system.domain.monitor.DbMonitor;
+import com.ruoyi.system.domain.monitor.DbMonitorTree;
 import lombok.SneakyThrows;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 视频监控设备Service业务层处理
- * 
+ *
  * @author zheng
  * @date 2021-05-25
  */
@@ -35,7 +38,7 @@ public class DbMonitorServiceImpl implements IDbMonitorService
 
     /**
      * 查询视频监控设备
-     * 
+     *
      * @param id 视频监控设备ID
      * @return 视频监控设备
      */
@@ -65,7 +68,7 @@ public class DbMonitorServiceImpl implements IDbMonitorService
 
     /**
      * 查询视频监控设备列表
-     * 
+     *
      * @param dbMonitor 视频监控设备
      * @return 视频监控设备
      */
@@ -73,6 +76,49 @@ public class DbMonitorServiceImpl implements IDbMonitorService
     public List<DbMonitor> selectDbMonitorList(DbMonitor dbMonitor)
     {
         return dbMonitorMapper.selectDbMonitorList(dbMonitor);
+    }
+
+    /**
+     * 查询所有视频监控设备列表
+     * @return 所有视频监控设备
+     */
+    @Override
+    public List<DbMonitor> listAllVideoMonitor()
+    {
+        return dbMonitorMapper.listAllVideoMonitorByType(null);
+    }
+
+    /**
+     * 查询树形视频监控设备列表（录像机-通道）
+     * @return 查询树形视频监控设备列表（录像机-通道）
+     */
+    @Override
+    public List<DbMonitorTree> listTreeVideoMonitor()
+    {
+        List<DbMonitorTree> treeList = new ArrayList<>();
+        // 查询录像机
+        List<DbMonitor> recorderMonitors = dbMonitorMapper.listAllVideoMonitorByType(EquipmentMonitorTypeEnum.VIDEO_RECORDER_DEVICE.getTypeCode());
+        // 查询通道
+        List<DbMonitor> channelMonitors = dbMonitorMapper.listAllVideoMonitorByType(EquipmentMonitorTypeEnum.CHANNEL_CAMERAS_DEVICE.getTypeCode());
+        Map<String, List<DbMonitor>> channelCollect = channelMonitors.stream().collect(Collectors.groupingBy(DbMonitor::getDeviceSerial));
+
+        // 组装树形数据
+        recorderMonitors.forEach(v -> {
+            DbMonitorTree dbMonitorTree = new DbMonitorTree().setParentId(v.getId()).setParentName(v.getDeviceName());
+            List<DbMonitor> channelList = channelCollect.get(v.getDeviceSerial());
+            if(CollectionUtil.isNotEmpty(channelList)){
+                // 组装通道数据
+                List<DbMonitorTree> channelTreeList = new ArrayList<>(channelList.size());
+                channelList.forEach(channel -> {
+                    channelTreeList.add(new DbMonitorTree().setParentName(channel.getDeviceName()).setParentId(channel.getId()));
+                });
+                dbMonitorTree.setChild(channelTreeList);
+                dbMonitorTree.setHasChild(true);
+            }
+            treeList.add(dbMonitorTree);
+
+        });
+        return treeList;
     }
 
     /**
@@ -88,34 +134,66 @@ public class DbMonitorServiceImpl implements IDbMonitorService
         // 媒体流索引
         final Integer streamIndex = 0;
         for (DbMonitor dbMonitor : dbMonitors) {
-            JSONObject param = new JSONObject();
-            param.put("deviceSerial",dbMonitor.getDeviceSerial());
-            param.put("channelNo",dbMonitor.getDeviceChannel());
-            param.put("streamIndex",streamIndex);
-            param.put("streamType",streamType);
-            JSONObject videoUrlJson = getVideo(param);
-            dbMonitor.setDeviceVideoUrls(videoUrlJson);
+            // 通道数据调用宇视接口获取视频流地址
+            if(dbMonitor.getDeviceType() == EquipmentMonitorTypeEnum.CHANNEL_CAMERAS_DEVICE.getTypeCode().intValue()){
+                JSONObject param = new JSONObject();
+                param.put("deviceSerial",dbMonitor.getDeviceSerial());
+                param.put("channelNo",dbMonitor.getDeviceChannel());
+                param.put("streamIndex",streamIndex);
+                param.put("streamType",streamType);
+                JSONObject videoUrlJson = getVideo(param);
+                dbMonitor.setDeviceVideoUrls(videoUrlJson);
+            }
         }
         return dbMonitors;
     }
 
     /**
      * 新增视频监控设备
-     * 
+     *
      * @param dbMonitor 视频监控设备
      * @return 结果
      */
     @Override
+    @SneakyThrows
     @Transactional(rollbackFor = Exception.class)
     public int insertDbMonitor(DbMonitor dbMonitor)
     {
-        // 获取设备序列号
-        String deviceSerial = MonitorCloudRequestUtils.addDevice(dbMonitor.getDeviceRegisterCode(), dbMonitor.getDeviceName());
-        dbMonitor.setDeviceSerial(deviceSerial);
-        int insertStatus = dbMonitorMapper.insertDbMonitor(dbMonitor);
-        // 插入设备与机柜绑定关系
-        dbMonitorMapper.bindEquipmentRefMonitor(dbMonitor.getEquipmentId(),dbMonitor.getId());
-        return insertStatus;
+        // 录像机设备添加
+        if(dbMonitor.getDeviceType() == EquipmentMonitorTypeEnum.VIDEO_RECORDER_DEVICE.getTypeCode().intValue()){
+            // 获取设备序列号
+            String deviceSerial = MonitorCloudRequestUtils.addDevice(dbMonitor.getDeviceRegisterCode(), dbMonitor.getDeviceName());
+            dbMonitor.setDeviceSerial(deviceSerial);
+            int insertStatus = dbMonitorMapper.insertDbMonitor(dbMonitor);
+            // 同步通道添加
+            syncChannel(dbMonitor.getId());
+            return insertStatus;
+        }
+
+        //  摄像头添加未处理 预留位置
+        if(dbMonitor.getDeviceType() == EquipmentMonitorTypeEnum.CAMERA_DEVICE.getTypeCode().intValue()){
+            int insertStatus = dbMonitorMapper.insertDbMonitor(dbMonitor);
+            // 插入设备与机柜绑定关系
+            if(dbMonitor.getEquipmentId() != null) dbMonitorMapper.bindEquipmentRefMonitor(dbMonitor.getEquipmentId(),dbMonitor.getId());
+            return insertStatus;
+        }
+
+        // 通道摄像头添加
+        if(dbMonitor.getDeviceType() == EquipmentMonitorTypeEnum.CHANNEL_CAMERAS_DEVICE.getTypeCode().intValue()){
+            // 通道表单添加下的状态
+            final byte channelFormAddStatus = 0;
+            DbMonitor orignData = dbMonitorMapper.selectDbMonitorById(String.valueOf(dbMonitor.getId()));
+            if(orignData.getChannelStatus() == channelFormAddStatus){
+                throw  new Exception("该通道已经添加");
+            }
+            // 插入设备与机柜绑定关系
+            dbMonitorMapper.deleteEquipmentRefMonitorByMonitorId(dbMonitor.getId());
+            dbMonitorMapper.bindEquipmentRefMonitor(dbMonitor.getEquipmentId(),dbMonitor.getId());
+            dbMonitor.setChannelStatus(channelFormAddStatus);
+            return dbMonitorMapper.updateDbMonitor(dbMonitor);
+        }
+
+        throw  new Exception("视频设备类型参数异常");
     }
 
     /**
@@ -127,29 +205,37 @@ public class DbMonitorServiceImpl implements IDbMonitorService
     @Transactional(rollbackFor = Exception.class)
     public int syncChannel(Long monitorId) {
         DbMonitor dbMonitor = dbMonitorMapper.selectDbMonitorById(String.valueOf(monitorId));
+        // 现在该录像机下的通道
+        List<DbMonitor> origChannelList = dbMonitorMapper.selectChannelBySerial(dbMonitor.getDeviceSerial());
+        Set<String> channelNoSet = origChannelList.stream().map(DbMonitor::getDeviceChannel).collect(Collectors.toSet());
+        // 调用宇视接口获取通道
         JSONObject jsonObject = MonitorCloudRequestUtils.listChannel(dbMonitor.getDeviceSerial(), 1, 100);
         Integer total = jsonObject.getInt("total");
-        JSONObject.JSONArray deviceList = jsonObject.getArr("channelList");
-        List<DbMonitor> channelList = new ArrayList<>(deviceList.size());
-        deviceList.forEach( v -> {
+        JSONObject.JSONArray channelArr = jsonObject.getArr("channelList");
+        List<DbMonitor> channelList = new ArrayList<>(channelArr.size());
+        // 通道表单添加下的状态
+        final byte channelSyncAddStatus = 1;
+        // 过滤宇视返回所有通道 只添加同步过来新增的通道，原有通道保持不变
+        channelArr.forEach( v -> {
             JSONObject channel = (JSONObject) v;
-            DbMonitor channelMonitor = new DbMonitor();
-            BeanUtils.copyProperties(dbMonitor,channelMonitor);
-            channelMonitor.setDeviceName(channel.getStr("channelName"))
-                    .setDeviceChannel(channel.getStr("channelNo"))
-                    .setDeviceType(1)
-                    .setEquipmentId(dbMonitor.getEquipmentId())
-                    .setId(null);
-            channelList.add(channelMonitor);
+            if(!channelNoSet.contains(channel.getStr("channelNo"))){
+                DbMonitor channelMonitor = new DbMonitor();
+                BeanUtils.copyProperties(dbMonitor,channelMonitor);
+                channelMonitor.setDeviceName(channel.getStr("channelName"))
+                        .setDeviceChannel(channel.getStr("channelNo"))
+                        .setDeviceType(EquipmentMonitorTypeEnum.CHANNEL_CAMERAS_DEVICE.getTypeCode().intValue())
+                        .setChannelStatus(channelSyncAddStatus)
+                        .setEquipmentId(dbMonitor.getEquipmentId())
+                        .setId(null);
+                channelList.add(channelMonitor);
+            }
         });
-        // 删除之前的通道数据
-        dbMonitorMapper.deleteDbChannelMonitorByDeviceSerial(dbMonitor.getDeviceSerial());
         return dbMonitorMapper.batchInsertChannel(channelList);
     }
 
     /**
      * 修改视频监控设备
-     * 
+     *
      * @param dbMonitor 视频监控设备
      * @return 结果
      */
@@ -157,19 +243,25 @@ public class DbMonitorServiceImpl implements IDbMonitorService
     @Transactional(rollbackFor = Exception.class)
     public int updateDbMonitor(DbMonitor dbMonitor)
     {
-        // 同步视屏云设备修改
-        if(0 == dbMonitor.getDeviceType()){
+
+        if(EquipmentMonitorTypeEnum.VIDEO_RECORDER_DEVICE.getTypeCode().intValue() == dbMonitor.getDeviceType()){
+            // 录像机设备修改 同步宇视云
             MonitorCloudRequestUtils.updateDevice(dbMonitor.getDeviceSerial(),dbMonitor.getDeviceName());
+
+        } else if(EquipmentMonitorTypeEnum.CHANNEL_CAMERAS_DEVICE.getTypeCode().intValue() == dbMonitor.getDeviceType()
+                || EquipmentMonitorTypeEnum.CAMERA_DEVICE.getTypeCode().intValue() == dbMonitor.getDeviceType()) {
+            // 通道、摄像头设备修改 重新绑定与机柜的关联关系
+            Long id = dbMonitor.getId();
+            dbMonitorMapper.deleteEquipmentRefMonitorByMonitorId(id);
+            dbMonitorMapper.bindEquipmentRefMonitor(dbMonitor.getEquipmentId(),id);
         }
-        Long id = dbMonitor.getId();
-        dbMonitorMapper.deleteEquipmentRefMonitorByMonitorId(id);
-        dbMonitorMapper.bindEquipmentRefMonitor(dbMonitor.getEquipmentId(),id);
+
         return dbMonitorMapper.updateDbMonitor(dbMonitor);
     }
 
     /**
      * 删除视频监控设备对象
-     * 
+     *
      * @param ids 需要删除的数据ID
      * @return 结果
      */
@@ -178,30 +270,62 @@ public class DbMonitorServiceImpl implements IDbMonitorService
     public int deleteDbMonitorByIds(String ids)
     {
         String[] idsArr = Convert.toStrArray(ids);
-        // 同步云视频设备进行删除
+        int operateNum = 0;
+        for (String id : idsArr) {
+            // 暂时调用单个删除方法 待后续业务稳定在进行优化
+            operateNum += deleteDbMonitorById(Long.valueOf(id));
+        }
+        return operateNum;
+        /*// 同步云视频设备进行删除
         List<DbMonitor> dbMonitors = dbMonitorMapper.selectDbMonitorByIds(idsArr);
         dbMonitors.forEach(v -> {
             MonitorCloudRequestUtils.deleteDevice(v.getDeviceSerial());
         });
         dbMonitorMapper.deleteEquipmentRefMonitorByMonitorIds(idsArr);
-        return dbMonitorMapper.deleteDbMonitorByIds(idsArr);
+        return dbMonitorMapper.deleteDbMonitorByIds(idsArr);*/
     }
 
     /**
      * 删除视频监控设备信息
-     * 
+     *
      * @param monitorId 视频监控设备ID
      * @return 结果
      */
     @Transactional(rollbackFor = Exception.class)
+    @SneakyThrows
     public int deleteDbMonitorById(Long monitorId)
     {
-        // 同步云视频设备进行删除
-        MonitorCloudRequestUtils.deleteDevice(
-                dbMonitorMapper.selectDbMonitorById(monitorId.toString()).getDeviceSerial()
-        );
-        dbMonitorMapper.deleteEquipmentRefMonitorByMonitorId(monitorId);
-        return dbMonitorMapper.deleteDbMonitorById(monitorId);
+        DbMonitor dbMonitor = selectDbMonitorById(String.valueOf(monitorId));
+        // 录像机删除同步云视频设备进行删除
+        if(EquipmentMonitorTypeEnum.VIDEO_RECORDER_DEVICE.getTypeCode().intValue() == dbMonitor.getDeviceType()){
+            MonitorCloudRequestUtils.deleteDevice(dbMonitor.getDeviceSerial());
+            List<DbMonitor> channelList = dbMonitorMapper.selectChannelBySerial(dbMonitor.getDeviceSerial());
+            // 同步删除下级通道
+            dbMonitorMapper.deleteDbChannelMonitorByDeviceSerial(dbMonitor.getDeviceSerial());
+            // todo 同步删除下级通道与机柜设备的关联关系
+            Set<String> collect = channelList.stream().map((v) -> {return String.valueOf(v.getId());}).collect(Collectors.toSet());
+            String arr[] = new String[collect.size()];
+            collect.toArray(arr);
+            dbMonitorMapper.deleteEquipmentRefMonitorByMonitorIds(arr);
+            return dbMonitorMapper.deleteDbMonitorById(monitorId);
+        }
+
+        else if(EquipmentMonitorTypeEnum.CHANNEL_CAMERAS_DEVICE.getTypeCode().intValue() == dbMonitor.getDeviceType()) {
+            // 摄像头删除关联关系
+            dbMonitorMapper.deleteEquipmentRefMonitorByMonitorId(monitorId);
+            return dbMonitorMapper.deleteDbMonitorById(monitorId);
+        }
+
+        else if(EquipmentMonitorTypeEnum.CAMERA_DEVICE.getTypeCode().intValue() == dbMonitor.getDeviceType()) {
+            // 通道删除关联关系
+            dbMonitorMapper.deleteEquipmentRefMonitorByMonitorId(monitorId);
+            // 通道状态修改同步添加的状态
+            dbMonitor.setChannelStatus((byte)1);
+            return dbMonitorMapper.updateDbMonitor(dbMonitor);
+        }
+
+        throw  new Exception("删除设备异常");
+
     }
 
     /**
@@ -322,6 +446,8 @@ public class DbMonitorServiceImpl implements IDbMonitorService
         }else {
             throw new Exception("参数异常");
         }
+        // 清除心跳
+        redisExpireKeyListener.removeHeartbeat(liveId);
     }
 
     /**

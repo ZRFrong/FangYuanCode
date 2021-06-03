@@ -8,19 +8,27 @@ import java.util.List;
 
 /**
  * 视频监控设备Mapper接口
- * 
+ *
  * @author zheng
  * @date 2021-05-25
  */
-public interface DbMonitorMapper 
+public interface DbMonitorMapper
 {
     /**
      * 查询视频监控设备
-     * 
+     *
      * @param id 视频监控设备ID
      * @return 视频监控设备
      */
     public DbMonitor selectDbMonitorById(String id);
+
+    /**
+     * 查询指定录像机下的所有通道
+     *
+     * @param deviceSerial 录像机设备序列号
+     * @return 通道集合
+     */
+    public List<DbMonitor> selectChannelBySerial(String deviceSerial);
 
     /**
      * 查询视频监控设备
@@ -39,11 +47,18 @@ public interface DbMonitorMapper
 
     /**
      * 查询视频监控设备列表
-     * 
+     *
      * @param dbMonitor 视频监控设备
      * @return 视频监控设备集合
      */
     public List<DbMonitor> selectDbMonitorList(DbMonitor dbMonitor);
+
+    /**
+     * 查询所有视频监控设备列表
+     * @param type 视频设备类型 （0:录像机  1:视频摄像头 2:通道  ）
+     * @return 所有视频监控设备集合
+     */
+    public List<DbMonitor> listAllVideoMonitorByType(@Param("type") Byte type);
 
     /**
      * 查询视频监控设备列表
@@ -55,7 +70,7 @@ public interface DbMonitorMapper
 
     /**
      * 新增视频监控设备
-     * 
+     *
      * @param dbMonitor 视频监控设备
      * @return 结果
      */
@@ -79,7 +94,7 @@ public interface DbMonitorMapper
 
     /**
      * 修改视频监控设备
-     * 
+     *
      * @param dbMonitor 视频监控设备
      * @return 结果
      */
@@ -87,7 +102,7 @@ public interface DbMonitorMapper
 
     /**
      * 删除视频监控设备
-     * 
+     *
      * @param monitorId 视频监控设备ID
      * @return 结果
      */
@@ -95,13 +110,30 @@ public interface DbMonitorMapper
 
     /**
      * 批量删除视频监控设备
-     * 
+     *
      * @param deviceRegisterCodes 需要删除的数据ID
      * @return 结果
      */
     public int deleteDbMonitorByIds(String[] deviceRegisterCodes);
 
+    /**
+     * 批量删除设备与机柜对应关系
+     * @param monitorIds 设备ID
+     * @return 结果
+     */
     int deleteEquipmentRefMonitorByMonitorIds(String[] monitorIds);
+    /**
+     * 删除设备与机柜对应关系
+     * @param monitorId 设备ID
+     * @return 结果
+     */
     int deleteEquipmentRefMonitorByMonitorId(Long monitorId);
+
+    /**
+     * 绑定设备与机柜关联关系
+     * @param equipmentId 机柜ID
+     * @param monitorId 设备ID
+     * @return 结果
+     */
     int bindEquipmentRefMonitor(@Param("equipmentId") Long equipmentId, @Param("monitorId")Long monitorId);
 }

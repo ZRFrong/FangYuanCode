@@ -5,6 +5,7 @@ import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.fangyuanapi.service.IDbMonitorService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.KeyExpirationEventMessageListener;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -28,7 +29,8 @@ public class RedisExpireKeyListener extends KeyExpirationEventMessageListener {
     // redis缓存前缀
     private static final String streamCachePrefix = "VIDEO_STREAM_CACHE:";
     // redis缓存有效时间 在心跳时间的基础上增加一分钟
-    private static final long streamExpireTime = 60 * 3;
+    @Value("${video.heart}")
+    private long streamExpireTime;
     // 定时器执行周期 五分钟
     private static final long execPeriod = 60 * 1;
     // 定时器开关
@@ -117,14 +119,23 @@ public class RedisExpireKeyListener extends KeyExpirationEventMessageListener {
     }
 
     /**
-     * 心跳缓存
+     * 添加心跳缓存
      * @param redisKey 视频流字符
      */
     public void addHeartbeat(String redisKey){
-
         videoStreamSignCollect.add(redisKey = streamCachePrefix + redisKey);
         // 有效时间在心跳时间基础上增加一分钟
         redisUtils.set(redisKey,System.currentTimeMillis(),streamExpireTime);
+    }
+
+    /**
+     * 删除心跳缓存
+     * @param redisKey 视频流字符
+     */
+    public void removeHeartbeat(String redisKey){
+        videoStreamSignCollect.remove(redisKey = streamCachePrefix + redisKey);
+        // 清除redis缓存
+        redisUtils.delete(redisKey);
     }
 
 }
