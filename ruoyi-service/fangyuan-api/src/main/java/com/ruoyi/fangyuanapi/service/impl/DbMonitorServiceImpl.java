@@ -233,7 +233,9 @@ public class DbMonitorServiceImpl implements IDbMonitorService
                 channelList.add(channelMonitor);
             }
         });
-        return dbMonitorMapper.batchInsertChannel(channelList);
+        if(CollectionUtil.isNotEmpty(channelList))
+            return dbMonitorMapper.batchInsertChannel(channelList);
+        return 0;
     }
 
     /**

@@ -11,14 +11,16 @@
         <result property="deviceSerial"    column="device_serial"    />
         <result property="deviceType"    column="device_type"    />
         <result property="deviceModel"    column="device_model"    />
+        <result property="deviceChannel"    column="device_channel"    />
         <result property="deviceCameraImage"    column="device_camera_image"    />
         <result property="deviceLocation"    column="device_location"    />
         <result property="equipmentProductionDate"    column="device_date"    />
         <result property="deviceDesc"    column="device_desc"    />
+        <result property="channelStatus"    column="channel_status"    />
     </resultMap>
 
     <sql id="selectDbMonitorVo">
-        select id, device_name, device_register_code, device_serial, device_type, device_model, device_camera_image, device_location, device_date as equipmentProductionDate, device_desc from db_monitor
+        select id, device_name, device_register_code, device_serial, device_type, device_model,device_channel, device_camera_image, device_location, device_date as equipmentProductionDate, device_desc,channel_status from db_monitor
     </sql>
 
     <select id="selectDbMonitorList" parameterType="com.ruoyi.system.domain.monitor.DbMonitor" resultMap="DbMonitorResult">
@@ -116,7 +118,7 @@
         device_serial,device_type,
         device_model,device_channel,
         device_camera_image,device_location,
-        device_date,device_desc
+        device_date,device_desc,channel_status
         )
         values
         <foreach collection="channelList" close="" index="item" item="item" open="" separator="," >
@@ -125,7 +127,8 @@
             #{item.deviceSerial},#{item.deviceType},
             #{item.deviceModel},#{item.deviceChannel},
             #{item.deviceCameraImage},#{item.deviceLocation},
-            #{item.equipmentProductionDate},#{item.deviceDesc}
+            #{item.equipmentProductionDate},#{item.deviceDesc},
+            #{item.channelStatus}
             )
         </foreach>
     </insert>
@@ -143,7 +146,7 @@
             <if test="deviceLocation != null  and deviceLocation != ''">device_location = #{deviceLocation},</if>
             <if test="equipmentProductionDate != null ">device_date = #{equipmentProductionDate},</if>
             <if test="deviceDesc != null  and deviceDesc != ''">device_desc = #{deviceDesc},</if>
-            <if test="deviceDesc != null ">channel_status = #{channelStatus}</if>
+            <if test="channelStatus != null ">channel_status = #{channelStatus}</if>
         </trim>
         where id = #{id}
     </update>
