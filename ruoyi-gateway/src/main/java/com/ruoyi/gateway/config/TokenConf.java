@@ -12,4 +12,8 @@ public class TokenConf {
 
     @Value("${com.fangyuan.token.aes.refreshTokenKey}")
     private String refreshTokenKey;
+
+    @Value("${com.fangyuan.token.default}")
+    private String defaultToken;
+
 }

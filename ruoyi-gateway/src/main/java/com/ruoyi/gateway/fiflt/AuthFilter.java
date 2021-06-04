@@ -88,6 +88,16 @@ public class AuthFilter implements GlobalFilter, Ordered {
                 return setUnauthorizedResponse(exchange, "token can't null or empty string", "401");
             }
         }
+
+        // 判断是否携带默认token
+        if (StringUtils.isNotBlank(token) && token.startsWith(tokenConf.getDefaultToken())) {
+            log.info("无用户登录状态请求:{}",url);
+            // 设置默认token为用户ID
+            ServerHttpRequest build = exchange.getRequest().mutate().header(Constants.CURRENT_ID, token).build();
+            ServerWebExchange mutableExchange = exchange.mutate().request(build).build();
+            return chain.filter(mutableExchange);
+        }
+
 //        token解析
         Map<String, Object> map2 = TokenUtils.verifyToken(token, tokenConf.getAccessTokenKey());
         String id = "";
