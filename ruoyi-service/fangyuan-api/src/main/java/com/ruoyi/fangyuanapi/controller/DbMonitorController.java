@@ -96,7 +96,7 @@ public class DbMonitorController extends BaseController
 	@ApiOperation(value = "同步视频通道" , notes = "同步视频通道")
 	public R syncChannel(@ApiParam(name="monitorId",value="视频设备ID",required=true) @PathVariable Long monitorId)
 	{
-		return toAjax(dbMonitorService.syncChannel(monitorId));
+		return R.data(dbMonitorService.syncChannel(monitorId));
 	}
 
 	/**
