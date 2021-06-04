@@ -264,15 +264,54 @@ public class DbMonitorServiceImpl implements IDbMonitorService
             // 录像机设备修改 同步宇视云
             MonitorCloudRequestUtils.updateDevice(dbMonitor.getDeviceSerial(),dbMonitor.getDeviceName());
 
-        } else if(EquipmentMonitorTypeEnum.CHANNEL_CAMERAS_DEVICE.getTypeCode().intValue() == dbMonitor.getDeviceType()
-                || EquipmentMonitorTypeEnum.CAMERA_DEVICE.getTypeCode().intValue() == dbMonitor.getDeviceType()) {
-            // 通道、摄像头设备修改 重新绑定与机柜的关联关系
+        } else if(EquipmentMonitorTypeEnum.CAMERA_DEVICE.getTypeCode().intValue() == dbMonitor.getDeviceType()) {
+            // 网络摄像头设备修改 重新绑定与机柜的关联关系
             Long id = dbMonitor.getId();
             dbMonitorMapper.deleteEquipmentRefMonitorByMonitorId(id);
             dbMonitorMapper.bindEquipmentRefMonitor(dbMonitor.getEquipmentId(),id);
         }
 
+        else if(EquipmentMonitorTypeEnum.CHANNEL_CAMERAS_DEVICE.getTypeCode().intValue() == dbMonitor.getDeviceType()) {
+            // 通道设备修改 重新绑定与机柜的关联关系
+            dbMonitor = assemblyChannel(dbMonitor);
+            dbMonitorMapper.deleteEquipmentRefMonitorByMonitorId(dbMonitor.getId());
+            dbMonitorMapper.bindEquipmentRefMonitor(dbMonitor.getEquipmentId(),dbMonitor.getId());
+        }
+
         return dbMonitorMapper.updateDbMonitor(dbMonitor);
+    }
+
+    /**
+     * 组装通道数据
+     * @param paramChannelMonitor 前端通道参数
+     * @return 组装完通道参数 用于插入数据库和绑定机柜关系
+     */
+    private DbMonitor assemblyChannel(DbMonitor paramChannelMonitor){
+        if(paramChannelMonitor.getChannelIds() != null && paramChannelMonitor.getChannelIds().length > 0){
+            // 新选择的通道Id
+            Long choiceChannelId = paramChannelMonitor.getChannelIds()[paramChannelMonitor.getChannelIds().length - 1];
+            if(paramChannelMonitor.getId().equals(choiceChannelId)){
+                // 如果选择通道没有发生变化 则原路返回
+                return paramChannelMonitor;
+            }
+
+            // 通道接口同步添加下的状态
+            final byte channelSyncAddStatus = 1;
+            DbMonitor choiceChannelData = dbMonitorMapper.selectDbMonitorById(String.valueOf(choiceChannelId));
+            if(choiceChannelData.getChannelStatus() != channelSyncAddStatus){
+                throw  new BusinessException("该通道已经添加");
+            }
+            choiceChannelData.setEquipmentId(paramChannelMonitor.getEquipmentId());
+            choiceChannelData.setChannelStatus((byte)0);
+            // 删除通道之前的机柜绑定关系
+            dbMonitorMapper.deleteEquipmentRefMonitorByMonitorId(paramChannelMonitor.getId());
+            // 旧通道数据绑定机柜状态改为channelSyncAddStatus
+            paramChannelMonitor.setChannelStatus(channelSyncAddStatus);
+            dbMonitorMapper.updateDbMonitor(paramChannelMonitor);
+            return choiceChannelData;
+        }
+
+        throw new BusinessException("通道参数异常");
     }
 
     /**
