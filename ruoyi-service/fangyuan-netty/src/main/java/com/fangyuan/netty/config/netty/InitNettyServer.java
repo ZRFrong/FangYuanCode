@@ -11,6 +11,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * @Description: 初始化netty服务
  * @Author zheng
@@ -23,6 +26,7 @@ public class InitNettyServer implements InitializingBean {
 
     @Value("${person.listen-port}")
     private int port;
+    public static Map<String, ChannelHandlerContext> map = new ConcurrentHashMap<String, ChannelHandlerContext>();
 
 
     @Override

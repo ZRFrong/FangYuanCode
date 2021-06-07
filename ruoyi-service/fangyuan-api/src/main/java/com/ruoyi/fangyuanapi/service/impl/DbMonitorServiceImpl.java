@@ -413,6 +413,19 @@ public class DbMonitorServiceImpl implements IDbMonitorService
         return captureUrl;
     }
 
+    /**
+     * 同步设备列表保存至数据库
+     */
+    public void syncDeviceList(){
+        int pageNum = 1;
+        final int pageSize = 100;
+        JSONObject data = MonitorCloudRequestUtils.listDevice(pageNum, pageSize);
+        Integer total = data.getInt("total");
+
+
+
+    }
+
     @Override
     public void startPtz(Long monitorId, Integer channel, Integer command, Integer speed) {
         DbMonitor dbMonitor = dbMonitorMapper.selectDbMonitorById(monitorId.toString());

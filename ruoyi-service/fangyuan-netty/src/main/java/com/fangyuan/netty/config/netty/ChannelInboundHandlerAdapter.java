@@ -1,9 +1,12 @@
 package com.fangyuan.netty.config.netty;
 
+import com.ruoyi.system.domain.DbTcpClient;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.Date;
 
 /**
  * @Description: 通道与消息接收处理器
@@ -13,6 +16,8 @@ import java.io.IOException;
  */
 @Log4j2
 public class ChannelInboundHandlerAdapter extends io.netty.channel.ChannelInboundHandlerAdapter {
+
+
 
     /**
      * 从客户端收到新的数据时，这个方法会在收到消息时被调用
@@ -25,8 +30,17 @@ public class ChannelInboundHandlerAdapter extends io.netty.channel.ChannelInboun
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msgObj) throws InterruptedException {
         String msg = msgObj.toString();
-        log.info("ChannelInboundHandlerAdapter.read msg: ",msg);
-        ctx.writeAndFlush("6566");
+        log.info("ChannelInboundHandlerAdapter.read msg:{} ",msg);
+        if (msg.contains("dapeng")) {
+            // 心跳处理
+            log.warn("来到的心跳名称是：{}",msg);
+            DbTcpClient dbTcpClient = getIp(ctx);
+            dbTcpClient.setHeartName(msg);//心跳
+            InitNettyServer.map.put(dbTcpClient.getHeartName(), ctx);
+            log.info("时间：{}, 设备:{}, 心跳处理：{} " ,new Date(), getIp(ctx).getHeartName() , msg);
+        } else {
+
+        }
     }
 
 
@@ -85,5 +99,21 @@ public class ChannelInboundHandlerAdapter extends io.netty.channel.ChannelInboun
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception, IOException {
         super.userEventTriggered(ctx, evt);
         ctx.close();
+    }
+
+    /* 通过心跳拿到ip 和 端口  */
+    private DbTcpClient getIp(ChannelHandlerContext ctx) {
+        InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
+        String clientIp = insocket.getAddress().getHostAddress();
+        int port = insocket.getPort();
+        DbTcpClient dbTcpClient = new DbTcpClient();
+        for (String key : InitNettyServer.map.keySet()) {
+            if (InitNettyServer.map.get(key) != null && InitNettyServer.map.get(key).equals(ctx)) {
+                dbTcpClient.setHeartName(key);
+            }
+        }
+        dbTcpClient.setIp(clientIp);
+        dbTcpClient.setPort(port + "");
+        return dbTcpClient;
     }
 }
