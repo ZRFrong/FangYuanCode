@@ -19,7 +19,7 @@
         <module>fangyuan-tcp</module>
         <module>fangyuan-api</module>
         <module>fangyuan-websocket</module>
-        <!--<module>ruoyi-message</module>-->
+        <module>ruoyi-message</module>
         <module>fangyuan-netty</module>
     </modules>
 </project>
