@@ -199,10 +199,12 @@ public class DbUserServiceImpl implements IDbUserService
         map.put("signature",user.getSignature()+"");
         map.put("birthday",DateUtils.parseDateToStr("yyyy-MM-dd", user.getBirthday()));
         map.put("phone",PhoneUtils.replacePhone(user.getPhone(),3,7,"*"));
-        LocalDate date = user.getCreated().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate now = LocalDate.now();
-        long l = ChronoUnit.DAYS.between(date, now);
-        map.put("duration",l+1+"");
+        if (user.getCreated() != null){
+            LocalDate date = user.getCreated().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate now = LocalDate.now();
+            long l = ChronoUnit.DAYS.between(date, now);
+            map.put("duration",l+1+"");
+        }
         return map;
     }
 

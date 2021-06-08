@@ -19,7 +19,6 @@ import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.common.core.text.Convert;
 import org.springframework.transaction.annotation.Transactional;
-import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
@@ -296,5 +295,10 @@ public class DbEquipmentServiceImpl implements IDbEquipmentService {
     public String selectByHeartbeatText(String heartbeatText) {
         DbEquipment equipment = dbEquipmentMapper.selectByHeartbeatText(heartbeatText);
         return equipment.getEquipmentNoString();
+    }
+
+    @Override
+    public void updateEquipmentIsOnline(String heartbeat, Integer isOnline) {
+        dbEquipmentMapper.updateEquipmentIsOnline(heartbeat,isOnline);
     }
 }

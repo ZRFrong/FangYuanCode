@@ -280,6 +280,8 @@ public class DbLandServiceImpl implements IDbLandService
         //要求后台人员必须在出厂前填好指令码
         admin.setFunctionIds(admin.getFunctionIds()+","+getDbEquipmentComponent(equipmentId));
         int i = dbEquipmentAdminMapper.updateDbEquipmentAdmin(admin);
+        land.setEquipmentIds(StringUtils.isEmpty(land.getEquipmentIds())?equipmentId+"": land.getEquipmentIds()+","+equipmentId);
+        dbLandMapper.updateDbLand(land);
         return i>0 ? true : false;
     }
 
@@ -290,9 +292,12 @@ public class DbLandServiceImpl implements IDbLandService
     }
 
     @Override
-    public Map<String, Object> getLandAndOperateInfo(Long equipmentId, Long userId) {
+    public Map<String, Object> getLandAndOperateInfo(Long equipmentId, Long userId,Integer type) {
         HashMap<String, Object> map = new HashMap<>(2);
-        map.put("lands",dbLandMapper.selectDbLandNameByUserId(userId));
+        if (type == 0){
+            map.put("lands",dbLandMapper.selectDbLandNameByUserId(userId,null));
+        }
+        map.put("lands",dbLandMapper.selectDbLandNameByUserId(userId,type));
         map.put("operate",dbEquipmentComponentMapper.selectDbEquipmentComponentNameByEquipmentId(equipmentId));
         return map;
     }
