@@ -35,7 +35,7 @@ public class OperateSendUtils {
 
         String host = "http://115.28.136.205:9009";
 
-        String path = "/tcp/tcpOrder/query";
+        String path = "/netty/tcpOrder/query";
         String method = "GET";
         Map<String, String> headers = new HashMap<String, String>();
         Map<String, String> querys = new HashMap<String, String>();
@@ -51,7 +51,7 @@ public class OperateSendUtils {
 
         String host = "http://115.28.136.205:9009";
 
-        String path = "/tcp/tcpOrder/stateList";
+        String path = "/netty/tcpOrder/stateList";
         String method = "GET";
         Map<String, String> headers = new HashMap<String, String>();
         Map<String, String> querys = new HashMap<String, String>();
