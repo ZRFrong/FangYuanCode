@@ -47,6 +47,7 @@ public class MonitorCloudRequestUtils {
         try{
             String accessToken = body.getObj("data").getStr("accessToken");
             Long expireTime = body.getObj("data").getLong("expireTime");
+            expireTime = expireTime - (System.currentTimeMillis()/1000);
             redisUtils.set(MONITOR_API_TOKEN_PREFIX,accessToken,expireTime);
             return accessToken;
         }catch (Exception e){
