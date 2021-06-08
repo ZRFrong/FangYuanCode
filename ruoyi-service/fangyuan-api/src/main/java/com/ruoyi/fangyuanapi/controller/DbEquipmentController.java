@@ -164,6 +164,19 @@ public class DbEquipmentController extends BaseController {
     }
 
     /**
+     * 修改设备的在线状态
+     * @since: 2.0.0
+     * @return: void
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/7 17:28
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @PutMapping("updateEquipmentIsOnline")
+    public void updateEquipmentIsOnline(String heartbeat,Integer isOnline){
+        dbEquipmentService.updateEquipmentIsOnline(heartbeat,isOnline);
+    }
+
+    /**
      * 批量生成设备接口  完成心跳例子： pisitai-00032-dapeng
      * @param prefix  心跳前缀 例; pisitai-
      * @param suffix  心跳后缀 例: -dapeng
@@ -236,7 +249,7 @@ public class DbEquipmentController extends BaseController {
                 //开启时间
                 map.put("startDate",null);
                 //开关状态
-                map.put("switchState",null);
+                map.put("switchState",1);
                 //允许定时
                 map.put("isScheduled",1);
                 //在线状态 放到dto中
@@ -245,7 +258,7 @@ public class DbEquipmentController extends BaseController {
                 if (map.get("checkCode").equals("1") || map.get("checkCode").equals("2") ){
                     component.setFunctionLogo("1,2,3");
                     //进度条
-                    map.put("percentage",null);
+                    map.put("percentage",500);
                     //是否允许滑动
                     map.put("isSlide", 1);
                 }else {

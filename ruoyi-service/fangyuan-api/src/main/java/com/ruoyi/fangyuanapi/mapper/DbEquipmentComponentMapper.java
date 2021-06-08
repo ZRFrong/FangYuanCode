@@ -98,4 +98,6 @@ public interface DbEquipmentComponentMapper
     DbEquipmentComponent selectDbEquipmentComponentByheartbeatText(String heartbeatText);
 
     DbEquipmentComponent selectDbEquipmentComponentByheartbeatTextAndLogo(@Param("heartbeatText") String heartbeatText, @Param("fucncitonLogo")String fucncitonLogo);
+
+    List<DbEquipmentComponent> selectDbEquipmentComponentListByHeartbeat(String heartbeatText);
 }

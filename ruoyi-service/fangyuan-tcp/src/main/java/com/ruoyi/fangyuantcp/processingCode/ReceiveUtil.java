@@ -222,6 +222,17 @@ public class ReceiveUtil {
      *温度处理
      * */
     public static String getTemp(String s) {
+        //C8 10 00 01 00 14 28
+        // 14 5E
+        // 04 B0
+        // 0005
+        // 01 33
+        // 01 5A
+        // 00 00
+        // 00 00
+        // 1842
+        // 00E8
+        // 001E000A01F401F401F401F401F401F40040000000001DA7
         int i = Integer.parseInt(s, 16);
         String temperatureNow = new String();
         if (i > 32768) {

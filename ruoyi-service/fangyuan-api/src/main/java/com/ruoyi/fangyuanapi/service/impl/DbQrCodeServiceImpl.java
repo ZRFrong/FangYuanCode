@@ -116,7 +116,7 @@ public class DbQrCodeServiceImpl implements IDbQrCodeService {
         dbQrCode.setCreateTime(new Date());
         String argument = "?qrCodeId=" + dbQrCode.getQrCodeId();
         //String text = url + argument;
-        String text = "http://192.168.3.5:8080/problem/information" + argument;
+        String text = "https://fangyuancun.cn/problem/information" + argument;
         //http://192.168.0.105:8080/problem/information
         String encode = QrCodeUtils.encode(text, "http://cdn.fangyuancun.cn/logo9.png", true,code.getHeartbeatText());
         dbQrCode.setQrCodePic(encode);

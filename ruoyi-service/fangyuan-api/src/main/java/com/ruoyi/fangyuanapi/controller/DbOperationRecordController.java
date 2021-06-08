@@ -185,13 +185,14 @@ public class DbOperationRecordController extends BaseController {
     @GetMapping("getOperationByLand/{landId}/{userId}/{currPage}/{pageSize}")
     public R getOperationByLand(@PathVariable("landId") Long landId,@PathVariable("userId")String userId,@PathVariable("currPage")Integer currPage,@PathVariable("pageSize")Integer pageSize){
         String dbUserId = getRequest().getHeader(Constants.CURRENT_ID);
+        String flag = userId;
         if (StringUtils.isEmpty(userId) || "null".equals(userId) || Long.valueOf(userId) <= 0L){
             userId = null;
         }
         if (!dbUserId.equals(userId)){
             DbEquipmentAdmin admin = dbEquipmentAdminService.selectDbEquipmentAdminByUserIdAndLandId(landId, Long.valueOf(dbUserId), null);
 
-            if (admin != null && admin.getIsSuperAdmin() > 0){
+            if (admin != null && admin.getIsSuperAdmin() > 0 && Long.valueOf(flag) > 0L){
                 userId = dbUserId;
                 return R.ok("您不能查看其他管理员的记录！");
             }

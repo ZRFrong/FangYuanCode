@@ -29,7 +29,6 @@ public class MyDecoder extends ByteToMessageDecoder {
             out.add(str);
         }else {
             String s = bytesToHexString(b);
-            System.out.println("主动上发的十六进制字符串为："+s);
             //System.out.println(str);
             out.add(s);
         }

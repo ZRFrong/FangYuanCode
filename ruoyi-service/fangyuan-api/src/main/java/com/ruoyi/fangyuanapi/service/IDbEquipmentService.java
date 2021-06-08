@@ -67,4 +67,16 @@ public interface IDbEquipmentService
     List<DbEquipment> selectAllDbEquipment();
 
     String selectByHeartbeatText(String heartbeatText);
+
+    /**
+     * 按照心跳名修改 在线状态
+     * @since: 2.0.0
+     * @param heartbeat
+     * @param isOnline
+     * @return: void
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/7 17:31
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    void updateEquipmentIsOnline(String heartbeat, Integer isOnline);
 }

@@ -125,5 +125,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
           from db_equipment_component
         where heartbeatText =#{heartbeatText} and equipment_name like concat('%',#{fucncitonLogo,jdbcType=VARCHAR},'%')
     </select>
+    <select id="selectDbEquipmentComponentListByHeartbeat"
+            resultMap="DbEquipmentComponentResult">
+        <include refid="selectDbEquipmentComponentVo"/>
+        where heartbeatText = #{heartbeatText}
+    </select>
 
 </mapper>

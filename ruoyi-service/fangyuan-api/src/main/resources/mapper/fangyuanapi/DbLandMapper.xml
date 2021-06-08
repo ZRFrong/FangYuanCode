@@ -151,6 +151,7 @@
     </select>
     <select id="selectDbLandNameByUserId" resultType="java.util.Map">
         select land_id,IFNULL(nick_name,'未命名')nick_name  from db_land  where db_user_id =#{userId} and site_id != 0
+        <if test="flag != null  and flag != ''">and equipment_ids != null </if>
     </select>
 
 </mapper>
