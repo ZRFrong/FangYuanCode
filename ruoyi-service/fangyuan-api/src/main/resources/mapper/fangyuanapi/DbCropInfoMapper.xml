@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbCropInfoMapper">
+    
+    <resultMap type="DbCropInfo" id="DbCropInfoResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="growstate"    column="growState"    />
+        <result property="tagid"    column="tagId"    />
+        <result property="x"    column="x"    />
+        <result property="y"    column="y"    />
+        <result property="width"    column="width"    />
+        <result property="height"    column="height"    />
+    </resultMap>
+
+    <sql id="selectDbCropInfoVo">
+        select id, name, growState, tagId, x, y, width, height from db_crop_info
+    </sql>
+
+    <select id="selectDbCropInfoList" parameterType="DbCropInfo" resultMap="DbCropInfoResult">
+        <include refid="selectDbCropInfoVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectDbCropInfoById" parameterType="Long" resultMap="DbCropInfoResult">
+        <include refid="selectDbCropInfoVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectDbCropInfoByTagId" resultMap="DbCropInfoResult">
+        <include refid="selectDbCropInfoVo"/>
+        where tagId = #{landId}
+    </select>
+
+    <insert id="insertDbCropInfo" parameterType="DbCropInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into db_crop_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null  and name != ''">name,</if>
+            <if test="growstate != null  and growstate != ''">growState,</if>
+            <if test="tagid != null ">tagId,</if>
+            <if test="x != null  and x != ''">x,</if>
+            <if test="y != null  and y != ''">y,</if>
+            <if test="width != null ">width,</if>
+            <if test="height != null ">height,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="growstate != null  and growstate != ''">#{growstate},</if>
+            <if test="tagid != null ">#{tagid},</if>
+            <if test="x != null  and x != ''">#{x},</if>
+            <if test="y != null  and y != ''">#{y},</if>
+            <if test="width != null ">#{width},</if>
+            <if test="height != null ">#{height},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDbCropInfo" parameterType="DbCropInfo">
+        update db_crop_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''">name = #{name},</if>
+            <if test="growstate != null  and growstate != ''">growState = #{growstate},</if>
+            <if test="tagid != null ">tagId = #{tagid},</if>
+            <if test="x != null  and x != ''">x = #{x},</if>
+            <if test="y != null  and y != ''">y = #{y},</if>
+            <if test="width != null ">width = #{width},</if>
+            <if test="height != null ">height = #{height},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDbCropInfoById" parameterType="Long">
+        delete from db_crop_info where id = #{id}
+    </delete>
+
+    <delete id="deleteDbCropInfoByIds" parameterType="String">
+        delete from db_crop_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

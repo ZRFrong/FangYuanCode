@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * tcp在线设备Mapper接口
@@ -82,4 +83,15 @@ public interface DbTcpClientMapper
      */
     Integer queryOne(String heartName);
 
+    /**
+     * 查询在线表的id以及创建时间
+     * @since: 2.0.0
+     * @return: java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/7 17:04
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<DbTcpClient>  selectIdAndTime();
+
+    void deleteExpireHeartbeat(List<Long> idList);
 }

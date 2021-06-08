@@ -138,14 +138,24 @@ public class DbLandController extends BaseController {
         return r;
     }
 
+//    /**
+//     * 查询${tableComment}
+//     */todo 下次改
+//    @GetMapping("get/{landId}")
+//    @ApiOperation(value = "根据土地id获取详细信息",notes = "根据土地id查询",httpMethod = "GET")
+//    public R get(@PathVariable("landId") Long landId) {
+//
+//        return R.data(dbLandService.selectDbLandById(landId));
+//    }
+
     /**
      * 查询${tableComment}
      */
     @GetMapping("get/{landId}")
     @ApiOperation(value = "根据土地id获取详细信息",notes = "根据土地id查询",httpMethod = "GET")
-    public R get(@PathVariable("landId") Long landId) {
+    public DbLand get(@PathVariable("landId") Long landId) {
 
-        return R.data(dbLandService.selectDbLandById(landId));
+        return dbLandService.selectDbLandById(landId);
     }
 
     /**
@@ -370,11 +380,11 @@ public class DbLandController extends BaseController {
      * @return com.ruoyi.common.core.domain.R
      * @sign 他日若遂凌云志,敢笑黄巢不丈夫!
      **/
-    @GetMapping("getLandAndOperateInfo/{equipmentId}")
+    @GetMapping("getLandAndOperateInfo/{equipmentId}/{type}")
     @ApiOperation(value = "获取单个大棚操作信息",notes = "获取单个大棚操作信息",httpMethod = "GET")
     @ApiImplicitParam(name = "landId",value = "大棚信息" ,required = true)
-    public R getLandAndOperateInfo(@PathVariable("equipmentId") Long equipmentId){
-        return R.data(dbLandService.getLandAndOperateInfo(equipmentId,Long.valueOf(getRequest().getHeader(Constants.CURRENT_ID))));
+    public R getLandAndOperateInfo(@PathVariable("equipmentId") Long equipmentId,@PathVariable("type") Integer type){
+        return R.data(dbLandService.getLandAndOperateInfo(equipmentId, Long.valueOf(getRequest().getHeader(Constants.CURRENT_ID)),type));
     }
 
     /**
@@ -604,6 +614,7 @@ public class DbLandController extends BaseController {
                 String equipmentIds = land.getEquipmentIds();
 
                 if (StringUtils.isEmpty(equipmentIds) ){
+                    dbLandService.selectDbLandById(land.getLandId());
                     continue;
                 }
                 DbEquipmentAdmin admin = dbEquipmentAdminService.selectIsSuperAdmin(land.getLandId());

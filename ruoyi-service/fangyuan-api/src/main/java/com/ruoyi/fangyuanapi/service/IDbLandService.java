@@ -135,5 +135,5 @@ public interface IDbLandService
      * @date: 2021/5/8 11:09
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
-    Map<String,Object> getLandAndOperateInfo(Long equipmentId, Long userId);
+    Map<String,Object> getLandAndOperateInfo(Long equipmentId, Long userId,Integer type);
 }

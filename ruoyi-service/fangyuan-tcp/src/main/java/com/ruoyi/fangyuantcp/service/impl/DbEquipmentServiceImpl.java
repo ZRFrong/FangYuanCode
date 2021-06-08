@@ -5,12 +5,9 @@ import com.ruoyi.fangyuantcp.aspect.FeedbackIntercept;
 import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
 import com.ruoyi.fangyuantcp.service.IDbEquipmentService;
 import com.ruoyi.system.domain.DbEquipment;
-import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
-import javax.swing.*;
 import java.util.List;
 
 /**

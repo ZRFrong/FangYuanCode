@@ -184,7 +184,7 @@ public class HexTest {
             fillLightTimingStatus = 0;
         }
         //dbEquipmentComponentClient.selectByHeartbeatText("");
-        dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, "打药", string.substring(string.length() - 15, string.length() - 14), fillLightTimingStatus);
+        dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, "打药", string.substring(string.length()-16 , string.length() - 15), fillLightTimingStatus);
         dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, "浇水", string.substring(string.length() - 14, string.length() - 13), fillLightTimingStatus);
         dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, "配药", string.substring(string.length() - 16, string.length() - 15), fillLightTimingStatus);
     }
@@ -224,9 +224,9 @@ public class HexTest {
         DbTcpType build = DbTcpType.builder()
                 .heartName(heartbeatText +"_"+ dbEquipmentComponentClient.selectByHeartbeatText(heartbeatText))
                 .temperatureAir(ReceiveUtil.getTemp(list.get(0)))
-                .humidityAir(ReceiveUtil.getTemp(list.get(1)))
+                .humidityAir(ReceiveUtil.getHum(list.get(1)))
                 .temperatureSoil(ReceiveUtil.getTemp(list.get(2)))
-                .humiditySoil(ReceiveUtil.getTemp(list.get(3)))
+                .humiditySoil(ReceiveUtil.getHum(list.get(3)))
                 .light(Integer.parseInt(list.get(4), 16) + "")
                 .co2(Integer.parseInt(list.get(5), 16) + "")
                 .autocontrolType(ReceiveUtil.getTemp(list.get(6)))
@@ -235,7 +235,7 @@ public class HexTest {
         if (list.size() > 7) {
                 build = build.toBuilder()
                     .conductivity(Integer.parseInt(list.get(8), 16) + "")
-                    .ph(ReceiveUtil.getTemp(list.get(9)))
+                    .ph(ReceiveUtil.getHum(list.get(9)))
                     .nitrogen(Integer.parseInt(list.get(10), 16) + "")
                     .phosphorus(Integer.parseInt(list.get(11), 16) + "")
                     .potassium(Integer.parseInt(list.get(12), 16) + "")

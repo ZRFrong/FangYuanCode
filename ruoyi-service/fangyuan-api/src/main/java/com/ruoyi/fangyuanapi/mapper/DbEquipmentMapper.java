@@ -71,4 +71,15 @@ public interface DbEquipmentMapper
 
     List<DbEquipment> selectAllDbEquipment();
 
+    /**
+     * 根据心跳名称修改在线状态
+     * @since: 2.0.0
+     * @param heartbeat
+     * @param isOnline
+     * @return: int
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/7 17:33
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    int updateEquipmentIsOnline(@Param("heartbeat") String heartbeat,@Param("isOnline") Integer isOnline);
 }

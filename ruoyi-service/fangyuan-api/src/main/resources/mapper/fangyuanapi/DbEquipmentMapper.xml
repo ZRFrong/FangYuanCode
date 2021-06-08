@@ -92,6 +92,10 @@
          update db_equipment set
         = #{equipmentName} where equipment_id = #{equipmentId}
     </update>
+    <update id="updateEquipmentIsOnline">
+          update db_equipment set is_online = #{isOnline}
+          where heartbeatText = #{heartbeat}
+    </update>
 
     <delete id="deleteDbEquipmentById" parameterType="Long">
         delete from db_equipment where equipment_id = #{equipmentId}

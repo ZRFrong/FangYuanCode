@@ -11,6 +11,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 import com.ruoyi.system.annotation.EnableRyFeignClients;
 
+import org.springframework.scheduling.annotation.EnableScheduling;
 import tk.mybatis.spring.annotation.MapperScan;
 
 /**
@@ -23,6 +24,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @EnableRyFeignClients
 @MapperScan("com.ruoyi.*.mapper")
 @Log4j2
+@EnableScheduling
 public class RuoYiFangYuanTcp {
 
     public static void main(String[] args) {

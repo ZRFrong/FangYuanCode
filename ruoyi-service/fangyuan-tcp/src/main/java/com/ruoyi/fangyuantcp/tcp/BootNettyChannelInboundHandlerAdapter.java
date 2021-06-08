@@ -43,7 +43,7 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
 //        接收到的消息格式
         String s = msg.toString();
         System.out.println(s);
-
+        log.info("收到的消息为："+getIp(ctx)+": "+s);
         if (s.contains("dapeng")) {
 //            心跳处理
             log.warn("来到的心跳名称是："+s);

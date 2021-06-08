@@ -69,10 +69,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{tcpClientId}
         </foreach>
     </delete>
+
+    <delete id="deleteExpireHeartbeat" parameterType="long">
+        delete from db_tcp_client where tcp_client_id in
+        <foreach item="tcpClientId" collection="list" open="(" separator="," close=")">
+            #{tcpClientId}
+        </foreach>
+    </delete>
     <select id="queryOne" resultType="java.lang.Integer">
        SELECT COUNT(1) from db_tcp_client
         where
         heart_name = #{heartName}
+    </select>
+
+    <select id="selectIdAndTime" resultMap="DbTcpClientResult">
+        select tcp_client_id,heartbeat_time   from db_tcp_client
     </select>
 
 </mapper>
