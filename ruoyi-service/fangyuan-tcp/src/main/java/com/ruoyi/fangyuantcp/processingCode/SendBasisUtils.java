@@ -16,6 +16,7 @@ import com.ruoyi.fangyuantcp.abnormal.OperationExceptions;
 import com.ruoyi.fangyuantcp.service.IDbTcpOrderService;
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
 import com.ruoyi.fangyuantcp.utils.Crc16Util;
+import com.ruoyi.fangyuantcp.utils.LogOrderUtil;
 import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.system.domain.DbTcpOrder;
 import io.netty.buffer.Unpooled;
@@ -40,6 +41,8 @@ public class SendBasisUtils {
     private static Map<String, ChannelHandlerContext> map = NettyServer.map;
 
     private static RedisLockUtil redisLockUtil = SpringUtils.getBean(RedisLockUtil.class);
+
+    private static LogOrderUtil logOrderUtil = SpringUtils.getBean(LogOrderUtil.class);
 
 
     /*
@@ -71,6 +74,8 @@ public class SendBasisUtils {
             String[] split1 = strings.toArray(new String[strings.size()]);
             String[] bytes = Crc16Util.to_byte(split1);
             data = Crc16Util.getData(bytes);
+            // 记录发送日志
+            logOrderUtil.recordSend(address, text,data);
             ChannelHandlerContext no1_1 = map.get(address);
             Channel channel = no1_1.channel();
             //channel.writeAndFlush(Unpooled.copiedBuffer(data));
@@ -178,6 +183,8 @@ public class SendBasisUtils {
             String[] split1 = strings.toArray(new String[strings.size()]);
             String[] bytes = Crc16Util.to_byte(split1);
             byte[] data = Crc16Util.getData(bytes);
+            // 记录发送日志
+            logOrderUtil.recordSend(ReceiveResponse.getname(ctx), text,data);
             Channel channel = ctx.channel();
             channel.write(Unpooled.copiedBuffer(data));
             channel.flush();
@@ -275,6 +282,8 @@ public class SendBasisUtils {
             String[] split1 = strings.toArray(new String[strings.size()]);
             String[] bytes = Crc16Util.to_byte(split1);
             data = Crc16Util.getData(bytes);
+            // 记录发送日志
+            logOrderUtil.recordSend(address, text,data);
             ChannelHandlerContext no1_1 = map.get(address);
             Channel channel = no1_1.channel();
             channel.write(Unpooled.copiedBuffer(data));
@@ -354,6 +363,8 @@ public class SendBasisUtils {
             String[] split1 = strings.toArray(new String[strings.size()]);
             String[] bytes = Crc16Util.to_byte(split1);
             data = Crc16Util.getData(bytes);
+            // 记录发送日志
+            logOrderUtil.recordSend(address, text,data);
             ChannelHandlerContext no1_1 = map.get(address);
             Channel channel = no1_1.channel();
             channel.write(Unpooled.copiedBuffer(data));

@@ -1,10 +1,12 @@
 package com.ruoyi.fangyuantcp.tcp;
 
 
+import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuantcp.processingCode.DisConnectUtils;
 import com.ruoyi.fangyuantcp.processingCode.HexTest;
 import com.ruoyi.fangyuantcp.processingCode.ReceiveResponse;
 import com.ruoyi.fangyuantcp.processingCode.ReceiveUtil;
+import com.ruoyi.fangyuantcp.utils.LogOrderUtil;
 import com.ruoyi.system.domain.DbTcpClient;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -21,6 +23,7 @@ import java.util.Date;
 public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandlerAdapter {
 
     private DisConnectUtils disConnectUtils = new DisConnectUtils();
+    private static LogOrderUtil logOrderUtil = SpringUtils.getBean(LogOrderUtil.class);
 
     /**
      * 从客户端收到新的数据时，这个方法会在收到消息时被调用
@@ -44,6 +47,8 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
         String s = msg.toString();
         System.out.println(s);
         log.info("收到的消息为："+getIp(ctx)+": "+s);
+        // 记录指令返回日志
+        logOrderUtil.recordBack(getIp(ctx).getHeartName(), s);
         if (s.contains("dapeng")) {
 //            心跳处理
             log.warn("来到的心跳名称是："+s);
