@@ -3,6 +3,7 @@ package com.ruoyi.fangyuantcp.processingCode;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
+import com.ruoyi.fangyuantcp.utils.LogOrderUtil;
 import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.system.feign.DbEquipmentComponentClient;
 import io.netty.channel.ChannelHandlerContext;
@@ -26,6 +27,7 @@ public class HexTest {
     private IDbTcpTypeService dbTcpTypeService = SpringUtils.getBean(IDbTcpTypeService.class);
 
     private DbEquipmentComponentClient dbEquipmentComponentClient = SpringUtils.getBean(DbEquipmentComponentClient.class);
+    private LogOrderUtil logOrderUtil = SpringUtils.getBean(LogOrderUtil.class);
 
     /**
      * 字符串按指定间隔分割
@@ -83,6 +85,7 @@ public class HexTest {
      * @sign: 他日若遂凌云志, 敢笑黄巢不丈夫。
      */
     public void messageActive(ChannelHandlerContext ctx, String s) {
+        logOrderUtil.recordFollowBack(ReceiveUtil.getname(ctx), s,"HexTest.messageActive");
         String heartbeatText = ReceiveUtil.getname(ctx);
         if (StringUtils.isEmpty(heartbeatText)) {
             return;

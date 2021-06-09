@@ -1,5 +1,6 @@
 package com.ruoyi.fangyuanapi.utils;
 
+import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.json.JSONObject;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -47,10 +48,11 @@ public class MonitorCloudRequestUtils {
         try{
             String accessToken = body.getObj("data").getStr("accessToken");
             Long expireTime = body.getObj("data").getLong("expireTime");
+            expireTime = expireTime - (System.currentTimeMillis()/1000);
             redisUtils.set(MONITOR_API_TOKEN_PREFIX,accessToken,expireTime);
             return accessToken;
         }catch (Exception e){
-            throw new Exception("获取Token异常：",e);
+            throw new BusinessException("获取Token异常：",e);
         }
     }
 
@@ -70,7 +72,7 @@ public class MonitorCloudRequestUtils {
         try{
             return body.getObj("data").getStr("deviceSerial");
         }catch (Exception e){
-            throw new Exception("添加设备异常：",e);
+            throw new BusinessException("添加设备异常：",e);
         }
     }
 
@@ -110,7 +112,7 @@ public class MonitorCloudRequestUtils {
         try{
             return body.getObj("data");
         }catch (Exception e){
-            throw new Exception("获取设备列表异常：",e);
+            throw new BusinessException("获取设备列表异常：",e);
         }
     }
 
@@ -124,7 +126,7 @@ public class MonitorCloudRequestUtils {
         try{
             return body.getObj("data");
         }catch (Exception e){
-            throw new Exception("获取设备信息异常：",e);
+            throw new BusinessException("获取设备信息异常：",e);
         }
     }
 
@@ -155,7 +157,7 @@ public class MonitorCloudRequestUtils {
         try{
             return body.getObj("data").getArr("recordList");
         }catch (Exception e){
-            throw new Exception("获取设备录像时间段异常：",e);
+            throw new BusinessException("获取设备录像时间段异常：",e);
         }
     }
 
@@ -177,7 +179,7 @@ public class MonitorCloudRequestUtils {
         try{
             return body.getObj("data");
         }catch (Exception e){
-            throw new Exception("获取设备通道列表异常：",e);
+            throw new BusinessException("获取设备通道列表异常：",e);
         }
     }
 
@@ -191,7 +193,7 @@ public class MonitorCloudRequestUtils {
         try{
             return body.getObj("data").getStr("url");
         }catch (Exception e){
-            throw new Exception("获取设备抓图异常：",e);
+            throw new BusinessException("获取设备抓图异常：",e);
         }
     }
 
@@ -242,7 +244,7 @@ public class MonitorCloudRequestUtils {
             JSONObject body = postForEntity(url, map);
             return body.getObj("data");
         }catch (Exception e){
-            throw new Exception("获取预置位列异常：",e);
+            throw new BusinessException("获取预置位列异常：",e);
         }
     }
 
@@ -262,7 +264,7 @@ public class MonitorCloudRequestUtils {
             JSONObject body = postForEntity(url, map);
             return body.getObj("data").getStr("image");
         }catch (Exception e){
-            throw new Exception("添加预置位异常：",e);
+            throw new BusinessException("添加预置位异常：",e);
         }
     }
 
@@ -280,7 +282,7 @@ public class MonitorCloudRequestUtils {
         try{
             postForEntity(url, map);
         }catch (Exception e){
-            throw new Exception("修改预置位异常：",e);
+            throw new BusinessException("修改预置位异常：",e);
         }
     }
 
@@ -310,7 +312,7 @@ public class MonitorCloudRequestUtils {
         try{
             postForEntity(url, map);
         }catch (Exception e){
-            throw new Exception("调用预置位异常：",e);
+            throw new BusinessException("调用预置位异常：",e);
         }
     }
 
@@ -327,7 +329,7 @@ public class MonitorCloudRequestUtils {
         try{
             postForEntity(url, map);
         }catch (Exception e){
-            throw new Exception("停止直播推流异常：",e);
+            throw new BusinessException("停止直播推流异常：",e);
         }
     }
 
@@ -343,7 +345,7 @@ public class MonitorCloudRequestUtils {
         try{
            return postForEntity(url, map).getObj("data").getStr("liveId");
         }catch (Exception e){
-            throw new Exception("开启直播/回放异常：",e);
+            throw new BusinessException("开启直播/回放异常：",e);
         }
     }
 
@@ -366,7 +368,8 @@ public class MonitorCloudRequestUtils {
         Map<String,Object> map = new HashMap<>(4);
         map.put("deviceSerial",deviceSerial);
         map.put("channelNo",channelNo);
-        map.put("streamIndex",streamIndex);
+        // todo 默认为1 0是主流，1是辅码流，2是第三码流
+        map.put("streamIndex",monitorCloudApiConf.streamIndex);
         map.put("streamType",streamType);
         if("record".equals(streamType)){
             map.put("startTime",startTime);
@@ -376,7 +379,7 @@ public class MonitorCloudRequestUtils {
         try{
             return postForEntity(url, map).getObj("data");
         }catch (Exception e){
-            throw new Exception("获取指定设备通道的直播/回放视频地址异常：",e);
+            throw new BusinessException("获取指定设备通道的直播/回放视频地址异常：",e);
         }
     }
 
@@ -406,8 +409,8 @@ public class MonitorCloudRequestUtils {
             if(HttpStatus.OK.value() == body.getInt("code") ){
                 return;
             }
-            throw new Exception("请求三方接口返回状态异常");
+            throw new BusinessException("请求三方接口返回状态异常");
         }
-        throw new Exception("请求三方接口异常");
+        throw new BusinessException("请求三方接口异常");
     }
 }

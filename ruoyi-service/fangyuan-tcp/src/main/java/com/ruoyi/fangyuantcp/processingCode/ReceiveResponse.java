@@ -15,6 +15,7 @@ import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuantcp.service.IDbEquipmentService;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
+import com.ruoyi.fangyuantcp.utils.LogOrderUtil;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.feign.RemoteApiService;
 import io.netty.channel.ChannelHandlerContext;
@@ -35,6 +36,7 @@ public class ReceiveResponse {
     private RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
     private RedisLockUtil redisLockUtil = SpringUtils.getBean(RedisLockUtil.class);
     private IDbTcpClientService tcpClientService = SpringUtils.getBean(IDbTcpClientService.class);
+    private LogOrderUtil logOrderUtil = SpringUtils.getBean(LogOrderUtil.class);
     private RedisMqUtils redisMqUtils = SpringUtils.getBean(RedisMqUtils.class);
     private IDbEquipmentService equipmentService = SpringUtils.getBean(IDbEquipmentService.class);
     private RemoteApiService remoteApiService = SpringUtils.getBean(RemoteApiService.class);
@@ -43,6 +45,7 @@ public class ReceiveResponse {
      * 操作响应
      * */
     public void stateRespond(ChannelHandlerContext ctx, String string) {
+        logOrderUtil.recordFollowBack(getname(ctx), string,"ReceiveResponse.stateRespond");
         String getname = getname(ctx);
         DbTcpClient dbTcpClient1 = new DbTcpClient();
         dbTcpClient1.setHeartName(getname);

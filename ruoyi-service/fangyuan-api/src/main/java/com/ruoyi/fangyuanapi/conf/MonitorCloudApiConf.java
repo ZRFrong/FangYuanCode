@@ -77,6 +77,8 @@ public class MonitorCloudApiConf {
     public String startVideo;
     @Value("${monitor-cloud.api.interface-url.cdn.getVideo}")
     public String getVideo;
+    @Value("${monitor-cloud.api.interface-url.cdn.streamIndex}")
+    public Integer streamIndex;
 
 
     /**
