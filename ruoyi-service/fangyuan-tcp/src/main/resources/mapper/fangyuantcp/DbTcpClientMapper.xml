@@ -85,5 +85,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectIdAndTime" resultMap="DbTcpClientResult">
         select tcp_client_id,heartbeat_time   from db_tcp_client
     </select>
+    <select id="selectAllDbTcpClient" resultType="java.lang.String">
+        select heart_name from  db_tcp_client
+    </select>
 
 </mapper>

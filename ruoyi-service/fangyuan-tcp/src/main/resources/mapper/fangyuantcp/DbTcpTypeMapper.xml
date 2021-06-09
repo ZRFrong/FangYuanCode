@@ -144,7 +144,12 @@
     <select id="selectDbTcpTypeByHeartName" resultType="integer">
         select tcp_type_id from db_tcp_type where heart_name like concat('%', #{heartbeatText}, '%') limit 1
     </select>
-
+    <delete id="batchDeleteDbTcpTypeById" >
+        delete from db_tcp_type where tcp_type_id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
 
 
 </mapper>

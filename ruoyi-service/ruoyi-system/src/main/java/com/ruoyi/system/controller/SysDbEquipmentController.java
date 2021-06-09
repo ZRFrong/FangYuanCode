@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author Administrator
+ * @author Mr.ZHAO
  * @version 1.0.0
  * @ClassName ruoyi-cloud.com.ruoyi.system.controller.DbEquipmentController.java
  * @createTime 2021年003月22日 11:36:00

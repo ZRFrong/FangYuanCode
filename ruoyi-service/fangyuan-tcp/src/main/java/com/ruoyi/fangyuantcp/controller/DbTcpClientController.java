@@ -87,6 +87,7 @@ public class DbTcpClientController extends BaseController {
     @GetMapping("queryOne/{heartName}")
     @ApiOperation(value = "根据心跳查询设备是否在线")
     public R queryOne(@PathVariable("heartName") String heartName){
+        Integer integer = dbTcpClientService.queryOne(heartName);
         return R.data(dbTcpClientService.queryOne(heartName));
     }
 

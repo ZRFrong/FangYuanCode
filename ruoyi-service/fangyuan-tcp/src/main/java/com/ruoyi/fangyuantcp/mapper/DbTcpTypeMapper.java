@@ -83,4 +83,16 @@ public interface DbTcpTypeMapper
     int updateDbTcpTypeSensorData(DbTcpType dbTcpType);
 
     Integer selectDbTcpTypeByHeartName(String heartbeatText);
+
+    /**
+     * 批量删除
+     * @since: 2.0.0
+     * @param list
+     * @return: int
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/9 14:42
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    int batchDeleteDbTcpTypeById(List<Long> list);
+
 }

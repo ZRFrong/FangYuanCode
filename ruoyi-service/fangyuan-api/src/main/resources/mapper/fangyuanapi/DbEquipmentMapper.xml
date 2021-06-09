@@ -94,7 +94,7 @@
     </update>
     <update id="updateEquipmentIsOnline">
           update db_equipment set is_online = #{isOnline}
-          where heartbeatText = #{heartbeat}
+          where heartbeat_text = #{heartbeat}
     </update>
 
     <delete id="deleteDbEquipmentById" parameterType="Long">

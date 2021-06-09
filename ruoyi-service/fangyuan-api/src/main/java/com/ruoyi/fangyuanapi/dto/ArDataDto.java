@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Administrator
+ * @author Mr.ZHAO
  * @version 1.0.0
  * @ClassName ruoyi-cloud.com.ruoyi.fangyuanapi.dto.ArSensor.java
- * @Description TODO
+ * @Description
  * @createTime 2021年06月04日 17:39:00
  */
 @Data

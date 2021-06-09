@@ -94,4 +94,15 @@ public interface DbTcpClientMapper
     List<DbTcpClient>  selectIdAndTime();
 
     void deleteExpireHeartbeat(List<Long> idList);
+
+    /**
+     * 查询所有在线设备心跳
+     * @since: 2.0.0
+     * @return: java.util.List<java.lang.String>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/9 13:32
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<String> selectAllDbTcpClient();
+
 }

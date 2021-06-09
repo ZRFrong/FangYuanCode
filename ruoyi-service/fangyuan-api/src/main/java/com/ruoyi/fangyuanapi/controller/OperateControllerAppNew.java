@@ -160,6 +160,10 @@ public class OperateControllerAppNew extends BaseController {
                 DbTcpType dbTcpType = new DbTcpType();
                 dbTcpType.setHeartName(s);
                 List<DbTcpType> list = remoteTcpService.list(dbTcpType);
+                String s1 = s.split("_")[0];
+                R r = dbTcpClientService.queryOne(s1);
+                r.get("data");
+                hashMap.put(s1, Integer.valueOf(r.get("data") + "") > 0 ? 0 : 1);
                 if (list == null || list.size() == 0) {
                     continue;
                 }
@@ -199,10 +203,6 @@ public class OperateControllerAppNew extends BaseController {
                 if (strIsNotEmpty(tcpType.getPotassium())) {
                     SensorDtos.add(getSensorDeviceDto("钾",tcpType.getPotassium(),"g/kg","https://cdn.fangyuancun.cn/fangyuan/20210531/a8650b01fb014101bc8e4793070d5555.png"));
                 }
-                String s1 = s.split("_")[0];
-                R r = dbTcpClientService.queryOne(s1);
-                r.get("data");
-                hashMap.put(s1, Integer.valueOf(r.get("data") + "") > 0 ? 0 : 1);
                 map.put(s1, tcpType);
             }
             for (DbEquipmentComponent component : dbEquipmentComponents) {

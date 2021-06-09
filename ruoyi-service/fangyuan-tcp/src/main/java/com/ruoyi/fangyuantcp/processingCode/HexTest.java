@@ -9,6 +9,7 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -69,18 +70,6 @@ public class HexTest {
         return builder.append(bin).toString();
     }
 
-    public static void main(String[] args) {
-        String s = "C8100001001428145D04B00005010C0131000000000020025B02580064006400640064006401F401F40000000000001AB1";
-        String s1 = "C8100001001428145D04B000040166010C00D701EF12450000012C00640064006C006A006101F401F40000000000004B23";
-        System.out.println(s.length());
-        DbTcpType build = DbTcpType.builder()
-                .ph("800")
-                .build();
-        build = build.toBuilder()
-                .ph("80")
-                .build();
-        System.out.println(build.getPh());
-    }
 
     /**
      * 主动上发消息解析
@@ -216,7 +205,7 @@ public class HexTest {
      * @date: 2021/5/21 17:07
      * @sign: 他日若遂凌云志, 敢笑黄巢不丈夫。
      */
-    private void sensor(String s, String heartbeatText) {
+    public void sensor(String s, String heartbeatText) {
         List<String> list = HexTest.strSplit(s, 4);
         if (list == null) {
             return;
@@ -229,10 +218,15 @@ public class HexTest {
                 .humiditySoil(ReceiveUtil.getHum(list.get(3)))
                 .light(Integer.parseInt(list.get(4), 16) + "")
                 .co2(Integer.parseInt(list.get(5), 16) + "")
-                .autocontrolType(ReceiveUtil.getTemp(list.get(6)))
-                .autocontrolTypeEnd(ReceiveUtil.getTemp(list.get(7)))
+                .updateTime(new Date())
                 .build();
-        if (list.size() > 7) {
+        if (list.size()>6){
+                build =build.toBuilder()
+                        .autocontrolType(ReceiveUtil.getTemp(list.get(6)))
+                        .autocontrolTypeEnd(ReceiveUtil.getTemp(list.get(7)))
+                        .build();
+        }
+        if (list.size() > 8) {
                 build = build.toBuilder()
                     .conductivity(Integer.parseInt(list.get(8), 16) + "")
                     .ph(ReceiveUtil.getHum(list.get(9)))
@@ -241,11 +235,20 @@ public class HexTest {
                     .potassium(Integer.parseInt(list.get(12), 16) + "")
                     .build();
         }
+        log.warn("传感器温度采集  "+heartbeatText+":"+ build.toString());
         Integer i = dbTcpTypeService.selectDbTcpTypeByHeartName(heartbeatText);
         if (i == null) {
             dbTcpTypeService.insertDbTcpType(build);
         }
         dbTcpTypeService.updateDbTcpTypeSensorData(build);
+    }
+
+    public static void main(String[] args){
+        String s = "C8100001001428145D04B00005010C0131000000000020025B02580064006400640064006401F401F40000000000001AB1";
+        String s1 = "01030C010B01C800000000001403386CB1";
+
+        System.out.println(s1.substring(6, 30));
+
     }
 
 }

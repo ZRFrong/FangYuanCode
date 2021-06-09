@@ -2,7 +2,6 @@ package com.ruoyi.fangyuantcp.timing;
 
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
-import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.system.domain.DbTcpClient;
 import lombok.SneakyThrows;
 

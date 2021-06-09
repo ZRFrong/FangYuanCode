@@ -37,6 +37,7 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
 
         ReceiveUtil receiveUtil = new ReceiveUtil();
         ReceiveResponse receiveResponse = new ReceiveResponse();
+        HexTest hexTest = new HexTest();
         /*
          *心跳查询
          * */
@@ -46,7 +47,6 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
         log.info("收到的消息为："+getIp(ctx)+": "+s);
         if (s.contains("dapeng")) {
 //            心跳处理
-            log.warn("来到的心跳名称是："+s);
             DbTcpClient dbTcpClient = getIp(ctx);
             dbTcpClient.setHeartName(msg.toString());//心跳
             receiveUtil.heartbeatChoose(dbTcpClient, ctx);
@@ -72,7 +72,7 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
 //                        状态查询返回
                 receiveUtil.stateRead(s, ctx);
                 receiveResponse.stateRespond(ctx, msg.toString());
-
+                hexTest.sensor(s.substring(6,30),getIp(ctx).getHeartName());
             } else if (s.contains("0105")) {
                 //               操作响应
                 receiveResponse.stateRespond(ctx, msg.toString());

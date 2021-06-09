@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 /**
- * @author Administrator
+ * @author Mr.ZHAO
  * @version 2.0.0
  * @ClassName ruoyi-cloud.com.ruoyi.system.feign.DbEquipmentComponentClient.java
  * @Description

@@ -15,7 +15,9 @@ public class TaskTongFeng {
     private IDbTcpClientService dbTcpClientService = SpringUtils.getBean(IDbTcpClientService.class);
     private IDbTcpTypeService dbTcpTypeService = SpringUtils.getBean(IDbTcpTypeService.class);
 
-
+    /**
+     * 自动通风相关
+     * */
     public void HeartbeatRun() {
 
         Timer timer = new Timer();

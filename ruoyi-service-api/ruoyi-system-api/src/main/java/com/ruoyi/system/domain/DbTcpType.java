@@ -1,15 +1,15 @@
 package com.ruoyi.system.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.ruoyi.common.core.domain.BaseEntity;
+
+import java.util.Date;
 
 /**
  * 设备状态对象 db_tcp_type
@@ -22,7 +22,8 @@ import com.ruoyi.common.core.domain.BaseEntity;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DbTcpType extends BaseEntity
+@ToString
+public class DbTcpType
 {
     private static final long serialVersionUID = 1L;
 
@@ -109,6 +110,10 @@ public class DbTcpType extends BaseEntity
     @ApiModelProperty(value = "是否显示")
     private Integer isShow;
 
+
+    /** 更新时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
 
 
 }

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 /**
- * @author Administrator
+ * @author Mr.ZHAO
  * @version 2.0.0
  * @ClassName ruoyi-cloud.com.ruoyi.fangyuanapi.dto.OperateVO.java
  * @Description 操作设备接口接收对象

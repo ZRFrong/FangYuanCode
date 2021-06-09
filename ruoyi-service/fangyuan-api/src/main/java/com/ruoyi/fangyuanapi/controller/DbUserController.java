@@ -418,6 +418,7 @@ public class DbUserController extends BaseController {
         if ("200".equals(r.get("code")+"") ){
             DbUser user = new DbUser();
             user.setPhone(phone);
+            user.setCreated(new Date());
             DbUser dbUser= dbUserService.selectDbUserByPhone(user);
             if (dbUser == null ){
                 dbUser = dbUserService.wxRegister(phone,openId,nickname,avatar);

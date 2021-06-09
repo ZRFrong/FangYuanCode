@@ -45,9 +45,9 @@ public class RuoYiFangYuanTcp {
         /*
          * 开始定时装态查询
          * */
-        log.info("开始定时装态查询");
-        TaskTcpType taskTcpType = new TaskTcpType();
-        taskTcpType.HeartbeatRun();
+//        log.info("开始定时装态查询");
+//        TaskTcpType taskTcpType = new TaskTcpType();
+//        taskTcpType.HeartbeatRun();
 
         /*
          * 开启通风查询
