@@ -93,6 +93,7 @@ monitor-cloud:
         deletePreset: ${monitor-cloud.api.host}/openapi/device/ptz/preset/delete
         invokePreset: ${monitor-cloud.api.host}/openapi/device/ptz/preset/invoke
       cdn:
+        streamIndex: 2 #0是主流，1是辅码流，2是第三码流
         stopVideo: ${monitor-cloud.api.host}/openapi/cdn/video/stop
         startVideo: ${monitor-cloud.api.host}/openapi/cdn/video/start
         getVideo: ${monitor-cloud.api.host}/openapi/cdn/video/get
