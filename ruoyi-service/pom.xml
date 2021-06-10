@@ -21,5 +21,6 @@
         <module>fangyuan-websocket</module>
         <module>ruoyi-message</module>
         <module>fangyuan-netty</module>
+        <module>fangyuan-new-websocket</module>
     </modules>
 </project>
