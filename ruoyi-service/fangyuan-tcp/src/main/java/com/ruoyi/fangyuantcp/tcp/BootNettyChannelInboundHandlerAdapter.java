@@ -74,8 +74,8 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
             } else if (s.contains("030C")) {
 
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "状态返回：" + msg);
-//                        状态查询返回
-                receiveUtil.stateRead(s, ctx);
+//                状态查询返回
+//                receiveUtil.stateRead(s, ctx);
                 receiveResponse.stateRespond(ctx, msg.toString());
                 hexTest.sensor(s.substring(6,30),getIp(ctx).getHeartName());
             } else if (s.contains("0105")) {
