@@ -11,6 +11,16 @@ public enum DestinaEnum {
      */
     ORDER_MESSAGE_DLK_DEST("order_message_dlk_exchange","order_message_dlk_queue","order_message_dlk_routing"),
 
+
+    /**
+     * socket消息队列
+     */
+    SOCKET_MESSAGE_DEST("socket_message_exchange","socket_message_queue","socket_message_routing"),
+    /**
+     * socket消息死信队列
+     */
+    SOCKET_MESSAGE_DLK_DEST("socket_message_dlk_exchange","socket_message_dlk_queue","socket_message_dlk_routing"),
+
     ;
 
     // 交换机
