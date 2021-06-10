@@ -42,7 +42,7 @@ public class SensorSelectJob {
      * @date: 2021/6/9 13:48
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 600000)
     public void actuator(){
         List<String> clients = dbTcpClientMapper.selectAllDbTcpClient();
         if (clients == null || clients.size() <= 0){
@@ -81,7 +81,7 @@ public class SensorSelectJob {
 //                idList.add(type.getTcpTypeId());
 //                continue;
 //            }
-            if (EXPIRE_TIME < System.currentTimeMillis() - type.getUpdateTime().getTime()){
+            if (type.getUpdateTime() == null || EXPIRE_TIME < System.currentTimeMillis() - type.getUpdateTime().getTime()){
                 idList.add(type.getTcpTypeId());
             }
         }
