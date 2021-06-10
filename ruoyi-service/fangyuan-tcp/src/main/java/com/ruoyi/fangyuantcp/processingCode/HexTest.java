@@ -249,7 +249,6 @@ public class HexTest {
     public static void main(String[] args){
         String s = "C8100001001428145D04B00005010C0131000000000020025B02580064006400640064006401F401F40000000000001AB1";
         String s1 = "01030C010B01C800000000001403386CB1";
-
         System.out.println(s1.substring(6, 30));
 
     }

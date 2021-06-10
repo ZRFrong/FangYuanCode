@@ -319,14 +319,16 @@ public class ReceiveUtil {
 
     }
 
-
+    /**
+     * 更改自动通风温度
+     * */
     public void returnautocontrolType(ChannelHandlerContext ctx, String string) {
         logOrderUtil.recordFollowBack(getname(ctx), string,"ReceiveUtil.returnautocontrolType");
         DbTcpType dbTcpType = new DbTcpType();
         List<String> arr = getCharToArr(string);
         String getname = getname(ctx);
         dbTcpType.setHeartName(getname + "_" + arr.get(0));
-
+        dbTcpType.setUpdateTime(new Date());
         List<DbTcpType> list = tcpTypeService.selectDbTcpTypeList(dbTcpType);
         if (list != null && list.size() > 0) {
             DbTcpType dbTcpType1 = list.get(0);
