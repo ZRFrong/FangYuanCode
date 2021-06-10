@@ -27,7 +27,10 @@ public class HeartbeatCheck {
     @Autowired
     private DbEquipmentCilent dbEquipmentCilent;
 
-    private static final Integer EXPIRE_TIME = 1000 * 60 * 2;
+    /**
+     * 超时时间一分半 三次
+     * */
+    private static final Integer EXPIRE_TIME = 90000;
 
     @Scheduled(fixedRate = 60000)
     public void clearExpireHeartbeat(){
