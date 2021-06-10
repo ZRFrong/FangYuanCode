@@ -6,6 +6,7 @@ import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.enums.EquipmentMonitorTypeEnum;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.json.JSONObject;
+import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.fangyuanapi.listener.RedisExpireKeyListener;
 import com.ruoyi.fangyuanapi.mapper.DbMonitorMapper;
@@ -36,6 +37,8 @@ public class DbMonitorServiceImpl implements IDbMonitorService
     private DbMonitorMapper dbMonitorMapper;
     @Autowired
     private RedisExpireKeyListener redisExpireKeyListener;
+    @Autowired
+    private RedisUtils redisUtils;
 
 
     /**
@@ -150,6 +153,11 @@ public class DbMonitorServiceImpl implements IDbMonitorService
                 param.put("streamIndex",streamIndex);
                 param.put("streamType",streamType);
                 JSONObject videoUrlJson = getVideo(param);
+                // 默认开启flv格式视频流
+                String liveId = startVideo(videoUrlJson.getStr("flvUrl"));
+                videoUrlJson.put("liveId",liveId);
+                // 默认开启心跳
+                heartVideoStream(liveId);
                 dbMonitor.setDeviceVideoUrls(videoUrlJson);
             }
         }
@@ -498,7 +506,10 @@ public class DbMonitorServiceImpl implements IDbMonitorService
      */
     @Override
     public String startVideo(String videoUrl) {
-        return MonitorCloudRequestUtils.startVideo(videoUrl);
+        String liveId = MonitorCloudRequestUtils.startVideo(videoUrl);
+        // 更新视频播放数
+        syncVideoPlay(liveId,1);
+        return liveId;
     }
 
     /**
@@ -509,17 +520,43 @@ public class DbMonitorServiceImpl implements IDbMonitorService
     @Override
     @SneakyThrows
     public void stopVideo(String liveId,String videoUrl) {
-        if(StringUtils.isNotBlank(liveId)){
-            MonitorCloudRequestUtils.stopVideo(liveId);
-        } else if(StringUtils.isBlank(liveId) && StringUtils.isNotBlank(videoUrl)){
+        if(StringUtils.isBlank(liveId) && StringUtils.isNotBlank(videoUrl)){
             liveId = MonitorCloudRequestUtils.startVideo(videoUrl);
-            MonitorCloudRequestUtils.stopVideo(liveId);
         }else {
             throw new BusinessException("参数异常");
         }
-        // 清除心跳
-        redisExpireKeyListener.removeHeartbeat(liveId);
+        // 更新视频播放数
+        int curPlayNum = syncVideoPlay(liveId, -1);
+        if(curPlayNum <= 0 ){
+            MonitorCloudRequestUtils.stopVideo(liveId);
+            // 清除心跳
+            redisExpireKeyListener.removeHeartbeat(liveId);
+        }
     }
+
+    /**
+     * redis缓存同步视频播放数量
+     * @param liveId 视频流ID
+     * @param updateNum 更新播放数量
+     * @return 当前视频播放数
+     */
+    public int syncVideoPlay(String liveId,int updateNum){
+        final String videoPlayCacheKey = "VIDEO_PLAY_NUM:"+liveId;
+        // 更新播放数为0 清空当前视频播放数量
+        if(updateNum == 0 ){
+            redisUtils.delete(videoPlayCacheKey);
+            return updateNum;
+        }
+        // 更新播放数不为0 更新redis缓存
+        String playNum = redisUtils.get(videoPlayCacheKey);
+        if(StringUtils.isEmpty(playNum)){
+            playNum = "0";
+        }
+        updateNum = Integer.valueOf(playNum) + updateNum;
+        redisUtils.set(videoPlayCacheKey,updateNum);
+        return updateNum;
+    }
+
 
     /**
      * 视频流心跳监测

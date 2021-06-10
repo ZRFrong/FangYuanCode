@@ -195,6 +195,14 @@ public interface IDbMonitorService
     void stopVideo(String liveId,String videoUrl);
 
     /**
+     * redis缓存同步视频播放数量
+     * @param liveId 视频流ID
+     * @param updateNum 更新播放数量
+     * @return 当前视频播放数
+     */
+    int syncVideoPlay(String liveId,int updateNum);
+
+    /**
      * 流心跳监测
      * @param liveId 视频流ID
      */

@@ -4,6 +4,7 @@ import cn.hutool.core.thread.ThreadUtil;
 import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.fangyuanapi.service.IDbMonitorService;
+import com.ruoyi.fangyuanapi.utils.MonitorCloudRequestUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.Message;
@@ -31,7 +32,7 @@ public class RedisExpireKeyListener extends KeyExpirationEventMessageListener {
     // redis缓存有效时间 在心跳时间的基础上增加一分钟
     @Value("${video.heart}")
     private long streamExpireTime;
-    // 定时器执行周期 五分钟
+    // 定时器执行周期 60分钟
     private static final long execPeriod = 60 * 1;
     // 定时器开关
     private static volatile boolean timerSwitch = true;
@@ -99,7 +100,8 @@ public class RedisExpireKeyListener extends KeyExpirationEventMessageListener {
     private void stopVideoStream(String redisKey){
         String streamId = getVideoStreamId(redisKey);
         try{
-            monitorService.stopVideo(streamId,null);
+            MonitorCloudRequestUtils.stopVideo(streamId);
+            monitorService.syncVideoPlay(streamId,0);
         }catch (Exception e){
             log.error("RedisExpireKeyListener.stopVideoStream 异常:[{}]",e);
             // 失败的重新放入集合进行定时调用
@@ -124,7 +126,7 @@ public class RedisExpireKeyListener extends KeyExpirationEventMessageListener {
      */
     public void addHeartbeat(String redisKey){
         videoStreamSignCollect.add(redisKey = streamCachePrefix + redisKey);
-        // 有效时间在心跳时间基础上增加一分钟
+        // 有效时间
         redisUtils.set(redisKey,System.currentTimeMillis(),streamExpireTime);
     }
 
