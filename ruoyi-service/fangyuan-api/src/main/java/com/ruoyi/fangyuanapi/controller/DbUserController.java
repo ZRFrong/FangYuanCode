@@ -45,8 +45,6 @@ import java.util.*;
 @Logger
 public class DbUserController extends BaseController {
 
-//    @Autowired
-//    private RemoteDeptService remoteDeptService;
 
     @Autowired
     private RedisUtils redisUtils;
@@ -322,6 +320,7 @@ public class DbUserController extends BaseController {
             user.setIsBanned(0);
             user.setGender(0);
             user.setCreateTime(new Date());
+            user.setCreated(new Date());
             int i = dbUserService.insertDbUser(user);
         }else {
             user = dbUser;
@@ -419,6 +418,7 @@ public class DbUserController extends BaseController {
             DbUser user = new DbUser();
             user.setPhone(phone);
             user.setCreated(new Date());
+            user.setCreateTime(new Date());
             DbUser dbUser= dbUserService.selectDbUserByPhone(user);
             if (dbUser == null ){
                 dbUser = dbUserService.wxRegister(phone,openId,nickname,avatar);
