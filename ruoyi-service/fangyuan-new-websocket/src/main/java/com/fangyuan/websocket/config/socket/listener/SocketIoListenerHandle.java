@@ -88,12 +88,13 @@ public class SocketIoListenerHandle {
     public void authentication(SocketIOClient client,  ReceiveMsgPo data){
         String sessionId = client.getSessionId().toString();
         if(StringUtils.isEmpty(socketIoService.checkToken(sessionId,data))){
-            client.disconnect();
             log.warn("客户端通道鉴权失败");
+            client.disconnect();
             return;
         }
         // 记录用户信息和socket信息
         onlineUserSessionMap.put(sessionId,client);
+        pushMessage(client.getSessionId().toString(),SocketListenerEventConstant.AUTH_EVENT,R.ok());
     }
 
     /**

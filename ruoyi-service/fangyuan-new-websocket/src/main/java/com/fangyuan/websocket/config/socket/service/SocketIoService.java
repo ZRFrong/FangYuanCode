@@ -57,9 +57,10 @@ public class SocketIoService {
             Object id = userMap.get("id");
             if(id != null){
                 String cacheToken = redisTemplate.opsForValue().get(RedisKeyConf.APP_ACCESS_TOKEN_.name() + id.toString());
-                if(StringUtils.equals(data.getToken(),cacheToken))
+                if(StringUtils.equals(data.getToken(),cacheToken)){
                     userRefSession.put(userId,sessionId);
-                userId = id.toString();
+                    userId = id.toString();
+                }
             }
         }
         return userId;

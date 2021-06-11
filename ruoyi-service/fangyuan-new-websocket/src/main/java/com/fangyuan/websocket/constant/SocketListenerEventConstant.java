@@ -10,7 +10,7 @@ public class SocketListenerEventConstant {
     /**
      * 鉴权监听
      */
-    public static final String AUTH_EVENT = "AUTH_TOKEN";
+    public static final String AUTH_EVENT = "AUTH_EVENT";
     /**
      * 设备监听
      */
