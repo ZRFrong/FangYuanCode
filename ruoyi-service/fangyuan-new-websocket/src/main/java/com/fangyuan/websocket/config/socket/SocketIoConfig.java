@@ -45,6 +45,9 @@ public class SocketIoConfig {
     @Value("${socketio.maxFramePayloadLength}")
     private int maxFramePayloadLength;
 
+    @Value("${socketio.maxHttpContentLength}")
+    private int maxHttpContentLength;
+
 
     /**
      * 以下配置在上面的application.yml中已经注明
@@ -68,6 +71,7 @@ public class SocketIoConfig {
         config.setPingTimeout(pingTimeout);
         config.setPingInterval(pingInterval);
         config.setMaxFramePayloadLength(maxFramePayloadLength);
+        config.setMaxHttpContentLength(maxHttpContentLength);
         // 根据运行环境确认是否采用epoll模式
         config.setUseLinuxNativeEpoll(!isWin());
         return new SocketIOServer(config);

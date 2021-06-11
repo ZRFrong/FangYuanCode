@@ -20,4 +20,10 @@ public class SocketListenerEventConstant {
      */
     public static final String IM_EVENT = "IM_EVENT";
 
+    /**
+     * 通用指令监听
+     */
+    public static final String GENERAL_EVENT = "GENERAL_EVENT";
+
+
 }
