@@ -189,19 +189,19 @@ public class OperateControllerAppNew extends BaseController {
                     SensorDtos.add(getSensorDeviceDto("空气湿度",tcpType.getHumidityAir(),"%","https://cdn.fangyuancun.cn/fangyuan/20210531/bd9c257c50eb473c98e2e833be573c84.png"));
                 }
                 if (strIsNotEmpty(tcpType.getConductivity())) {
-                    SensorDtos.add(getSensorDeviceDto("电导率",tcpType.getConductivity(),"mS/cm","https://cdn.fangyuancun.cn/fangyuan/20210531/f413a1f4dfc74ee38d2d51c9d8dad0df.png"));
+                    SensorDtos.add(getSensorDeviceDto("电导率",tcpType.getConductivity(),"us/cm","https://cdn.fangyuancun.cn/fangyuan/20210531/f413a1f4dfc74ee38d2d51c9d8dad0df.png"));
                 }
                 if (strIsNotEmpty(tcpType.getPh())) {
                     SensorDtos.add(getSensorDeviceDto("PH",tcpType.getPh(),"","https://cdn.fangyuancun.cn/fangyuan/20210531/5572d3cb9b99427aa621a95c631f87f6.png"));
                 }
                 if (strIsNotEmpty(tcpType.getNitrogen())) {
-                    SensorDtos.add(getSensorDeviceDto("氮",tcpType.getNitrogen(),"g/kg","https://cdn.fangyuancun.cn/fangyuan/20210531/6cef706ab57c442db9f3af4fbbd14b36.png"));
+                    SensorDtos.add(getSensorDeviceDto("氮",tcpType.getNitrogen(),"mg/L","https://cdn.fangyuancun.cn/fangyuan/20210531/6cef706ab57c442db9f3af4fbbd14b36.png"));
                 }
                 if (strIsNotEmpty(tcpType.getPhosphorus())) {
-                    SensorDtos.add(getSensorDeviceDto("磷",tcpType.getPhosphorus(),"g/kg","https://cdn.fangyuancun.cn/fangyuan/20210531/0fa6b43d9afd49f485beb1c866c5543e.png"));
+                    SensorDtos.add(getSensorDeviceDto("磷",tcpType.getPhosphorus(),"mg/L","https://cdn.fangyuancun.cn/fangyuan/20210531/0fa6b43d9afd49f485beb1c866c5543e.png"));
                 }
                 if (strIsNotEmpty(tcpType.getPotassium())) {
-                    SensorDtos.add(getSensorDeviceDto("钾",tcpType.getPotassium(),"g/kg","https://cdn.fangyuancun.cn/fangyuan/20210531/a8650b01fb014101bc8e4793070d5555.png"));
+                    SensorDtos.add(getSensorDeviceDto("钾",tcpType.getPotassium(),"mg/L","https://cdn.fangyuancun.cn/fangyuan/20210531/a8650b01fb014101bc8e4793070d5555.png"));
                 }
                 map.put(s1, tcpType);
             }

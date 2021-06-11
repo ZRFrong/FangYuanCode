@@ -4,13 +4,10 @@ import com.ruoyi.message.annotation.ChannelConstraint;
 import com.ruoyi.common.constant.MessageConstants;
 import com.ruoyi.message.listener.MessageService;
 import com.ruoyi.system.domain.tcp.OrderMessagePo;
-//import com.ruoyi.system.feign.RemoteNettyService;
 import com.ruoyi.system.feign.RemoteNettyService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 
 /**
  * @Description: netty-socket消息下发实现类

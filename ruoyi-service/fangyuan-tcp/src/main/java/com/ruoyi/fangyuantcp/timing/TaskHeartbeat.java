@@ -46,10 +46,9 @@ public class TaskHeartbeat {
                                 Long minuteDiff = DateUtilLong.getMinuteDiff(tcpClient.getHeartbeatTime(), new Date());
                                 if (minuteDiff >=1) {
                                     int i = dbTcpClientService.deleteDbTcpClientById(tcpClient.getTcpClientId());
-
                                     System.out.println(tcpClient.getHeartName()+"超时了");
                                     /*
-                                     *   设备列表的状态改为异常
+                                     * 设备列表的状态改为异常
                                      * */
                                     DbEquipment dbEquipment1 = new DbEquipment();
                                     dbEquipment1.setHeartbeatText(tcpClient.getHeartName());

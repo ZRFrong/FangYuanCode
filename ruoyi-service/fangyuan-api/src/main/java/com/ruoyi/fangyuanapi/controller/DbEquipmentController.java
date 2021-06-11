@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.controller.BaseController;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -226,6 +227,21 @@ public class DbEquipmentController extends BaseController {
     @Transactional
     public R updateEquipmentData(){
         List<DbEquipment> dbEquipments =  dbEquipmentService.selectAllDbEquipment();
+       updateEquipment(dbEquipments);
+        return R.ok("数据转换已完成！");
+    }
+
+    @PostMapping("updateEquipment")
+    public R updateEquipmentData(@RequestParam(value = "id")List<Long> id){
+        ArrayList<DbEquipment> equipment = new ArrayList<>();
+        for (Long eId : id) {
+            equipment.add(dbEquipmentService.selectDbEquipmentById(eId));
+        }
+        updateEquipment(equipment);
+        return R.ok();
+    }
+
+    private void  updateEquipment(List<DbEquipment> dbEquipments){
         for (DbEquipment equipment : dbEquipments) {
             String text = equipment.getHandlerText();
             if (StringUtils.isEmpty(text)){
@@ -275,7 +291,6 @@ public class DbEquipmentController extends BaseController {
             equipment.setHandlerText(s);
             dbEquipmentService.updateDbEquipment(equipment);
         }
-        return R.ok("数据转换已完成！");
     }
 
     public static void main(String[] args){

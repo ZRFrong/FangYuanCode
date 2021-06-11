@@ -1,19 +1,19 @@
 package com.ruoyi.fangyuantcp.job;
 
-import com.ruoyi.common.utils.HeartbeatUtils;
 import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
 import com.ruoyi.fangyuantcp.mapper.DbTcpTypeMapper;
 import com.ruoyi.fangyuantcp.processingCode.OpcodeTextConf;
+import com.ruoyi.fangyuantcp.processingCode.SendCodeListUtils;
 import com.ruoyi.fangyuantcp.processingCode.TcpOrderTextConf;
-import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
-import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.system.domain.DbTcpType;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,6 +24,7 @@ import java.util.List;
  * @createTime 2021年06月09日 13:26:00
  */
 @Component
+@Log4j2
 public class SensorSelectJob {
 
     @Autowired
@@ -45,6 +46,7 @@ public class SensorSelectJob {
     @Scheduled(fixedRate = 600000)
     public void actuator(){
         List<String> clients = dbTcpClientMapper.selectAllDbTcpClient();
+        log.warn("定时采集传感器开始了-----------------------"+new Date() +"--------------------------------");
         if (clients == null || clients.size() <= 0){
             return;
         }
@@ -57,7 +59,7 @@ public class SensorSelectJob {
                     .operationTextType(OpcodeTextConf.OPCODE03)
                     .build());
         });
-
+        SendCodeListUtils.queryIoListNoWait(list );
     }
 
     /**

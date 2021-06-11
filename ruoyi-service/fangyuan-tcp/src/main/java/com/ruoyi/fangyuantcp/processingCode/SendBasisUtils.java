@@ -378,7 +378,6 @@ public class SendBasisUtils {
         tcpOrder.setCreateTime(new Date());
         String storage = storage(tcpOrder, data);
         /*
-
          * 建立监听返回的数据
          * */
         HeartbeatRuntest(storage, tcpOrder);

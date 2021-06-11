@@ -32,7 +32,6 @@ public class TaskTcpOrder {
                     list.forEach(itm -> {
                         Long minuteDiff = DateUtilLong.getMinuteDiff(itm.getUpdateTime(), new Date());
                         if (minuteDiff < 10) {
-
                             try {
                                 dbTcpTypeService.curingTypeTiming(itm);
                             } catch (Exception e) {

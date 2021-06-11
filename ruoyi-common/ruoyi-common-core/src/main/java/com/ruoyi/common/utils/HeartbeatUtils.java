@@ -1,6 +1,5 @@
 package com.ruoyi.common.utils;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -12,7 +11,16 @@ import java.util.regex.Pattern;
  */
 public class HeartbeatUtils {
 
-    private static final String HEARTBEAT_RULE = "^pisitai-\\d{5,5}-dapeng_\\d{2,2}$";
+    /**
+     * 以 pisitai- 开头 +  五位数字 + -dapeng 结尾
+     * */
+    private static final String HEARTBEAT_RULE = "^pisitai-\\d{5}-dapeng_0\\d{1}$";
+
+    /**
+     * ^[a-z]{5,9}-\d{5,9}-[a-z]{5,7}_\d{2}$
+     * 以 5到9位小写字母开头 +  - 中划线 +  五到 9 位数字  +  -  + 以 5到7位小写字符结尾
+     * */
+    private static final String HEARTBEAT_RULE2 = "^[a-z]{5,9}-\\d{5,9}-[a-z]{5,7}_\\d{2}$";
 
     /**
      * 设备心跳规则校验

@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
  * @Description: 服务端推送消息实体
  * @Author zheng
  * @Date 2021/6/9 15:48
- * @Version 1.0
+ * @Version 2.0
  */
 @Data
 @Accessors(chain = true)

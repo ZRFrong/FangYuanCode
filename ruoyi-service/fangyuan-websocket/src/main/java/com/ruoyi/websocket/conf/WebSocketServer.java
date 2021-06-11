@@ -31,7 +31,6 @@ public class WebSocketServer {
 	 */
 	private String sid="";
 
-
 	/**
 	 * 连接建立成功调用的方法
 	 * */
@@ -58,7 +57,8 @@ public class WebSocketServer {
 
 	/**
 	 * 收到客户端消息后调用的方法
-	 * @param message 客户端发送过来的消息*/
+	 * @param message 客户端发送过来的消息
+	 * */
 	@OnMessage
 	public void onMessage(String message, Session session) {
 		log.info("收到来"+sid+"的信息:"+message);

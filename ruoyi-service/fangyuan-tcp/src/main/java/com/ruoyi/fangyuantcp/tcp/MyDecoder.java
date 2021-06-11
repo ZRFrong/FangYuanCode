@@ -1,6 +1,7 @@
 package com.ruoyi.fangyuantcp.tcp;
 
 
+import com.ruoyi.fangyuantcp.utils.Crc16Util;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -29,6 +30,8 @@ public class MyDecoder extends ByteToMessageDecoder {
             out.add(str);
         }else {
             String s = bytesToHexString(b);
+            String code = s.substring(s.length() - 2, s.length());
+            s.substring(0,s.length()-2);
             //System.out.println(str);
             out.add(s);
         }
@@ -61,6 +64,18 @@ public class MyDecoder extends ByteToMessageDecoder {
         } else {
             return s;
         }
+    }
+
+
+    public static void main(String[] args){
+        String  s ="C81000000014282BC1003C000100D400CA00000000002202BB001E01F40032138801F401F401F401F400E00003000060D2";
+        String code = s.substring(s.length() - 2, s.length());
+        String str = s.substring(0, s.length() - 2);
+        String s2 = "C81000000014282BC1003C000100D400CA00000000002202BB001E01F40032138801F401F401F401F400E000030000";
+        byte[] crc16 = Crc16Util.getCrc16(s2.getBytes());
+        String s1 = new String(crc16);
+        System.out.println(s1);
+        System.out.println(Crc16Util.byteTo16String(crc16).toUpperCase());
     }
 
 

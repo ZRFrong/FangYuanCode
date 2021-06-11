@@ -30,7 +30,7 @@ public class RuoYiFangYuanTcp {
     public static void main(String[] args) {
         // System.setProperty("spring.devtools.restart.enabled", "false");
         /*
-         *开启心跳定时查询
+         * 开启心跳定时查询
          * */
         SpringApplication.run(RuoYiFangYuanTcp.class, args);
         try {
@@ -55,15 +55,16 @@ public class RuoYiFangYuanTcp {
         log.info("开启通风查询");
         TaskTongFeng taskTongFeng = new TaskTongFeng();
         taskTongFeng.HeartbeatRun();
+
         /*
-         *开启 远程，本地检测
+         * 开启 远程，本地检测
          * */
         log.info("开启远程，本地检测");
         TaskOnline taskOnline = new TaskOnline();
         taskOnline.HeartbeatRun();
-/*
-* 开启传感数据定时存储
-* */
+        /*
+         * 开启传感数据定时存储
+         * */
         log.info("装态定时存储");
         TaskTcpOrder taskTcpOrder = new TaskTcpOrder();
         taskTcpOrder.HeartbeatRun();

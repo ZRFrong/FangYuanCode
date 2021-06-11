@@ -36,10 +36,10 @@ public class TaskTongFeng {
                      Thread.sleep(500);
 
                      dbTcpTypeService.timingTongFengType();
-                    log.info("通风定时查询执行===时间："+new Date());
+                     log.info("通风定时查询执行===时间："+new Date());
                 } catch (Exception e) {
 
-                    log.error("通风定时查询执行===时间："+new Date());
+                     log.error("通风定时查询执行===时间："+new Date());
                 }
 
             }

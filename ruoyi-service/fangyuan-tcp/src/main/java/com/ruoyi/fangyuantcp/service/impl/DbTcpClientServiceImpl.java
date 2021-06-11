@@ -192,7 +192,7 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
             List<DbEquipment> dbEquipments = dbEquipmentMapper.selectDbEquipmentList(dbEquipment);
             for (DbEquipment equipment : dbEquipments) {
                 equipment.setIsFault(0);
-
+                equipment.setIsOnline(0);
                 int i2 = dbEquipmentMapper.updateDbEquipment(equipment);
             }
         }else{

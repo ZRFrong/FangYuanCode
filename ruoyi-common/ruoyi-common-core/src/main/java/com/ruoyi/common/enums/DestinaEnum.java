@@ -27,7 +27,7 @@ public enum DestinaEnum {
     private String exchange;
     // 队列
     private String queue;
-    // 路由键
+    // 路由键messageTarget
     private String routing;
 
     public final String getExchange(){
