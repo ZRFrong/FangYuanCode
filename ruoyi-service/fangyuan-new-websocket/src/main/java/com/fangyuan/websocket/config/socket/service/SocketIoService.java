@@ -2,17 +2,16 @@ package com.fangyuan.websocket.config.socket.service;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.fangyuan.websocket.config.socket.listener.SocketIoListenerHandle;
 import com.fangyuan.websocket.constant.SocketListenerEventConstant;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.redis.config.RedisKeyConf;
-import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.aes.TokenUtils;
 import com.ruoyi.system.domain.socket.PushMessageVO;
 import com.ruoyi.system.domain.socket.ReceiveMsgPo;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,16 +30,19 @@ import java.util.Map;
 public class SocketIoService {
 
     private final SocketIoListenerHandle socketIoListenerHandle;
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
     /** redis缓存用户session集合 */
-    private BoundHashOperations<Object,String,String> userRefSession ;
+    private BoundHashOperations<String, String, String> userRefSession ;
     @Value("${com.fangyuan.token.aes.accessTokenKey}")
     private String accessTokenKey;
+    // 用户session缓存key
+    private static final String USER_SESSION_CACHE_KEY = "socket_user_session:";
 
 
-    public SocketIoService(SocketIoListenerHandle socketIoListenerHandle){
+    public SocketIoService(SocketIoListenerHandle socketIoListenerHandle,RedisTemplate<String, String> redisTemplate){
         this.socketIoListenerHandle = socketIoListenerHandle;
+        this.redisTemplate = redisTemplate;
+        this.userRefSession = redisTemplate.boundHashOps(USER_SESSION_CACHE_KEY);
     }
 
     /**
@@ -55,13 +57,15 @@ public class SocketIoService {
             Object id = userMap.get("id");
             if(id != null){
                 String cacheToken = redisTemplate.opsForValue().get(RedisKeyConf.APP_ACCESS_TOKEN_.name() + id.toString());
-                if(StringUtils.equals(data.getToken(),cacheToken))
+                if(StringUtils.equals(data.getToken(),cacheToken)){
                     userRefSession.put(userId,sessionId);
                     userId = id.toString();
+                }
             }
         }
         return userId;
     }
+
 
     /**
      * 删除用户绑定session
@@ -87,7 +91,7 @@ public class SocketIoService {
         // 确定推送类型
         final String eventKey = ObjectUtil.equal(
                 messageInfo.getMessageType(),SocketListenerEventConstant.IM_EVENT
-            ) ? SocketListenerEventConstant.IM_EVENT : SocketListenerEventConstant.DEVICE_EVENT;
+        ) ? SocketListenerEventConstant.IM_EVENT : SocketListenerEventConstant.DEVICE_EVENT;
         String[] userArr = messageInfo.getMessageTarget().split(",");
         for (String userId : userArr) {
             final String sessionId = userRefSession.get(userId);
@@ -98,5 +102,6 @@ public class SocketIoService {
             }
         }
     }
+
 
 }

@@ -43,7 +43,6 @@ public class SocketIoListenerHandle {
     // 在线用户session缓存集合 (包括之前在线 后续掉线的用户) key-value: 用户名-sessionId
     private final Map<String,SocketIOClient> onlineUserSessionMap = new ConcurrentHashMap<>(500);
 
-    private final Class receviceType = ReceiveMsgPo.class;
 
     /**
      * bean初始化执行
@@ -83,29 +82,41 @@ public class SocketIoListenerHandle {
     /**
      * 鉴权通道
      * @param client 通道连接
-     * @param dataType 消息体类型
      * @param data 消息内容
      */
     @OnEvent(SocketListenerEventConstant.AUTH_EVENT)
-    public void authentication(SocketIOClient client, Class<ReceiveMsgPo> dataType, ReceiveMsgPo data){
+    public void authentication(SocketIOClient client,  ReceiveMsgPo data){
         String sessionId = client.getSessionId().toString();
         if(StringUtils.isEmpty(socketIoService.checkToken(sessionId,data))){
-            client.disconnect();
             log.warn("客户端通道鉴权失败");
+            client.disconnect();
             return;
         }
         // 记录用户信息和socket信息
         onlineUserSessionMap.put(sessionId,client);
+        pushMessage(client.getSessionId().toString(),SocketListenerEventConstant.AUTH_EVENT,R.ok());
     }
 
     /**
      * 监听设备消息
      * @param client 通道连接
-     * @param dataType 消息体类型
      * @param data 消息内容
      */
     @OnEvent(SocketListenerEventConstant.DEVICE_EVENT)
-    public void deviceEvent(SocketIOClient client, Class<ReceiveMsgPo> dataType, ReceiveMsgPo data){
+    public void deviceEvent(SocketIOClient client,  ReceiveMsgPo data){
+        log.info("deviceEvent:{}",data);
+        client.sendEvent(SocketListenerEventConstant.DEVICE_EVENT,data);
+    }
+
+    /**
+     * 监听通用指令消息
+     * @param client 通道连接
+     * @param msg 消息内容
+     */
+    @OnEvent(SocketListenerEventConstant.GENERAL_EVENT)
+    public void generalEvent(SocketIOClient client,  String msg){
+        log.info("generalEvent:{}",msg);
+        client.sendEvent(SocketListenerEventConstant.GENERAL_EVENT,msg);
     }
 
     /**

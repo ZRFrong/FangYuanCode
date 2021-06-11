@@ -10,7 +10,7 @@ public class SocketListenerEventConstant {
     /**
      * 鉴权监听
      */
-    public static final String AUTH_EVENT = "AUTH_TOKEN";
+    public static final String AUTH_EVENT = "AUTH_EVENT";
     /**
      * 设备监听
      */
@@ -19,5 +19,11 @@ public class SocketListenerEventConstant {
      * IM监听
      */
     public static final String IM_EVENT = "IM_EVENT";
+
+    /**
+     * 通用指令监听
+     */
+    public static final String GENERAL_EVENT = "GENERAL_EVENT";
+
 
 }

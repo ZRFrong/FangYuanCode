@@ -25,13 +25,4 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
 
-socketio:
-  host: 127.0.0.1
-  port: 8888
-  bossCount: 1
-  workCount: 50
-  allowCustomRequests: false
-  upgradeTimeout: 10
-  pingTimeout: 30
-  pingInterval: 30
-  maxFramePayloadLength: 1024
+
