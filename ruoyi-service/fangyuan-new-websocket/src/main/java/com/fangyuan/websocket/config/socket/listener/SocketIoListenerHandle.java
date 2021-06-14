@@ -28,7 +28,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component(value = "socketIOListenerHandle")
 @Log4j2
-@Lazy
 public class SocketIoListenerHandle {
     /**
      * socketIo的对象
@@ -76,6 +75,7 @@ public class SocketIoListenerHandle {
     @OnDisconnect
     public void onDisconnect(SocketIOClient client) {
         socketIoService.removeUserSession(client.getSessionId().toString());
+        onlineUserSessionMap.remove(client.getSessionId().toString());
         log.info("客户端:{}断开连接" , client.getSessionId() );
     }
 
