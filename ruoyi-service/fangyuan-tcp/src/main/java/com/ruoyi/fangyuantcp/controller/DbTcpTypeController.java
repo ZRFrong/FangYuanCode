@@ -2,6 +2,7 @@ package com.ruoyi.fangyuantcp.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.fangyuantcp.aspect.EquipmentTag;
 import com.ruoyi.fangyuantcp.processingCode.SendCodeUtils;
 import com.ruoyi.system.domain.*;
 import lombok.SneakyThrows;
@@ -60,6 +61,7 @@ public class DbTcpTypeController extends BaseController {
      * 查询设备状态列表
      */
     @PostMapping("listonly")
+    @EquipmentTag
     public List<DbTcpType> listonly(@RequestBody DbTcpType dbTcpType) {
         List<DbTcpType> list = dbTcpTypeService.selectDbTcpTypeList(dbTcpType);
         return list;

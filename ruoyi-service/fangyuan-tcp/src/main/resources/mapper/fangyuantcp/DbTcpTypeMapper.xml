@@ -38,6 +38,14 @@
         </where>
     </select>
 
+    <select id="selectDbTcpTypeTagList" parameterType="DbTcpType" resultMap="DbTcpTypeResult">
+        select tcp_type_id, temperature_soil, humidity_soil, light, heart_name, co2, id_auto,autocontrol_type_end, autocontrol_type, update_time, temperature_air, humidity_air, is_show
+        , conductivity, ph, nitrogen, phosphorus, potassium
+        from db_tcp_type_tag
+        where state = 0
+            <if test="heartName != null  and heartName != ''"> and heart_name like concat('%', #{heartName}, '%')</if>
+    </select>
+
     <select id="selectDbTcpTypeById" parameterType="Long" resultMap="DbTcpTypeResult">
         <include refid="selectDbTcpTypeVo"/>
         where tcp_type_id = #{tcpTypeId}
