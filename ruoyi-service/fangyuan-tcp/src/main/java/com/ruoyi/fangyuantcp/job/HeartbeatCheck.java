@@ -1,6 +1,7 @@
 package com.ruoyi.fangyuantcp.job;
 
 import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
+import com.ruoyi.fangyuantcp.mapper.DbTcpTypeMapper;
 import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.system.feign.DbEquipmentCilent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class HeartbeatCheck {
     @Autowired
     private DbEquipmentCilent dbEquipmentCilent;
 
+    @Autowired
+    private DbTcpTypeMapper dbTcpTypeMapper;
+
     /**
      * 超时时间一分半 三次
      * */
@@ -47,6 +51,10 @@ public class HeartbeatCheck {
                     idList = new ArrayList<>();
                 }
                 idList.add(client.getTcpClientId());
+                /**
+                 * 删除传感器信息
+                 * */
+                dbTcpTypeMapper.deleteByHeartName(client.getHeartName());
             }
         }
         if (idList == null || idList.size() <= 0){
