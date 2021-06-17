@@ -17,7 +17,8 @@ public class PushMessageVO {
     /**
      * 消息类型
      */
-    private Byte messageType;
+    private String messageType;
+
     /**
      * 消息指向 type=0：多个用户ID；type=1：用户ID/Token
      */

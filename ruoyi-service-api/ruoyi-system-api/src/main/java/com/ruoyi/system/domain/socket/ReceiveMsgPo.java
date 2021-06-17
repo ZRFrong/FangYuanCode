@@ -11,8 +11,7 @@ import java.io.Serializable;
  * @Version 1.0
  */
 @Data
-public class ReceiveMsgPo implements Serializable {
-
+public class ReceiveMsgPo  implements Serializable {
 
     /**
      * 认证token
@@ -28,6 +27,27 @@ public class ReceiveMsgPo implements Serializable {
      * 消息内容
      */
     private Object message;
+
+    public ReceiveMsgPo(){}
+
+    public ReceiveMsgPo(String token){
+        this.token = token;
+    }
+
+    public ReceiveMsgPo(String messageType,Object message){
+        this.message = message;
+        this.messageType = messageType;
+    }
+
+    public ReceiveMsgPo(String token,String messageType,Object message){
+        this.token = token;
+        this.message = message;
+        this.messageType = messageType;
+    }
+
+
+
+
 
 
 }

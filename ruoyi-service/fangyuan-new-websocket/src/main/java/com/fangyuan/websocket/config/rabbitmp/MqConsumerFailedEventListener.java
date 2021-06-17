@@ -17,7 +17,7 @@ import java.util.Arrays;
  */
 @Log4j2
 @Component
-public class ListenerContainerConsumerFailedEventListener implements ApplicationListener<ListenerContainerConsumerFailedEvent> {
+public class MqConsumerFailedEventListener implements ApplicationListener<ListenerContainerConsumerFailedEvent> {
     @Override
     public void onApplicationEvent(ListenerContainerConsumerFailedEvent event) {
         if (event.isFatal()) {

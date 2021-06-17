@@ -2,6 +2,7 @@ package com.fangyuan.websocket.config.socket.service;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.corundumstudio.socketio.SocketIOClient;
 import com.fangyuan.websocket.config.socket.listener.SocketIoListenerHandle;
 import com.fangyuan.websocket.constant.SocketListenerEventConstant;
 import com.ruoyi.common.core.domain.R;
@@ -21,6 +22,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Description: socket接口逻辑处理类
@@ -37,6 +39,10 @@ public class SocketIoService implements ApplicationContextAware{
     private BoundHashOperations<String, String, String> userRefSession ;
     @Value("${com.fangyuan.token.aes.accessTokenKey}")
     private String accessTokenKey;
+    @Value("${socketio.sessionKeepTime}")
+    private Integer sessionKeepTime;
+    // 新建用户session缓存key
+    public static final String USER_SESSION_KEEP_CACHE_KEY = "user_session_keep_cache_key:";
     // 用户session缓存key
     private static final String USER_SESSION_CACHE_KEY = "socket_user_session:";
     private ApplicationContext applicationContext;
@@ -46,6 +52,22 @@ public class SocketIoService implements ApplicationContextAware{
     public SocketIoService(RedisTemplate<String, String> redisTemplate){
         this.redisTemplate = redisTemplate;
         this.userRefSession = redisTemplate.boundHashOps(USER_SESSION_CACHE_KEY);
+    }
+
+    /**
+     * 缓存新建用户session 保留有效时间, 如到期未认证后删除该通道
+     * @param sessionId 通道SessionId
+     */
+    public void saveTempConnectSessionCache(String sessionId){
+        redisTemplate.opsForValue().set(USER_SESSION_KEEP_CACHE_KEY + sessionId,sessionId,sessionKeepTime,TimeUnit.SECONDS);
+    }
+
+    /**
+     * 删除新建用户session
+     * @param sessionId 通道SessionId
+     */
+    public void removeConnectSessionCache(String sessionId){
+        redisTemplate.delete(USER_SESSION_KEEP_CACHE_KEY + sessionId);
     }
 
     /**
@@ -61,8 +83,8 @@ public class SocketIoService implements ApplicationContextAware{
             if(id != null){
                 String cacheToken = redisTemplate.opsForValue().get(RedisKeyConf.APP_ACCESS_TOKEN_.name() + id.toString());
                 if(StringUtils.equals(data.getToken(),cacheToken)){
-                    userRefSession.put(userId,sessionId);
                     userId = id.toString();
+                    userRefSession.put(userId,sessionId);
                 }
             }
         }
@@ -73,7 +95,6 @@ public class SocketIoService implements ApplicationContextAware{
     /**
      * 删除用户绑定session
      * @param sessionId 通道sessionId
-     * @return 返回用户ID
      */
     public void removeUserSession(String sessionId){
         Map<String, String> entries = userRefSession.entries();
@@ -84,6 +105,21 @@ public class SocketIoService implements ApplicationContextAware{
                 }
             });
         }
+    }
+
+    /**
+     * 服务端主动关闭连接
+     * @param sessionId 通道sessionId
+     */
+    public void closeConnectBySessionId(String sessionId) {
+        SocketIOClient socketIOClient = socketIoListenerHandle.getTempUserSessionMap().get(sessionId);
+        if(ObjectUtil.isNull(socketIoListenerHandle.getTempUserSessionMap().remove(sessionId))){
+            socketIOClient = socketIoListenerHandle.getOnLineUserSessionMap().get(sessionId);
+            socketIoListenerHandle.getOnLineUserSessionMap().remove(sessionId);
+            removeUserSession(sessionId);
+        }
+        socketIOClient.disconnect();
+        log.info("服务端主动断开连接 session:{}断开连接" , sessionId );
     }
 
     /**
@@ -112,6 +148,7 @@ public class SocketIoService implements ApplicationContextAware{
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+        socketIoListenerHandle = applicationContext.getBean(SocketIoListenerHandle.class);
     }
 
 

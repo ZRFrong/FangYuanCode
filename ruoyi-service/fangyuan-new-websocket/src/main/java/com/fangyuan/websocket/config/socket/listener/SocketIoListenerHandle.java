@@ -1,5 +1,6 @@
 package com.fangyuan.websocket.config.socket.listener;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnConnect;
@@ -41,7 +42,8 @@ public class SocketIoListenerHandle {
 
     // 在线用户session缓存集合 (包括之前在线 后续掉线的用户) key-value: 用户名-sessionId
     private final Map<String,SocketIOClient> onlineUserSessionMap = new ConcurrentHashMap<>(500);
-
+    // 新建立通道缓存集合
+    private final Map<String,SocketIOClient> tempUserSessionMap = new ConcurrentHashMap<>(500);
 
     /**
      * bean初始化执行
@@ -65,7 +67,10 @@ public class SocketIoListenerHandle {
      */
     @OnConnect
     public void onConnect(SocketIOClient client) {
-        log.info("客户端:{}建立连接 " , client.getSessionId());
+        String sessionId = client.getSessionId().toString();
+        log.info("客户端:{}建立连接 " , sessionId);
+        socketIoService.saveTempConnectSessionCache(sessionId);
+        tempUserSessionMap.put(sessionId,client);
     }
 
     /**
@@ -74,8 +79,11 @@ public class SocketIoListenerHandle {
      */
     @OnDisconnect
     public void onDisconnect(SocketIOClient client) {
-        socketIoService.removeUserSession(client.getSessionId().toString());
-        onlineUserSessionMap.remove(client.getSessionId().toString());
+        final String sessionId = client.getSessionId().toString();
+        socketIoService.removeUserSession(sessionId);
+        socketIoService.removeConnectSessionCache(sessionId);
+        onlineUserSessionMap.remove(sessionId);
+        tempUserSessionMap.remove(sessionId);
         log.info("客户端:{}断开连接" , client.getSessionId() );
     }
 
@@ -87,14 +95,18 @@ public class SocketIoListenerHandle {
     @OnEvent(SocketListenerEventConstant.AUTH_EVENT)
     public void authentication(SocketIOClient client,  ReceiveMsgPo data){
         String sessionId = client.getSessionId().toString();
-        if(StringUtils.isEmpty(socketIoService.checkToken(sessionId,data))){
-            log.warn("客户端通道鉴权失败");
+        if(ObjectUtil.isNull(data) || StringUtils.isEmpty(socketIoService.checkToken(sessionId,data))){
+            log.warn("authentication session:{} 鉴权失败 ",sessionId);
             client.disconnect();
             return;
         }
         // 记录用户信息和socket信息
         onlineUserSessionMap.put(sessionId,client);
-        pushMessage(client.getSessionId().toString(),SocketListenerEventConstant.AUTH_EVENT,R.ok());
+        // 清除临时通道缓存
+        tempUserSessionMap.remove(sessionId);
+        socketIoService.removeConnectSessionCache(sessionId);
+        pushMessage(sessionId,SocketListenerEventConstant.AUTH_EVENT,R.ok());
+        log.info("authentication session:{} 鉴权成功 ",sessionId);
     }
 
     /**
@@ -105,7 +117,6 @@ public class SocketIoListenerHandle {
     @OnEvent(SocketListenerEventConstant.DEVICE_EVENT)
     public void deviceEvent(SocketIOClient client,  ReceiveMsgPo data){
         log.info("deviceEvent:{}",data);
-        client.sendEvent(SocketListenerEventConstant.DEVICE_EVENT,data);
     }
 
     /**
@@ -116,7 +127,6 @@ public class SocketIoListenerHandle {
     @OnEvent(SocketListenerEventConstant.GENERAL_EVENT)
     public void generalEvent(SocketIOClient client,  String msg){
         log.info("generalEvent:{}",msg);
-        client.sendEvent(SocketListenerEventConstant.GENERAL_EVENT,msg);
     }
 
     /**
@@ -129,6 +139,23 @@ public class SocketIoListenerHandle {
         final SocketIOClient socketIOClient = onlineUserSessionMap.get(sessionId);
         if(socketIOClient != null)
             socketIOClient.sendEvent(eventKey,data);
+    }
+
+
+    /**
+     * 获取在线session集合
+     * @return session关系
+     */
+    public Map<String,SocketIOClient> getOnLineUserSessionMap(){
+        return onlineUserSessionMap;
+    }
+
+    /**
+     * 获取已建立未认证session集合
+     * @return session集合
+     */
+    public Map<String,SocketIOClient> getTempUserSessionMap(){
+        return tempUserSessionMap;
     }
 
 
