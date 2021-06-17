@@ -7,15 +7,15 @@ import java.util.List;
 
 /**
  * 设备状态Mapper接口
- * 
+ *
  * @author fangyuan
  * @date 2020-09-01
  */
-public interface DbTcpTypeMapper 
+public interface DbTcpTypeMapper
 {
     /**
      * 查询设备状态
-     * 
+     *
      * @param tcpTypeId 设备状态ID
      * @return 设备状态
      */
@@ -23,15 +23,23 @@ public interface DbTcpTypeMapper
 
     /**
      * 查询设备状态列表
-     * 
+     *
      * @param dbTcpType 设备状态
      * @return 设备状态集合
      */
     public List<DbTcpType> selectDbTcpTypeList(DbTcpType dbTcpType);
 
     /**
+     * 查询设备Tag状态列表
+     *
+     * @param dbTcpType 设备状态
+     * @return Tag设备状态集合
+     */
+    public List<DbTcpType> selectDbTcpTypeTagList(DbTcpType dbTcpType);
+
+    /**
      * 新增设备状态
-     * 
+     *
      * @param dbTcpType 设备状态
      * @return 结果
      */
@@ -39,7 +47,7 @@ public interface DbTcpTypeMapper
 
     /**
      * 修改设备状态
-     * 
+     *
      * @param dbTcpType 设备状态
      * @return 结果
      */
@@ -48,7 +56,7 @@ public interface DbTcpTypeMapper
 
     /**
      * 删除设备状态
-     * 
+     *
      * @param tcpTypeId 设备状态ID
      * @return 结果
      */
@@ -56,7 +64,7 @@ public interface DbTcpTypeMapper
 
     /**
      * 批量删除设备状态
-     * 
+     *
      * @param tcpTypeIds 需要删除的数据ID
      * @return 结果
      */

@@ -63,7 +63,7 @@ public class SocketIoConfig {
         com.corundumstudio.socketio.Configuration config = new com.corundumstudio.socketio.Configuration();
         config.setSocketConfig(socketConfig);
         config.setHostname(host);
-        config.setPort(port);
+        config.setPort(8888);
         config.setBossThreads(bossCount);
         config.setWorkerThreads(workCount);
         config.setAllowCustomRequests(allowCustomRequests);

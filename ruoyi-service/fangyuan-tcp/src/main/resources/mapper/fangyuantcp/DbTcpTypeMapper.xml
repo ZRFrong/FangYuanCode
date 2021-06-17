@@ -38,6 +38,12 @@
         </where>
     </select>
 
+    <select id="selectDbTcpTypeTagList" parameterType="DbTcpType" resultMap="DbTcpTypeResult">
+        select dttt.* ,det.heart_name  from db_equipment_tag det left join db_tcp_type_tag dttt on 1=1
+        where det.state = 0 and dttt.state = 0
+        <if test="heartName != null  and heartName != ''"> and det.heart_name like concat('%', #{heartName}, '%')</if>
+    </select>
+
     <select id="selectDbTcpTypeById" parameterType="Long" resultMap="DbTcpTypeResult">
         <include refid="selectDbTcpTypeVo"/>
         where tcp_type_id = #{tcpTypeId}
