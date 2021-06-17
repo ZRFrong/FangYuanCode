@@ -1,18 +1,8 @@
 package com.ruoyi.fangyuantcp.processingCode;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.qiniu.util.Json;
-import com.ruoyi.common.redis.config.RedisKeyConf;
-import com.ruoyi.common.redis.util.RedisLockUtil;
 import com.ruoyi.common.redis.util.RedisMqUtils;
-import com.ruoyi.common.redis.util.RedisUtils;
-import com.ruoyi.common.redis.wsmsg.MsgType;
-import com.ruoyi.common.redis.wsmsg.SocketMsg;
-import com.ruoyi.common.redis.wsmsg.WSTypeEnum;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.fangyuantcp.abnormal.DropsExceptions;
 import com.ruoyi.fangyuantcp.service.IDbEquipmentService;
 import com.ruoyi.fangyuantcp.utils.LogOrderUtil;
 import com.ruoyi.system.domain.*;
@@ -20,7 +10,6 @@ import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
 import com.ruoyi.system.feign.DbEquipmentComponentClient;
-import com.ruoyi.system.feign.RemoteDeptService;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +22,7 @@ import java.util.stream.Collectors;
 
 
 @Slf4j
-public class ReceiveUtil {
+public class ReceiveUtils {
 
     private IDbTcpClientService tcpClientService = SpringUtils.getBean(IDbTcpClientService.class);
     private IDbEquipmentService iDbEquipmentService = SpringUtils.getBean(IDbEquipmentService.class);
@@ -46,7 +35,7 @@ public class ReceiveUtil {
      * */
     public void heartbeatChoose(DbTcpClient dbTcpClient, ChannelHandlerContext ctx) {
         // 记录指令返回日志
-        logOrderUtil.recordFollowBack(dbTcpClient.getHeartName(), dbTcpClient.getHeartName(),"ReceiveUtil.heartbeatChoose");
+        logOrderUtil.recordFollowBack(dbTcpClient.getHeartName(), dbTcpClient.getHeartName(),"ReceiveUtils.heartbeatChoose");
         int i = tcpClientService.heartbeatChoose(dbTcpClient);
 //            不存在 新建，添加map管理
         NettyServer.map.put(dbTcpClient.getHeartName(), ctx);
@@ -85,7 +74,7 @@ public class ReceiveUtil {
      *传感器状态接收处理
      * */
     public void stateRead(String type, ChannelHandlerContext ctx) {
-        logOrderUtil.recordFollowBack(getname(ctx), type,"ReceiveUtil.stateRead");
+        logOrderUtil.recordFollowBack(getname(ctx), type,"ReceiveUtils.stateRead");
         /*
             状态码 01 03   0A代码后边有10位
          *01 03 0A 00 FD 01 09 01 06 00 01 00 C1 39 6F
@@ -155,7 +144,7 @@ public class ReceiveUtil {
      * 手自动状态返回处理
      * */
     public void sinceOrHandRead(String type, ChannelHandlerContext ctx) {
-        logOrderUtil.recordFollowBack(getname(ctx), type,"ReceiveUtil.sinceOrHandRead");
+        logOrderUtil.recordFollowBack(getname(ctx), type,"ReceiveUtils.sinceOrHandRead");
 //        设备号
         String substring = type.substring(0, 2);
 //        心跳
@@ -297,7 +286,7 @@ public class ReceiveUtil {
      * */
     public void returnHand(ChannelHandlerContext ctx, String string) {
         // 记录指令返回日志
-        logOrderUtil.recordFollowBack(getname(ctx), string,"ReceiveUtil.returnHand");
+        logOrderUtil.recordFollowBack(getname(ctx), string,"ReceiveUtils.returnHand");
         DbTcpType dbTcpType = new DbTcpType();
         List<String> arr = getCharToArr(string);
 
@@ -323,7 +312,7 @@ public class ReceiveUtil {
      * 更改自动通风温度
      * */
     public void returnautocontrolType(ChannelHandlerContext ctx, String string) {
-        logOrderUtil.recordFollowBack(getname(ctx), string,"ReceiveUtil.returnautocontrolType");
+        logOrderUtil.recordFollowBack(getname(ctx), string,"ReceiveUtils.returnautocontrolType");
         DbTcpType dbTcpType = new DbTcpType();
         List<String> arr = getCharToArr(string);
         String getname = getname(ctx);
@@ -346,7 +335,7 @@ public class ReceiveUtil {
 
     public void heartbeatUpdate(DbTcpClient dbTcpClient) {
         // 记录指令返回日志
-        logOrderUtil.recordFollowBack(dbTcpClient.getHeartName(), dbTcpClient.getHeartName(),"ReceiveUtil.heartbeatUpdate");
+        logOrderUtil.recordFollowBack(dbTcpClient.getHeartName(), dbTcpClient.getHeartName(),"ReceiveUtils.heartbeatUpdate");
         int i = tcpClientService.heartbeatUpdate(dbTcpClient);
     }
 
@@ -485,7 +474,7 @@ public class ReceiveUtil {
         String bin=Integer.toBinaryString(Integer.parseInt(s,16));
         //输出!
         System.out.println(bin);
-        String s1 = ReceiveUtil.hexToBinString(s);
+        String s1 = ReceiveUtils.hexToBinString(s);
         System.out.println(s1);
         System.out.println(s1.substring(s1.length() - 13, s1.length() - 12));
 

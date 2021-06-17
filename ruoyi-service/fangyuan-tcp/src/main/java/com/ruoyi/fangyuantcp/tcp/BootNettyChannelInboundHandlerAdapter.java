@@ -1,11 +1,14 @@
 package com.ruoyi.fangyuantcp.tcp;
 
 
+import com.ruoyi.common.enums.PatternEnum;
+import com.ruoyi.common.utils.HeartbeatUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuantcp.processingCode.DisConnectUtils;
 import com.ruoyi.fangyuantcp.processingCode.HexTest;
 import com.ruoyi.fangyuantcp.processingCode.ReceiveResponse;
-import com.ruoyi.fangyuantcp.processingCode.ReceiveUtil;
+import com.ruoyi.fangyuantcp.processingCode.ReceiveUtils;
+import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.fangyuantcp.utils.LogOrderUtil;
 import com.ruoyi.system.domain.DbTcpClient;
 import io.netty.channel.ChannelHandlerContext;
@@ -24,6 +27,7 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
 
     private DisConnectUtils disConnectUtils = new DisConnectUtils();
     private static LogOrderUtil logOrderUtil = SpringUtils.getBean(LogOrderUtil.class);
+    private IDbTcpClientService tcpClientService = SpringUtils.getBean(IDbTcpClientService.class);
 
     /**
      * 从客户端收到新的数据时，这个方法会在收到消息时被调用
@@ -38,7 +42,7 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws InterruptedException {
 
-        ReceiveUtil receiveUtil = new ReceiveUtil();
+        ReceiveUtils receiveUtil = new ReceiveUtils();
         ReceiveResponse receiveResponse = new ReceiveResponse();
         HexTest hexTest = new HexTest();
         /*
@@ -62,8 +66,7 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
             DbTcpClient dbTcpClient = getIp(ctx);
 
             receiveUtil.heartbeatUpdate(dbTcpClient);
-
-            if (s.contains("0302")) {
+            if (HeartbeatUtils.checkStr(s, PatternEnum.CODE_0302.getPattern())) {
 
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "手动自动返回：" + msg);
 //              状态处理  返回几位处理
@@ -71,48 +74,51 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
                 //手动自动返回    01 03 02  05 06
                 receiveUtil.sinceOrHandRead(s, ctx);
                 receiveResponse.stateRespond(ctx, msg.toString());
-            } else if (s.contains("030C")) {
+            } else if (HeartbeatUtils.checkStr(s, PatternEnum.CODE_030C.getPattern())) {
 
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "状态返回：" + msg);
 //                状态查询返回
 //                receiveUtil.stateRead(s, ctx);
+                hexTest.sensor(s.substring(6,30),getIp(ctx).getHeartName());
                 receiveResponse.stateRespond(ctx, msg.toString());
-                hexTest.sensor(s.substring(6,40),getIp(ctx).getHeartName());
-            } else if (s.contains("0105")) {
+            } else if (HeartbeatUtils.checkStr(s, PatternEnum.CODE_0105.getPattern())) {
                 //               操作响应
                 receiveResponse.stateRespond(ctx, msg.toString());
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "操作响应返回：" + msg);
-            } else if (s.contains("0101")) {
+            } else if (HeartbeatUtils.checkStr(s, PatternEnum.CODE_0101.getPattern())) {
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "通风口自动控制设置：" + msg);
 //                更改设备自动手动状态
                 receiveUtil.returnHand(ctx, msg.toString());
                 receiveResponse.stateRespond(ctx, msg.toString());
-            } else if (s.contains("0304")) {
+            } else if (HeartbeatUtils.checkStr(s, PatternEnum.CODE_0304.getPattern())) {
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "开分风口温度：" + msg);
 //                更改设备自动手动开关温度
                 receiveUtil.returnautocontrolType(ctx, msg.toString());
                 receiveResponse.stateRespond(ctx, msg.toString());
-            } else if (s.contains("0106")) {
+            } else if (HeartbeatUtils.checkStr(s, PatternEnum.CODE_0106.getPattern())) {
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "写入自动控制通风" + msg);
                 receiveResponse.stateRespond(ctx, msg.toString());
-            } else if (s.contains("C810")) {
+            } else if (HeartbeatUtils.checkStr(s, PatternEnum.CODE_C810.getPattern())) {
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "主动上发：" + msg);
                 HexTest test = new HexTest();
                 test.messageActive(ctx,msg.toString());
                 //receiveUtil.messageActive(ctx, msg.toString());
-            }else if (s.substring(2,8).equals("10003C")){
+            }else if (HeartbeatUtils.checkStr(s, PatternEnum.CODE_10003C.getPattern())){
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "卷膜一号百分比操作指令反馈：" + msg);
                 receiveResponse.stateRespond(ctx, msg.toString());
-            }else if (s.substring(2,8).equals("10003E")){
+            }else if (HeartbeatUtils.checkStr(s, PatternEnum.CODE_10003E.getPattern())){
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "卷膜二号百分比操作指令反馈：" + msg);
                 receiveResponse.stateRespond(ctx, msg.toString());
-            }else if (s.substring(2,8).equals("1000E8")){
+            }else if (HeartbeatUtils.checkStr(s, PatternEnum.CODE_1000E8.getPattern())){
                 log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "补光定时操作指令反馈：" + msg);
                 receiveResponse.stateRespond(ctx, msg.toString());
             } else {
                 log.error("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "乱码:" + msg);
             }
-
+            tcpClientService.updateHeartbeatTime(DbTcpClient.builder()
+                    .heartName(dbTcpClient.getHeartName())
+                    .heartbeatTime(new Date())
+                    .build());
         }
     }
 

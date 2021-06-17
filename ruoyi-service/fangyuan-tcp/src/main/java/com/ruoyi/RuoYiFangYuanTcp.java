@@ -39,9 +39,9 @@ public class RuoYiFangYuanTcp {
             e.printStackTrace();
         }
 
-        log.info("开启心跳定时查询");
-        TaskHeartbeat taskHeartbeat = new TaskHeartbeat();
-        taskHeartbeat.HeartbeatRun();
+//        log.info("开启心跳定时查询");
+//        TaskHeartbeat taskHeartbeat = new TaskHeartbeat();
+//        taskHeartbeat.HeartbeatRun();
         /*
          * 开始定时装态查询
          * */
@@ -49,12 +49,12 @@ public class RuoYiFangYuanTcp {
 //        TaskTcpType taskTcpType = new TaskTcpType();
 //        taskTcpType.HeartbeatRun();
 
-        /*
-         * 开启通风查询
-         * */
-        log.info("开启通风查询");
-        TaskTongFeng taskTongFeng = new TaskTongFeng();
-        taskTongFeng.HeartbeatRun();
+//        /*
+//         * 开启通风查询
+//         * */
+//        log.info("开启通风查询");
+//        TaskTongFeng taskTongFeng = new TaskTongFeng();
+//        taskTongFeng.HeartbeatRun();
 
         /*
          * 开启 远程，本地检测
@@ -62,12 +62,13 @@ public class RuoYiFangYuanTcp {
         log.info("开启远程，本地检测");
         TaskOnline taskOnline = new TaskOnline();
         taskOnline.HeartbeatRun();
-        /*
-         * 开启传感数据定时存储
-         * */
-        log.info("装态定时存储");
-        TaskTcpOrder taskTcpOrder = new TaskTcpOrder();
-        taskTcpOrder.HeartbeatRun();
+
+//        /*
+//         * 开启传感数据定时存储
+//         * */
+//        log.info("装态定时存储");
+//        TaskTcpOrder taskTcpOrder = new TaskTcpOrder();
+//        taskTcpOrder.HeartbeatRun();
 
     }
 }

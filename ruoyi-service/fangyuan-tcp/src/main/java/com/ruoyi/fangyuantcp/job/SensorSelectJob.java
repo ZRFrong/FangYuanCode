@@ -8,6 +8,7 @@ import com.ruoyi.fangyuantcp.mapper.DbTcpTypeMapper;
 import com.ruoyi.fangyuantcp.processingCode.OpcodeTextConf;
 import com.ruoyi.fangyuantcp.processingCode.SendCodeListUtils;
 import com.ruoyi.fangyuantcp.processingCode.TcpOrderTextConf;
+import com.ruoyi.fangyuantcp.utils.JobUtils;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.system.domain.DbStateRecords;
@@ -41,6 +42,9 @@ public class SensorSelectJob {
     @Autowired
     private DbStateRecordsMapper dbStateRecordsMapper;
 
+    @Autowired
+    private JobUtils jobUtils;
+
     private static final Long EXPIRE_TIME = 1000L*60L*60L*24L*7L;
 
     /**
@@ -58,16 +62,7 @@ public class SensorSelectJob {
         if (clients == null || clients.size() <= 0){
             return;
         }
-        ArrayList<DbOperationVo> list = new ArrayList<>();
-        clients.forEach( c -> {
-            list.add(DbOperationVo.builder()
-                    .facility("01")
-                    .heartName(c)
-                    .operationText(TcpOrderTextConf.stateSave)
-                    .operationTextType(OpcodeTextConf.OPCODE03)
-                    .build());
-        });
-        SendCodeListUtils.queryIoListNoWait(list );
+        jobUtils.timingSendUtil(clients,TcpOrderTextConf.stateSave,OpcodeTextConf.OPCODE03);
     }
 
     /**
