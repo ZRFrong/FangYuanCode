@@ -81,11 +81,15 @@ public class ArCenterServiceImpl implements ArCenterService {
             }
             List<DbMonitor> monitors = dbMonitorService.selectVideoChannel(id);
             arDataDto = ArDataDto.builder()
-                    .sensor(getSensor(list.get(0)))
                     .operateDto(operateDtos)
                     .landName(land.getNickName())
-                    .videoUrl(monitors.get(0).getDeviceVideoUrls().get("flvUrl").toString())
                     .build();
+            if (monitors != null && monitors.size() > 0){
+                arDataDto.setVideoUrl(monitors.get(0).getDeviceVideoUrls().get("flvUrl").toString());
+            }
+            if (list != null && list.size() > 0){
+                arDataDto.setSensor(getSensor(list.get(0)));
+            }
             break;
         }
 

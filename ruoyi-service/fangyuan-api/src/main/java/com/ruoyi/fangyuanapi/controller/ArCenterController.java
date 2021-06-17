@@ -3,11 +3,15 @@ package com.ruoyi.fangyuanapi.controller;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.fangyuanapi.service.ArCenterService;
 import com.ruoyi.fangyuanapi.service.IDbCropInfoService;
+import com.ruoyi.system.domain.DbCropInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author ZHAOXIAOSI
@@ -50,7 +54,9 @@ public class ArCenterController {
      */
     @GetMapping("getCropInfo")
     public R getCropInfo(){
-        return R.data(dbCropInfoService.selectDbCropInfoList(null));
+        List<Map<String,Object>> dbCropInfo =dbCropInfoService.selectList();
+        return R.data(dbCropInfo);
     }
+
 
 }
