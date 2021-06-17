@@ -62,7 +62,7 @@ public class SocketIoConfig {
         socketConfig.setReuseAddress(true);
         com.corundumstudio.socketio.Configuration config = new com.corundumstudio.socketio.Configuration();
         config.setSocketConfig(socketConfig);
-        config.setHostname("192.168.3.17");
+        config.setHostname(host);
         config.setPort(8888);
         config.setBossThreads(bossCount);
         config.setWorkerThreads(workCount);
