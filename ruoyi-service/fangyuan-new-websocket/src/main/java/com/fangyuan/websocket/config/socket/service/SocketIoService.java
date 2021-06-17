@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.fangyuan.websocket.config.socket.listener.SocketIoListenerHandle;
-import com.fangyuan.websocket.constant.SocketListenerEventConstant;
+import com.ruoyi.common.constant.SocketListenerEventConstant;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.utils.StringUtils;
