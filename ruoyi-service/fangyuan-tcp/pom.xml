@@ -26,6 +26,12 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
+        <!--rabbit mp-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
         <!--web 模块 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

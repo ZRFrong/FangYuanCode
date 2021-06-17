@@ -4,6 +4,7 @@ import com.ruoyi.system.domain.DbCropInfo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 【请填写功能名称】Mapper接口
@@ -71,4 +72,7 @@ public interface DbCropInfoMapper {
      * @sign: 他日若遂凌云志, 敢笑黄巢不丈夫。
      */
     DbCropInfo selectDbCropInfoByTagId(@Param("landId") Long landId);
+
+    List<Map<String,Object>> selectList();
+
 }

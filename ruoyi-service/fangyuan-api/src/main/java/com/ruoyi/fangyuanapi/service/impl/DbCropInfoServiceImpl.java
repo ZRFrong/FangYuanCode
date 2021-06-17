@@ -1,6 +1,7 @@
 package com.ruoyi.fangyuanapi.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ruoyi.fangyuanapi.service.IDbCropInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,4 +100,11 @@ public class DbCropInfoServiceImpl implements IDbCropInfoService
     public DbCropInfo selectDbCropInfoByTagId(Long landId) {
         return dbCropInfoMapper.selectDbCropInfoByTagId(landId);
     }
+
+    @Override
+    public List<Map<String,Object>> selectList() {
+        return dbCropInfoMapper.selectList();
+    }
+
+
 }

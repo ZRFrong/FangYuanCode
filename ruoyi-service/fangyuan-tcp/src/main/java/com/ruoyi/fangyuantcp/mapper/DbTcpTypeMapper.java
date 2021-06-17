@@ -90,7 +90,7 @@ public interface DbTcpTypeMapper
      */
     int updateDbTcpTypeSensorData(DbTcpType dbTcpType);
 
-    Integer selectDbTcpTypeByHeartName(String heartbeatText);
+    DbTcpType selectDbTcpTypeByHeartName(String heartbeatText);
 
     /**
      * 批量删除

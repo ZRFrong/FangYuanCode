@@ -2,6 +2,7 @@ package com.ruoyi.fangyuanapi.service;
 
 import com.ruoyi.system.domain.DbCropInfo;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 【请填写功能名称】Service接口
@@ -69,4 +70,6 @@ public interface IDbCropInfoService
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
     DbCropInfo selectDbCropInfoByTagId(Long landId);
+
+    List<Map<String,Object>> selectList();
 }

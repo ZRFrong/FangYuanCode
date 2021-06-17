@@ -320,7 +320,6 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
                 int i = dbStateRecordsMapper1.insertDbStateRecords(dbStateRecords);
             } else if (dbEquipments.get(0).getEquipmentId() % 3 == 2) {
                 int i = dbStateRecordsMapper2.insertDbStateRecords(dbStateRecords);
-
             }
         }
     }
@@ -344,7 +343,7 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
     }
 
     @Override
-    public Integer selectDbTcpTypeByHeartName(String heartbeatText) {
+    public DbTcpType selectDbTcpTypeByHeartName(String heartbeatText) {
         return dbTcpTypeMapper.selectDbTcpTypeByHeartName(heartbeatText);
     }
 }

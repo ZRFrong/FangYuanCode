@@ -1,6 +1,7 @@
 package com.ruoyi.system.domain;
 
 import com.alibaba.fastjson.JSON;
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -15,6 +16,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @date 2021-06-08
  */
 @ApiModel
+@Data
 public class DbCropInfo
 {
     private static final long serialVersionUID = 1L;
@@ -57,92 +59,13 @@ public class DbCropInfo
     @ApiModelProperty(value = "高")
     private Long height;
 
-    public void setId(Long id) 
-    {
-        this.id = id;
-    }
+    /** 牌子图片 */
+    @Excel(name = "牌子图片")
+    @ApiModelProperty(value = "牌子图片")
+    private String imgUrl;
 
-    public Long getId() 
-    {
-        return id;
-    }
-    public void setName(String name) 
-    {
-        this.name = name;
-    }
 
-    public String getName() 
-    {
-        return name;
-    }
-    public void setGrowstate(String growstate) 
-    {
-        this.growstate = growstate;
-    }
 
-    public String getGrowstate() 
-    {
-        return growstate;
-    }
-    public void setTagid(Long tagid) 
-    {
-        this.tagid = tagid;
-    }
-
-    public Long getTagid() 
-    {
-        return tagid;
-    }
-    public void setX(String x) 
-    {
-        this.x = x;
-    }
-
-    public String getX() 
-    {
-        return x;
-    }
-    public void setY(String y) 
-    {
-        this.y = y;
-    }
-
-    public String getY() 
-    {
-        return y;
-    }
-    public void setWidth(Long width) 
-    {
-        this.width = width;
-    }
-
-    public Long getWidth() 
-    {
-        return width;
-    }
-    public void setHeight(Long height) 
-    {
-        this.height = height;
-    }
-
-    public Long getHeight() 
-    {
-        return height;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("name", getName())
-            .append("growstate", getGrowstate())
-            .append("tagid", getTagid())
-            .append("x", getX())
-            .append("y", getY())
-            .append("width", getWidth())
-            .append("height", getHeight())
-            .toString();
-    }
 
     public static void main(String [] args){
         String s = "生长期80天\n剩余时间3天";

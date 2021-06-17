@@ -114,5 +114,5 @@ public interface IDbTcpTypeService {
      */
     int updateDbTcpTypeSensorData(DbTcpType dbTcpType);
 
-    Integer selectDbTcpTypeByHeartName(String heartbeatText);
+    DbTcpType selectDbTcpTypeByHeartName(String heartbeatText);
 }

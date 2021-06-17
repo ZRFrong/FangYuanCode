@@ -1,11 +1,17 @@
 package com.ruoyi.fangyuantcp.job;
 
+import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.utils.HeartbeatUtils;
+import com.ruoyi.fangyuantcp.mapper.DbStateRecordsMapper;
 import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
 import com.ruoyi.fangyuantcp.mapper.DbTcpTypeMapper;
 import com.ruoyi.fangyuantcp.processingCode.OpcodeTextConf;
 import com.ruoyi.fangyuantcp.processingCode.SendCodeListUtils;
 import com.ruoyi.fangyuantcp.processingCode.TcpOrderTextConf;
+import com.ruoyi.fangyuantcp.utils.JobUtils;
+import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbOperationVo;
+import com.ruoyi.system.domain.DbStateRecords;
 import com.ruoyi.system.domain.DbTcpType;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +39,13 @@ public class SensorSelectJob {
     @Autowired
     private DbTcpTypeMapper dbTcpTypeMapper;
 
-    private static final Long EXPIRE_TIME = 1000L*60L*12L;
+    @Autowired
+    private DbStateRecordsMapper dbStateRecordsMapper;
+
+    @Autowired
+    private JobUtils jobUtils;
+
+    private static final Long EXPIRE_TIME = 1000L*60L*60L*24L*7L;
 
     /**
      * 定时查询传感器数据
@@ -50,16 +62,7 @@ public class SensorSelectJob {
         if (clients == null || clients.size() <= 0){
             return;
         }
-        ArrayList<DbOperationVo> list = new ArrayList<>();
-        clients.forEach( c -> {
-            list.add(DbOperationVo.builder()
-                    .facility("01")
-                    .heartName(c)
-                    .operationText(TcpOrderTextConf.stateSave)
-                    .operationTextType(OpcodeTextConf.OPCODE03)
-                    .build());
-        });
-        SendCodeListUtils.queryIoListNoWait(list );
+        jobUtils.timingSendUtil(clients,TcpOrderTextConf.stateSave,OpcodeTextConf.OPCODE03);
     }
 
     /**
@@ -70,7 +73,7 @@ public class SensorSelectJob {
      * @date: 2021/6/9 13:50
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
-    @Scheduled(fixedRate = 300000)
+    @Scheduled(fixedRate = 900000)
     public void clearExpireSensorData(){
         List<DbTcpType> list = dbTcpTypeMapper.selectDbTcpTypeList(null);
         ArrayList<Long> idList = new ArrayList<>();
@@ -79,10 +82,10 @@ public class SensorSelectJob {
         }
 
         for (DbTcpType type : list) {
-//            if (!HeartbeatUtils.checkHeartbeat(type.getHeartName())){
-//                idList.add(type.getTcpTypeId());
-//                continue;
-//            }
+            if (!HeartbeatUtils.checkHeartbeat(type.getHeartName())){
+                idList.add(type.getTcpTypeId());
+                continue;
+            }
             if (type.getUpdateTime() == null || EXPIRE_TIME < System.currentTimeMillis() - type.getUpdateTime().getTime()){
                 idList.add(type.getTcpTypeId());
             }
@@ -91,7 +94,31 @@ public class SensorSelectJob {
         if (idList==null || idList.size() <=0){
             return;
         }
+        log.warn("定时清除不符合规则得传感器数据：" + idList.toString());
         dbTcpTypeMapper.batchDeleteDbTcpTypeById(idList);
+    }
+
+    /**
+     * @Author Mr.ZHAO
+     * @Description
+     * @Date 0:00 2021/6/15
+     * @return void
+     * @sign 他日若遂凌云志,敢笑黄巢不丈夫!
+     **/
+    @Scheduled(fixedRate = 3600000)
+    public void sensorDataPersistence(){
+        List<DbTcpType> tcpTypes = dbTcpTypeMapper.selectDbTcpTypeList(null);
+        for (DbTcpType type : tcpTypes) {
+            if (!HeartbeatUtils.checkHeartbeat(type.getHeartName())){
+                continue;
+            }
+            dbStateRecordsMapper.insertDbStateRecords(DbStateRecords.builder()
+                    .demandTime(new Date())
+                    .codeOnly(type.getHeartName())
+                    .stateJson(JSON.toJSONString(type))
+                    .build());
+        }
+        log.warn("传感器数据定时存储"+ new Date());
     }
 
 }

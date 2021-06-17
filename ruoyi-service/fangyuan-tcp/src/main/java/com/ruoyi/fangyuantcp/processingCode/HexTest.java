@@ -10,6 +10,7 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -85,8 +86,8 @@ public class HexTest {
      * @sign: 他日若遂凌云志, 敢笑黄巢不丈夫。
      */
     public void messageActive(ChannelHandlerContext ctx, String s) {
-        logOrderUtil.recordFollowBack(ReceiveUtil.getname(ctx), s,"HexTest.messageActive");
-        String heartbeatText = ReceiveUtil.getname(ctx);
+        logOrderUtil.recordFollowBack(ReceiveUtils.getname(ctx), s,"HexTest.messageActive");
+        String heartbeatText = ReceiveUtils.getname(ctx);
         if (StringUtils.isEmpty(heartbeatText)) {
             return;
         }
@@ -94,24 +95,26 @@ public class HexTest {
          2B C1                   4               程序版本号  没处理
          00 3C                   4              发送时间间隔 没处理
          00 01                   4               远程本地加风口自动手动  没处理
-         00 D4 00 CA 00 00 00 00 00 22 02 BB    传感器数据     没处理
+         00 D4 00 CA 00 00 00 00 00 22 02 BB    传感器数据
          00 D4 00 CA 00 00 00 00 00 22 02 BB
-         00 1E  01 F4                           开关风口温度    没处理
-         00 32 13 88 01 F4 01 F4 01 F4 01 F4   两卷帘4卷膜百分比显示    卷帘1 卷帘2 卷膜1 卷膜2 卷膜3 卷膜4     没处理
-         00 E0   二进制    两卷帘四卷膜开关装态  （补光，浇水，配药，打药只能在远程的时候获取到）0关1开      没处理
+         00 1E  01 F4                           开关风口温度
+         00 32 13 88 01 F4 01 F4 01 F4 01 F4   两卷帘4卷膜百分比显示    卷帘1 卷帘2 卷膜1 卷膜2 卷膜3 卷膜4
+         00 E0   二进制    两卷帘四卷膜开关装态  （补光，浇水，配药，打药只能在远程的时候获取到）0关1开
          00 03 00 00 补光定时
          60 D2*/
         /**
          * C8100001001428 145B 04B0 0005 011B 013F 0000 0000 0008 01C3 012C 0064 0064 01F4 004B 005A 01F4 01F4 0000 0000 0000 9197
-         * C8100001001428 145D 04B0 0005 010C 0131 0000 0000 0020 025B 0258 0064 0064 0064 0064 0064 01F4 01F4 0000 0000 0000 1AB1
+         * C8100001001428145D04B00005010C0131000000000020025B02580064006400640064006401F401F4000000000000 1AB1
          * */
         /**
          * 传感器数据 及自动通风温度状态修改
          * */
         String sensorData = s.substring(26, 58);
         if (s.length() > 98) {
-            sensor(sensorData + s.substring(102, 122), heartbeatText);
+            sensorData = sensorData + s.substring(102, 122);
         }
+        sensor(sensorData, heartbeatText);
+
         /**
          * 进度条解析
          * */
@@ -213,42 +216,44 @@ public class HexTest {
         if (list == null) {
             return;
         }
+        heartbeatText = heartbeatText +"_"+ dbEquipmentComponentClient.selectByHeartbeatText(heartbeatText);
         DbTcpType build = DbTcpType.builder()
-                .heartName(heartbeatText +"_"+ dbEquipmentComponentClient.selectByHeartbeatText(heartbeatText))
-                .temperatureAir(ReceiveUtil.getTemp(list.get(0)))
-                .humidityAir(ReceiveUtil.getHum(list.get(1)))
-                .temperatureSoil(ReceiveUtil.getTemp(list.get(2)))
-                .humiditySoil(ReceiveUtil.getHum(list.get(3)))
+                .heartName(heartbeatText )
+                .temperatureAir(ReceiveUtils.getTemp(list.get(0)))
+                .humidityAir(ReceiveUtils.getHum(list.get(1)))
+                .temperatureSoil(ReceiveUtils.getTemp(list.get(2)))
+                .humiditySoil(ReceiveUtils.getHum(list.get(3)))
                 .light(Integer.parseInt(list.get(4), 16) + "")
                 .co2(Integer.parseInt(list.get(5), 16) + "")
                 .updateTime(new Date())
                 .build();
-        if (list.size()>6){
+        if (list.size()>6 ){
                 build =build.toBuilder()
-                        .autocontrolType(ReceiveUtil.getTemp(list.get(6)))
-                        .autocontrolTypeEnd(ReceiveUtil.getTemp(list.get(7)))
+                        .autocontrolType(ReceiveUtils.getTemp(list.get(6)))
+                        .autocontrolTypeEnd(ReceiveUtils.getTemp(list.get(7)))
                         .build();
         }
         if (list.size() > 8) {
                 build = build.toBuilder()
                     .conductivity(Integer.parseInt(list.get(8), 16) + "")
-                    .ph(ReceiveUtil.getHum(list.get(9)))
+                    .ph(ReceiveUtils.getHum(list.get(9)))
                     .nitrogen(Integer.parseInt(list.get(10), 16) + "")
                     .phosphorus(Integer.parseInt(list.get(11), 16) + "")
                     .potassium(Integer.parseInt(list.get(12), 16) + "")
                     .build();
         }
-        log.warn("传感器温度采集  "+heartbeatText+":"+ build.toString());
-        Integer i = dbTcpTypeService.selectDbTcpTypeByHeartName(heartbeatText);
+        DbTcpType i = dbTcpTypeService.selectDbTcpTypeByHeartName(heartbeatText);
         if (i == null) {
             dbTcpTypeService.insertDbTcpType(build);
+        }else {
+            dbTcpTypeService.updateDbTcpTypeSensorData(build);
         }
-        dbTcpTypeService.updateDbTcpTypeSensorData(build);
+        log.warn("传感器温度采集  "+build.getHeartName()+":"+ build.toString());
     }
 
     public static void main(String[] args){
         String s = "C8100001001428145D04B00005010C0131000000000020025B02580064006400640064006401F401F40000000000001AB1";
-        String s1 = "01030C010B01C800000000001403386CB1";
+        String s1 = "01030C00FC0362000000000A700000EC4D";
         System.out.println(s1.substring(6, 30));
     }
 

@@ -26,7 +26,7 @@ public class HeartbeatUtils {
      * 设备心跳规则校验
      * @since: 2.0.0
      * @param heartbeat 设备心跳
-     * @return: boolean
+     * @return: boolean 符合true
      * @author: ZHAOXIAOSI
      * @date: 2021/6/9 14:08
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
@@ -35,4 +35,7 @@ public class HeartbeatUtils {
         return Pattern.compile(HEARTBEAT_RULE).matcher(heartbeat.trim()).matches();
     }
 
+    public static boolean checkStr(String hexStr,String matcher){
+        return Pattern.compile(matcher).matcher(hexStr.trim()).matches();
+    }
 }

@@ -105,4 +105,14 @@ public interface DbTcpClientMapper
      */
     List<String> selectAllDbTcpClient();
 
+    /**
+     * 根据心跳名修改在线时间
+     * @since: 2.0.0
+     * @param client
+     * @return: int
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/16 15:22
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    int updateHeartbeatTime(DbTcpClient client);
 }

@@ -220,4 +220,9 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
         System.out.println(heartName + "  === " + integer);
         return dbTcpClientMapper.queryOne(heartName);
     }
+
+    @Override
+    public int updateHeartbeatTime(DbTcpClient client) {
+        return dbTcpClientMapper.updateHeartbeatTime(client);
+    }
 }

@@ -133,7 +133,7 @@ public class DbEquipmentController extends BaseController {
         return r;
     }
 
-    /*
+    /**
      * 获取当前设备的温湿度变化曲线    24小时   2小时间隔   温湿度空气土壤
      * */
 
@@ -145,7 +145,7 @@ public class DbEquipmentController extends BaseController {
         Date type = DateUtils.getType(DateUtils.HOUR, -Integer.parseInt(beforeTime));
         DbLand dbLand = dbLandService.selectDbLandById(Long.valueOf(landid));
         String equipmentIds = dbLand.getEquipmentIds();
-        String equipmentId=null;
+        String equipmentId = null;
         if (StringUtils.isEmpty(equipmentIds)){
             return R.error("当前土地未绑定设备！");
         }

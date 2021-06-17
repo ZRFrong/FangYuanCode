@@ -3,7 +3,7 @@ package com.ruoyi.fangyuantcp.controller;
 
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.R;
-import com.ruoyi.fangyuantcp.processingCode.ReceiveUtil;
+import com.ruoyi.fangyuantcp.processingCode.ReceiveUtils;
 import com.ruoyi.fangyuantcp.processingCode.SendCodeUtils;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.fangyuantcp.service.IDbTcpOrderService;
@@ -122,8 +122,8 @@ public class OperateDebugController extends BaseController {
             r1.put("code", 502);
             return r1;
         } else if (collect.size() == 0) {
-             r1.put("code",501);
-             r1.put("msg","全部响应超时");
+            r1.put("code",501);
+            r1.put("msg","全部响应超时");
             return r1;
         } else {
             return r1.put("data", collect);
@@ -137,7 +137,7 @@ public class OperateDebugController extends BaseController {
     @GetMapping("progress/{heartName}")
     @ApiOperation(value = "状态同步调试指令", notes = "状态同步调试指令测试接口")
     public R progress(@PathVariable("heartName") String heartName) {
-        ReceiveUtil.code = heartName;
+        ReceiveUtils.code = heartName;
         return R.ok();
     }
 }

@@ -88,5 +88,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectAllDbTcpClient" resultType="java.lang.String">
         select heart_name from  db_tcp_client
     </select>
+    <update id="updateHeartbeatTime">
+        update db_tcp_client
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="heartbeatTime != null ">heartbeat_time = #{heartbeatTime},</if>
+        </trim>
+        where heart_name = #{heartName}
+    </update>
 
 </mapper>

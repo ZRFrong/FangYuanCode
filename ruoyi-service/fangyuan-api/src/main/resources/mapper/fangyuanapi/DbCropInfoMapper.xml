@@ -13,19 +13,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="y"    column="y"    />
         <result property="width"    column="width"    />
         <result property="height"    column="height"    />
+        <result property="imgUrl "    column="imgUrl"    />
     </resultMap>
 
     <sql id="selectDbCropInfoVo">
-        select id, name, growState, tagId, x, y, width, height from db_crop_info
+        select id, name, growState, tagId, x, y, width, height,imgUrl from db_crop_info
     </sql>
 
     <select id="selectDbCropInfoList" parameterType="DbCropInfo" resultMap="DbCropInfoResult">
-        <include refid="selectDbCropInfoVo"/>
-        <where>  
-            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-        </where>
+        select * from db_crop_info
     </select>
-    
+
+
     <select id="selectDbCropInfoById" parameterType="Long" resultMap="DbCropInfoResult">
         <include refid="selectDbCropInfoVo"/>
         where id = #{id}
@@ -33,6 +32,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDbCropInfoByTagId" resultMap="DbCropInfoResult">
         <include refid="selectDbCropInfoVo"/>
         where tagId = #{landId}
+    </select>
+    <select id="selectList" resultType="java.util.Map">
+        select * from db_crop_info
     </select>
 
     <insert id="insertDbCropInfo" parameterType="DbCropInfo" useGeneratedKeys="true" keyProperty="id">
