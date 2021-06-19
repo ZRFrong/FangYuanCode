@@ -153,5 +153,17 @@
         select land_id,IFNULL(nick_name,'未命名')nick_name  from db_land  where db_user_id =#{userId} and site_id != 0
         <if test="flag != null  and flag != ''">and equipment_ids != null </if>
     </select>
+    <select id="getLandIdByHeartName" resultType="java.lang.Long">
+        SELECT dl.land_id from db_land dl
+        join db_equipment de on FIND_IN_SET(de.equipment_id,dl.equipment_ids)
+        join db_equipment_admin dea on dl.land_id = dea.land_id
+        where de.heartbeat_text = #{heartName} AND dea.user_id = #{userId}
+    </select>
+    <select id="getLandIdsByHeartName" resultType="java.lang.Long">
+        SELECT dl.land_id from db_land dl
+        join db_equipment de on FIND_IN_SET(de.equipment_id,dl.equipment_ids)
+        join db_equipment_admin dea on dl.land_id = dea.land_id
+        where de.heartbeat_text = #{heartName}
+    </select>
 
 </mapper>

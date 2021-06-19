@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.fangyuantcp.aspect.EquipmentTag;
 import com.ruoyi.fangyuantcp.processingCode.SendCodeUtils;
+import com.ruoyi.fangyuantcp.service.IDbStateRecordsService;
 import com.ruoyi.system.domain.*;
+import com.ruoyi.system.feign.DbLandClient;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -34,6 +37,11 @@ public class DbTcpTypeController extends BaseController {
     @Autowired
     private IDbTcpTypeService dbTcpTypeService;
 
+    @Autowired
+    private IDbStateRecordsService stateRecordsService;
+
+    @Autowired
+    private DbLandClient dbLandClient;
 
     private SendCodeUtils sendCodeUtils = new SendCodeUtils();
 
@@ -170,6 +178,22 @@ public class DbTcpTypeController extends BaseController {
         return R.data(dbStateRecords1);
     }
 
+   /**
+    * @Author Mr.Zhao
+    * @Description 获取温湿度曲线
+    * @Date 10:57 2021/6/19
+    * @param heartName
+    * @param strips
+    * @param curveType
+    * @return com.ruoyi.common.core.domain.R
+    * @sign 他日若遂凌云志,敢笑黄巢不丈夫!
+    **/
+    @GetMapping("getStateCurveData/{heartName}/{strips}/{curveType}")
+    public R getStateCurveData(@PathVariable("heartName") String heartName,@PathVariable("strips") Integer strips,@PathVariable("curveType") Integer curveType){
+        strips = strips == null || strips<12 ? 12 : strips;
+        return dbTcpTypeService.getStateCurveData(heartName,strips,curveType);
+    }
+
     /*
      *所有状态更新
      * */
@@ -180,6 +204,8 @@ public class DbTcpTypeController extends BaseController {
     }
 
 
-
+    public static void main(String[] args){
+        System.out.println(new Date());
+    }
 
 }

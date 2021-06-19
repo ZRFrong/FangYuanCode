@@ -1,5 +1,6 @@
 package com.ruoyi.fangyuanapi.dto;
 
+import com.ruoyi.common.core.domain.SensorDeviceDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

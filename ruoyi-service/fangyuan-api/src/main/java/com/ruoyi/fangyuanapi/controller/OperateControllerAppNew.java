@@ -6,10 +6,10 @@ import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.core.domain.SensorDeviceDto;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.fangyuanapi.dto.FunctionDto;
 import com.ruoyi.fangyuanapi.dto.LandDto;
-import com.ruoyi.fangyuanapi.dto.SensorDeviceDto;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentAdminService;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentComponentService;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @Description: 新版app接口2.0
@@ -254,7 +253,7 @@ public class OperateControllerAppNew extends BaseController {
         return false;
     }
 
-    private SensorDeviceDto getSensorDeviceDto(String name ,String value,String unit,String icon){
+    private SensorDeviceDto getSensorDeviceDto(String name , String value, String unit, String icon){
         return  SensorDeviceDto.builder()
                 .deviceName(name)
                 .value(value)

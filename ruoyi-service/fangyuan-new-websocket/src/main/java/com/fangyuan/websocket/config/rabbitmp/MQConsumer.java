@@ -2,9 +2,13 @@ package com.fangyuan.websocket.config.rabbitmp;
 
 import com.alibaba.fastjson.JSON;
 import com.fangyuan.websocket.config.socket.service.SocketIoService;
-import com.ruoyi.common.json.JSONObject;
+import com.ruoyi.common.constant.MqExchangeConstant;
 import com.ruoyi.system.domain.socket.PushMessageVO;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.amqp.core.ExchangeTypes;
+import org.springframework.amqp.rabbit.annotation.Exchange;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,4 +46,13 @@ public class MQConsumer {
     public void socketDlkListener(String message){
         log.info("MessageConsumer.socketDlkListener.message :[{}]",message);
     }*/
+
+    @RabbitListener(            bindings = @QueueBinding(
+            value = @Queue(name = "socket_message_queue", durable = "false"),
+            exchange = @Exchange(name = MqExchangeConstant.SOCKET_MESSAGE_EXCHANGE, type = ExchangeTypes.TOPIC),
+            key = {"socket_message_routing"}
+    ))
+    public void socketListenerTest(PushMessageVO message){
+        log.info("222222222222socketListener.message:【{}】",message);
+    }
 }

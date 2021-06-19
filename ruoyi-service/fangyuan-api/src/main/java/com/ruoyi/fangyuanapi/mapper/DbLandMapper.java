@@ -118,4 +118,27 @@ public interface DbLandMapper
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
     List<Map<String,Object>> selectDbLandNameByUserId(@Param("userId") Long userId,@Param("flag") Integer flag);
+
+    /**
+     * 根据用户id和心跳名
+     * @since: 2.0.0
+     * @param heartName
+     * @param userId
+     * @return: java.util.List<java.lang.Long>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/18 14:18
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<Long> getLandIdByHeartName(@Param("heartName") String heartName,@Param("userId") Long userId);
+
+    /**
+     * 根据心跳名获取大棚id集合
+     * @since: 2.0.0
+     * @param heartName
+     * @return: java.util.List<java.lang.Long>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/18 14:43
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<Long> getLandIdsByHeartName(String heartName);
 }

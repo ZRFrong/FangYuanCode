@@ -1,8 +1,15 @@
 package com.ruoyi.system.domain.socket;
 
 import cn.hutool.json.JSONObject;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.List;
 
 /**
  * @Description: 服务端推送消息实体
@@ -12,7 +19,12 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class PushMessageVO {
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder(toBuilder = true)
+public class PushMessageVO implements Serializable {
+
+    private static final long serialVersionUID = -5809782578272945999L;
 
     /**
      * 消息类型
@@ -27,5 +39,5 @@ public class PushMessageVO {
     /**
      * 消息内容
      */
-    private JSONObject messageInfo;
+    private Object messageInfo;
 }

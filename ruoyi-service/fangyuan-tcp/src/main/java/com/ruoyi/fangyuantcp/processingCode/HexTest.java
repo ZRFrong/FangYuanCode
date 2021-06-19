@@ -178,7 +178,6 @@ public class HexTest {
         if (Integer.parseInt(list.get(1), 16) != 0 || Integer.parseInt(list.get(2), 16) != 0) {
             fillLightTimingStatus = 0;
         }
-        //dbEquipmentComponentClient.selectByHeartbeatText("");
         dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, "打药", string.substring(string.length()-16 , string.length() - 15), fillLightTimingStatus);
         dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, "浇水", string.substring(string.length() - 14, string.length() - 13), fillLightTimingStatus);
         dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, "配药", string.substring(string.length() - 16, string.length() - 15), fillLightTimingStatus);

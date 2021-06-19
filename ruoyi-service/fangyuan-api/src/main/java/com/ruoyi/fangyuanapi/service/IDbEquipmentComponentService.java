@@ -107,4 +107,26 @@ public interface IDbEquipmentComponentService
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
     int updateDbEquipmentComponentProgress(List<String> list, String heartbeatText);
+
+    /**
+     * 通过心跳id找到所包含的userId
+     * @since: 2.0.0
+     * @param heartbeat
+     * @return: java.util.List<java.lang.Long>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/17 22:36
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<String> getUserIdList(String heartbeat);
+
+    /**
+     * 根据心跳名获取功能id集合
+     * @since: 2.0.0
+     * @param heartbeat
+     * @return: java.util.List<java.lang.Long>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/18 15:07
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<Long> getComponentIds(String heartbeat);
 }

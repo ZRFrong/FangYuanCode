@@ -13,7 +13,6 @@ import java.util.TimerTask;
 @Log4j2
 public class TaskTcpType {
 
-    private IDbTcpClientService dbTcpClientService = SpringUtils.getBean(IDbTcpClientService.class);
     private IDbTcpTypeService dbTcpTypeService = SpringUtils.getBean(IDbTcpTypeService.class);
 
 

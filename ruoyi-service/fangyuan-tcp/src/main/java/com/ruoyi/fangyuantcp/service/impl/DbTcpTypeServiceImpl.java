@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.fangyuantcp.aspect.FeedbackIntercept;
 import com.ruoyi.fangyuantcp.mapper.*;
@@ -81,6 +82,7 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
      */
     @Override
     public int insertDbTcpType(DbTcpType dbTcpType) {
+        //根据插入的值推送不同的消息类型
         return dbTcpTypeMapper.insertDbTcpType(dbTcpType);
     }
 
@@ -92,6 +94,7 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
      */
     @Override
     public int updateDbTcpType(DbTcpType dbTcpType) {
+        //根据修改的值推送不同的消息
         return dbTcpTypeMapper.updateDbTcpType(dbTcpType);
     }
 
@@ -346,4 +349,33 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
     public DbTcpType selectDbTcpTypeByHeartName(String heartbeatText) {
         return dbTcpTypeMapper.selectDbTcpTypeByHeartName(heartbeatText);
     }
+
+    @Override
+    public R getStateCurveData(String heartName, Integer strips, Integer curveType) {
+        List<DbStateRecords> list = dbStateRecordsMapper.getStateCurveData(heartName,strips);
+        HashMap<String, Object> result = new HashMap<>();
+        ArrayList<Map<String, Object>> maps = new ArrayList<>();
+        for (DbStateRecords records : list) {
+            DbTcpType type = JSON.parseObject(records.getStateJson(), DbTcpType.class);
+            HashMap<String, Object> map = new HashMap<>();
+            if (curveType == 1){
+                map.put("data",type.getTemperatureAir());
+                result.put("backgroundColor","#00ff9c");
+            }
+            if (curveType == 2){
+                map.put("data",type.getHumidityAir());
+                result.put("backgroundColor","#6cf0ff");
+            }
+            map.put("time",records.getDemandTime().getTime()+"");
+            maps.add(map);
+        }
+        result.put("curveData",maps);
+        result.put("unit",curveType == 1? "°C":"%");
+        result.put("openIntervals","0");
+        result.put("closeIntervals","100");
+        result.put("meanValue","10");
+        return R.data(result);
+    }
+
+
 }

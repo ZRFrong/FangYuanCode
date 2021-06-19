@@ -329,6 +329,17 @@ public class DbLandServiceImpl implements IDbLandService
         return dbLandMapper.selectDbLandListByUserIdAndSideId(userId);
     }
 
+    @Override
+    public List<Long> getLandIdByHeartName(String heartName,Long userId) {
+        List<Long> landIds = dbLandMapper.getLandIdByHeartName(heartName,userId);
+        return landIds;
+    }
+
+    @Override
+    public List<Long> getLandIdsByHeartName(String heartName) {
+        return dbLandMapper.getLandIdsByHeartName(heartName);
+    }
+
     /***
      * 通过设备id 获取到对应的功能id
      * @since: 2.0.0

@@ -1,10 +1,9 @@
-package com.ruoyi.fangyuanapi.dto;
+package com.ruoyi.common.core.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.poi.sl.draw.Drawable;
 
 /**
  * @author ZHAO

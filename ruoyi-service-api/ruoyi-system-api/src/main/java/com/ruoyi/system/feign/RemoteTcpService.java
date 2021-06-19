@@ -113,4 +113,19 @@ public interface RemoteTcpService {
      */
     @PostMapping("operateVentilate/percentageOperate")
     R percentageOperate(@RequestParam("heartbeatText")String heartbeatText,@RequestParam("equipmentNo")String equipmentNo,@RequestParam("percentage")Integer percentage,@RequestParam("operateText")String operateText);
+
+    /**
+     * @Author Mr.Zhao
+     * @Description 获取温湿度曲线
+     * @Date 10:57 2021/6/19
+     * @param heartName
+     * @param strips
+     * @param curveType
+     * @return com.ruoyi.common.core.domain.R
+     * @sign 他日若遂凌云志,敢笑黄巢不丈夫!
+     **/
+    @GetMapping("type/getStateCurveData/{heartName}/{strips}/{curveType}")
+    R getStateCurveData(@PathVariable("heartName") String heartName,@PathVariable("strips") Integer strips,@PathVariable("curveType") Integer curveType);
+
+
 }

@@ -115,4 +115,6 @@ public interface IDbTcpTypeService {
     int updateDbTcpTypeSensorData(DbTcpType dbTcpType);
 
     DbTcpType selectDbTcpTypeByHeartName(String heartbeatText);
+
+    R getStateCurveData(String heartName, Integer strips, Integer curveType);
 }

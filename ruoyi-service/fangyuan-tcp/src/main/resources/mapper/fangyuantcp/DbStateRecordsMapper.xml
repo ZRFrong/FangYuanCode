@@ -68,6 +68,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         order by demand_time
     </select>
+    <select id="getStateCurveData" resultMap="DbStateRecordsResult">
+        SELECT * from db_state_records d WHERE d.code_only = #{heartName} ORDER BY d.demand_time desc
+            limit #{strips}
+    </select>
 
-    
+
 </mapper>

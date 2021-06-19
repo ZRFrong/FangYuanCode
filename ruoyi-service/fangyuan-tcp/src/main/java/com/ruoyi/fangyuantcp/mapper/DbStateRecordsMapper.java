@@ -66,4 +66,15 @@ public interface DbStateRecordsMapper
     /*指定时间段内的数据*/
 
     List<DbStateRecords> intervalState(@Param("startTime") Date startTime,@Param("endTime") Date endTime,@Param("hearName") String hearName);
+
+    /**
+     * @Author Mr.Zhao
+     * @Description
+     * @Date 11:42 2021/6/19
+     * @param heartName
+     * @param strips
+     * @return java.util.List<com.ruoyi.system.domain.DbStateRecords>
+     * @sign 他日若遂凌云志,敢笑黄巢不丈夫!
+     **/
+    List<DbStateRecords> getStateCurveData(@Param("heartName") String heartName,@Param("strips") Integer strips);
 }

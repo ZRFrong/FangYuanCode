@@ -136,4 +136,27 @@ public interface IDbLandService
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
     Map<String,Object> getLandAndOperateInfo(Long equipmentId, Long userId,Integer type);
+
+    /**
+     * 根据心跳名获取大棚Id
+     * @since: 2.0.0
+     * @param heartName 心跳名
+     * @return: java.lang.Long
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/18 13:46
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<Long> getLandIdByHeartName(String heartName,Long userId);
+
+    /**
+     * 根据心跳名获取大棚id集合
+     * @since: 2.0.0
+     * @param heartName
+     * @return: java.util.List<java.lang.Long>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/18 14:42
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    List<Long> getLandIdsByHeartName(String heartName);
+
 }

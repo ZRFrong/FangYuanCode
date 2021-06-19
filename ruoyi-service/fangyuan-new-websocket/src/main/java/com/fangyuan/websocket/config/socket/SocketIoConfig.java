@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @Log4j2
+
 public class SocketIoConfig {
 
     @Value("${socketio.host}")
@@ -63,7 +64,7 @@ public class SocketIoConfig {
         com.corundumstudio.socketio.Configuration config = new com.corundumstudio.socketio.Configuration();
         config.setSocketConfig(socketConfig);
         config.setHostname(host);
-        config.setPort(8888);
+        config.setPort(port);
         config.setBossThreads(bossCount);
         config.setWorkerThreads(workCount);
         config.setAllowCustomRequests(allowCustomRequests);

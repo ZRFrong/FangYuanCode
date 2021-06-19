@@ -4,9 +4,9 @@ import com.ruoyi.common.constant.ServiceNameConstants;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.system.feign.factory.RemoteApiFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author ZHAOXIAOSI
@@ -16,6 +16,30 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @FeignClient(name = ServiceNameConstants.SYSTEM_FANGYUANAPI, fallbackFactory = RemoteApiFallbackFactory.class)
 public interface DbEquipmentCilent {
+
+    /**
+     * 通过心跳id找到所包含的userId
+     * @since: 2.0.0
+     * @param heartbeat
+     * @return: java.util.List<java.lang.Long>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/17 22:36
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @GetMapping("component/getUserIdList/{heartbeat}")
+    List<String> getUserIdList(@PathVariable("heartbeat") String heartbeat );
+
+    /**
+     * 根据心跳名获取功能Id
+     * @since: 2.0.0
+     * @param heartbeat
+     * @return: java.util.List<java.lang.Long>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/18 15:06
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @GetMapping("component/getComponentIds/{heartbeat}")
+    List<Long> getComponentIds(@PathVariable("heartbeat") String heartbeat);
 
     /**
      * 批量生成设备接口  完成心跳例子： pisitai-00032-dapeng

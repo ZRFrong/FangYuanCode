@@ -10,6 +10,8 @@ import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.fangyuanapi.mapper.DbEquipmentMapper;
+import com.ruoyi.fangyuanapi.mapper.DbLandMapper;
+import com.ruoyi.fangyuanapi.mapper.DbUserMapper;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbEquipmentComponent;
 import lombok.extern.log4j.Log4j2;
@@ -36,6 +38,9 @@ public class DbEquipmentComponentServiceImpl implements IDbEquipmentComponentSer
 
     @Autowired
     private DbEquipmentMapper dbEquipmentMapper;
+
+    @Autowired
+    private DbLandMapper dbLandMapper;
 
     /**
      * 查询版本加功能
@@ -190,6 +195,17 @@ public class DbEquipmentComponentServiceImpl implements IDbEquipmentComponentSer
         return result;
     }
 
+    @Override
+    public List<String> getUserIdList(String heartbeat) {
+        DbEquipment equipment = dbEquipmentMapper.selectByHeartbeatText(heartbeat);
+        return dbEquipmentComponentMapper.getUserIdList(equipment.getEquipmentId());
+    }
+
+    @Override
+    public List<Long> getComponentIds(String heartbeat) {
+        return dbEquipmentComponentMapper.getComponentIds(heartbeat);
+    }
+
     /**
      * 方法描述
      * @since: 2.0.0
@@ -209,5 +225,4 @@ public class DbEquipmentComponentServiceImpl implements IDbEquipmentComponentSer
                 .spList(JSON.toJSONString(map,SerializerFeature.WriteMapNullValue))
                 .build());
     }
-
 }

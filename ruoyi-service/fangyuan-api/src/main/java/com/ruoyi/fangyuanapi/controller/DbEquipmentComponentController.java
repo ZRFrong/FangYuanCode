@@ -147,4 +147,36 @@ public class DbEquipmentComponentController extends BaseController
 		int i = dbEquipmentComponentService.updateDbEquipmentComponentProgress(list, heartbeatText);
 		return i>0 ? R.ok() : R.error();
 	}
+
+	/**
+	 * 通过心跳id找到所包含的userId
+	 * @since: 2.0.0
+ 	 * @param heartbeat
+	 * @return: java.util.List<java.lang.Long>
+	 * @author: ZHAOXIAOSI
+	 * @date: 2021/6/17 22:36
+	 * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+	 */
+	@GetMapping("getUserIdList/{heartbeat}")
+	public List<String> getUserIdList(@PathVariable("heartbeat") String heartbeat ){
+		List<String> list = dbEquipmentComponentService.getUserIdList(heartbeat);
+		list.add("345");
+		return list;
+	}
+
+	/**
+	 * 根据心跳名获取功能Id
+	 * @since: 2.0.0
+ 	 * @param heartbeat
+	 * @return: java.util.List<java.lang.Long>
+	 * @author: ZHAOXIAOSI
+	 * @date: 2021/6/18 15:06
+	 * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+	 */
+	@GetMapping("getComponentIds/{heartbeat}")
+	public List<Long> getComponentIds(@PathVariable("heartbeat") String heartbeat){
+		return dbEquipmentComponentService.getComponentIds(heartbeat);
+	}
+
+
 }

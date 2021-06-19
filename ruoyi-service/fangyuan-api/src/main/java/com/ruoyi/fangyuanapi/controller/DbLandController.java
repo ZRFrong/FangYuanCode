@@ -70,6 +70,20 @@ public class DbLandController extends BaseController {
     }
 
 
+    /**
+     * 方法描述
+     * @since: 2.0.0
+     * @param heartName
+     * @return: java.util.List<java.lang.Long>
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/18 14:41
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @GetMapping("getLandIdsByHeartName/{heartName}")
+    public List<Long> getLandIdsByHeartName(@PathVariable("heartName") String heartName){
+        return dbLandService.getLandIdsByHeartName(heartName);
+    }
+
     @PutMapping("updateDbLand")
     @ApiOperation(value = "修改大棚接口",notes = "修改大棚接口,非超级管理员禁止修改",httpMethod ="PUT" )
     public R updateDbLand(DbLand land){
@@ -454,6 +468,18 @@ public class DbLandController extends BaseController {
         return r;
     }
 
+    /***
+     * 根据心跳名获取大棚Id
+     * @since: 2.0.0
+     * @return: java.lang.Long
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/18 13:43
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    @GetMapping("getLandId/{heartName}/{userId}")
+    public List<Long> getLandIdByHeartName(@PathVariable("heartName") String heartName,@PathVariable("userId") Long userId){
+        return dbLandService.getLandIdByHeartName(heartName,userId);
+    }
 
     /**
      * 修改保存土地
@@ -667,5 +693,6 @@ public class DbLandController extends BaseController {
         }
         return builder.toString();
     }
+
 
 }

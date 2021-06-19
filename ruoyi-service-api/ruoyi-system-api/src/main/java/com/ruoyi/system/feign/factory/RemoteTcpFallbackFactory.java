@@ -62,6 +62,11 @@ public class RemoteTcpFallbackFactory implements FallbackFactory<RemoteTcpServic
                 return null;
             }
 
+            @Override
+            public R getStateCurveData(String heartName, Integer strips, Integer curveType) {
+                return null;
+            }
+
 
             @Override
             public R operateTongFengType(String heartbeatText, String equipmentNo, Integer i, String temp) {

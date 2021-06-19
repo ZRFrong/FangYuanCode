@@ -130,5 +130,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectDbEquipmentComponentVo"/>
         where heartbeatText = #{heartbeatText}
     </select>
+    <select id="getUserIdList" resultType="java.lang.String">
+        SELECT DISTINCTROW dea.user_id from db_land dl
+        join db_equipment de on FIND_IN_SET(de.equipment_id,dl.equipment_ids)
+        join db_equipment_admin dea on dl.land_id = dea.land_id
+        where de.equipment_id = #{equipmentId}
+    </select>
+    <select id="getComponentIds" resultType="java.lang.Long">
+        SELECT id FROM db_equipment_component c WHERE c.heartbeatText = #{heartbeat}
+    </select>
+
 
 </mapper>
