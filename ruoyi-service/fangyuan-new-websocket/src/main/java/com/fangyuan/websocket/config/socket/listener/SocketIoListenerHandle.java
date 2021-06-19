@@ -7,7 +7,7 @@ import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import com.fangyuan.websocket.config.socket.service.SocketIoService;
-import com.fangyuan.websocket.constant.SocketListenerEventConstant;
+import com.ruoyi.common.constant.SocketListenerEventConstant;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.system.domain.socket.ReceiveMsgPo;
 import lombok.extern.log4j.Log4j2;

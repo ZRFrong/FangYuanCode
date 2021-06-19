@@ -32,7 +32,7 @@ public class PushMessageVO implements Serializable {
     private String messageType;
 
     /**
-     * 消息指向 type=0：多个用户ID；type=1：用户ID/Token
+     * 消息指向-用户ID ,多个用逗号分割
      */
     private String messageTarget;
 

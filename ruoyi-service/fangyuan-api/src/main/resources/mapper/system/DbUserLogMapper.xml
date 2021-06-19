@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fangyuanapi.mapper.DbUserLogMapper">
+    
+
+    <select id="selectDbUserLogList" resultType="com.ruoyi.fangyuanapi.dto.UserLogDto">
+        select * from user_operate
+    </select>
+
+    <insert id="insertDbUserLog" parameterType="com.ruoyi.fangyuanapi.dto.UserLogDto" useGeneratedKeys="true" keyProperty="id">
+        insert into user_operate
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="nickName != null  and nickName != ''">nick_name,</if>
+            <if test="active != null and nickName != ''">active</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="nickName != null and nickName != ''">#{nickName},</if>
+            <if test="active != null  and active != ''">#{active}</if>
+         </trim>
+    </insert>
+
+</mapper>
