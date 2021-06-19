@@ -3,13 +3,9 @@ package com.ruoyi.fangyuanapi.aspect;
 import cn.hutool.core.collection.CollectionUtil;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuanapi.dto.OperateVO;
 import com.ruoyi.fangyuanapi.dto.UserLogDto;
 import com.ruoyi.fangyuanapi.mapper.DbUserLogMapper;
-import com.ruoyi.fangyuanapi.service.IDbEquipmentComponentService;
-import com.ruoyi.fangyuanapi.service.IDbOperationRecordService;
-import com.ruoyi.system.domain.DbTcpType;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -39,44 +35,51 @@ public class UserAllOperationLogAspect {
      */
     @Around("@annotation(apiOperation)")
     public Object doProccess(ProceedingJoinPoint point, ApiOperation apiOperation) throws Throwable {
-        //参数
-        Map<String, Object> param = OperationLogAspect.getMap(point);
-        log.info("UserAllOperationLogAspect.doProccess param:{}",param);
-        HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
-        String userId = request.getHeader(Constants.CURRENT_ID);
-        String notes = apiOperation.notes();
-        String value = apiOperation.value();
-        if("App2.0单操作接口".equals(notes)){
-            OperateVO operateVO = (OperateVO)param.get("operateVO");
-            Object operationType = operateVO.getOperationType();
-            Object handleName = operateVO.getHandleName();
-            notes += "--" + handleName + "--" + operationType;
-        }
-        else if("批量操作接口".equals(notes)){
-            List<OperateVO> operateVOS = (List<OperateVO>) param.get("operateVOS");
-            if(CollectionUtil.isNotEmpty(operateVOS)){
-                StringBuilder notesStrs = new StringBuilder();
-                operateVOS.forEach(v -> {
-                    notesStrs.append(v.getHandleName())
-                            .append("--")
-                            .append(v.getOperationType())
-                            .append( ", ");
-                });
-                notes += "--" + notesStrs.toString();
+        try{
+            //参数
+            Map<String, Object> param = OperationLogAspect.getMap(point);
+            log.info("UserAllOperationLogAspect.doProccess param:{}",param);
+            HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+            String userId = request.getHeader(Constants.CURRENT_ID);
+            String notes = apiOperation.notes();
+            String value = apiOperation.value();
+            if("App2.0单操作接口".equals(notes)){
+                OperateVO operateVO = (OperateVO)param.get("operateVO");
+                Object operationType = operateVO.getOperationType();
+                Object handleName = operateVO.getHandleName();
+                notes += "--" + handleName + "--" + operationType;
             }
+            else if("批量操作接口".equals(notes)){
+                List<OperateVO> operateVOS = (List<OperateVO>) param.get("operateVOS");
+                if(CollectionUtil.isNotEmpty(operateVOS)){
+                    StringBuilder notesStrs = new StringBuilder();
+                    operateVOS.forEach(v -> {
+                        notesStrs.append(v.getHandleName())
+                                .append("--")
+                                .append(v.getOperationType())
+                                .append( ", ");
+                    });
+                    notes += "--" + notesStrs.toString();
+                }
+            }
+            else if("2.0操作自动通风是否开启自动".equals(notes)){
+                Object switchStatus = param.get("switchStatus");
+                notes += "--" + switchStatus ;
+            }
+            else if("2.0操作自动通风开关温度".equals(notes)){
+                Object startTemperature = param.get("startTemperature");
+                Object stopTemperature = param.get("stopTemperature");
+                notes += "--" + startTemperature + "--" + stopTemperature ;
+            }
+            log.info("UserAllOperationLogAspect.doProccess userId:{}, notes:{}, value:{}",userId,notes,value);
+            dbUserLogMapper.insertDbUserLog(new UserLogDto().setUserId(StringUtils.isNotEmpty(userId)? Long.valueOf(userId): null)
+                    .setActive(notes));
+        }catch (Exception e){
+            log.error( "UserAllOperationLogAspect.doProccess exception:{}",e);
+        }catch (Error e){
+            log.error( "UserAllOperationLogAspect.doProccess error:{}",e);
         }
-        else if("2.0操作自动通风是否开启自动".equals(notes)){
-            Object switchStatus = param.get("switchStatus");
-            notes += "--" + switchStatus ;
-        }
-        else if("2.0操作自动通风开关温度".equals(notes)){
-            Object startTemperature = param.get("startTemperature");
-            Object stopTemperature = param.get("stopTemperature");
-            notes += "--" + startTemperature + "--" + stopTemperature ;
-        }
-        log.info("UserAllOperationLogAspect.doProccess userId:{}, notes:{}, value:{}",userId,notes,value);
-        dbUserLogMapper.insertDbUserLog(new UserLogDto().setUserId(StringUtils.isNotEmpty(userId)? Long.valueOf(userId): null)
-            .setActive(notes));
+
         return point.proceed();
     }
 
