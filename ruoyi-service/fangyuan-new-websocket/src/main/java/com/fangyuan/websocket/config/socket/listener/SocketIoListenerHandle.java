@@ -135,7 +135,7 @@ public class SocketIoListenerHandle {
      * @param eventKey 监听事件名称
      * @param data 推送数据
      */
-    public void pushMessage(String sessionId,String eventKey,R data){
+    public void pushMessage(String sessionId,String eventKey,Object data){
         final SocketIOClient socketIOClient = onlineUserSessionMap.get(sessionId);
         if(socketIOClient != null)
             socketIOClient.sendEvent(eventKey,data);

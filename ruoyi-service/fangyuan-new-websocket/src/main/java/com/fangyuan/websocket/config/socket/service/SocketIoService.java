@@ -140,7 +140,7 @@ public class SocketIoService implements ApplicationContextAware{
             if(StringUtils.isNotBlank(sessionId)){
                 socketIoListenerHandle.pushMessage(sessionId,
                         eventKey,
-                        R.data(messageInfo.getMessageInfo()));
+                        messageInfo.getMessageInfo());
             }
         }
     }
