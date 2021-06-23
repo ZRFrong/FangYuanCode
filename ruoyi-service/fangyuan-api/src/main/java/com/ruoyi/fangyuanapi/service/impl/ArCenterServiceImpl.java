@@ -1,10 +1,12 @@
 package com.ruoyi.fangyuanapi.service.impl;
 
+import cn.hutool.log.Log;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.domain.SensorDeviceDto;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.fangyuanapi.conf.SensorIconConf;
 import com.ruoyi.fangyuanapi.conf.SensorImgConf;
 import com.ruoyi.fangyuanapi.dto.ArDataDto;
 import com.ruoyi.fangyuanapi.dto.ArOperateDto;
@@ -19,6 +21,7 @@ import com.ruoyi.system.domain.DbLand;
 import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.system.domain.monitor.DbMonitor;
 import com.ruoyi.system.feign.RemoteTcpService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +38,7 @@ import java.util.Map;
  * @createTime 2021年06月04日 16:14:00
  */
 @Service
+@Slf4j
 public class ArCenterServiceImpl implements ArCenterService {
 
     @Autowired
@@ -51,6 +55,9 @@ public class ArCenterServiceImpl implements ArCenterService {
 
     @Autowired(required = false)
     private SensorImgConf sensorImgConf;
+
+    @Autowired
+    private SensorIconConf sensorIconConf;
 
     @Autowired
     private IDbMonitorService dbMonitorService;
@@ -79,7 +86,12 @@ public class ArCenterServiceImpl implements ArCenterService {
                         .name(component.getEquipmentName())
                         .build());
             }
-            List<DbMonitor> monitors = dbMonitorService.selectVideoChannel(id);
+            List<DbMonitor> monitors = null;
+            try {
+                monitors = dbMonitorService.selectVideoChannel(id);
+            }catch (Exception e){
+                log.error("获取指定设备通道的直播/回放视频地址异常");
+            }
             arDataDto = ArDataDto.builder()
                     .operateDto(operateDtos)
                     .landName(land.getNickName())
@@ -106,17 +118,17 @@ public class ArCenterServiceImpl implements ArCenterService {
      */
     private List<Map<String,Object>> getSensor(DbTcpType  dbTcpType){
         ArrayList<Map<String,Object>> list = new ArrayList<>();
-        list.add(getMap("°C",dbTcpType.getTemperatureAir(),"空气温度","https://cdn.fangyuancun.cn/fangyuan/20210604/3cf554c2b27b4c1c92c77ea0b75d709b.png",sensorImgConf.getTemperatureAirImg(),1));
-        list.add(getMap("%",dbTcpType.getHumidityAir(),"空气湿度","https://cdn.fangyuancun.cn/fangyuan/20210604/ab97cd62412846f4a30aaa49532576ad.png",sensorImgConf.getHumidityAirImg(),2));
-        list.add(getMap("°C",dbTcpType.getTemperatureSoil(),"土壤温度","https://cdn.fangyuancun.cn/fangyuan/20210604/3cf554c2b27b4c1c92c77ea0b75d709b.png",sensorImgConf.getTemperatureSoilImg(),3));
-        list.add(getMap("%",dbTcpType.getHumiditySoil(),"土壤湿度","https://cdn.fangyuancun.cn/fangyuan/20210604/ab97cd62412846f4a30aaa49532576ad.png",sensorImgConf.getHumiditySoilImg(),4));
-        list.add(getMap("mg/L",dbTcpType.getNitrogen(),"氮","https://cdn.fangyuancun.cn/fangyuan/20210604/3d99c44e479143f2bb96691ba7e1fee6.png",sensorImgConf.getNitrogenImg(),5));
-        list.add(getMap("mg/L",dbTcpType.getPhosphorus(),"磷","https://cdn.fangyuancun.cn/fangyuan/20210604/6f21b8c5201441ff91e13cb7d63bdb2c.png",sensorImgConf.getPhosphorusImg(),6));
-        list.add(getMap("mg/L",dbTcpType.getPotassium(),"钾","https://cdn.fangyuancun.cn/fangyuan/20210604/69e60bb0b68b464d90a9b97e77389084.png",sensorImgConf.getPotassiumImg(),7));
-        list.add(getMap("us/cm",dbTcpType.getConductivity(),"电导率","https://cdn.fangyuancun.cn/fangyuan/20210604/75cccc212901486ea7bd1effedb5d290.png",sensorImgConf.getConductivityImg(),8));
-        list.add(getMap("Lux",dbTcpType.getLight(),"光照强度","https://cdn.fangyuancun.cn/fangyuan/20210604/c9878c15aac940ebb488a7bbb1620602.png",sensorImgConf.getLightImg(),9));
-        list.add(getMap("",dbTcpType.getPh(),"土壤PH","https://cdn.fangyuancun.cn/fangyuan/20210604/df0919c66aaf430fa68d43f3e6d4527a.png",sensorImgConf.getPhImg(),10));
-        list.add(getMap("ppm",dbTcpType.getCo2(),"二氧化碳","https://cdn.fangyuancun.cn/fangyuan/20210604/1e8b5cf354af40d791637023005f5732.png",sensorImgConf.getCo2Img(),11));
+        list.add(getMap("°C",dbTcpType.getTemperatureAir(),"空气温度",sensorIconConf.getTemperatureAirImg(),sensorImgConf.getTemperatureAirImg(),1));
+        list.add(getMap("%",dbTcpType.getHumidityAir(),"空气湿度",sensorIconConf.getHumidityAirImg(),sensorImgConf.getHumidityAirImg(),2));
+        list.add(getMap("°C",dbTcpType.getTemperatureSoil(),"土壤温度",sensorIconConf.getTemperatureSoilImg(),sensorImgConf.getTemperatureSoilImg(),3));
+        list.add(getMap("%",dbTcpType.getHumiditySoil(),"土壤湿度",sensorIconConf.getHumiditySoilImg(),sensorImgConf.getHumiditySoilImg(),4));
+        list.add(getMap("mg/L",dbTcpType.getNitrogen(),"氮",sensorIconConf.getNitrogenImg(),sensorImgConf.getNitrogenImg(),5));
+        list.add(getMap("mg/L",dbTcpType.getPhosphorus(),"磷",sensorIconConf.getPhosphorusImg(),sensorImgConf.getPhosphorusImg(),6));
+        list.add(getMap("mg/L",dbTcpType.getPotassium(),"钾",sensorIconConf.getPotassiumImg(),sensorImgConf.getPotassiumImg(),7));
+        list.add(getMap("us/cm",dbTcpType.getConductivity(),"电导率",sensorIconConf.getConductivityImg(),sensorImgConf.getConductivityImg(),8));
+        list.add(getMap("Lux",dbTcpType.getLight(),"光照强度",sensorIconConf.getLightImg(),sensorImgConf.getLightImg(),9));
+        list.add(getMap("",dbTcpType.getPh(),"土壤PH",sensorIconConf.getPhImg(),sensorImgConf.getPhImg(),10));
+        list.add(getMap("ppm",dbTcpType.getCo2(),"二氧化碳",sensorIconConf.getCo2Img(),sensorImgConf.getCo2Img(),11));
         return list;
     }
 

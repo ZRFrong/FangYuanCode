@@ -160,7 +160,9 @@ public class DbEquipmentComponentController extends BaseController
 	@GetMapping("getUserIdList/{heartbeat}")
 	public List<String> getUserIdList(@PathVariable("heartbeat") String heartbeat ){
 		List<String> list = dbEquipmentComponentService.getUserIdList(heartbeat);
-		list.add("345");
+		//TODO 记得删除
+		//list.add("345");
+		//list.add("20");
 		return list;
 	}
 

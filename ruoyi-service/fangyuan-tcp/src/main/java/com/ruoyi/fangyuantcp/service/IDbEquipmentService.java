@@ -67,4 +67,5 @@ public interface IDbEquipmentService
     public int deleteDbEquipmentById(Long equipmentId);
 
 
+    DbEquipment selectDbEquipmentByHeartName(String heartbeatText);
 }

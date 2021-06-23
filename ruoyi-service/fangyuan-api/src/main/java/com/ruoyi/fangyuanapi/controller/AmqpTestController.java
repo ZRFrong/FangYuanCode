@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.constant.MqExchangeConstant;
 import com.ruoyi.common.constant.MqMessageConstant;
+import com.ruoyi.common.constant.SocketListenerEventConstant;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.system.domain.DbUser;
 import com.ruoyi.system.domain.socket.PushMessageVO;
@@ -36,12 +37,12 @@ public class AmqpTestController {
         ArrayList<String> list = new ArrayList<>();
         list.add("345");
         amqpTemplate.convertAndSend(MqExchangeConstant.SOCKET_MESSAGE_EXCHANGE,"socket_message_routing",JSONObject.toJSONString(PushMessageVO.builder()
-                .messageInfo(JSONObject.toJSONString(DbUser.builder()
+                .messageInfo(new cn.hutool.json.JSONObject(JSONObject.toJSONString(DbUser.builder()
                         .phone(phone)
                         .nickname(nickname)
-                        .build()))
+                        .build())))
                 .messageTarget("345")
-                .messageType(MqMessageConstant.EQUIPMENT_MESSAGE_TYPE.toString())
+                .messageType(SocketListenerEventConstant.DEVICE_EVENT.toString())
                 .build()));
         return R.ok();
     }

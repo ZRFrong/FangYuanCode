@@ -166,7 +166,7 @@ public class Crc16Util {
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
     public static boolean checkCrc(String hexStr){
-        if (hexStr.length()%2 >0 || hexStr.length()>130 || hexStr.length() == 4 ){
+        if (hexStr.length()%2 >0 || hexStr.length()>130 || hexStr.length()  <= 4 ){
             return false;
         }
 

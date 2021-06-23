@@ -170,13 +170,13 @@ public class ReceiveUtils {
 //            提醒
 //                throw new DropsExceptions(dbEquipment.getEquipmentName(), "已经切换手动状态", dbEquipment.getEquipmentId().toString());
             log.info(dbEquipment.getEquipmentName() + "已经切换手动状态" + dbEquipment.getEquipmentId().toString());
-            sendSocketMsgUtils.autoState(getname,1);
         } else {
 //            自动
             dbEquipment.setIsOnline(0);
-            sendSocketMsgUtils.autoState(getname,0);
         }
         iDbEquipmentService.updateDbEquipmentFeedback(dbEquipment);
+        sendSocketMsgUtils.autoState(getname,dbEquipment.getIsOnline());
+
 //        完事  END
 
     }

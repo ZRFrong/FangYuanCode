@@ -29,7 +29,10 @@ public class FunctionDto {
     @ApiModelProperty("功能对应操作集")
     private Map<String,Object> res;
 
-    @ApiModelProperty("是否在线")
+    @ApiModelProperty("是否远程 0远程 1手动")
     private String isOnline;
+
+    @ApiModelProperty("是否在线 0在线 1离线")
+    private String isFault;
 
 }

@@ -2,11 +2,15 @@ package com.ruoyi.fangyuantcp.processingCode;
 
 import com.ruoyi.common.constant.FunctionStateConstant;
 import com.ruoyi.common.constant.MessageReturnTypeConstant;
+import com.ruoyi.common.redis.config.RedisKeyConf;
+import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.fangyuantcp.service.IDbEquipmentService;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.fangyuantcp.utils.LogOrderUtil;
 import com.ruoyi.fangyuantcp.utils.SendSocketMsgUtils;
+import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.system.feign.DbEquipmentComponentClient;
 import io.netty.channel.ChannelHandlerContext;
@@ -35,6 +39,10 @@ public class HexTest {
     private LogOrderUtil logOrderUtil = SpringUtils.getBean(LogOrderUtil.class);
 
     private SendSocketMsgUtils socketMsgUtils = SpringUtils.getBean(SendSocketMsgUtils.class);
+
+    private IDbEquipmentService dbEquipmentService = SpringUtils.getBean(IDbEquipmentService.class);
+
+    private RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
 
     /**
      * 字符串按指定间隔分割
@@ -112,6 +120,13 @@ public class HexTest {
          * C8100001001428 145B 04B0 0005 011B 013F 0000 0000 0008 01C3 012C 0064 0064 01F4 004B 005A 01F4 01F4 0000 0000 0000 9197
          * C8100001001428145D04B00005010C0131000000000020025B02580064006400640064006401F401F4000000000000 1AB1
          * */
+
+        /**
+         * 自动手动状态
+         * */
+
+        automaticManualState(s.substring(22,26),heartbeatText);
+
         /**
          * 传感器数据 及自动通风温度状态修改
          * */
@@ -152,6 +167,9 @@ public class HexTest {
      * @sign: 他日若遂凌云志, 敢笑黄巢不丈夫。
      */
     private void lightStatus(String hexStr, String heartbeatText) {
+        if (socketMsgUtils.hexStrVarietyCheck(RedisKeyConf.AUTOMATIC_MANUAL_CHECK+heartbeatText,hexStr)){
+            return;
+        }
         List<String> list = strSplit(hexStr, 4);
         String string = HexTest.hexToBinString(list.get(0));
         log.info("lightStatus.string============================={}", string);
@@ -175,6 +193,9 @@ public class HexTest {
      * @sign: 他日若遂凌云志, 敢笑黄巢不丈夫。
      */
     private void daYaoStatus(String hexStr, String heartbeatText) {
+        if (socketMsgUtils.hexStrVarietyCheck(RedisKeyConf.AUTOMATIC_MANUAL_CHECK+heartbeatText,hexStr)){
+            return;
+        }
         List<String> list = strSplit(hexStr, 4);
         String string = HexTest.hexToBinString(list.get(0));
         log.info("daYaoStatus.string============================={}", string);
@@ -203,9 +224,37 @@ public class HexTest {
      * @sign: 他日若遂凌云志, 敢笑黄巢不丈夫。
      */
     private void progressAnalysis(String data, String heartbeatText) {
+        if (socketMsgUtils.hexStrVarietyCheck(RedisKeyConf.PROGRESS_HEX_+heartbeatText,data)){
+            return;
+        }
         List<String> list = HexTest.strSplit(data, 4);
         dbEquipmentComponentClient.progressAnalysis(list, heartbeatText);
         socketMsgUtils.progressState(heartbeatText);
+    }
+
+    /**
+     * 自动手动状态
+     * @since: 2.0.0
+     * @param data
+     * @param heartbeatText
+     * @return: void
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/23 13:50
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    private void automaticManualState(String data, String heartbeatText){
+        if (socketMsgUtils.hexStrVarietyCheck(RedisKeyConf.SWITCH_HEX_+heartbeatText,data)){
+            return;
+        }
+        String binStr = HexTest.hexToBinString(data);
+        int isOnline = Integer.parseInt(binStr.split("")[binStr.length() - 1]);
+        DbEquipment dbEquipment = dbEquipmentService.selectDbEquipmentByHeartName(heartbeatText);
+        if (dbEquipment == null){
+            return;
+        }
+        dbEquipment.setIsOnline(isOnline == 0? 1 : isOnline == 1? 0 : isOnline );
+        dbEquipmentService.updateDbEquipment(dbEquipment);
+        socketMsgUtils.autoState(heartbeatText,dbEquipment.getIsOnline());
     }
 
     /**
@@ -220,6 +269,9 @@ public class HexTest {
      * @sign: 他日若遂凌云志, 敢笑黄巢不丈夫。
      */
     public void  sensor(String s, String heartbeatText) {
+        if (socketMsgUtils.hexStrVarietyCheck(RedisKeyConf.SENSOR_HEX_+heartbeatText,s)){
+            return;
+        }
         List<String> list = HexTest.strSplit(s, 4);
         if (list == null) {
             return;
@@ -260,11 +312,20 @@ public class HexTest {
         log.warn("传感器温度采集  "+build.getHeartName()+":"+ build.toString());
     }
 
+
     public static void main(String[] args){
-        String s = "C8100001001428145D04B00005010C0131000000000020025B02580064006400640064006401F401F40000000000001AB1";
-        String s1 = "01030C00FC0362000000000A700000EC4D";
+        String s = "C8100001001428 145D 04B0 0005 010C0131000000000020025B02580064006400640064006401F401F40000000000001AB1";
+        String s1 = "000000000011001200000000028E0141002D000D000E00100013";
         System.out.println(s1.substring(6, 30));
-        System.out.println(hexToBinString("00E0"));
+        System.out.println(hexToBinString("0001"));
+        String str  = "0000000000000001".split("")[15];
+        System.out.println(str);
+        System.out.println(0 == 0? 1 : 1 == 1? 0 : 1);
+        System.out.println(s.substring(22, 26));
+
+        if (!StringUtils.isEmpty(s1) && s1.equals("000000000011001200000000028E0141002D000D000E00100013")){
+            System.out.println("===================");
+        }
     }
 
 }

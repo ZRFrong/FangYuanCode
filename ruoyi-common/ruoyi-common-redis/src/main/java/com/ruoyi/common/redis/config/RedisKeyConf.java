@@ -55,7 +55,23 @@ public enum RedisKeyConf {
      * */
     SWITCH_,
     /**
+     * 开关 16进制校验
+     * */
+    SWITCH_HEX_,
+    /**
      * 进度
      * */
     PROGRESS_,
+    /**
+     * 进度 16进制校验
+     * */
+    PROGRESS_HEX_,
+    /**
+     * 传感器 16进制校验
+     * */
+    SENSOR_HEX_,
+    /**
+     * 自动手动变化校验
+     * */
+    AUTOMATIC_MANUAL_CHECK
 }

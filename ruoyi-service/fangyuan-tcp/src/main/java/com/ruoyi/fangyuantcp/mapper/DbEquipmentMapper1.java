@@ -63,4 +63,15 @@ public interface DbEquipmentMapper1
 
     @Select("SELECT equipment_no from db_equipment where heartbeat_text=#{heartName} GROUP BY equipment_no;")
     List<String> selectByHeartNameToEqumentNo(String heartName);
+
+    /**
+     * 根据心跳名查找设备
+     * @since: 2.0.0
+     * @param heartbeatText
+     * @return: com.ruoyi.system.domain.DbEquipment
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/23 15:04
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    DbEquipment selectDbEquipmentByHeartName(String heartbeatText);
 }

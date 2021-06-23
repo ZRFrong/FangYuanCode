@@ -98,4 +98,9 @@ public class DbEquipmentServiceImpl implements IDbEquipmentService {
     public int deleteDbEquipmentById(Long equipmentId) {
         return dbEquipmentMapper.deleteDbEquipmentById(equipmentId);
     }
+
+    @Override
+    public DbEquipment selectDbEquipmentByHeartName(String heartbeatText) {
+        return  dbEquipmentMapper.selectDbEquipmentByHeartName(heartbeatText);
+    }
 }

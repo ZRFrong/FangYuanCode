@@ -5,8 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.ruoyi.common.constant.FunctionStateConstant;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.redis.config.RedisKeyConf;
+import com.ruoyi.common.redis.config.RedisTimeConf;
+import com.ruoyi.common.redis.util.RedisUtils;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.fangyuanapi.mapper.DbEquipmentMapper;
@@ -14,6 +19,7 @@ import com.ruoyi.fangyuanapi.mapper.DbLandMapper;
 import com.ruoyi.fangyuanapi.mapper.DbUserMapper;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbEquipmentComponent;
+import com.ruoyi.system.domain.socket.MessageVo;
 import lombok.extern.log4j.Log4j2;
 import org.checkerframework.checker.units.qual.K;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +47,9 @@ public class DbEquipmentComponentServiceImpl implements IDbEquipmentComponentSer
 
     @Autowired
     private DbLandMapper dbLandMapper;
+
+    @Autowired
+    private RedisUtils redisUtils;
 
     /**
      * 查询版本加功能
@@ -130,14 +139,30 @@ public class DbEquipmentComponentServiceImpl implements IDbEquipmentComponentSer
             return R.ok();
         }
         Map<String,Object> parse = (Map<String, Object>) JSON.parse(component.getSpList());
-        parse.put("switchState",Integer.parseInt(switchState) == 0? 1 :0);
+        Integer flag = Integer.parseInt(switchState) == 0? 1 :0;
+        parse.put("switchState",flag);
         if (fillLightTimingStatus == null){
             parse.put("startDate",null);
         }
         component.setSpList(JSON.toJSONString(parse,SerializerFeature.WriteMapNullValue));
         int i = dbEquipmentComponentMapper.updateDbEquipmentComponent(component);
-        System.out.println(i);
+        insertMqMessage(heartbeatText,component.getId(),flag);
         return i>0 ? R.ok() : R.error();
+    }
+
+    private void insertMqMessage(String heartbeatText,Long id,Integer flag){
+        MessageVo vo = JSON.parseObject(redisUtils.get(RedisKeyConf.SWITCH_ + heartbeatText + "_" + FunctionStateConstant.CHECK_CODE_3), MessageVo.class);
+        MessageVo data = null;
+        if (vo == null){
+            data = MessageVo.builder()
+                    .functionId(id)
+                    .status(flag)
+                    .build();
+        }
+        if (vo == null || !flag.equals(vo.getStatus())){
+            data.setStatus(flag);
+            redisUtils.set(RedisKeyConf.SWITCH_+heartbeatText+"_"+FunctionStateConstant.CHECK_CODE_3,JSONObject.toJSONString(data,SerializerFeature.WriteMapNullValue),RedisTimeConf.ONE_HOUR);
+        }
     }
 
     @Override
@@ -149,12 +174,14 @@ public class DbEquipmentComponentServiceImpl implements IDbEquipmentComponentSer
             return R.ok();
         }
         Map<String,Object> parse = (Map<String, Object>) JSON.parse(component.getSpList());
-        parse.put("switchState",Integer.parseInt(switchState) == 0? 1 :0);
+        int flag = Integer.parseInt(switchState) == 0? 1 :0;
+        parse.put("switchState",flag);
         if (fillLightTimingStatus == null){
             parse.put("startDate",null);
         }
         component.setSpList(JSON.toJSONString(parse,SerializerFeature.WriteMapNullValue));
         int i = dbEquipmentComponentMapper.updateDbEquipmentComponent(component);
+        insertMqMessage(heartbeatText,component.getId(),flag);
         System.out.println(i);
         return i>0 ? R.ok() : R.error();
     }
@@ -184,14 +211,23 @@ public class DbEquipmentComponentServiceImpl implements IDbEquipmentComponentSer
             }
         }
         int result = 0;
+        ArrayList<MessageVo> vos = new ArrayList<>();
         for (int i = 0; i < rollerBlindIds.size(); i++) {
             result += updateEquipmentComponent(rollerBlindIds.get(i),Integer.parseInt(list.get(i),16));
+            vos.add(MessageVo.builder()
+                    .functionId(rollerBlindIds.get(i))
+                    .status(Integer.parseInt(list.get(i),16))
+                    .build());
         }
 
         for (int i = 0; i < convolutionMembraneIds.size(); i++) {
             result += updateEquipmentComponent(convolutionMembraneIds.get(i),Integer.parseInt(list.get(i+2),16));
+            vos.add(MessageVo.builder()
+                    .functionId(convolutionMembraneIds.get(i))
+                    .status(Integer.parseInt(list.get(i+2),16))
+                    .build());
         }
-
+        redisUtils.set(RedisKeyConf.PROGRESS_+heartbeatText,JSONObject.toJSONString(vos,SerializerFeature.WriteMapNullValue),RedisTimeConf.ONE_MINUTE);
         return result;
     }
 

@@ -153,7 +153,7 @@ public class SendSocketMsgUtils {
                         .equipmentMsg(result)
                         .build()))
                 .build();
-        System.out.println("传感状态："+JSONObject.toJSONString(pushMessageVO));
+        log.info("传感状态："+JSONObject.toJSONString(pushMessageVO));
         rabbitTemplate.convertAndSend(MqExchangeConstant.SOCKET_MESSAGE_EXCHANGE,MqRoutingKeyConstant.SOCKET_MESSAGE_ROUTING,JSONObject.toJSONString(pushMessageVO,SerializerFeature.WriteMapNullValue));
     }
 
@@ -184,6 +184,24 @@ public class SendSocketMsgUtils {
                 .build();
         System.out.println("开关状态："+JSONObject.toJSONString(pushMessageVO));
         amqpTemplate.convertAndSend(MqExchangeConstant.SOCKET_MESSAGE_EXCHANGE,MqRoutingKeyConstant.SOCKET_MESSAGE_ROUTING,JSONObject.toJSONString(pushMessageVO,SerializerFeature.WriteMapNullValue));
+    }
+
+    /**
+     * 十六进制字符串变化校验
+     * @since: 2.0.0
+     * @param redisKey
+     * @return: boolean  无变化true 有变化false
+     * @author: ZHAOXIAOSI
+     * @date: 2021/6/23 15:59
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
+     */
+    public boolean hexStrVarietyCheck(String redisKey,String hexStr){
+        String s1 = redisUtils.get(redisKey);
+        if (!StringUtils.isEmpty(s1) && s1.equals(hexStr)){
+            return true;
+        }
+        redisUtils.set(redisKey,hexStr);
+        return false;
     }
 
     /**
