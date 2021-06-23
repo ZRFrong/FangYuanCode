@@ -33,6 +33,10 @@ public class RedisTimeConf {
      */
     public static final Long FIVE_MINUTE = 60*5L;
     /**
+     * 进度数据过期1分钟
+     */
+    public static final Long ONE_MINUTE = 60*1L;
+    /**
      *验证成功 30 分钟THERE_MONTH
      */
     public static final Long THIRTY_MINUTE = 60*30L;

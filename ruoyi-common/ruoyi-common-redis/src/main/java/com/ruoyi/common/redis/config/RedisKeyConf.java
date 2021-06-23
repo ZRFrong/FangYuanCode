@@ -49,6 +49,13 @@ public enum RedisKeyConf {
     /**
      * 黄历key
      */
-    ALMANAC_
-
+    ALMANAC_,
+    /**
+     * 开关
+     * */
+    SWITCH_,
+    /**
+     * 进度
+     * */
+    PROGRESS_,
 }

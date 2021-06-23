@@ -1,10 +1,8 @@
 package com.ruoyi.system.domain.socket;
 
-import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author Mr.Zhao

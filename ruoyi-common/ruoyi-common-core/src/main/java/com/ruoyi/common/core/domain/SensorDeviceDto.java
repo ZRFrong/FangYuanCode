@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * @author ZHAO
  * @version 2.0.0
@@ -16,7 +18,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class SensorDeviceDto {
+public class SensorDeviceDto implements Serializable {
+
     /**
      * 设备名称
      */

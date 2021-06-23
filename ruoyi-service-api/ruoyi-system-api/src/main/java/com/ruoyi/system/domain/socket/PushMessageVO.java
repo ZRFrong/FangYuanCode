@@ -39,5 +39,5 @@ public class PushMessageVO implements Serializable {
     /**
      * 消息内容
      */
-    private Object messageInfo;
+    private JSONObject messageInfo;
 }
