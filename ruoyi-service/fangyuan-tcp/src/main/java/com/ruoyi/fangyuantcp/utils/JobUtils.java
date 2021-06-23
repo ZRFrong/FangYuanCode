@@ -7,8 +7,10 @@ import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.system.domain.DbTcpClient;
 import com.ruoyi.system.feign.DbEquipmentCilent;
 import com.ruoyi.system.feign.DbEquipmentComponentClient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,6 +24,7 @@ import java.util.List;
  * @createTime 2021年06月16日 21:03:00
  */
 @Component
+@Slf4j
 public class JobUtils {
 
     @Autowired
@@ -29,13 +32,18 @@ public class JobUtils {
 
     public  void timingSendUtil(List<String> clients,String code,String codeType){
         ArrayList<DbOperationVo> list = new ArrayList<>();
+
         clients.forEach( c -> {
-            list.add(DbOperationVo.builder()
-                    .facility(dbEquipmentComponentClient.selectByHeartbeatText(c))
-                    .heartName(c)
-                    .operationText(code)
-                    .operationTextType(codeType)
-                    .build());
+            try {
+                list.add(DbOperationVo.builder()
+                        .facility(dbEquipmentComponentClient.selectByHeartbeatText(c))
+                        .heartName(c)
+                        .operationText(code)
+                        .operationTextType(codeType)
+                        .build());
+            }catch (Exception e){
+                log.error(e.getMessage());
+            }
         });
         SendCodeListUtils.queryIoListNoWait(list );
     }
