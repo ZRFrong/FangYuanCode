@@ -45,7 +45,7 @@ public class SensorSelectJob {
     @Autowired
     private JobUtils jobUtils;
 
-    private static final Long EXPIRE_TIME = 1000L*60L*60L*24L*7L;
+    private static final Long EXPIRE_TIME = 1000L*60L*60L;
 
     /**
      * 定时查询传感器数据
@@ -55,7 +55,7 @@ public class SensorSelectJob {
      * @date: 2021/6/9 13:48
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
-    //@Scheduled(fixedRate = 600000)
+    @Scheduled(fixedRate = 600000)
     public void actuator(){
         List<String> clients = dbTcpClientMapper.selectAllDbTcpClient();
         log.warn("定时采集传感器开始了-----------------------"+new Date() +"--------------------------------");
@@ -73,7 +73,7 @@ public class SensorSelectJob {
      * @date: 2021/6/9 13:50
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
-    //@Scheduled(fixedRate = 900000)
+    @Scheduled(fixedRate = 900000)
     public void clearExpireSensorData(){
         List<DbTcpType> list = dbTcpTypeMapper.selectDbTcpTypeList(null);
         ArrayList<Long> idList = new ArrayList<>();
@@ -105,7 +105,7 @@ public class SensorSelectJob {
      * @return void
      * @sign 他日若遂凌云志,敢笑黄巢不丈夫!
      **/
-    //@Scheduled(fixedRate = 3600000)
+    @Scheduled(fixedRate = 3600000)
     public void sensorDataPersistence(){
         List<DbTcpType> tcpTypes = dbTcpTypeMapper.selectDbTcpTypeList(null);
         for (DbTcpType type : tcpTypes) {

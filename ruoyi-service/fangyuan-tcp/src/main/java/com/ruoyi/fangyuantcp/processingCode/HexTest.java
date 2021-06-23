@@ -1,9 +1,12 @@
 package com.ruoyi.fangyuantcp.processingCode;
 
+import com.ruoyi.common.constant.FunctionStateConstant;
+import com.ruoyi.common.constant.MessageReturnTypeConstant;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.fangyuantcp.utils.LogOrderUtil;
+import com.ruoyi.fangyuantcp.utils.SendSocketMsgUtils;
 import com.ruoyi.system.domain.DbTcpType;
 import com.ruoyi.system.feign.DbEquipmentComponentClient;
 import io.netty.channel.ChannelHandlerContext;
@@ -28,7 +31,10 @@ public class HexTest {
     private IDbTcpTypeService dbTcpTypeService = SpringUtils.getBean(IDbTcpTypeService.class);
 
     private DbEquipmentComponentClient dbEquipmentComponentClient = SpringUtils.getBean(DbEquipmentComponentClient.class);
+
     private LogOrderUtil logOrderUtil = SpringUtils.getBean(LogOrderUtil.class);
+
+    private SendSocketMsgUtils socketMsgUtils = SpringUtils.getBean(SendSocketMsgUtils.class);
 
     /**
      * 字符串按指定间隔分割
@@ -153,9 +159,8 @@ public class HexTest {
         if (Integer.parseInt(list.get(1), 16) != 0 || Integer.parseInt(list.get(2), 16) != 0) {
             fillLightTimingStatus = 0;
         }
-        //dbEquipmentComponentClient.selectByHeartbeatText("");
         dbEquipmentComponentClient.modifyLightStatus(heartbeatText, string.substring(string.length() - 13, string.length() - 12), fillLightTimingStatus);
-
+        socketMsgUtils.switchMsgSend(heartbeatText,FunctionStateConstant.CHECK_CODE_3);
     }
 
     /**
@@ -178,9 +183,12 @@ public class HexTest {
         if (Integer.parseInt(list.get(1), 16) != 0 || Integer.parseInt(list.get(2), 16) != 0) {
             fillLightTimingStatus = 0;
         }
-        dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, "打药", string.substring(string.length()-16 , string.length() - 15), fillLightTimingStatus);
-        dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, "浇水", string.substring(string.length() - 14, string.length() - 13), fillLightTimingStatus);
-        dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, "配药", string.substring(string.length() - 16, string.length() - 15), fillLightTimingStatus);
+        dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, FunctionStateConstant.CHECK_CODE_5+"", string.substring(string.length()-16 , string.length() - 15), fillLightTimingStatus);
+        socketMsgUtils.switchMsgSend(heartbeatText,FunctionStateConstant.CHECK_CODE_5);
+        dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, FunctionStateConstant.CHECK_CODE_4+"", string.substring(string.length() - 14, string.length() - 13), fillLightTimingStatus);
+        socketMsgUtils.switchMsgSend(heartbeatText,FunctionStateConstant.CHECK_CODE_4);
+        dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, FunctionStateConstant.CHECK_CODE_9+"", string.substring(string.length() - 16, string.length() - 15), fillLightTimingStatus);
+        socketMsgUtils.switchMsgSend(heartbeatText,FunctionStateConstant.CHECK_CODE_9);
     }
 
     /**
@@ -197,6 +205,7 @@ public class HexTest {
     private void progressAnalysis(String data, String heartbeatText) {
         List<String> list = HexTest.strSplit(data, 4);
         dbEquipmentComponentClient.progressAnalysis(list, heartbeatText);
+        socketMsgUtils.progressState(heartbeatText);
     }
 
     /**
@@ -210,7 +219,7 @@ public class HexTest {
      * @date: 2021/5/21 17:07
      * @sign: 他日若遂凌云志, 敢笑黄巢不丈夫。
      */
-    public void sensor(String s, String heartbeatText) {
+    public void  sensor(String s, String heartbeatText) {
         List<String> list = HexTest.strSplit(s, 4);
         if (list == null) {
             return;
@@ -247,6 +256,7 @@ public class HexTest {
         }else {
             dbTcpTypeService.updateDbTcpTypeSensorData(build);
         }
+        socketMsgUtils.sensorMsgSend(build,MessageReturnTypeConstant.SENSOR_STATE);
         log.warn("传感器温度采集  "+build.getHeartName()+":"+ build.toString());
     }
 
@@ -254,6 +264,7 @@ public class HexTest {
         String s = "C8100001001428145D04B00005010C0131000000000020025B02580064006400640064006401F401F40000000000001AB1";
         String s1 = "01030C00FC0362000000000A700000EC4D";
         System.out.println(s1.substring(6, 30));
+        System.out.println(hexToBinString("00E0"));
     }
 
 }

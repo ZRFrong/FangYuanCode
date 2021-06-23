@@ -5,6 +5,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.fangyuantcp.service.IDbEquipmentService;
 import com.ruoyi.fangyuantcp.utils.LogOrderUtil;
+import com.ruoyi.fangyuantcp.utils.SendSocketMsgUtils;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.fangyuantcp.service.IDbTcpClientService;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
@@ -28,8 +29,9 @@ public class ReceiveUtils {
     private IDbEquipmentService iDbEquipmentService = SpringUtils.getBean(IDbEquipmentService.class);
     private IDbTcpTypeService tcpTypeService = SpringUtils.getBean(IDbTcpTypeService.class);
     private LogOrderUtil logOrderUtil = SpringUtils.getBean(LogOrderUtil.class);
-    private RedisMqUtils redisMqUtils = SpringUtils.getBean(RedisMqUtils.class);
     private DbEquipmentComponentClient dbEquipmentComponentClient = SpringUtils.getBean(DbEquipmentComponentClient.class);
+
+    private SendSocketMsgUtils sendSocketMsgUtils = SpringUtils.getBean(SendSocketMsgUtils.class);
     /*
      * 心跳添加或者更改状态处理
      * */
@@ -168,10 +170,11 @@ public class ReceiveUtils {
 //            提醒
 //                throw new DropsExceptions(dbEquipment.getEquipmentName(), "已经切换手动状态", dbEquipment.getEquipmentId().toString());
             log.info(dbEquipment.getEquipmentName() + "已经切换手动状态" + dbEquipment.getEquipmentId().toString());
-
+            sendSocketMsgUtils.autoState(getname,1);
         } else {
 //            自动
             dbEquipment.setIsOnline(0);
+            sendSocketMsgUtils.autoState(getname,0);
         }
         iDbEquipmentService.updateDbEquipmentFeedback(dbEquipment);
 //        完事  END

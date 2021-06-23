@@ -67,11 +67,12 @@ public class BootNettyChannelInboundHandlerAdapter extends ChannelInboundHandler
 
             receiveUtil.heartbeatUpdate(dbTcpClient);
             if (HeartbeatUtils.checkStr(s, PatternEnum.CODE_0302.getPattern())) {
-
-                log.info("时间：" + new Date() + "设备" + getIp(ctx).getHeartName() + "手动自动返回：" + msg);
+                String name = getIp(ctx).getHeartName();
+                log.info("时间：" + new Date() + "设备" + name + "手动自动返回：" + msg);
 //              状态处理  返回几位处理
 
                 //手动自动返回    01 03 02  05 06
+
                 receiveUtil.sinceOrHandRead(s, ctx);
                 receiveResponse.stateRespond(ctx, msg.toString());
             } else if (HeartbeatUtils.checkStr(s, PatternEnum.CODE_030C.getPattern())) {

@@ -3,13 +3,16 @@ package com.ruoyi.fangyuantcp.service.impl;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
+import com.ruoyi.common.constant.MessageReturnTypeConstant;
 import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
 import com.ruoyi.fangyuantcp.processingCode.SendCodeListUtils;
 import com.ruoyi.fangyuantcp.service.IDbTcpTypeService;
 import com.ruoyi.fangyuantcp.processingCode.OpcodeTextConf;
 import com.ruoyi.fangyuantcp.processingCode.TcpOrderTextConf;
+import com.ruoyi.fangyuantcp.utils.SendSocketMsgUtils;
 import com.ruoyi.system.domain.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
@@ -39,6 +42,8 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
     @Autowired
     private IDbTcpTypeService dbTcpTypeService;
 
+    @Autowired
+    private SendSocketMsgUtils sendSocketMsgUtils;
 
     /**
      * 查询tcp在线设备
@@ -186,7 +191,9 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
             dbTcpClient.setIsOnline(0);
             int i3 = dbTcpClientMapper.insertDbTcpClient(dbTcpClient);
             i = 1;
-
+            ArrayList<String> list = new ArrayList<>();
+            list.add(dbTcpClient.getHeartName());
+            sendSocketMsgUtils.onlineState(list,MessageReturnTypeConstant.ONLINE_STATE);
         }
         if (dbEquipment != null) {
             List<DbEquipment> dbEquipments = dbEquipmentMapper.selectDbEquipmentList(dbEquipment);

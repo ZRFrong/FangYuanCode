@@ -1,9 +1,11 @@
 package com.ruoyi.fangyuantcp.job;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.constant.MessageReturnTypeConstant;
 import com.ruoyi.common.constant.MqExchangeConstant;
 import com.ruoyi.common.constant.MqMessageConstant;
 import com.ruoyi.common.constant.MqRoutingKeyConstant;
+import com.ruoyi.fangyuantcp.mapper.DbEquipmentMapper1;
 import com.ruoyi.fangyuantcp.mapper.DbTcpClientMapper;
 import com.ruoyi.fangyuantcp.mapper.DbTcpTypeMapper;
 import com.ruoyi.fangyuantcp.utils.SendSocketMsgUtils;
@@ -45,13 +47,15 @@ public class HeartbeatCheck {
     @Autowired
     private SendSocketMsgUtils sendSocketMsgUtils;
 
+    @Autowired
+    private DbEquipmentMapper1 dbEquipmentMapper;
 
     /**
      * 超时时间一分半 三次
      * */
     private static final Integer EXPIRE_TIME = 90000;
 
-    //@Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 60000)
     public void clearExpireHeartbeat(){
         List<DbTcpClient> list = dbTcpClientMapper.selectIdAndTime();
         if (list.size() == 0){
@@ -62,7 +66,6 @@ public class HeartbeatCheck {
         for (DbTcpClient client : list) {
             if (System.currentTimeMillis()-client.getHeartbeatTime().getTime() > EXPIRE_TIME){
                 // 修改设备状态
-                dbEquipmentCilent.updateEquipmentIsOnline(client.getHeartName(),1);
                 if (idList == null){
                     idList = new ArrayList<>();
                     heartNames = new ArrayList<>();
@@ -78,8 +81,22 @@ public class HeartbeatCheck {
         if (idList == null || idList.size() <= 0){
             return;
         }
+        updateEquipmentState(heartNames);
         dbTcpClientMapper.deleteExpireHeartbeat(idList);
-        sendSocketMsgUtils.onlineState(heartNames);
+        sendSocketMsgUtils.onlineState(heartNames,MessageReturnTypeConstant.OFFONLINE);
+    }
+
+    private void  updateEquipmentState(List<String> heartNames){
+        for (String name : heartNames) {
+            DbEquipment equipment = new DbEquipment();
+            equipment.setHandlerText(name);
+            List<DbEquipment> dbEquipments = dbEquipmentMapper.selectDbEquipmentList(equipment);
+            for (DbEquipment e : dbEquipments) {
+                e.setIsFault(1);
+                e.setIsOnline(1);
+                dbEquipmentMapper.updateDbEquipment(e);
+            }
+        }
     }
 
     public static void main(String[] args){
@@ -87,4 +104,5 @@ public class HeartbeatCheck {
         Date s1 = (Date) s;
         System.out.println(s1.getTime());
     }
+
 }

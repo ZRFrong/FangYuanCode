@@ -55,12 +55,12 @@ public class RuoYiFangYuanTcp {
 //        TaskTongFeng taskTongFeng = new TaskTongFeng();
 //        taskTongFeng.HeartbeatRun();
 
-        /*
-         * 开启 远程，本地检测
-         * */
-        log.info("开启远程，本地检测");
-        TaskOnline taskOnline = new TaskOnline();
-        taskOnline.HeartbeatRun();
+//        /*
+//         * 开启 远程，本地检测
+//         * */
+//        log.info("开启远程，本地检测");
+//        TaskOnline taskOnline = new TaskOnline();
+//        taskOnline.HeartbeatRun();
 
 //        /*
 //         * 开启传感数据定时存储
