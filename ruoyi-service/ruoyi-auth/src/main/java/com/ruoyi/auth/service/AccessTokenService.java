@@ -8,6 +8,8 @@ import com.ruoyi.system.feign.RemoteSocketIoClient;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundHashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.ruoyi.common.constant.Constants;
@@ -23,6 +25,8 @@ public class AccessTokenService
 {
     @Autowired
     private RedisUtils     redis;
+    /** redis缓存用户session集合 */
+    private final BoundHashOperations<String, String, String> userRefSession ;
     @Autowired
     private RemoteSocketIoClient remoteSocketIoClient;
 
@@ -34,6 +38,10 @@ public class AccessTokenService
     private final static String ACCESS_TOKEN  = Constants.ACCESS_TOKEN;
 
     private final static String ACCESS_USERID = Constants.ACCESS_USERID;
+
+    public AccessTokenService(RedisTemplate<String, String> redisTemplate){
+        this.userRefSession = redisTemplate.boundHashOps("socket_user_session:");
+    }
 
     public SysUser queryByToken(String token)
     {
@@ -62,8 +70,7 @@ public class AccessTokenService
      * @param userId 用户ID
      */
     private void closeSocketClient(Long userId){
-        final String userSocketCachePrefix = "socket_user_session:";
-        String sessionId = redis.get(userSocketCachePrefix + userId);
+        String sessionId = userRefSession.get(String.valueOf(userId));
         log.info("远程调用关闭socket连接 userId:{} sessionId:{}",userId,sessionId);
         if(StringUtils.isNotBlank(sessionId)){
             ThreadUtil.execAsync(() -> {

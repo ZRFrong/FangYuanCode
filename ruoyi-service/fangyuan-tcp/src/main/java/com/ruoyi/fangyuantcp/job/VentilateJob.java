@@ -38,7 +38,7 @@ public class VentilateJob {
      * @date: 2021/6/16 20:38
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
-    //@Scheduled(fixedRate = 300000)
+    @Scheduled(fixedRate = 300000)
     public void getAutoVentilateData(){
         List<String> clients = dbTcpClientMapper.selectAllDbTcpClient();
         log.warn("定时采集自动通风状态及开关开始了-----------------------"+new Date() +"--------------------------------");
