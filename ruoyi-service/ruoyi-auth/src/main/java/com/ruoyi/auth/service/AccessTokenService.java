@@ -3,6 +3,9 @@ package com.ruoyi.auth.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.hutool.core.thread.ThreadUtil;
+import com.ruoyi.system.feign.RemoteSocketIoClient;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +18,13 @@ import com.ruoyi.system.domain.SysUser;
 import cn.hutool.core.util.IdUtil;
 
 @Service("accessTokenService")
+@Log4j2
 public class AccessTokenService
 {
     @Autowired
     private RedisUtils     redis;
+    @Autowired
+    private RemoteSocketIoClient remoteSocketIoClient;
 
     /**
      * 12小时后过期
@@ -47,7 +53,23 @@ public class AccessTokenService
         // expireToken(userId);
         redis.set(ACCESS_TOKEN + token, sysUser, EXPIRE);
         redis.set(ACCESS_USERID + sysUser.getUserId(), token, EXPIRE);
+        closeSocketClient(sysUser.getUserId());
         return map;
+    }
+
+    /**
+     * 关闭socket连接
+     * @param userId 用户ID
+     */
+    private void closeSocketClient(Long userId){
+        final String userSocketCachePrefix = "socket_user_session:";
+        String sessionId = redis.get(userSocketCachePrefix + userId);
+        log.info("远程调用关闭socket连接 userId:{} sessionId:{}",userId,sessionId);
+        if(StringUtils.isNotBlank(sessionId)){
+            ThreadUtil.execAsync(() -> {
+                remoteSocketIoClient.closeBySessionId(sessionId);
+            });
+        }
     }
 
     public void expireToken(long userId)
@@ -57,6 +79,7 @@ public class AccessTokenService
         {
             redis.delete(ACCESS_USERID + userId);
             redis.delete(ACCESS_TOKEN + token);
+            closeSocketClient(userId);
         }
     }
 }

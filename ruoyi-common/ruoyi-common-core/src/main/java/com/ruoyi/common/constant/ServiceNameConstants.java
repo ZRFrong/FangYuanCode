@@ -22,4 +22,7 @@ public interface ServiceNameConstants
 
 
     String SYSTEM_FANGYUANAPI ="fangyuan-api" ;
+
+    String SYSTEM_FANGYUAN_SOCKET ="fangyuan-new-websocket" ;
+
 }

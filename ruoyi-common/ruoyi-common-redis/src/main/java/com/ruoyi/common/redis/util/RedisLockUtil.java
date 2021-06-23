@@ -74,6 +74,19 @@ public class RedisLockUtil {
     }
 
     /**
+     * 尝试获取锁
+     * @param key     加锁唯一标识
+     * @param value   释放锁唯一标识（建议使用线程ID作为value）
+     * @param timeout 超时时间
+     * @param timeUnit 超时单位
+     * @return [true: 加锁成功; false: 加锁失败]
+     */
+    public boolean tryLock(String key, String value, Integer timeout,TimeUnit timeUnit) {
+        Boolean result = lockOperations.setIfAbsent(key, value, timeout, timeUnit);
+        return result != null && result;
+    }
+
+    /**
      * 释放锁
      * @param key   加锁唯一标识
      * @param value 释放锁唯一标识（建议使用线程ID作为value）

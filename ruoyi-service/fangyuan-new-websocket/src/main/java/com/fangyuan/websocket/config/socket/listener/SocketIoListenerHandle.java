@@ -13,6 +13,7 @@ import com.ruoyi.system.domain.socket.ReceiveMsgPo;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -20,6 +21,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Description: SocketIo服务端监听实现类
@@ -44,6 +46,8 @@ public class SocketIoListenerHandle {
     private final Map<String,SocketIOClient> onlineUserSessionMap = new ConcurrentHashMap<>(500);
     // 新建立通道缓存集合
     private final Map<String,SocketIOClient> tempUserSessionMap = new ConcurrentHashMap<>(500);
+    // socket通道关闭等待时间 单位毫秒
+    private static int CLOSE_SOCKET_WAIT_TIME = 10;
 
     /**
      * bean初始化执行
@@ -87,6 +91,18 @@ public class SocketIoListenerHandle {
         log.info("客户端:{}断开连接" , client.getSessionId() );
     }
 
+    @Async("threadPoolTaskExecutor")
+    public void asyncCloseSocket(SocketIOClient client,String sessionId){
+        try {
+            TimeUnit.MILLISECONDS.sleep(CLOSE_SOCKET_WAIT_TIME);
+        } catch (InterruptedException e) {
+            log.error("异步关闭socket连接异常:{}",e);
+        }
+        client.disconnect();
+        log.info("异步关闭socket连接完毕 session:{}",sessionId);
+    }
+
+
     /**
      * 鉴权通道
      * @param client 通道连接
@@ -97,7 +113,8 @@ public class SocketIoListenerHandle {
         String sessionId = client.getSessionId().toString();
         if(ObjectUtil.isNull(data) || StringUtils.isEmpty(socketIoService.checkToken(sessionId,data))){
             log.warn("authentication session:{} 鉴权失败 ",sessionId);
-            client.disconnect();
+            pushMessage(sessionId,SocketListenerEventConstant.AUTH_EVENT,R.error());
+            asyncCloseSocket(client,sessionId);
             return;
         }
         // 记录用户信息和socket信息

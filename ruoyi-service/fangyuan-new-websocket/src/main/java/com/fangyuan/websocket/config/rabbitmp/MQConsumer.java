@@ -1,16 +1,9 @@
 package com.fangyuan.websocket.config.rabbitmp;
 
-import cn.hutool.json.JSONObject;
 import com.alibaba.fastjson.JSON;
 import com.fangyuan.websocket.config.socket.service.SocketIoService;
-import com.ruoyi.common.constant.MessageReturnTypeConstant;
-import com.ruoyi.common.constant.MqExchangeConstant;
 import com.ruoyi.system.domain.socket.PushMessageVO;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.amqp.core.ExchangeTypes;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
