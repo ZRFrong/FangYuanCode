@@ -137,7 +137,7 @@ public class OperateControllerAppNew extends BaseController {
         return R.data(getLandDto(Arrays.asList(admin)).get(0));
     }
 
-    private ArrayList<LandDto> getLandDto(List<DbEquipmentAdmin> dbEquipmentAdmins) {
+    public ArrayList<LandDto> getLandDto(List<DbEquipmentAdmin> dbEquipmentAdmins) {
         ArrayList<LandDto> landDtos = new ArrayList<>();
         for (DbEquipmentAdmin admin : dbEquipmentAdmins) {
             String ids = admin.getFunctionIds();

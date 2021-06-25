@@ -3,8 +3,10 @@ package com.ruoyi.common.utils;
 import java.lang.management.ManagementFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import cn.hutool.core.date.DateUtil;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -184,6 +186,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
         return day + "天";
     }
 
+
     public static Date getType(String type, Integer i) {
         Calendar calendar = Calendar.getInstance();//此时打印它获取的是系统当前时间
         if (type.equals(HOUR)) {
@@ -204,12 +207,53 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
 
     }
 
+    public static List<String> getFetureDaysList(int intervals ) {
+        List<String> fetureDaysList = new ArrayList<>();
+        for (int i = 0; i <intervals; i++) {
+            fetureDaysList.add(getFetureDate(i));
+        }
+        return fetureDaysList;
+    }
+
+    public static String getFetureDate(int past) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + past);
+        Date today = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        String result = format.format(today);
+        System.out.println("getFetureDate:"+result);
+        return result;
+    }
+
+    public static String getPastDate(int past) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - past);
+        Date today = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        String result = format.format(today);
+        System.out.println("getPastDate:"+result);
+        return result;
+    }
+
+    public static final String[] WEEKDAYS = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
+    public static String getWeekOfDate(String date) {
+        Date dt = DateUtils.dateTime("yyyyMMdd", date);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dt);
+        int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        if (w < 0)
+            w = 0;
+        return WEEKDAYS[w];
+    }
+
     public static void main(String[] args) throws ParseException {
-        System.out.println("......................");
+        /*System.out.println("......................");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = sdf.parse("2005-12-15");
         Date da = new Date();
         System.out.println(date);
-        System.out.println(da);
+        System.out.println(da);*/
+
+        System.out.println(getFetureDaysList(7));
     }
 }

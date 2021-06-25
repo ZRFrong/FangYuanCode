@@ -79,6 +79,8 @@ public interface DbEquipmentAdminMapper
 
     DbEquipmentAdmin selectDbEquipmentAdminByUserIdAndLandId(@Param("landId") Long landId,@Param("userId") Long userId,@Param("equipmentId") String equipmentId);
 
+    DbEquipmentAdmin selectDbEquipmentForAdminByLandId(@Param("landId") Long landId);
+
     /***
      * 根据用户id 查询所管理的大棚
      * @since: 1.0.0

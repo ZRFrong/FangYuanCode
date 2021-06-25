@@ -103,6 +103,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </if>
 
     </select>
+    <select id="selectDbEquipmentForAdminByLandId" resultMap="DbEquipmentAdminResult">
+        <include refid="selectDbEquipmentAdminVo"/>
+        where land_id = #{landId} and is_super_admin = 0
+    </select>
     <select id="selectDbEquipmentAdminListByUserId" resultMap="DbEquipmentAdminResult">
         select  * from db_equipment_admin where user_id = #{userId}
     </select>

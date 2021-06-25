@@ -2,12 +2,14 @@ package com.ruoyi.fangyuanapi.controller;
 
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.redis.config.RedisKeyConf;
 import com.ruoyi.common.redis.config.RedisTimeConf;
 import com.ruoyi.common.redis.util.RedisUtils;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.HttpUtil;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.fangyuanapi.conf.AlmanacConf;
@@ -26,10 +28,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 /*
  *天气调用服务
  * */
@@ -216,7 +216,68 @@ public class WeatherController {
         }
     }
 
-    private String getWeather(String area,String areaCode,String date){
+    /**
+     * 获取天气接口
+     * @return 一周内天气数据
+     */
+    @GetMapping("weekWeather")
+    public R weekWeather(String city){
+        String weatherBy15 = getWeatherBy15(city,null,null,"/day15");
+        log.info("weekWeather.city{} data :{}",city,weatherBy15);
+        if(StringUtils.isNotEmpty(weatherBy15)){
+            JSONObject jsonObject = JSON.parseObject(weatherBy15);
+            JSONArray dayList = jsonObject.getJSONArray("dayList");
+            List<Object> resultList = new ArrayList<>(7);
+            for (int i=0;i<7;i++) {
+                JSONObject v1 = (JSONObject) dayList.get(i);
+                JSONObject result = new JSONObject();
+                String daytime = v1.getString("daytime");
+                String month = daytime.substring(4, 6)+"月";
+                String day = daytime.substring(6, daytime.length())+"日";
+                result.put("daytime",month+day);
+                result.put("day_weather_pic",v1.getString("day_weather_pic"));
+                result.put("day_weather",v1.getString("day_weather"));//白天天气
+                result.put("day_air_temperature",v1.getString("day_air_temperature"));//白天气温
+                result.put("day_wind_direction",v1.getString("day_wind_direction"));//白天风力
+                result.put("day_wind_power",v1.getString("day_wind_power"));//风力
+                result.put("week",DateUtils.getWeekOfDate(daytime));
+                resultList.add(result);
+            }
+            return R.data(resultList);
+        }
+        return R.error();
+    }
+
+    /**
+     * 获取天气情况
+     * @param area 地区
+     * @param areaCode
+     * @param date
+     * @param url 调用地址
+     * @return
+     */
+    public String getWeatherBy15(String area,String areaCode,String date,String url){
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Authorization", "APPCODE " + weatherConf.getAppCode());
+        Map<String, String> querys = new HashMap<String, String>();
+        querys.put("area", area);
+        try {
+            HttpResponse response = HttpUtil.doGet(weatherConf.getHost(), url, "get", headers, querys);
+            String s = EntityUtils.toString(response.getEntity());
+            Map<String,Object> o = (Map<String,Object>) JSON.parse(s);
+            String resError = o.get("showapi_res_error")+"";
+            if (StringUtils.isEmpty(resError)){
+                //正常
+                return o.get("showapi_res_body")+"";
+            }
+        } catch (Exception e) {
+            log.error("getWeatherBy15 调用天气接口失败：" );
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getWeather(String area,String areaCode,String date){
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Authorization", "APPCODE " + weatherConf.getAppCode());
         Map<String, String> querys = new HashMap<String, String>();
