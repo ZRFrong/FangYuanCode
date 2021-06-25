@@ -277,7 +277,6 @@ public class OperateControllerWeChat extends BaseController {
         }
         ArrayList<DbOperationVo> list = new ArrayList<>();
         operateVOS.forEach(e -> list.add(getDbOperationVo(e)));
-        R r = remoteTcpService.operationList(list);
         return remoteTcpService.operationList(list);
     }
 
