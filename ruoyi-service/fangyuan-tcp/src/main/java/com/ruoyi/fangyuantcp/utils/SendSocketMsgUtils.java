@@ -165,13 +165,17 @@ public class SendSocketMsgUtils {
      * @date: 2021/6/21 13:59
      * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
-    public void switchMsgSend(String heartName,Integer flag){
+    public void switchMsgSend(String heartName,String flag,Integer checkCode){
         heartName = heartName.split("_")[0];
-        String s = redisUtils.get(RedisKeyConf.SWITCH_ + heartName + "_" + flag);
-        log.warn("开关消息------------："+s);
-        if (StringUtils.isEmpty(s)){
+        MessageVo vo = JSON.parseObject(redisUtils.get(RedisKeyConf.SWITCH_ + heartName + "_" + checkCode), MessageVo.class);
+        if (vo == null){
             log.warn(heartName +"无这种类型操作："+flag);
             return;
+        }
+        flag = flag.equals("0") ? "1" : "0";
+        if (flag.equals(vo.getStatus())){
+            log.warn(heartName +"状态没改变："+flag);
+            return ;
         }
         PushMessageVO pushMessageVO = PushMessageVO.builder()
                 .messageType(SocketListenerEventConstant.DEVICE_EVENT)
@@ -179,11 +183,24 @@ public class SendSocketMsgUtils {
                 .messageInfo(new cn.hutool.json.JSONObject(StatusMessageResult.builder()
                         .landId(dbLandClient.getLandIdsByHeartName(heartName))
                         .type(MessageReturnTypeConstant.SWITCH_STATE)
-                        .equipmentMsg(JSON.parse(redisUtils.get(RedisKeyConf.SWITCH_ + heartName + "_" + flag)))
+                        .equipmentMsg(vo)
                         .build()))
                 .build();
         System.out.println("开关状态："+JSONObject.toJSONString(pushMessageVO));
         amqpTemplate.convertAndSend(MqExchangeConstant.SOCKET_MESSAGE_EXCHANGE,MqRoutingKeyConstant.SOCKET_MESSAGE_ROUTING,JSONObject.toJSONString(pushMessageVO,SerializerFeature.WriteMapNullValue));
+    }
+
+    public boolean switchCheck(String heartName,String flag,Integer checkCode){
+        MessageVo vo = JSON.parseObject(redisUtils.get(RedisKeyConf.SWITCH_ + heartName + "_" + checkCode), MessageVo.class);
+        if (vo == null){
+            return true;
+        }
+        flag = flag.equals("0") ? "1" : "0";
+        if (flag.equals(vo.getStatus())){
+            log.warn(heartName +"状态没改变："+flag);
+            return false;
+        }
+        return true;
     }
 
     /**

@@ -144,7 +144,9 @@ public class HexTest {
          * 各个功能状态 这里只对补光做了处理
          * */
         lightStatus(s.substring(82, 94), heartbeatText);
-        daYaoStatus(s.substring(82, 94), heartbeatText);
+
+        daYaoStatus(s.substring(82,94),heartbeatText);
+
         /**
          *  补光定时是否开启，或者补光定时是否存在h
          * */
@@ -167,7 +169,7 @@ public class HexTest {
      * @sign: 他日若遂凌云志, 敢笑黄巢不丈夫。
      */
     private void lightStatus(String hexStr, String heartbeatText) {
-        if (socketMsgUtils.hexStrVarietyCheck(RedisKeyConf.AUTOMATIC_MANUAL_CHECK+heartbeatText,hexStr)){
+        if (socketMsgUtils.hexStrVarietyCheck(RedisKeyConf.LIGHT_HEX_+heartbeatText,hexStr)){
             return;
         }
         List<String> list = strSplit(hexStr, 4);
@@ -177,40 +179,47 @@ public class HexTest {
         if (Integer.parseInt(list.get(1), 16) != 0 || Integer.parseInt(list.get(2), 16) != 0) {
             fillLightTimingStatus = 0;
         }
-        dbEquipmentComponentClient.modifyLightStatus(heartbeatText, string.substring(string.length() - 13, string.length() - 12), fillLightTimingStatus);
-        socketMsgUtils.switchMsgSend(heartbeatText,FunctionStateConstant.CHECK_CODE_3);
+        String[] split = string.split("");
+        if (socketMsgUtils.switchCheck(heartbeatText, FunctionStateConstant.CHECK_CODE_3+"", Integer.parseInt(split[3]))){
+            dbEquipmentComponentClient.modifyLightStatus(heartbeatText, split[3], fillLightTimingStatus);
+            socketMsgUtils.switchMsgSend(heartbeatText,split[3],FunctionStateConstant.CHECK_CODE_3);
+        }
     }
+
 
     /**
      * 关于打药开关状态解析
-     *
+     * @since: 2.0.0
      * @param hexStr
      * @param heartbeatText
-     * @since: 2.0.0
      * @return: void
      * @author: ZHAOXIAOSI
      * @date: 2021/5/21 17:06
-     * @sign: 他日若遂凌云志, 敢笑黄巢不丈夫。
+     * @sign: 他日若遂凌云志,敢笑黄巢不丈夫。
      */
-    private void daYaoStatus(String hexStr, String heartbeatText) {
-        if (socketMsgUtils.hexStrVarietyCheck(RedisKeyConf.AUTOMATIC_MANUAL_CHECK+heartbeatText,hexStr)){
+    private void daYaoStatus(String hexStr,String heartbeatText){
+        if (socketMsgUtils.hexStrVarietyCheck(RedisKeyConf.SWITCH_HEX_+heartbeatText,hexStr)){
             return;
         }
-        List<String> list = strSplit(hexStr, 4);
+        List<String> list = strSplit(hexStr,4);
         String string = HexTest.hexToBinString(list.get(0));
-        log.info("daYaoStatus.string============================={}", string);
-        String states = string.substring(12, 15);
-        Integer fillLightTimingStatus = null;
-        if (Integer.parseInt(list.get(1), 16) != 0 || Integer.parseInt(list.get(2), 16) != 0) {
-            fillLightTimingStatus = 0;
+        log.info("daYaoStatus.string============================={}",string);
+        String[] split = string.split("");
+        if (socketMsgUtils.switchCheck(heartbeatText, FunctionStateConstant.CHECK_CODE_5+"", Integer.parseInt(split[0]))){
+            dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, FunctionStateConstant.CHECK_CODE_5+"", split[0], null);
+            socketMsgUtils.switchMsgSend(heartbeatText,split[0],FunctionStateConstant.CHECK_CODE_5);
         }
-        dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, FunctionStateConstant.CHECK_CODE_5+"", string.substring(string.length()-16 , string.length() - 15), fillLightTimingStatus);
-        socketMsgUtils.switchMsgSend(heartbeatText,FunctionStateConstant.CHECK_CODE_5);
-        dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, FunctionStateConstant.CHECK_CODE_4+"", string.substring(string.length() - 14, string.length() - 13), fillLightTimingStatus);
-        socketMsgUtils.switchMsgSend(heartbeatText,FunctionStateConstant.CHECK_CODE_4);
-        dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, FunctionStateConstant.CHECK_CODE_9+"", string.substring(string.length() - 16, string.length() - 15), fillLightTimingStatus);
-        socketMsgUtils.switchMsgSend(heartbeatText,FunctionStateConstant.CHECK_CODE_9);
+        if (socketMsgUtils.switchCheck(heartbeatText, FunctionStateConstant.CHECK_CODE_4+"", Integer.parseInt(split[2]))){
+            dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, FunctionStateConstant.CHECK_CODE_4+"", split[2], null);
+            socketMsgUtils.switchMsgSend(heartbeatText,split[2],FunctionStateConstant.CHECK_CODE_4);
+        }
+        if (socketMsgUtils.switchCheck(heartbeatText, FunctionStateConstant.CHECK_CODE_9+"", Integer.parseInt(split[1]))){
+            dbEquipmentComponentClient.modifyFunctionLogoStatus(heartbeatText, FunctionStateConstant.CHECK_CODE_9+"", split[1], null);
+            socketMsgUtils.switchMsgSend(heartbeatText,split[1],FunctionStateConstant.CHECK_CODE_9);
+        }
+
     }
+
 
     /**
      * 两卷帘四卷膜进度百分比解析
@@ -326,6 +335,9 @@ public class HexTest {
         if (!StringUtils.isEmpty(s1) && s1.equals("000000000011001200000000028E0141002D000D000E00100013")){
             System.out.println("===================");
         }
+        String i = "0";
+        int flag = Integer.parseInt(i) == 0? 1 :0;
+        System.out.println(flag);
     }
 
 }

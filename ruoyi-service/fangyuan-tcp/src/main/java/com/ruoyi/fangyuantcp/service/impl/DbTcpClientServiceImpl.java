@@ -193,7 +193,7 @@ public class DbTcpClientServiceImpl implements IDbTcpClientService {
             i = 1;
             ArrayList<String> list = new ArrayList<>();
             list.add(dbTcpClient.getHeartName());
-            sendSocketMsgUtils.onlineState(list,MessageReturnTypeConstant.ONLINE_STATE);
+            sendSocketMsgUtils.onlineState(list,MessageReturnTypeConstant.ONLINE);
         }
         if (dbEquipment != null) {
             List<DbEquipment> dbEquipments = dbEquipmentMapper.selectDbEquipmentList(dbEquipment);

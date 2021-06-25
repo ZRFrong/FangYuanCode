@@ -138,54 +138,69 @@ public class DbEquipmentComponentServiceImpl implements IDbEquipmentComponentSer
         if (component == null){
             return R.ok();
         }
-        Map<String,Object> parse = (Map<String, Object>) JSON.parse(component.getSpList());
         Integer flag = Integer.parseInt(switchState) == 0? 1 :0;
+        Map<String,Object> parse = (Map<String, Object>) JSON.parse(component.getSpList());
         parse.put("switchState",flag);
         if (fillLightTimingStatus == null){
             parse.put("startDate",null);
         }
         component.setSpList(JSON.toJSONString(parse,SerializerFeature.WriteMapNullValue));
         int i = dbEquipmentComponentMapper.updateDbEquipmentComponent(component);
-        insertMqMessage(heartbeatText,component.getId(),flag);
+        insertMqMessage(heartbeatText, component.getId(), flag, FunctionStateConstant.CHECK_CODE_3 + "");
         return i>0 ? R.ok() : R.error();
     }
 
-    private void insertMqMessage(String heartbeatText,Long id,Integer flag){
-        MessageVo vo = JSON.parseObject(redisUtils.get(RedisKeyConf.SWITCH_ + heartbeatText + "_" + FunctionStateConstant.CHECK_CODE_3), MessageVo.class);
-        MessageVo data = null;
-        if (vo == null){
-            data = MessageVo.builder()
-                    .functionId(id)
-                    .status(flag)
-                    .build();
+    private boolean insertMqMessage(String heartbeatText,Long id,Integer flag,String checkCode){
+        MessageVo vo = JSON.parseObject(redisUtils.get(RedisKeyConf.SWITCH_ + heartbeatText + "_" + checkCode), MessageVo.class);
+        boolean b = false;
+        if (vo != null && flag.equals(vo.getStatus())){
+            return b;
         }
-        if (vo == null || !flag.equals(vo.getStatus())){
-            data.setStatus(flag);
-            redisUtils.set(RedisKeyConf.SWITCH_+heartbeatText+"_"+FunctionStateConstant.CHECK_CODE_3,JSONObject.toJSONString(data,SerializerFeature.WriteMapNullValue),RedisTimeConf.ONE_HOUR);
-        }
+        MessageVo data = MessageVo.builder()
+                .status(flag)
+                .functionId(id)
+                .build();
+        redisUtils.set(RedisKeyConf.SWITCH_+heartbeatText+"_"+checkCode,JSONObject.toJSONString(data,SerializerFeature.WriteMapNullValue),RedisTimeConf.ONE_HOUR);
+        b = true;
+        return b;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public R updatFunctionLogo(String heartbeatText, String functionLogo, String switchState, Integer fillLightTimingStatus) {
         log.info("进入updatFunctionLogo heartbeatText：{}， functionLogo：{}， switchState：{}，fillLightTimingStatus：{}",heartbeatText,functionLogo,switchState,fillLightTimingStatus);
-        DbEquipmentComponent component = dbEquipmentComponentMapper.selectDbEquipmentComponentByheartbeatTextAndLogo(heartbeatText,functionLogo);
+        DbEquipmentComponent component = dbEquipmentComponentMapper.selectDbEquipmentComponentByheartbeatTextAndLogo(heartbeatText,getFunctionName(functionLogo));
         if (component == null){
             return R.ok();
         }
-        Map<String,Object> parse = (Map<String, Object>) JSON.parse(component.getSpList());
         int flag = Integer.parseInt(switchState) == 0? 1 :0;
-        parse.put("switchState",flag);
-        if (fillLightTimingStatus == null){
-            parse.put("startDate",null);
+
+        boolean b = insertMqMessage(heartbeatText, component.getId(), flag, functionLogo );
+        if (!b){
+            return R.ok();
         }
+        Map<String,Object> parse = (Map<String, Object>) JSON.parse(component.getSpList());
+        parse.put("switchState",flag);
         component.setSpList(JSON.toJSONString(parse,SerializerFeature.WriteMapNullValue));
         int i = dbEquipmentComponentMapper.updateDbEquipmentComponent(component);
-        insertMqMessage(heartbeatText,component.getId(),flag);
         System.out.println(i);
         return i>0 ? R.ok() : R.error();
     }
 
+    private String getFunctionName(String code){
+        switch (code){
+            case "3":
+                return "补光";
+            case "4":
+                return "浇水";
+            case "5":
+                return "打药";
+            case "9":
+                return "配药";
+            default:
+                return "";
+        }
+    }
 
     @Override
     public int updateDbEquipmentComponentProgress(List<String> list, String heartbeatText) {

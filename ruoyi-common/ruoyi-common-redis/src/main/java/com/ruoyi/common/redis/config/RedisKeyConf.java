@@ -58,6 +58,11 @@ public enum RedisKeyConf {
      * 开关 16进制校验
      * */
     SWITCH_HEX_,
+
+    /**
+     * 补光16进制
+     * */
+    LIGHT_HEX_,
     /**
      * 进度
      * */
