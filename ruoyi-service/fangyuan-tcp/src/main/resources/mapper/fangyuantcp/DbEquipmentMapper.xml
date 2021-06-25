@@ -30,6 +30,7 @@
         </where>
     </select>
 
+
     <select id="selectDbEquipmentById" parameterType="Long" resultMap="DbEquipmentResult">
         <include refid="selectDbEquipmentVo"/>
         where equipment_id = #{equipmentId}
@@ -86,6 +87,13 @@
     <delete id="deleteDbEquipmentById" parameterType="Long">
         delete from db_equipment where equipment_id = #{equipmentId}
     </delete>
+
+    <select id="DbEquipmentById" parameterType="Long">
+        delete from db_equipment where equipment_id = #{equipmentId}
+    </select>
+    <select id="selectDbEquipmentByHeartName" resultMap="DbEquipmentResult">
+        select * from db_equipment where heartbeat_text = #{heartbeatText}
+    </select>
 
     <delete id="deleteDbEquipmentByIds" parameterType="String">
         delete from db_equipment where equipment_id in
