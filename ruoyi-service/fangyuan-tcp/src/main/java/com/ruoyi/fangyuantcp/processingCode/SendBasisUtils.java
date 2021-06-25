@@ -17,6 +17,7 @@ import com.ruoyi.fangyuantcp.service.IDbTcpOrderService;
 import com.ruoyi.fangyuantcp.tcp.NettyServer;
 import com.ruoyi.fangyuantcp.utils.Crc16Util;
 import com.ruoyi.fangyuantcp.utils.LogOrderUtil;
+import com.ruoyi.fangyuantcp.utils.mq.MqSenderUtil;
 import com.ruoyi.system.domain.DbOperationVo;
 import com.ruoyi.system.domain.DbTcpOrder;
 import io.netty.buffer.Unpooled;
@@ -43,6 +44,8 @@ public class SendBasisUtils {
     private static RedisLockUtil redisLockUtil = SpringUtils.getBean(RedisLockUtil.class);
 
     private static LogOrderUtil logOrderUtil = SpringUtils.getBean(LogOrderUtil.class);
+
+    private static MqSenderUtil mqSenderUtil = (MqSenderUtil)SpringUtils.getBean(MqSenderUtil.class);
 
 
     /*
@@ -74,14 +77,15 @@ public class SendBasisUtils {
             String[] split1 = strings.toArray(new String[strings.size()]);
             String[] bytes = Crc16Util.to_byte(split1);
             data = Crc16Util.getData(bytes);
-            // 记录发送日志
+            mqSenderUtil.sendDeviceOrderMsg(address, data);
+            /*// 记录发送日志
             logOrderUtil.recordSend(address, text,data);
             ChannelHandlerContext no1_1 = map.get(address);
             Channel channel = no1_1.channel();
             //channel.writeAndFlush(Unpooled.copiedBuffer(data));
             channel.write(Unpooled.copiedBuffer(data));
             channel.flush();
-            channel.read();
+            channel.read();*/
         } catch (Exception e) {
 //            抛出异常
             throw new FaultExceptions(tcpOrder.getHeartName(), tcpOrder.getOperationName(), tcpOrder.getFacility(),Long.valueOf(tcpOrder.getUserId()),Long.valueOf(tcpOrder.getLandId()));
@@ -183,11 +187,12 @@ public class SendBasisUtils {
             String[] split1 = strings.toArray(new String[strings.size()]);
             String[] bytes = Crc16Util.to_byte(split1);
             byte[] data = Crc16Util.getData(bytes);
-            // 记录发送日志
+            mqSenderUtil.sendDeviceOrderMsg(ReceiveResponse.getname(ctx), data);
+            /*// 记录发送日志
             logOrderUtil.recordSend(ReceiveResponse.getname(ctx), text,data);
             Channel channel = ctx.channel();
             channel.write(Unpooled.copiedBuffer(data));
-            channel.flush();
+            channel.flush();*/
 
             return 1;
         } catch (NumberFormatException e) {
@@ -282,12 +287,13 @@ public class SendBasisUtils {
             String[] split1 = strings.toArray(new String[strings.size()]);
             String[] bytes = Crc16Util.to_byte(split1);
             data = Crc16Util.getData(bytes);
-            // 记录发送日志
+            mqSenderUtil.sendDeviceOrderMsg(address, data);
+            /*// 记录发送日志
             logOrderUtil.recordSend(address, text,data);
             ChannelHandlerContext no1_1 = map.get(address);
             Channel channel = no1_1.channel();
             channel.write(Unpooled.copiedBuffer(data));
-            channel.flush();
+            channel.flush();*/
         } catch (Exception e) {
 //            抛出异常
             throw new FaultExceptions(tcpOrder.getHeartName(), tcpOrder.getOperationName(), tcpOrder.getFacility(),Long.valueOf(tcpOrder.getUserId()),Long.valueOf(tcpOrder.getLandId()));
@@ -363,12 +369,13 @@ public class SendBasisUtils {
             String[] split1 = strings.toArray(new String[strings.size()]);
             String[] bytes = Crc16Util.to_byte(split1);
             data = Crc16Util.getData(bytes);
-            // 记录发送日志
+            mqSenderUtil.sendDeviceOrderMsg(address, data);
+            /*// 记录发送日志
             logOrderUtil.recordSend(address, text,data);
             ChannelHandlerContext no1_1 = map.get(address);
             Channel channel = no1_1.channel();
             channel.write(Unpooled.copiedBuffer(data));
-            channel.flush();
+            channel.flush();*/
         } catch (Exception e) {
 //            抛出异常
             throw new FaultExceptions(tcpOrder.getHeartName(), tcpOrder.getOperationName(), tcpOrder.getFacility(),Long.valueOf(tcpOrder.getUserId()),Long.valueOf(tcpOrder.getLandId()));

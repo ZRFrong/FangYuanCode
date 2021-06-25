@@ -43,9 +43,33 @@ public class SendCodeListUtils {
     private static RemoteApiService remoteApiService = SpringUtils.getBean(RemoteApiService.class);
     //    在线设备map
     private static Map<String, ChannelHandlerContext> map = NettyServer.map;
+    private static OrderConcurrentIssueHandler orderConcurrentIssueHandler = SpringUtils.getBean(OrderConcurrentIssueHandler.class);
 
-
+    /**
+     * TODO 待测
+     * @param mps
+     * @return
+     */
     public static R queryIoList(Map<String, List<DbOperationVo>> mps)  {
+        Map<String, String> operateResult = new HashMap<>();
+        CountDownLatch countDownLatch = new CountDownLatch(mps.size());
+        mps.entrySet().forEach(v -> {
+            orderConcurrentIssueHandler.batchHandle(v.getValue(),operateResult,countDownLatch);
+        });
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            log.error("SendCodeListUtils.queryIoList 同步等待异常:{}",e);
+        }
+        if (operateResult.size() > 0) {
+            // 有异常信息
+            return R.error(502, JSON.toJSONString(operateResult));
+        } else {
+            return R.ok("操作成功");
+        }
+    }
+
+    /*public static R queryIoList(Map<String, List<DbOperationVo>> mps)  {
         Set<String> strings = mps.keySet();
         HashMap<String, String> stringStringHashMap1 = new HashMap<>();
 //    新建几条线程
@@ -72,13 +96,27 @@ public class SendCodeListUtils {
         } else {
             return R.ok("操作成功");
         }
-    }
+    }*/
 
 
 
     private static ExecutorService EXECUTOR_SERVICE = null;
 
     public static HashMap<String, String> send(List<DbOperationVo> dbOperationVos) {
+        HashMap<String, String> resultMap = new HashMap<>();
+        CountDownLatch countDownLatch = new CountDownLatch(dbOperationVos.size());
+        dbOperationVos.forEach(v -> {
+            orderConcurrentIssueHandler.singleHandle(v,resultMap,countDownLatch);
+        });
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            log.error("SendCodeListUtils.send 同步等待异常:{}",e);
+        }
+        return resultMap;
+    }
+
+    /*public static HashMap<String, String> send(List<DbOperationVo> dbOperationVos) {
         HashMap<String, String> stringStringHashMap = new HashMap<>();
         //                    循环list
 //                    int query = query(dbOperationVo);
@@ -135,7 +173,7 @@ public class SendCodeListUtils {
         //                    等待500
         return stringStringHashMap;
 
-    }
+    }*/
 
 
     public static void queryIoListNoWait(List<DbOperationVo> lists){

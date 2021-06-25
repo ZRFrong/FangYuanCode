@@ -49,7 +49,7 @@ public class LogOrderUtil {
         log.info("LogOrderUtil.recordFollowBack 指令执行路径追踪 heartName:【{}】 orderMsgBack:【{}】 method:【{}】",heartName,orderMsgBack,method);
     }
 
-    private String getInvokeMethod(){
+    public String getInvokeMethod(){
         StackTraceElement[] st = new Throwable().getStackTrace();
         StringBuilder methodName = new StringBuilder(st[st.length - 1].getClassName());
         for (StackTraceElement stackTraceElement : st) {
