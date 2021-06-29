@@ -74,7 +74,11 @@ public class AccessTokenService
         log.info("远程调用关闭socket连接 userId:{} sessionId:{}",userId,sessionId);
         if(StringUtils.isNotBlank(sessionId)){
             ThreadUtil.execAsync(() -> {
-                remoteSocketIoClient.closeBySessionId(sessionId);
+                try{
+                    remoteSocketIoClient.closeBySessionId(sessionId);
+                }catch (Exception e){
+                    log.error("远程调用关闭socket连接异常:{}",e);
+                }
             });
         }
     }
