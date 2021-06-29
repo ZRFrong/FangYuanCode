@@ -23,8 +23,8 @@ public class DaPengController {
     private DaPengService daPengService;
 
     @GetMapping("listData")
-    public R listData(){
-        return daPengService.listData();
+    public R listData(String landIds){
+        return daPengService.listData(landIds);
     }
 
 

@@ -24,6 +24,13 @@ public interface DbLandMapper
     public DbLand selectDbLandById(Long landId);
 
     /**
+     * 批量查询土地
+     * @param landIds 土地ID集合 多个逗号分割
+     * @return 土地
+     */
+    public List<DbLand> selectDbLandByIds(@Param("landIds") String landIds);
+
+    /**
      * 查询土地列表
      *
      * @param dbLand 土地
