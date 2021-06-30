@@ -10,9 +10,11 @@ import com.ruoyi.fangyuanapi.mapper.DbLandMapper;
 import com.ruoyi.fangyuanapi.service.DaPengService;
 import com.ruoyi.fangyuanapi.service.IDbEquipmentService;
 import com.ruoyi.fangyuanapi.service.IDbLandService;
+import com.ruoyi.fangyuanapi.service.IDbMonitorService;
 import com.ruoyi.system.domain.DbEquipment;
 import com.ruoyi.system.domain.DbLand;
 import com.ruoyi.system.domain.DbTcpType;
+import com.ruoyi.system.domain.monitor.DbMonitor;
 import com.ruoyi.system.feign.DbTcpClientService;
 import com.ruoyi.system.feign.RemoteTcpService;
 import com.ruoyi.system.util.DbTcpUtils;
@@ -52,6 +54,9 @@ public class DaPengServiceImpl implements DaPengService {
     @Autowired
     private DbTcpClientService dbTcpClientService;
 
+    @Autowired
+    private IDbMonitorService dbMonitorService;
+
     /**
      * 获取所有大棚详细信息
      * @return 大棚列表
@@ -75,6 +80,8 @@ public class DaPengServiceImpl implements DaPengService {
                 result.add(map);
                 map.put("landName",dbLand.getNickName());
                 map.put("landId",dbLand.getLandId());
+                // 封装视频监控数据
+                monitorVideo(map,dbLand.getLandId());
                 // 设备大棚详细数据
                 getItemInfo(dbLand.getLandId(),map);
                 Long equipmentId = (Long)map.get("equipmentId");
@@ -100,6 +107,21 @@ public class DaPengServiceImpl implements DaPengService {
             }
         }
         return R.data(result);
+    }
+
+    /**
+     * 绑定视频监控数据
+     * @param data 大棚数据
+     * @param landId 大棚ID
+     */
+    private void monitorVideo(Map<String, Object> data,Long landId){
+        List<DbMonitor> dbMonitors = new ArrayList<>(2);
+        try{
+            dbMonitors = dbMonitorService.selectVideoChannel(landId);
+        }catch (Exception e){
+            log.error("DaPengServiceImpl.monitorVideo异常 :{}",e);
+        }
+        data.put("monitorVideo",dbMonitors);
     }
 
     /**
