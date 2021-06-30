@@ -133,10 +133,10 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
     public void timingTongFengHand() throws ExecutionException, InterruptedException {
         DbTcpClient dbTcpClient = new DbTcpClient();
         List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
-        DbOperationVo dbOperationVo = new DbOperationVo();
         List<DbOperationVo> list = new ArrayList<>();
         if (!dbTcpClients.isEmpty()) {
             for (DbTcpClient tcpClient : dbTcpClients) {
+                DbOperationVo dbOperationVo = new DbOperationVo();
                 dbOperationVo.setHeartName(tcpClient.getHeartName());
                 dbOperationVo.setFacility("01");
                 dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFeng);
@@ -152,10 +152,10 @@ public class DbTcpTypeServiceImpl implements IDbTcpTypeService {
     public void timingTongFengType() throws ExecutionException, InterruptedException {
         DbTcpClient dbTcpClient = new DbTcpClient();
         List<DbTcpClient> dbTcpClients = dbTcpClientMapper.selectDbTcpClientList(dbTcpClient);
-        DbOperationVo dbOperationVo = new DbOperationVo();
         List<DbOperationVo> list = new ArrayList<>();
         if (!dbTcpClients.isEmpty()) {
             for (DbTcpClient tcpClient : dbTcpClients) {
+                DbOperationVo dbOperationVo = new DbOperationVo();
                 dbOperationVo.setHeartName(tcpClient.getHeartName());
                 dbOperationVo.setFacility("01");
                 dbOperationVo.setOperationText(TcpOrderTextConf.SinceOrhandTongFengType);
