@@ -186,17 +186,42 @@ public class DbOperationRecordController extends BaseController {
     public R getOperationByLand(@PathVariable("landId") Long landId,@PathVariable("userId")String userId,@PathVariable("currPage")Integer currPage,@PathVariable("pageSize")Integer pageSize){
         String dbUserId = getRequest().getHeader(Constants.CURRENT_ID);
         String flag = userId;
-        if (StringUtils.isEmpty(userId) || "null".equals(userId) || Long.valueOf(userId) <= 0L){
+        /*if (!dbUserId.equals(userId)){
+
+        }*/
+
+
+        /*if (checkUserIsSuperAdmin(admin) && Long.valueOf(flag) > 0L){
+            userId = dbUserId;
+            return R.ok("您不能查看其他管理员的记录！");
+        }*/
+        DbEquipmentAdmin admin = dbEquipmentAdminService.selectDbEquipmentAdminByUserIdAndLandId(landId, Long.valueOf(dbUserId), null);
+        boolean currentUserIsSuperAdmin = checkUserIsSuperAdmin(admin);
+        boolean choiceUserIsNull = StringUtils.isEmpty(userId) || "null".equals(userId) || Long.valueOf(userId) <= 0L;
+        boolean isMySelf = dbUserId.equals(userId);
+        // 超级管理员查询所有人记录
+        if (choiceUserIsNull && currentUserIsSuperAdmin){
             userId = null;
         }
-        if (!dbUserId.equals(userId)){
-            DbEquipmentAdmin admin = dbEquipmentAdminService.selectDbEquipmentAdminByUserIdAndLandId(landId, Long.valueOf(dbUserId), null);
-
-            if (admin != null && admin.getIsSuperAdmin() > 0 && Long.valueOf(flag) > 0L){
-                userId = dbUserId;
-                return R.ok("您不能查看其他管理员的记录！");
-            }
+        // 子管理员查询自己数据
+        else if(choiceUserIsNull && !currentUserIsSuperAdmin ) {
+            userId = dbUserId;
         }
+        // 管理员查询子管理员数据
+        else if(!choiceUserIsNull && currentUserIsSuperAdmin) {
+        }
+        //  子管理员查询自己数据
+        else if(!choiceUserIsNull && !currentUserIsSuperAdmin && isMySelf) {
+            userId = dbUserId;
+        }
+        else if(!choiceUserIsNull && !currentUserIsSuperAdmin && !isMySelf) {
+            return R.ok("您不能查看其他管理员的记录！");
+        }
+
         return R.data(dbOperationRecordService.selectDbOperationRecordByLandIdAndUserId(landId,userId,currPage,pageSize));
+    }
+
+    private boolean checkUserIsSuperAdmin(DbEquipmentAdmin admin){
+        return admin != null && admin.getIsSuperAdmin() == 0;
     }
 }

@@ -319,7 +319,7 @@ public class DbUserController extends BaseController {
             user.setCreateTime(new Date());
             user.setIsBanned(0);
             user.setGender(0);
-            user.setCreateTime(new Date());
+            user.setNickname("FYC_"+phone.substring(phone.length()-3,phone.length()));
             user.setCreated(new Date());
             int i = dbUserService.insertDbUser(user);
         }else {
