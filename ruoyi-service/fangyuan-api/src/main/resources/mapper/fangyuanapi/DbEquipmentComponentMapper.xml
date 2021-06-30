@@ -123,7 +123,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDbEquipmentComponentByheartbeatTextAndLogo" resultMap="DbEquipmentComponentResult">
         select id,spList
           from db_equipment_component
-        where heartbeatText =#{heartbeatText} and equipment_name like concat('%',#{fucncitonLogo,jdbcType=VARCHAR},'%')
+        where heartbeatText =#{heartbeatText} and equipment_name like concat('%',#{fucncitonLogo,jdbcType=VARCHAR},'%') limit 1
     </select>
     <select id="selectDbEquipmentComponentListByHeartbeat"
             resultMap="DbEquipmentComponentResult">
