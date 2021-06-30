@@ -74,7 +74,7 @@ public class SocketIoConfig {
         config.setMaxFramePayloadLength(maxFramePayloadLength);
         config.setMaxHttpContentLength(maxHttpContentLength);
         // 根据运行环境确认是否采用epoll模式
-        config.setUseLinuxNativeEpoll(!isWin());
+        config.setUseLinuxNativeEpoll(false);
         return new SocketIOServer(config);
     }
 
