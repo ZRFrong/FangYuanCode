@@ -17,11 +17,9 @@ import com.ruoyi.system.feign.DbLandClient;
 import com.ruoyi.system.util.DbTcpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -231,7 +229,7 @@ public class SendSocketMsgUtils {
      */
     private String listToString(List<String> list){
         StringBuilder builder = null;
-        if (list == null || list.size() < 0 ){
+        if (list == null || list.size() <= 0 ){
             return "";
         }
         for (String id : list) {
